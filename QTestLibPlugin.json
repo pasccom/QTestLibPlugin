@@ -1,0 +1,15 @@
+{
+    "Name" : "QTestLibPlugin",
+    "Version" : "0.0.1",
+    "CompatVersion" : "0.0.1",
+    "Vendor" : "Pascom",
+    "Copyright" : "(C) Pascom <pascom@orange.fr>",
+    "License" : "GPLv3",
+    "Description" : "This plugin parses the output of a test using QTestLib and format its in a more usable way.",
+    "Url" : "",
+    "Dependencies" : [
+        { "Name" : "Core", "Version" : "3.4.2" },
+        { "Name" : "ProjectExplorer", "Version" : "3.4.2" }
+    ]
+}
+
