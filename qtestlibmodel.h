@@ -12,44 +12,49 @@ namespace ProjectExplorer {
 namespace QTestLibPlugin {
 namespace Internal {
 
-class PlainTextQTestLibParser;
-
 class QTestLibModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
     QTestLibModel(ProjectExplorer::RunControl* runControl, QObject* parent = NULL);
     ~QTestLibModel(void);
+    // WARNING Order matters!
     typedef enum {
-        Unknown,
-        Skip,
+        BenchmarkResult,
+        QDebug,
+        Info,
         Warning,
         QWarning,
-        QDebug,
         QSystem,
         QFatal,
-        Info,
+        Unknown,
+        Skip,
         Pass,
-        XPass,
         BlackListedPass,
-        Fail,
+        XPass,
         XFail,
         BlackListedFail,
-        BenchmarkResult
+        Fail,
     } MessageType;
+    typedef enum {
+        ResultRole = Qt::UserRole,
+        ResultStringRole,
+        UserRole // WARNING No value after this one!
+    } ItemRole;
     QModelIndex index(int row, int column, const QModelIndex& parent) const;
     QModelIndex parent(const QModelIndex& child) const;
     int rowCount(const QModelIndex& parent) const;
     int columnCount(const QModelIndex& parent) const;
     QVariant data(const QModelIndex &index, int role) const;
 public slots:
-    void clear(void) {mRoot->removeChildren();}
+    void clear(void) {if (mRoot != NULL) mRoot->removeChildren();}
     void addTestItem(ProjectExplorer::RunControl* runControl,
                      const QString& messageType,
                      const QString& className,
                      const QString& functionName,
                      const QString& rowTitle,
                      const QString& message);
+    void appendTestItemMessage(ProjectExplorer::RunControl* runControl, const QString& message);
 private:
     //QIcon messageIcon(MessageType type) const;
 
@@ -82,11 +87,13 @@ private:
         virtual void removeChildren(void);
 
         inline TestItem* parent(void) const {return mParent;}
+        void updateResult(MessageType result);
+    protected:
+        MessageType mResult;
     private:
         QLinkedList<TestItem *> mChildren;
         int mChildrenCount;
         TestItem* mParent;
-        MessageType mResult; // TODO compute mResult.
     };
 
     class TestRootItem : public TestItem
@@ -97,7 +104,7 @@ private:
         inline TestItemType type(void) const {return TestRoot;}
         inline int compareName(const QString& name) const {Q_UNUSED(name); return 1;}
         inline int columnCount(void) const {return 1;}
-        inline QVariant data(int column, int role = Qt::DisplayRole) const {Q_UNUSED(column); Q_UNUSED(role); return QVariant();}
+        //inline QVariant data(int column, int role = Qt::DisplayRole) const {Q_UNUSED(column); Q_UNUSED(role); return QVariant();}
     };
 
     class TestClassItem : public TestItem
@@ -145,11 +152,10 @@ private:
     class TestMessageItem : public TestItem
     {
     public:
-        inline TestMessageItem(MessageType type, const QString& msg = QString::null, TestItem *parent = NULL) :
-            TestItem(parent), mType(type), mMessage(msg) {}
+        TestMessageItem(MessageType type, const QString& msg = QString::null, TestItem *parent = NULL);
         inline TestItemType type(void) const {return TestMessage;}
         inline int compareName(const QString& name) const {Q_UNUSED(name); return 1;}
-        inline int columnCount(void) const {return 1;}
+        inline int columnCount(void) const {return 0;}
         QVariant data(int column, int role = Qt::DisplayRole) const;
 
         inline TestItem* findChild(const QString& name) const {Q_UNUSED(name); return NULL;}
@@ -160,17 +166,20 @@ private:
         inline bool removeChild(TestItem *item) {Q_UNUSED(item); Q_ASSERT(false); return false;}
         inline void removeChildren(void) {}
 
-        inline MessageType getMessageType(void) const {return mType;}
-        inline QString getMessage(void) const {return mMessage;}
+        inline MessageType getMessageType(void) const {return mResult;}
+        inline QString getMessage(void) const {return mMessage.trimmed();}
+        inline void appendMessage(const QString& message) {mMessage.append(QLatin1Char('\n')).append(message);}
     private:
-        MessageType mType;
         QString mMessage;
     };
 
     TestItem *mRoot;
+    TestMessageItem *mCurrentMessageItem;
 };
 
 } // namespace Internal
 } // namespace QTestLibPlugin
+
+Q_DECLARE_METATYPE(QTestLibPlugin::Internal::QTestLibModel::MessageType)
 
 #endif // QTESTLIBMODEL_H

@@ -45,6 +45,7 @@ class AbstractTestParser : public QObject
 public:
     AbstractTestParser(QObject *parent = NULL) : QObject(parent) {}
     virtual TestModelFactory::ParseResult parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line) = 0;
+    virtual TestModelFactory::ParseResult parseStderrLine(ProjectExplorer::RunControl* runControl, const QString& line) = 0;
     virtual QAbstractItemModel *getModel(void) const = 0;
 };
 

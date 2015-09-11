@@ -1,0 +1,98 @@
+<?xml version="1.0" ?>
+<!DOCTYPE qtestliboutput SYSTEM "qtestliboutput.dtd">
+<qtestliboutput>
+    <results>
+        <unsure/>
+        <magicfound level="silent" />
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="silent" />
+        <unsure/>
+    </results>
+    <class name="SignalsTest" type="Pass" level="normal">
+        <function name="initTestCase" type="Pass">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+        </function>
+        <function name="firstFunction" type="Pass">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Signal: SignalsTest(7ffe244a1c30) signal1 ()
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Signal: SignalsTest(7ffe244a1c30) signal2 (QString(firstFunction))
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Signal: SignalsTest(7ffe244a1c30) signal3 (int(18), int(36))
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+        </function>
+        <function name="secondFunction" type="Pass">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Signal: SignalsTest(7ffe244a1c30) signal2 (QString(secondFunction))
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Signal: SignalsTest(7ffe244a1c30) signal3 (int(54), int(72))
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Signal: SignalsTest(7ffe244a1c30) signal1 ()
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+        </function>
+        <function name="thirdFunction" type="Pass">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Signal: SignalsTest(7ffe244a1c30) signal3 (int(90), int(108))
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Signal: SignalsTest(7ffe244a1c30) signal1 ()
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Signal: SignalsTest(7ffe244a1c30) signal2 (QString(thirdFunction))
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+        </function>
+        <function name="cleanupTestCase" type="Pass">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+        </function>
+    </class>
+</qtestliboutput>

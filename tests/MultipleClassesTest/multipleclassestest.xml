@@ -1,0 +1,206 @@
+<?xml version="1.0" ?>
+<!DOCTYPE qtestliboutput SYSTEM "qtestliboutput.dtd">
+<qtestliboutput>
+    <results>
+        <unsure/>
+        <magicfound level="silent" />
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="silent" />
+        <unsure/>
+        <unsure/>
+        <magicfound level="silent" />
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="silent" />
+        <unsure/>
+        <unsure/>
+        <magicfound level="silent" />
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="silent" />
+        <unsure/>
+    </results>
+    <root type="Fail">
+        <class name="FirstClassTest" type="Pass">
+            <function name="initTestCase" type="Pass">
+                <message type="Info" strict="true" level="verbose1">
+                    entering
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </function>
+            <function name="firstPass" type="Pass">
+                <message type="Info" strict="true" level="verbose1">
+                    entering
+                </message>
+                <message type="Info" strict="true" level="verbose2">
+                    QVERIFY(true)
+Loc: [multipleclassestest.cpp(42)]
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </function>
+            <function name="secondPass" type="Pass">
+                <message type="Info" strict="true" level="verbose1">
+                    entering
+                </message>
+                <message type="Info" strict="true" level="verbose2">
+                    QVERIFY(true)
+Loc: [multipleclassestest.cpp(47)]
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </function>
+            <function name="cleanupTestCase" type="Pass">
+                <message type="Info" strict="true" level="verbose1">
+                    entering
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </function>
+        </class>
+        <class name="SecondClassTest" type="Pass">
+            <function name="initTestCase" type="Pass">
+                <message type="Info" strict="true" level="verbose1">
+                    entering
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </function>
+            <function name="firstPass" type="Pass">
+                <message type="Info" strict="true" level="verbose1">
+                    entering
+                </message>
+                <message type="Info" strict="true" level="verbose2">
+                    QVERIFY(true)
+Loc: [multipleclassestest.cpp(52)]
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </function>
+            <function name="secondPass" type="Pass">
+                <message type="Info" strict="true" level="verbose1">
+                    entering
+                </message>
+                <row title="firstData" type="Pass">
+                    <message type="QDebug" strict="true">
+                        "firstData"
+                    </message>
+                    <message type="Info" strict="true" level="verbose2">
+                        QVERIFY(data.endsWith("Data"))
+Loc: [multipleclassestest.cpp(67)]
+                    </message>
+                    <message type="Pass" strict="true">
+                        Test passed
+                    </message>
+                </row>
+                <row title="secondData" type="Pass">
+                    <message type="QDebug" strict="true">
+                        "secondData"
+                    </message>
+                    <message type="Info" strict="true" level="verbose2">
+                        QVERIFY(data.endsWith("Data"))
+Loc: [multipleclassestest.cpp(67)]
+                    </message>
+                    <message type="Pass" strict="true">
+                        Test passed
+                    </message>
+                </row>
+            </function>
+            <function name="cleanupTestCase" type="Pass">
+                <message type="Info" strict="true" level="verbose1">
+                    entering
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </function>
+        </class>
+        <class name="ThirdClassTest" type="Fail" level="silent">
+            <function name="initTestCase" type="Pass">
+                <message type="Info" strict="true" level="verbose1">
+                    entering
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </function>
+            <function name="firstFail" type="Fail" level="silent">
+                <message type="Info" strict="true" level="verbose1">
+                    entering
+                </message>
+                <message type="Info" strict="true" level="verbose2">
+                    QVERIFY(false)
+Loc: [multipleclassestest.cpp(72)]
+                </message>
+                <message type="Fail" strict="true" level="silent">
+                    'false' returned FALSE. (Test should fail)
+Loc: [multipleclassestest.cpp(72)]
+                </message>
+            </function>
+            <function name="secondPass" type="Pass">
+                <message type="Info" strict="true" level="verbose1">
+                    entering
+                </message>
+                <message type="Info" strict="true" level="verbose2">
+                    QVERIFY(true)
+Loc: [multipleclassestest.cpp(77)]
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </function>
+            <function name="cleanupTestCase" type="Pass">
+                <message type="Info" strict="true" level="verbose1">
+                    entering
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </function>
+        </class>
+    </root>
+</qtestliboutput>

@@ -1,0 +1,245 @@
+<?xml version="1.0" ?>
+<!DOCTYPE qtestliboutput SYSTEM "qtestliboutput.dtd">
+<qtestliboutput>
+    <results>
+        <unsure/>
+        <magicfound level="silent" />
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="silent" />
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure/>
+        <unsure level="silent" />
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure/>
+    </results>
+    <class name="AllMessagesTest" type="Fail">
+        <function name="initTestCase" type="Pass">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+        </function>
+        <function name="result" type="Pass">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Result" strict="false">
+                0.00050 msecs per iteration (total: 66, iterations: 131072)
+            </message>
+        </function>
+        <function name="pass" type="Pass">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="info" strict="true" level="verbose2">
+                QVERIFY(true)
+Loc: [allmessagestest.cpp(37)]
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+        </function>
+        <function name="bpass" type="BPass" level="silent">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="info" strict="true" level="verbose2">
+                QVERIFY(true)
+Loc: [allmessagestest.cpp(42)]
+            </message>
+            <message type="BPass" strict="true" level="silent">
+                Blacklisted test passed
+            </message>
+        </function>
+        <function name="xpass" type="XPass" level="silent">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="info" strict="true" level="verbose2">
+                QVERIFY(true)
+Loc: [allmessagestest.cpp(48)]
+            </message>
+            <message type="XPass" strict="true" level="silent">
+                'true' returned TRUE unexpectedly. (This test should succeed)
+Loc: [allmessagestest.cpp(48)]
+            </message>
+        </function>
+        <function name="fail" type="Fail" level="silent">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="info" strict="true" level="verbose2">
+                QVERIFY(false)
+Loc: [allmessagestest.cpp(53)]
+            </message>
+            <message type="Fail" strict="true" level="silent">
+                'false' returned FALSE. (This test should fail)
+Loc: [allmessagestest.cpp(53)]
+            </message>
+        </function>
+        <function name="bfail" type="BFail" level="silent">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="info" strict="true" level="verbose2">
+                QVERIFY(false)
+Loc: [allmessagestest.cpp(58)]
+            </message>
+            <message type="BFail" strict="true" level="silent">
+                'false' returned FALSE. (This test is blacklisted but it should fail)
+Loc: [allmessagestest.cpp(58)]
+            </message>
+        </function>
+        <function name="xfail" type="XFail">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="info" strict="true" level="verbose2">
+                QVERIFY(false)
+Loc: [allmessagestest.cpp(64)]
+            </message>
+            <message type="XFail" strict="true">
+                This test should fail as it is marked as expecting failure.
+Loc: [allmessagestest.cpp(64)]
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+        </function>
+        <function name="skip" type="Skip">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="Skip" strict="true">
+                This test should be skipped
+Loc: [allmessagestest.cpp(69)]
+            </message>
+        </function>
+        <function name="qdebug" type="Pass">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="QDebug" strict="true">
+                qDebug message
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+        </function>
+        <function name="info" type="Fail" level="silent">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="Info" strict="true">
+                Did not receive message: "pascal COMBES"
+            </message>
+            <message type="Fail" strict="true" level="silent">
+                Not all expected messages were received
+            </message>
+        </function>
+        <function name="qsystem" type="Pass">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="QSystem" strict="true">
+                qCritical message
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+        </function>
+        <function name="warning" type="Pass">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="Warning" strict="true">
+                QWARN message
+Loc: [allmessagestest.cpp(90)]
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+        </function>
+        <function name="qwarning" type="Pass">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="QWarning" strict="true">
+                qWarning message
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+        </function>
+        <function name="qfatal" type="Fail" level="silent">
+            <message type="Info" strict="true" level="verbose1">
+                entering
+            </message>
+            <message type="QFatal" strict="true" level="silent">
+                qFatal message
+            </message>
+            <message type="Fail" strict="true" level="silent">
+                Received a fatal error.
+Loc: [Unknown file(0)]
+            </message>
+        </function>
+    </class>
+</qtestliboutput>

@@ -10,7 +10,7 @@ namespace QTestLibPlugin {
 namespace Internal {
 
 QTestLibModel::QTestLibModel(ProjectExplorer::RunControl* runControl, QObject *parent) :
-    QAbstractItemModel(parent), mTestRun(runControl), mRoot(NULL)
+    QAbstractItemModel(parent), mTestRun(runControl), mRoot(NULL), mCurrentMessageItem(NULL)
 {
     //mRoot = new TestRootItem();
 }
@@ -27,21 +27,21 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, const Q
 {
     Q_ASSERT(runControl == mTestRun);
 
-    const QString messages(QLatin1String("????????"
-                                         "SKIP    "
+    const QString messages(QLatin1String("RESULT  "
+                                         "QDEBUG  "
+                                         "INFO    "
                                          "WARNING "
                                          "QWARN   "
-                                         "QDEBUG  "
                                          "QSYSTEM "
                                          "QFATAL  "
-                                         "INFO    "
+                                         "????????"
+                                         "SKIP    "
                                          "PASS    "
-                                         "XPASS   "
                                          "BPASS   "
-                                         "FAIL    "
+                                         "XPASS   "
                                          "XFAIL   "
                                          "BFAIL   "
-                                         "RESULT  "));
+                                         "FAIL!   "));
 
     TestItem *testItem;
     TestClassItem *testClassItem;
@@ -67,7 +67,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, const Q
             mRoot = new TestRootItem();
             mRoot->appendChild(oldRoot);
         }
-        new TestMessageItem((MessageType) type, message, mRoot);
+        mCurrentMessageItem = new TestMessageItem((MessageType) type, message, mRoot);
         return;
     }
 
@@ -95,7 +95,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, const Q
     }
 
     if (functionName.isEmpty()) {
-        new TestMessageItem((MessageType) type, message, testClassItem);
+        mCurrentMessageItem = new TestMessageItem((MessageType) type, message, testClassItem);
         return;
     }
 
@@ -109,7 +109,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, const Q
         testCaseItem = dynamic_cast<TestCaseItem *>(testItem);
 
     if (rowTitle.isEmpty()) {
-        new TestMessageItem((MessageType) type, message, testCaseItem);
+        mCurrentMessageItem = new TestMessageItem((MessageType) type, message, testCaseItem);
         return;
     }
 
@@ -122,8 +122,15 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, const Q
         // Cast existing case item
         testRowItem = dynamic_cast<TestRowItem *>(testItem);
 
-    new TestMessageItem((MessageType) type, message, testRowItem);
-    return;
+    mCurrentMessageItem = new TestMessageItem((MessageType) type, message, testRowItem);
+}
+
+void QTestLibModel::appendTestItemMessage(ProjectExplorer::RunControl* runControl, const QString& message)
+{
+    Q_ASSERT(runControl == mTestRun);
+
+    if (mCurrentMessageItem != NULL)
+        mCurrentMessageItem->appendMessage(message);
 }
 
 int QTestLibModel::rowCount(const QModelIndex& parent) const
@@ -175,7 +182,7 @@ QModelIndex QTestLibModel::parent(const QModelIndex& child) const
 QVariant QTestLibModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
-        return QModelIndex();
+        return mRoot->data(0, role);
 
     TestItem *testItem = static_cast<TestItem *>(index.internalPointer());
 
@@ -252,12 +259,39 @@ QString defaultMessage(QTestLibModel::MessageType type)
     return QString::null;
 }
 
+QString resultString(QTestLibModel::MessageType type)
+{
+    QString str = QLatin1String("Result  "
+                                "QDebug  "
+                                "Info    "
+                                "Warning "
+                                "QWarning"
+                                "QSystem "
+                                "QFatal  "
+                                "Unknown "
+                                "Skip    "
+                                "Pass    "
+                                "BPass   "
+                                "XPass   "
+                                "XFail   "
+                                "BFail   "
+                                "Fail    ");
+    return str.mid((int) type * 8, 8).trimmed();
+}
 
 QTestLibModel::TestItem::TestItem(TestItem *parent) :
-    mChildrenCount(0), mParent(NULL), mResult(QTestLibModel::Unknown)
+    mResult(QTestLibModel::Unknown), mChildrenCount(0), mParent(NULL)
 {
     if (parent != NULL)
         parent->appendChild(this);
+}
+
+QTestLibModel::TestMessageItem::TestMessageItem(MessageType type, const QString& msg, TestItem *parent) :
+    TestItem(parent), mMessage(msg)
+{
+    mResult = type;
+    if (this->parent() != NULL)
+        this->parent()->updateResult(mResult);
 }
 
 void QTestLibModel::TestItem::appendChild(TestItem *item)
@@ -268,6 +302,14 @@ void QTestLibModel::TestItem::appendChild(TestItem *item)
     mChildren.append(item);
     item->mParent = this;
     mChildrenCount++;
+}
+
+void QTestLibModel::TestItem::updateResult(MessageType result)
+{
+    MessageType oldResult = mResult;
+    mResult = (MessageType) qMax((int) Unknown, qMax((int) mResult, (int) result));
+    if ((mResult != oldResult) && (mParent != NULL))
+        mParent->updateResult(result);
 }
 
 QTestLibModel::TestItem* QTestLibModel::TestItem::findChild(const QString& name) const
@@ -334,6 +376,10 @@ QVariant QTestLibModel::TestItem::data(int column, int role) const
 {
     if ((column == 0) && (role ==  Qt::DecorationRole))
         return QVariant(messageIcon(mResult));
+    if ((column == 0) && (role == ResultRole))
+        return QVariant::fromValue<MessageType>(mResult);
+    if ((column == 0) && (role == ResultStringRole))
+        return QVariant(resultString(mResult));
     return QVariant();
 }
 
@@ -361,9 +407,9 @@ QVariant QTestLibModel::TestRowItem::data(int column, int role) const
 QVariant QTestLibModel::TestMessageItem::data(int column, int role) const
 {
     if ((column == 0) && (role ==  Qt::DecorationRole))
-        return QVariant(messageIcon(mType));
+        return QVariant(messageIcon(mResult));
     if ((column == 0) && ((role == Qt::DisplayRole) || (role == Qt::ToolTipRole)))
-        return mMessage.isEmpty() ? QVariant(defaultMessage(mType)) : QVariant(mMessage);
+        return mMessage.isEmpty() ? QVariant(defaultMessage(mResult)) : QVariant(mMessage.trimmed());
     return TestItem::data(column, role);
 }
 

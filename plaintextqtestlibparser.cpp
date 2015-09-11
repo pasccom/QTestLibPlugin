@@ -20,10 +20,11 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectEx
     if (stdoutIgnoreRegexp.indexIn(line) == 0)
         return TestModelFactory::Unsure;
 
+    QRegExp stdoutMagicRegexp1(QLatin1String("Config: Using Qt?Test library (\\d+\\.\\d+\\.\\d+), Qt (\\d+\\.\\d+\\.\\d+)(?: \\((.*)\\))?"));
+    QRegExp stdoutMagicRegexp2(QLatin1String("Testing ([A-Za-z_][A-Za-z0-9_]*)"));
     if (mModel == NULL) {
         // Test for begin magic line
-        QRegExp stdoutMagicRegexp(QLatin1String("Config: Using QtTest library (\\d+\\.\\d+\\.\\d+), Qt (\\d+\\.\\d+\\.\\d+) \\((.*)\\)"));
-        if (stdoutMagicRegexp.exactMatch(line)) {
+        if (stdoutMagicRegexp1.exactMatch(line) || stdoutMagicRegexp2.exactMatch(line)) {
             mModel = new QTestLibModel(runControl);
             return TestModelFactory::MagicFound;
         } else {
@@ -31,17 +32,27 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectEx
         }
     } else {
         // Test for result line
-        QRegExp stdoutResultRegexp(QLatin1String("Totals: (\\d+) passed, (\\d+) failed, (\\d+) skipped, (\\d+) blacklisted"));
+        QRegExp stdoutResultRegexp(QLatin1String("Totals: (\\d+) passed, (\\d+) failed, (\\d+) skipped(?:, (\\d+) blacklisted)?"));
+        if (stdoutMagicRegexp1.exactMatch(line) || stdoutMagicRegexp2.exactMatch(line))
+            return TestModelFactory::MagicFound;
         if (stdoutResultRegexp.exactMatch(line))
             return TestModelFactory::Unsure;
     }
 
     // Tests for normal lines:
     //QRegExp stdoutLineRegexp(QLatin1String("^([^:]):\\s+([A-Za-z_][A-Za-z0-9_])::([A-Za-z_][A-Za-z0-9_])\\((.*)\\)(\\s.*)?$"));
-    QRegExp stdoutLineRegexp1(QLatin1String("([^:]*):\\s+([A-Za-z_][A-Za-z0-9_]*)::([A-Za-z_][A-Za-z0-9_]*)\\((.*)\\)\\s(.*)"));
+    QRegExp stdoutLineRegexpSignal(QLatin1String("([^:]*):\\s+([A-Za-z_][A-Za-z0-9_]*)::([A-Za-z_][A-Za-z0-9_]*)\\((.*)\\)\\sSignal:\\s(.*)"));
+    QRegExp stdoutLineRegexp1(QLatin1String("([^:]*):\\s+([A-Za-z_][A-Za-z0-9_]*)::([A-Za-z_][A-Za-z0-9_]*)\\((.*)\\)(?:\\s|:)(.*)"));
     QRegExp stdoutLineRegexp2(QLatin1String("([^:]*):\\s+([A-Za-z_][A-Za-z0-9_]*)::([A-Za-z_][A-Za-z0-9_]*)\\((.*)\\)"));
 
-    if (stdoutLineRegexp1.exactMatch(line))
+    if (stdoutLineRegexpSignal.exactMatch(line))
+        mModel->addTestItem(runControl,
+                            stdoutLineRegexpSignal.capturedTexts().at(1).trimmed(),  /* Message type */
+                            stdoutLineRegexpSignal.capturedTexts().at(2),            /* Test class */
+                            stdoutLineRegexpSignal.capturedTexts().at(3),            /* Test function */
+                            stdoutLineRegexpSignal.capturedTexts().at(4),            /* Test case */
+                            stdoutLineRegexpSignal.capturedTexts().at(5).trimmed()); /* Message */
+    else if (stdoutLineRegexp1.exactMatch(line))
         mModel->addTestItem(runControl,
                             stdoutLineRegexp1.capturedTexts().at(1).trimmed(),  /* Message type */
                             stdoutLineRegexp1.capturedTexts().at(2),            /* Test class */
@@ -54,14 +65,18 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectEx
                             stdoutLineRegexp2.capturedTexts().at(2),            /* Test class */
                             stdoutLineRegexp2.capturedTexts().at(3),            /* Test function */
                             stdoutLineRegexp2.capturedTexts().at(4),            /* Test case */
-                            QString::null);                                     /* Message */
+                            QString::null);
     else
-        mModel->addTestItem(runControl,
-                            QString::null,  /* Message type */
-                            QString::null,  /* Test class */
-                            QString::null,  /* Test function */
-                            QString::null,  /* Test case */
-                            line.trimmed());/* Message */
+        /* NOTE the message is supposed to be part of the previous one ... */
+        mModel->appendTestItemMessage(runControl, line.trimmed());
+
+    return TestModelFactory::Unsure;
+}
+
+TestModelFactory::ParseResult PlainTextQTestLibParser::parseStderrLine(ProjectExplorer::RunControl* runControl, const QString& line)
+{
+    Q_UNUSED(runControl);
+    Q_UNUSED(line);
 
     return TestModelFactory::Unsure;
 }

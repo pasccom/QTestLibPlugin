@@ -1,0 +1,6 @@
+# Blacklist bpass on all systems:
+[bpass]
+*
+# Blackkist bfail on all systems:
+[bfail]
+*

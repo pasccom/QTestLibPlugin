@@ -1,0 +1,26 @@
+<!DOCTYPE qtestliboutput [
+    <!ELEMENT qtestliboutput (results,root|class)>
+    <!ELEMENT root (class+)>
+    <!ELEMENT class (function+)>
+    <!ELEMENT function (row+|message+)>
+    <!ELEMENT row (message+)>
+    <!ELEMENT message (#PCDATA)>
+    <!ELEMENT results (unsure*,magicfound+|magicnotfound+,unsure*)>
+    <!ELEMENT unsure EMPTY>
+    <!ELEMENT magicfound EMPTY>
+    <!ELEMENT magicnotfound EMPTY>
+
+    <!ATTLIST root type CDATA "Unknown">
+
+    <!ATTLIST class name CDATA #REQUIRED>
+    <!ATTLIST class type CDATA "Unknown">
+
+    <!ATTLIST function name CDATA #REQUIRED>
+    <!ATTLIST function type CDATA "Unknown">
+
+    <!ATTLIST row title CDATA #REQUIRED>
+    <!ATTLIST row type CDATA "Unknown">
+
+    <!ATTLIST message type CDATA "Unknown">
+    <!ATTLIST message strict>
+]>
