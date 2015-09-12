@@ -14,7 +14,7 @@
         <file alias="skip.png">icons/skip.png</file>
         <file alias="fail.png">icons/fail.png</file>
         <file alias="bfail.png">icons/bfail.png</file>
-        <file alias="bpas.png">icons/bpass.png</file>
+        <file alias="bpass.png">icons/bpass.png</file>
         <file alias="xfail.png">icons/xfail.png</file>
     </qresource>
 </RCC>
