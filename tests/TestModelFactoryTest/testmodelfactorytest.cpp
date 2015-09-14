@@ -40,7 +40,6 @@ private:
     void data(void);
     void runTest(const QString& testName, Verbosity verbosity = Normal, Utils::OutputFormat outputFormat = Utils::OutputFormat::StdOutFormat, Utils::OutputFormat errorFormat = Utils::OutputFormat::StdErrFormat);
 
-    void checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected, Verbosity verbosity);
     void isOutput(const QDomElement& element, Verbosity verbose, bool *ret);
 
     void parseRoot(const QAbstractItemModel* model, const QDomElement& element, Verbosity verbosity);
@@ -166,46 +165,6 @@ void TestModelFactoryTest::runTest(const QString& testName, Verbosity verbosity,
             SUB_TEST_FUNCTION(parseClass(mModel, QModelIndex(), rootClass, verbosity));
         }
     }
-}
-
-
-void TestModelFactoryTest::checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected, Verbosity verbosity)
-{
-    BEGIN_SUB_TEST_FUNCTION
-
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>::const_iterator currentResult = results.constBegin();
-    QDomElement currentExpected = expected.firstChildElement();
-
-    while ((currentResult != results.constEnd()) && (!currentExpected.isNull())) {
-        bool isPrinted = false;
-        SUB_TEST_FUNCTION(isOutput(currentExpected, verbosity, &isPrinted));
-        if (isPrinted) {
-            switch (*currentResult) {
-            case QTestLibPlugin::Internal::TestModelFactory::Unsure:
-                QVERIFY(QString::compare(currentExpected.tagName(), "unsure", Qt::CaseInsensitive) == 0);
-                break;
-            case QTestLibPlugin::Internal::TestModelFactory::MagicFound:
-                QVERIFY(QString::compare(currentExpected.tagName(), "magicfound", Qt::CaseInsensitive) == 0);
-                break;
-            case QTestLibPlugin::Internal::TestModelFactory::MagicNotFound:
-                QVERIFY(QString::compare(currentExpected.tagName(), "magicnotfound", Qt::CaseInsensitive) == 0);
-                break;
-            }
-            currentResult++;
-        }
-        currentExpected = currentExpected.nextSiblingElement();
-    }
-
-    while (!currentExpected.isNull()) {
-        bool isPrinted = false;
-        SUB_TEST_FUNCTION(isOutput(currentExpected, verbosity, &isPrinted));
-        QVERIFY2(!isPrinted, "Number of printed results mismatch");
-        currentExpected = currentExpected.nextSiblingElement();
-    }
-
-    QVERIFY2((currentResult == results.constEnd()) && (currentExpected.isNull()), "Number of results mismatch");
-
-    END_SUB_TEST_FUNCTION
 }
 
 void TestModelFactoryTest::isOutput(const QDomElement& element, Verbosity verbose, bool *ret)
