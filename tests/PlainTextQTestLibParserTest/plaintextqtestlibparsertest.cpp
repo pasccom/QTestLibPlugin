@@ -20,27 +20,16 @@ public:
         VerboseSignal,
     } Verbosity;
 private Q_SLOTS:
+    inline void oneClass_data(void) {data();}
     void oneClass(void);
+    inline void allMessages_data(void) {data();}
     void allMessages(void);
+    inline void multipleClasses_data(void) {data();}
     void multipleClasses(void);
+    inline void signalsTest_data(void) {data();}
     void signalsTest(void);
-    void oneClassSilent(void);
-    void allMessagesSilent(void);
-    void multipleClassesSilent(void);
-    void signalsTestSilent(void);
-    void oneClassV1(void);
-    void allMessagesV1(void);
-    void multipleClassesV1(void);
-    void signalsTestV1(void);
-    void oneClassV2(void);
-    void allMessagesV2(void);
-    void multipleClassesV2(void);
-    void signalsTestV2(void);
-    void oneClassVS(void);
-    void allMessagesVS(void);
-    void multipleClassesVS(void);
-    void signalsTestVS(void);
 private:
+    void data(void);
     void runTest(const QString& testName, Verbosity verbosity = Normal);
 
     void checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected, Verbosity verbosity);
@@ -55,104 +44,45 @@ private:
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::PlainTextQTestLibParser *parser, const QString& test, Verbosity verbosity);
 };
 
+Q_DECLARE_METATYPE(PlainTextQTestLibParserTest::Verbosity)
+
+void PlainTextQTestLibParserTest::data(void)
+{
+    QTest::addColumn<Verbosity>("verbosity");
+
+    QTest::newRow("Normal") << Normal;
+    QTest::newRow("Silent") << Silent;
+    QTest::newRow("Verbose1") << Verbose1;
+    QTest::newRow("Verbose2") << Verbose2;
+    QTest::newRow("VerboseS") << VerboseSignal;
+}
+
 void PlainTextQTestLibParserTest::oneClass(void)
 {
-    runTest("OneClassTest");
+    QFETCH(Verbosity, verbosity);
+
+    runTest("OneClassTest", verbosity);
 }
 
 void PlainTextQTestLibParserTest::allMessages(void)
 {
-    runTest("AllMessagesTest");
+    QFETCH(Verbosity, verbosity);
+
+    runTest("AllMessagesTest", verbosity);
 }
 
 void PlainTextQTestLibParserTest::multipleClasses(void)
 {
-    runTest("MultipleClassesTest");
+    QFETCH(Verbosity, verbosity);
+
+    runTest("MultipleClassesTest", verbosity);
 }
 
 void PlainTextQTestLibParserTest::signalsTest(void)
 {
-    runTest("SignalsTest");
-}
+    QFETCH(Verbosity, verbosity);
 
-void PlainTextQTestLibParserTest::oneClassSilent(void)
-{
-    runTest("OneClassTest", Silent);
-}
-
-void PlainTextQTestLibParserTest::allMessagesSilent(void)
-{
-    runTest("AllMessagesTest", Silent);
-}
-
-void PlainTextQTestLibParserTest::multipleClassesSilent(void)
-{
-    runTest("MultipleClassesTest", Silent);
-}
-
-void PlainTextQTestLibParserTest::signalsTestSilent(void)
-{
-    runTest("SignalsTest", Silent);
-}
-
-void PlainTextQTestLibParserTest::oneClassV1(void)
-{
-    runTest("OneClassTest", Verbose1);
-}
-
-void PlainTextQTestLibParserTest::allMessagesV1(void)
-{
-    runTest("AllMessagesTest", Verbose1);
-}
-
-void PlainTextQTestLibParserTest::multipleClassesV1(void)
-{
-    runTest("MultipleClassesTest", Verbose1);
-}
-
-void PlainTextQTestLibParserTest::signalsTestV1(void)
-{
-    runTest("SignalsTest", Verbose1);
-}
-
-void PlainTextQTestLibParserTest::oneClassV2(void)
-{
-    runTest("OneClassTest", Verbose2);
-}
-
-void PlainTextQTestLibParserTest::allMessagesV2(void)
-{
-    runTest("AllMessagesTest", Verbose2);
-}
-
-void PlainTextQTestLibParserTest::multipleClassesV2(void)
-{
-    runTest("MultipleClassesTest", Verbose2);
-}
-
-void PlainTextQTestLibParserTest::signalsTestV2(void)
-{
-    runTest("SignalsTest", Verbose2);
-}
-
-void PlainTextQTestLibParserTest::oneClassVS(void)
-{
-    runTest("OneClassTest", VerboseSignal);
-}
-
-void PlainTextQTestLibParserTest::allMessagesVS(void)
-{
-    runTest("AllMessagesTest", VerboseSignal);
-}
-
-void PlainTextQTestLibParserTest::multipleClassesVS(void)
-{
-    runTest("MultipleClassesTest", VerboseSignal);
-}
-
-void PlainTextQTestLibParserTest::signalsTestVS(void)
-{
-    runTest("SignalsTest", VerboseSignal);
+    runTest("SignalsTest", verbosity);
 }
 
 void PlainTextQTestLibParserTest::runTest(const QString& testName, Verbosity verbosity)
