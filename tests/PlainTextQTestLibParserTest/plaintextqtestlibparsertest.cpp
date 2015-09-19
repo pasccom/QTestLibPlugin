@@ -31,6 +31,7 @@ private Q_SLOTS:
 private:
     void data(void);
     void runTest(const QString& testName, Verbosity verbosity = Normal);
+    void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, Verbosity verbosity);
 
     void checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected, Verbosity verbosity);
     void isOutput(const QDomElement& element, Verbosity verbose, bool *ret);
@@ -92,13 +93,19 @@ void PlainTextQTestLibParserTest::runTest(const QString& testName, Verbosity ver
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(&parser, testName, verbosity);
     QAbstractItemModel *model = parser.getModel();
 
+    checkTest(model, results, testName, verbosity);
+    delete model;
+}
+
+void PlainTextQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, Verbosity verbosity)
+{
     /* Load the XML expected result */
     QDomDocument dom(testName);
     QFile domFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
     QVERIFY(domFile.open(QIODevice::ReadOnly));
     QString error;
-    int line;
-    int column;
+    int line = 0;
+    int column = 0;
     QVERIFY2(dom.setContent(&domFile, false, &error, &line, &column), qPrintable(QString("%1 at %2:%3").arg(error).arg(line).arg(column)));
     QVERIFY(QString::compare(dom.documentElement().tagName(), "qtestliboutput", Qt::CaseSensitive) == 0);
 
