@@ -8,12 +8,6 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-TestSuiteModel::TestSuiteModel(QObject *parent) :
-    QAbstractItemModel(parent)
-{
-
-}
-
 int TestSuiteModel::rowCount(const QModelIndex& parent) const
 {
     if (!parent.isValid())
@@ -96,7 +90,7 @@ QVariant TestSuiteModel::data(const QModelIndex &index, int role) const
     if (subModel != index.internalPointer())
         return subModel->data(index, role);
 
-    return QVariant(); // TODO change this adequately.
+    return subModel->data(QModelIndex(), role);
 }
 
 void TestSuiteModel::appendTestRun(ProjectExplorer::RunControl* runControl)
@@ -120,8 +114,13 @@ void TestSuiteModel::removeTestRun(int index)
     if ((index < 0) || (index >= mTests.size()))
         return;
 
+    beginRemoveRows(QModelIndex(), index, index);
+
     QAbstractItemModel *testRun = mTests.takeAt(index);
     delete testRun;
+
+
+    endRemoveRows();
 
     QMap<void*, QAbstractItemModel*>::iterator it = mInternalPointers.begin();
     while (it != mInternalPointers.end()) {

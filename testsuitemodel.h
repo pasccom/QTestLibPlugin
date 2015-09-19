@@ -16,11 +16,12 @@ class TestSuiteModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    TestSuiteModel(QObject* parent = NULL);
+    inline TestSuiteModel(QObject* parent = NULL):
+        QAbstractItemModel(parent) {}
     QModelIndex index(int row, int column, const QModelIndex& parent) const;
     QModelIndex parent(const QModelIndex& child) const;
-    int rowCount(const QModelIndex& parent) const;
-    int columnCount(const QModelIndex& parent) const;
+    int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    int columnCount(const QModelIndex& parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
 public slots:
     void appendTestRun(ProjectExplorer::RunControl* runControl);
