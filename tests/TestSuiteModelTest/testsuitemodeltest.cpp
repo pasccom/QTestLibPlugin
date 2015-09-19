@@ -499,8 +499,8 @@ void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const Q
         QFile domFile(TESTS_DIR "/" + (*it).first + "/" + (*it).first.toLower() + ".xml");
         QVERIFY(domFile.open(QIODevice::ReadOnly));
         QString error;
-        int line;
-        int column;
+        int line = 0;
+        int column = 0;
         QVERIFY2(dom.setContent(&domFile, false, &error, &line, &column), qPrintable(QString("%1 at %2:%3").arg(error).arg(line).arg(column)));
         QVERIFY(QString::compare(dom.documentElement().tagName(), "qtestliboutput", Qt::CaseSensitive) == 0);
 
