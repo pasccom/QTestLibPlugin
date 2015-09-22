@@ -7,12 +7,6 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-PlainTextQTestLibParser::PlainTextQTestLibParser(QObject *parent)
-    : AbstractTestParser(parent), mModel(NULL)
-{
-
-}
-
 TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line)
 {
     // Test for special lines at beginning and end.

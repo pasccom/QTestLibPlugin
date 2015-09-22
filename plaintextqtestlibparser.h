@@ -17,13 +17,16 @@ class PlainTextQTestLibParser : public AbstractTestParser
 {
     Q_OBJECT
 public:
-    PlainTextQTestLibParser(QObject *parent = 0);
-
     TestModelFactory::ParseResult parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line);
     TestModelFactory::ParseResult parseStderrLine(ProjectExplorer::RunControl* runControl, const QString& line);
     QAbstractItemModel *getModel(void) const {return mModel;}
+protected:
+    PlainTextQTestLibParser(QObject *parent = 0) :
+        AbstractTestParser(parent), mModel(NULL) {}
 private:
     QTestLibModel *mModel;
+
+    friend class PlainTextQTestLibParserFactory;
 };
 
 } // namespace Internal

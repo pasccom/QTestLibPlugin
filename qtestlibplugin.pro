@@ -8,7 +8,8 @@ SOURCES += \
     qtestlibmodel.cpp \
     qtestlibplugin.cpp \
     plaintextqtestlibparser.cpp \
-    testmodelfactory.cpp
+    testmodelfactory.cpp \
+    plaintextqtestlibparserfactory.cpp
 
 HEADERS += \
         qtestlibplugin_global.h \
@@ -18,7 +19,8 @@ HEADERS += \
     qtestlibmodel.h \
     qtestlibplugin.h \
     plaintextqtestlibparser.h \
-    testmodelfactory.h
+    testmodelfactory.h \
+    plaintextqtestlibparserfactory.h
 
 # Qt Creator linking
 

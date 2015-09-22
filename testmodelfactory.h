@@ -9,6 +9,7 @@ class QAbstractItemModel;
 
 namespace ProjectExplorer {
     class RunControl;
+    class RunConfiguration;
 }
 
 namespace QTestLibPlugin {
@@ -43,10 +44,22 @@ class AbstractTestParser : public QObject
 {
     Q_OBJECT
 public:
-    AbstractTestParser(QObject *parent = NULL) : QObject(parent) {}
     virtual TestModelFactory::ParseResult parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line) = 0;
     virtual TestModelFactory::ParseResult parseStderrLine(ProjectExplorer::RunControl* runControl, const QString& line) = 0;
     virtual QAbstractItemModel *getModel(void) const = 0;
+protected:
+    AbstractTestParser(QObject *parent = NULL) :
+        QObject(parent) {}
+};
+
+class AbstractTestParserFactory : public QObject
+{
+    Q_OBJECT
+public:
+    AbstractTestParserFactory(QObject *parent = NULL) :
+        QObject(parent) {}
+    virtual bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const = 0;
+    virtual AbstractTestParser* getParserInstance(QObject *parent) const = 0;
 };
 
 } // namespace Internal
