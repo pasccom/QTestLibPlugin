@@ -12,9 +12,11 @@ SOURCES += plaintextqtestlibparsertest.cpp
 
 # Files to be tested
 SOURCES += ../../plaintextqtestlibparser.cpp \
+           ../../plaintextqtestlibparserfactory.cpp \
            ../../qtestlibmodel.cpp \
            ../../testmodelfactory.cpp
 HEADERS += ../../plaintextqtestlibparser.h \
+           ../../plaintextqtestlibparserfactory.h \
            ../../qtestlibmodel.h \
            ../../testmodelfactory.h
 

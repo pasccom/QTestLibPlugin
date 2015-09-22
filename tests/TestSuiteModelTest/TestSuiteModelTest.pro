@@ -12,10 +12,12 @@ SOURCES += testsuitemodeltest.cpp
 
 # Files to be tested
 SOURCES += ../../plaintextqtestlibparser.cpp \
+           ../../plaintextqtestlibparserfactory.cpp \
            ../../qtestlibmodel.cpp \
            ../../testmodelfactory.cpp \
            ../../testsuitemodel.cpp
 HEADERS += ../../plaintextqtestlibparser.h \
+           ../../plaintextqtestlibparserfactory.h \
            ../../qtestlibmodel.h \
            ../../testmodelfactory.h \
            ../../testsuitemodel.h

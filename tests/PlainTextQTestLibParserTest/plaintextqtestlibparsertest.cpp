@@ -1,5 +1,7 @@
-#include "../../plaintextqtestlibparser.h"
+#include "../../plaintextqtestlibparserfactory.h"
 #include "../../qtestlibmodel.h"
+
+#include <projectexplorer/runconfiguration.h>
 
 #include "../qttestsubfunction.h"
 
@@ -42,7 +44,7 @@ private:
     void parseRow(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity);
     void parseMessage(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
 
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::PlainTextQTestLibParser *parser, const QString& test, Verbosity verbosity);
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, const QString& test, Verbosity verbosity);
 };
 
 Q_DECLARE_METATYPE(PlainTextQTestLibParserTest::Verbosity)
@@ -89,12 +91,16 @@ void PlainTextQTestLibParserTest::signalsTest(void)
 void PlainTextQTestLibParserTest::runTest(const QString& testName, Verbosity verbosity)
 {
     /* Executes the test and feeds the parser with the result */
-    QTestLibPlugin::Internal::PlainTextQTestLibParser parser(this);
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(&parser, testName, verbosity);
-    QAbstractItemModel *model = parser.getModel();
+    ProjectExplorer::RunConfiguration runConfig(this);
+    QTestLibPlugin::Internal::PlainTextQTestLibParserFactory factory(this);
+    QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
+    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(this);
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, testName, verbosity);
+    QAbstractItemModel *model = parser->getModel();
 
     checkTest(model, results, testName, verbosity);
     delete model;
+    delete parser;
 }
 
 void PlainTextQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, Verbosity verbosity)
@@ -350,7 +356,7 @@ void PlainTextQTestLibParserTest::parseMessage(const QAbstractItemModel* model, 
     END_SUB_TEST_FUNCTION
 }
 
-QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQTestLibParserTest::executeTest(QTestLibPlugin::Internal::PlainTextQTestLibParser *parser, const QString& test, Verbosity verbosity)
+QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, const QString& test, Verbosity verbosity)
 {
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results;
     QStringList cmdArgs;
