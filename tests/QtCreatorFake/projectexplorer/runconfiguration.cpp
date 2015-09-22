@@ -11,6 +11,7 @@ namespace ProjectExplorer {
 RunControl::RunControl(const QString& file, const QStringList& args, const QString& name, QObject *parent) :
     QObject(parent), mTestProc(NULL), mArgs(args), mName(name)
 {
+    mConfig = new RunConfiguration(this);
     mPath = QFileInfo(file).dir().absoluteFilePath("..");
     mFile = QFileInfo(file).absoluteFilePath();
     if (mName.isNull())

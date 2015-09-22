@@ -6,12 +6,20 @@
 
 namespace ProjectExplorer {
 
+class RunConfiguration : public QObject
+{
+public:
+    inline RunConfiguration(QObject *parent):
+        QObject(parent) {}
+};
+
 class RunControl : public QObject
 {
     Q_OBJECT
 public:
     RunControl(const QString& file, const QStringList& args = QStringList(), const QString& name = QString::null, QObject *parent = 0);
     inline QString displayName(void) const {return mName;}
+    inline RunConfiguration* runConfiguration() const {return mConfig;}
 
     inline Utils::OutputFormat outputFormat(void) const {return mOutputFormat;}
     inline Utils::OutputFormat errorFormat(void) const {return mErrorFormat;}
@@ -36,6 +44,7 @@ private:
     QString mName;
     Utils::OutputFormat mOutputFormat;
     Utils::OutputFormat mErrorFormat;
+    RunConfiguration* mConfig;
 };
 
 } // ProjectExplorer
