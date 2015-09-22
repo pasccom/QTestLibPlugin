@@ -43,3 +43,4 @@ unix {
     else:DESTDIR = ./release
 }
 
+DISTFILES += ../../qtestliboutput.dtd
