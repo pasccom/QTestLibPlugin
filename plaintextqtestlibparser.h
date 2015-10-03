@@ -24,6 +24,8 @@ protected:
     PlainTextQTestLibParser(QObject *parent = 0) :
         AbstractTestParser(parent), mModel(NULL) {}
 private:
+    QTestLibModel::MessageType messageType(const QString& msg);
+
     QTestLibModel *mModel;
 
     friend class PlainTextQTestLibParserFactory;

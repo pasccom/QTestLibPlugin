@@ -41,24 +41,24 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectEx
 
     if (stdoutLineRegexpSignal.exactMatch(line))
         mModel->addTestItem(runControl,
-                            stdoutLineRegexpSignal.capturedTexts().at(1).trimmed(),  /* Message type */
-                            stdoutLineRegexpSignal.capturedTexts().at(2),            /* Test class */
-                            stdoutLineRegexpSignal.capturedTexts().at(3),            /* Test function */
-                            stdoutLineRegexpSignal.capturedTexts().at(4),            /* Test case */
-                            stdoutLineRegexpSignal.capturedTexts().at(5).trimmed()); /* Message */
+                            messageType(stdoutLineRegexpSignal.capturedTexts().at(1).trimmed()),    /* Message type */
+                            stdoutLineRegexpSignal.capturedTexts().at(2),                           /* Test class */
+                            stdoutLineRegexpSignal.capturedTexts().at(3),                           /* Test function */
+                            stdoutLineRegexpSignal.capturedTexts().at(4),                           /* Test case */
+                            stdoutLineRegexpSignal.capturedTexts().at(5).trimmed());                /* Message */
     else if (stdoutLineRegexp1.exactMatch(line))
         mModel->addTestItem(runControl,
-                            stdoutLineRegexp1.capturedTexts().at(1).trimmed(),  /* Message type */
-                            stdoutLineRegexp1.capturedTexts().at(2),            /* Test class */
-                            stdoutLineRegexp1.capturedTexts().at(3),            /* Test function */
-                            stdoutLineRegexp1.capturedTexts().at(4),            /* Test case */
-                            stdoutLineRegexp1.capturedTexts().at(5).trimmed()); /* Message */
+                            messageType(stdoutLineRegexp1.capturedTexts().at(1).trimmed()), /* Message type */
+                            stdoutLineRegexp1.capturedTexts().at(2),                        /* Test class */
+                            stdoutLineRegexp1.capturedTexts().at(3),                        /* Test function */
+                            stdoutLineRegexp1.capturedTexts().at(4),                        /* Test case */
+                            stdoutLineRegexp1.capturedTexts().at(5).trimmed());             /* Message */
     else if (stdoutLineRegexp2.exactMatch(line))
         mModel->addTestItem(runControl,
-                            stdoutLineRegexp2.capturedTexts().at(1).trimmed(),  /* Message type */
-                            stdoutLineRegexp2.capturedTexts().at(2),            /* Test class */
-                            stdoutLineRegexp2.capturedTexts().at(3),            /* Test function */
-                            stdoutLineRegexp2.capturedTexts().at(4),            /* Test case */
+                            messageType(stdoutLineRegexp2.capturedTexts().at(1).trimmed()), /* Message type */
+                            stdoutLineRegexp2.capturedTexts().at(2),                        /* Test class */
+                            stdoutLineRegexp2.capturedTexts().at(3),                        /* Test function */
+                            stdoutLineRegexp2.capturedTexts().at(4),                        /* Test case */
                             QString::null);
     else
         /* NOTE the message is supposed to be part of the previous one ... */
@@ -73,6 +73,37 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStderrLine(ProjectEx
     Q_UNUSED(line);
 
     return TestModelFactory::Unsure;
+}
+
+QTestLibModel::MessageType PlainTextQTestLibParser::messageType(const QString& messageType)
+{
+    int type = -1;
+    const QString messages(QLatin1String("RESULT  "
+                                         "QDEBUG  "
+                                         "INFO    "
+                                         "WARNING "
+                                         "QWARN   "
+                                         "QSYSTEM "
+                                         "QFATAL  "
+                                         "????????"
+                                         "SKIP    "
+                                         "PASS    "
+                                         "BPASS   "
+                                         "XPASS   "
+                                         "XFAIL   "
+                                         "BFAIL   "
+                                         "FAIL!   "));
+
+
+    // Find the type of the message
+    if (!messageType.isEmpty())
+        type = messages.indexOf(messageType, 0, Qt::CaseSensitive);
+    if (type == -1)
+        type = (int) QTestLibModel::Unknown;
+    else
+        type>>=3;
+
+    return (QTestLibModel::MessageType) type;
 }
 
 } // namespace Internal

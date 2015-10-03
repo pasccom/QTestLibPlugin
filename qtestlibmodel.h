@@ -49,7 +49,7 @@ public:
 public slots:
     void clear(void) {if (mRoot != NULL) mRoot->removeChildren();}
     void addTestItem(ProjectExplorer::RunControl* runControl,
-                     const QString& messageType,
+                     MessageType type,
                      const QString& className,
                      const QString& functionName,
                      const QString& rowTitle,

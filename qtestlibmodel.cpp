@@ -22,40 +22,15 @@ QTestLibModel::~QTestLibModel(void)
         delete mRoot;
 }
 
-void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, const QString& messageType, const QString& className,
+void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, MessageType type, const QString& className,
                                 const QString& functionName, const QString& rowTitle, const QString& message)
 {
     Q_ASSERT(runControl == mTestRun);
-
-    const QString messages(QLatin1String("RESULT  "
-                                         "QDEBUG  "
-                                         "INFO    "
-                                         "WARNING "
-                                         "QWARN   "
-                                         "QSYSTEM "
-                                         "QFATAL  "
-                                         "????????"
-                                         "SKIP    "
-                                         "PASS    "
-                                         "BPASS   "
-                                         "XPASS   "
-                                         "XFAIL   "
-                                         "BFAIL   "
-                                         "FAIL!   "));
 
     TestItem *testItem;
     TestClassItem *testClassItem;
     TestCaseItem *testCaseItem;
     TestRowItem *testRowItem;
-    int type = -1;
-
-    // Find the type of the message
-    if (!messageType.isEmpty())
-        type = messages.indexOf(messageType);
-    if (type == -1)
-        type = (int) Unknown;
-    else
-        type>>=3;
 
     //qDebug() << messageType << type << ":" << className << "::" << functionName << "(\"" << rowTitle << "\"):" << message;
 
@@ -67,7 +42,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, const Q
             mRoot = new TestRootItem();
             mRoot->appendChild(oldRoot);
         }
-        mCurrentMessageItem = new TestMessageItem((MessageType) type, message, mRoot);
+        mCurrentMessageItem = new TestMessageItem(type, message, mRoot);
         return;
     }
 
@@ -95,7 +70,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, const Q
     }
 
     if (functionName.isEmpty()) {
-        mCurrentMessageItem = new TestMessageItem((MessageType) type, message, testClassItem);
+        mCurrentMessageItem = new TestMessageItem(type, message, testClassItem);
         return;
     }
 
@@ -109,7 +84,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, const Q
         testCaseItem = dynamic_cast<TestCaseItem *>(testItem);
 
     if (rowTitle.isEmpty()) {
-        mCurrentMessageItem = new TestMessageItem((MessageType) type, message, testCaseItem);
+        mCurrentMessageItem = new TestMessageItem(type, message, testCaseItem);
         return;
     }
 
@@ -122,7 +97,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, const Q
         // Cast existing case item
         testRowItem = dynamic_cast<TestRowItem *>(testItem);
 
-    mCurrentMessageItem = new TestMessageItem((MessageType) type, message, testRowItem);
+    mCurrentMessageItem = new TestMessageItem(type, message, testRowItem);
 }
 
 void QTestLibModel::appendTestItemMessage(ProjectExplorer::RunControl* runControl, const QString& message)
