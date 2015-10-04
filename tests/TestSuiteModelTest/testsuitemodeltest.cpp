@@ -56,21 +56,25 @@ private Q_SLOTS:
 private:
     void data(void);
 
-    void isOutput(const QDomElement& element, Verbosity verbose, bool *ret);
+    void isOutput(const QDomElement& element, bool *ret);
+    void isOutputFormat(const QDomElement& element, bool *ret);
+    void isOutputVerbosity(const QDomElement& element, bool *ret);
 
     void parseSuiteRoot(const QAbstractItemModel* model, const QList< QPair<QString, Verbosity> >& tests);
-    void parseRoot(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity);
-    void parseClass(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity);
-    void parseFunction(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity);
-    void parseRow(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity);
+    void parseRoot(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
+    void parseClass(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
+    void parseFunction(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
+    void parseRow(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
     void parseMessage(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
 
     void checkSignalArguments(const QString& signal, const QList<QVariant>& args, int first, int last);
-    void appendTest(QTestLibPlugin::Internal::TestSuiteModel *model, const QString& test, Verbosity verbosity, Utils::OutputFormat outputFormat, Utils::OutputFormat errorFormat);
+    void appendTest(QTestLibPlugin::Internal::TestSuiteModel *model, const QString& test, const QString& format, Verbosity verbosity, Utils::OutputFormat outputFormat, Utils::OutputFormat errorFormat);
     void removeTestAt(QTestLibPlugin::Internal::TestSuiteModel *model, int i);
     void clearTests(QTestLibPlugin::Internal::TestSuiteModel *model);
 
     QStringList mTests;
+    QString mParserFormat;
+    Verbosity mVerbosity;
 };
 
 Q_DECLARE_METATYPE(TestSuiteModelTest::Verbosity)
@@ -85,6 +89,8 @@ TestSuiteModelTest::TestSuiteModelTest(void)
     mTests << "AllMessagesTest";
     mTests << "MultipleClassesTest";
     mTests << "SignalsTest";
+
+    mParserFormat = "txt"; // TODO to be removed!
 }
 
 void TestSuiteModelTest::data(void)
@@ -132,7 +138,7 @@ void TestSuiteModelTest::appendOne(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
@@ -149,7 +155,7 @@ void TestSuiteModelTest::appendOneRemoveOne()
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -176,7 +182,7 @@ void TestSuiteModelTest::removeBadAppendOne(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
@@ -193,7 +199,7 @@ void TestSuiteModelTest::appendOneRemoveBad()
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -215,7 +221,7 @@ void TestSuiteModelTest::appendOneClear()
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -237,14 +243,14 @@ void TestSuiteModelTest::appendTwo(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
@@ -261,14 +267,14 @@ void TestSuiteModelTest::appendTwoRemoveFirst(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -290,14 +296,14 @@ void TestSuiteModelTest::appendTwoRemoveSecond(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -319,14 +325,14 @@ void TestSuiteModelTest::appendTwoRemoveBad(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -348,7 +354,7 @@ void TestSuiteModelTest::appendOneRemoveAppendOne(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -360,7 +366,7 @@ void TestSuiteModelTest::appendOneRemoveAppendOne(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -378,7 +384,7 @@ void TestSuiteModelTest::appendOneRemoveBadAppendOne(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -390,7 +396,7 @@ void TestSuiteModelTest::appendOneRemoveBadAppendOne(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
@@ -407,14 +413,14 @@ void TestSuiteModelTest::appendTwoClear(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -436,7 +442,7 @@ void TestSuiteModelTest::appendOneClearAppendOne(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -448,12 +454,42 @@ void TestSuiteModelTest::appendOneClearAppendOne(void)
     // Append one test
     testRun = mTests.at(qrand() % mTests.size());
     qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, Normal, outputFormat, errorFormat));
+    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
     testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
 
-void TestSuiteModelTest::isOutput(const QDomElement& element, Verbosity verbose, bool *ret)
+void TestSuiteModelTest::isOutput(const QDomElement& element, bool *ret)
+{
+    BEGIN_SUB_TEST_FUNCTION
+
+    SUB_TEST_FUNCTION(isOutputFormat(element, ret));
+    if (*ret)
+        SUB_TEST_FUNCTION(isOutputVerbosity(element, ret));
+
+    END_SUB_TEST_FUNCTION
+}
+
+void TestSuiteModelTest::isOutputFormat(const QDomElement& element, bool *ret)
+{
+    BEGIN_SUB_TEST_FUNCTION
+
+    QString formatString = element.attribute("format", "all");
+
+    if (QString::compare(formatString, "all", Qt::CaseSensitive) == 0) {
+        *ret = true;
+    } else if (formatString.startsWith('!')) {
+        QStringList formatList = formatString.mid(1).split(',', QString::SkipEmptyParts);
+        *ret = !formatList.contains(mParserFormat);
+    } else {
+        QStringList formatList = formatString.split(',', QString::SkipEmptyParts);
+        *ret = formatList.contains(mParserFormat);
+    }
+
+    END_SUB_TEST_FUNCTION
+}
+
+void TestSuiteModelTest::isOutputVerbosity(const QDomElement& element, bool *ret)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -467,14 +503,14 @@ void TestSuiteModelTest::isOutput(const QDomElement& element, Verbosity verbose,
     QVERIFY2(resultLevel != -1, qPrintable(QString("Unknown level: %1").arg(resultLevelString)));
     resultLevel = resultLevel/8 - 1;
 
-    int verboseLevel = (int) verbose;
+    int verboseLevel = (int) mVerbosity;
 
-    QVERIFY2(ret != NULL, "THe ret pointer should not be NULL");
+    QVERIFY2(ret != NULL, "The ret pointer should not be NULL");
 
     if (resultLevel == 3) {
-        *ret = (verbose == VerboseSignal);
+        *ret = (mVerbosity == VerboseSignal);
     } else {
-        if (verbose == VerboseSignal)
+        if (mVerbosity == VerboseSignal)
             verboseLevel = (int) Normal;
         *ret = (verboseLevel >= resultLevel);
     }
@@ -508,19 +544,20 @@ void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const Q
         bool isElementOutput = false;
         QDomElement root = dom.documentElement().firstChildElement("root");
         QDomElement rootClass = dom.documentElement().firstChildElement("class");
+        mVerbosity = (*it).second;
         QVERIFY2(root.isNull() ^ rootClass.isNull(), "The document element should have either root or class child");
         if (!root.isNull()) {
-            SUB_TEST_FUNCTION(isOutput(root, (*it).second, &isElementOutput));
+            SUB_TEST_FUNCTION(isOutput(root, &isElementOutput));
             if (isElementOutput) {
                 QVERIFY2(root.nextSiblingElement("root").isNull(), "The document element should have only one root child");
-                SUB_TEST_FUNCTION(parseRoot(model, model->index(i, 0, QModelIndex()), root, (*it).second));
+                SUB_TEST_FUNCTION(parseRoot(model, model->index(i, 0, QModelIndex()), root));
             }
         }
         else if (!rootClass.isNull()) {
-            SUB_TEST_FUNCTION(isOutput(rootClass, (*it).second, &isElementOutput));
+            SUB_TEST_FUNCTION(isOutput(rootClass, &isElementOutput));
             if (isElementOutput) {
                 QVERIFY2(rootClass.nextSiblingElement("class").isNull(), "The document element should have only one class child");
-                SUB_TEST_FUNCTION(parseClass(model, model->index(i, 0, QModelIndex()), rootClass, (*it).second));
+                SUB_TEST_FUNCTION(parseClass(model, model->index(i, 0, QModelIndex()), rootClass));
             }
         }
     }
@@ -528,7 +565,7 @@ void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const Q
     END_SUB_TEST_FUNCTION
 }
 
-void TestSuiteModelTest::parseRoot(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity)
+void TestSuiteModelTest::parseRoot(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -539,10 +576,10 @@ void TestSuiteModelTest::parseRoot(const QAbstractItemModel* model, const QModel
     int i = 0;
     while (!classElement.isNull()) {
         bool isElementOutput = false;
-        SUB_TEST_FUNCTION(isOutput(classElement, verbosity, &isElementOutput));
+        SUB_TEST_FUNCTION(isOutput(classElement, &isElementOutput));
         if (isElementOutput) {
             QVERIFY2(model->index(i, 0, index).isValid(), qPrintable(QString("Children %1 of sub model root element is not valid").arg(i)));
-            SUB_TEST_FUNCTION(parseClass(model, model->index(i, 0, index), classElement, verbosity));
+            SUB_TEST_FUNCTION(parseClass(model, model->index(i, 0, index), classElement));
             i++;
         }
         classElement = classElement.nextSiblingElement("class");
@@ -554,7 +591,7 @@ void TestSuiteModelTest::parseRoot(const QAbstractItemModel* model, const QModel
     END_SUB_TEST_FUNCTION
 }
 
-void TestSuiteModelTest::parseClass(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity)
+void TestSuiteModelTest::parseClass(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -563,17 +600,24 @@ void TestSuiteModelTest::parseClass(const QAbstractItemModel* model, const QMode
     QVERIFY2(model->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for class index should be a string");
     QVERIFY2(QString::compare(model->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null) , Qt::CaseInsensitive) == 0, "Result string for class do not match");
 
-    QDomElement functionElement = element.firstChildElement("function");
     int i = 0;
-    while (!functionElement.isNull()) {
+    QDomElement childElement = element.firstChildElement();
+    while (!childElement.isNull()) {
         bool isElementOutput = false;
-        SUB_TEST_FUNCTION(isOutput(functionElement, verbosity, &isElementOutput));
+        SUB_TEST_FUNCTION(isOutput(childElement, &isElementOutput));
         if (isElementOutput) {
-            QVERIFY2(model->index(i, 0, index).isValid(), qPrintable(QString("Children %1 of class element is not valid").arg(i)));
-            SUB_TEST_FUNCTION(parseFunction(model, model->index(i, 0, index), functionElement, verbosity));
-            i++;
+            if (QString::compare(childElement.tagName(), "function", Qt::CaseInsensitive) == 0) {
+                QVERIFY2(model->index(i, 0, index).isValid(), qPrintable(QString("Function children %1 of class element is not valid").arg(i)));
+                SUB_TEST_FUNCTION(parseFunction(model, model->index(i, 0, index), childElement));
+                i++;
+            }
+            if (QString::compare(childElement.tagName(), "message", Qt::CaseInsensitive) == 0) {
+                QVERIFY2(model->index(i, 0, index).isValid(), qPrintable(QString("Message children %1 of class element is not valid").arg(i)));
+                SUB_TEST_FUNCTION(parseMessage(model, model->index(i, 0, index), childElement));
+                i++;
+            }
         }
-        functionElement = functionElement.nextSiblingElement("function");
+        childElement = childElement.nextSiblingElement();
     }
 
     QVERIFY2(model->rowCount(index) == i, qPrintable(QString("The model index should have %1 rows").arg(i)));
@@ -582,7 +626,7 @@ void TestSuiteModelTest::parseClass(const QAbstractItemModel* model, const QMode
     END_SUB_TEST_FUNCTION
 }
 
-void TestSuiteModelTest::parseFunction(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity)
+void TestSuiteModelTest::parseFunction(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -600,11 +644,11 @@ void TestSuiteModelTest::parseFunction(const QAbstractItemModel* model, const QM
               || (QString::compare(childElement.tagName(), "message", Qt::CaseSensitive) == 0),
                  "A function child should be a row or a message.");
         bool isElementOutput = false;
-        SUB_TEST_FUNCTION(isOutput(childElement, verbosity, &isElementOutput));
+        SUB_TEST_FUNCTION(isOutput(childElement, &isElementOutput));
         if (isElementOutput) {
             if (QString::compare(childElement.tagName(), "row", Qt::CaseInsensitive) == 0) {
                 QVERIFY2(model->index(i, 0, index).isValid(), qPrintable(QString("Row children %1 of function element is not valid").arg(i)));
-                SUB_TEST_FUNCTION(parseRow(model, model->index(i, 0, index), childElement, verbosity));
+                SUB_TEST_FUNCTION(parseRow(model, model->index(i, 0, index), childElement));
                 i++;
             }
             if (QString::compare(childElement.tagName(), "message", Qt::CaseInsensitive) == 0) {
@@ -622,7 +666,7 @@ void TestSuiteModelTest::parseFunction(const QAbstractItemModel* model, const QM
     END_SUB_TEST_FUNCTION
 }
 
-void TestSuiteModelTest::parseRow(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity)
+void TestSuiteModelTest::parseRow(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -637,7 +681,7 @@ void TestSuiteModelTest::parseRow(const QAbstractItemModel* model, const QModelI
     int i = 0;
     while (!messageElement.isNull()) {
         bool isElementOutput = false;
-        SUB_TEST_FUNCTION(isOutput(messageElement, verbosity, &isElementOutput));
+        SUB_TEST_FUNCTION(isOutput(messageElement, &isElementOutput));
         if (isElementOutput) {
             QVERIFY2(model->index(i, 0, index).isValid(), qPrintable(QString("Children %1 of class element is not valid").arg(i)));
             SUB_TEST_FUNCTION(parseMessage(model, model->index(i, 0, index), messageElement));
@@ -674,12 +718,12 @@ void TestSuiteModelTest::parseMessage(const QAbstractItemModel* model, const QMo
     END_SUB_TEST_FUNCTION
 }
 
-void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *model, const QString& test, Verbosity verbosity, Utils::OutputFormat outputFormat, Utils::OutputFormat errorFormat)
+void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *model, const QString& test, const QString& format, Verbosity verbosity, Utils::OutputFormat outputFormat, Utils::OutputFormat errorFormat)
 {
     BEGIN_SUB_TEST_FUNCTION
 
     QStringList cmdArgs;
-    cmdArgs << "-o" << "-,txt";
+    cmdArgs << "-o" << QString("-,%1").arg(format);
     switch(verbosity) {
     case Silent:
         cmdArgs << "-silent";

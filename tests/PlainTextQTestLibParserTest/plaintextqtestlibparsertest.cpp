@@ -13,7 +13,7 @@ class PlainTextQTestLibParserTest : public QObject
     Q_OBJECT
     HAS_SUB_TEST_FUNCTIONS
 public:
-    inline PlainTextQTestLibParserTest(void) {}
+    inline PlainTextQTestLibParserTest(void) : mParserFormat("txt") {}
     typedef enum {
         Silent = -1,
         Normal,
@@ -33,18 +33,23 @@ private Q_SLOTS:
 private:
     void data(void);
     void runTest(const QString& testName, Verbosity verbosity = Normal);
-    void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, Verbosity verbosity);
+    void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName);
 
-    void checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected, Verbosity verbosity);
-    void isOutput(const QDomElement& element, Verbosity verbose, bool *ret);
+    void checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected);
+    void isOutput(const QDomElement& element, bool *ret);
+    void isOutputFormat(const QDomElement& element, bool *ret);
+    void isOutputVerbosity(const QDomElement& element, bool *ret);
 
-    void parseRoot(const QAbstractItemModel* model, const QDomElement& element, Verbosity verbosity);
-    void parseClass(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity);
-    void parseFunction(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity);
-    void parseRow(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity);
+    void parseRoot(const QAbstractItemModel* model, const QDomElement& element);
+    void parseClass(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
+    void parseFunction(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
+    void parseRow(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
     void parseMessage(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
 
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, const QString& test, Verbosity verbosity);
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, const QString& test);
+
+    QString mParserFormat;
+    Verbosity mVerbosity;
 };
 
 Q_DECLARE_METATYPE(PlainTextQTestLibParserTest::Verbosity)
@@ -90,20 +95,24 @@ void PlainTextQTestLibParserTest::signalsTest(void)
 
 void PlainTextQTestLibParserTest::runTest(const QString& testName, Verbosity verbosity)
 {
+    mVerbosity = verbosity;
+
     /* Executes the test and feeds the parser with the result */
     ProjectExplorer::RunConfiguration runConfig(this);
     QTestLibPlugin::Internal::PlainTextQTestLibParserFactory factory(this);
-    QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
+    // TODO: This should be done elsewhere: QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
     QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(this);
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, testName, verbosity);
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, testName);
     QAbstractItemModel *model = parser->getModel();
 
-    checkTest(model, results, testName, verbosity);
+    checkTest(model, results, testName);
+
     delete model;
     delete parser;
+    mVerbosity = Normal;
 }
 
-void PlainTextQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, Verbosity verbosity)
+void PlainTextQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName)
 {
     /* Load the XML expected result */
     QDomDocument dom(testName);
@@ -117,9 +126,14 @@ void PlainTextQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLi
 
     /* Check results */
     QDomElement expectedResults = dom.documentElement().firstChildElement("results");
-    QVERIFY2(expectedResults.isNull() || expectedResults.nextSiblingElement("results").isNull(), "The document element must contain at most one result element.");
+    while (!expectedResults.isNull()) {
+        QVERIFY2(expectedResults.hasAttribute("format"), "results elements must have a format attribute.");
+        if (QString::compare(mParserFormat, expectedResults.attribute("format"), Qt::CaseSensitive) == 0)
+            break;
+        expectedResults = expectedResults.nextSiblingElement("results");
+    }
     if (!expectedResults.isNull()) {
-        SUB_TEST_FUNCTION(checkResults(results, expectedResults, verbosity));
+        SUB_TEST_FUNCTION(checkResults(results, expectedResults));
     }
 
     /* Test each index recursively */
@@ -128,23 +142,23 @@ void PlainTextQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLi
     QDomElement rootClass = dom.documentElement().firstChildElement("class");
     QVERIFY2(root.isNull() ^ rootClass.isNull(), "The document element should have either root or class child");
     if (!root.isNull()) {
-        SUB_TEST_FUNCTION(isOutput(root, verbosity, &isElementOutput));
+        SUB_TEST_FUNCTION(isOutput(root, &isElementOutput));
         if (isElementOutput) {
             QVERIFY2(root.nextSiblingElement("root").isNull(), "The document element should have only one root child");
-            SUB_TEST_FUNCTION(parseRoot(model, root, verbosity));
+            SUB_TEST_FUNCTION(parseRoot(model, root));
         }
     }
     else if (!rootClass.isNull()) {
-        SUB_TEST_FUNCTION(isOutput(rootClass, verbosity, &isElementOutput));
+        SUB_TEST_FUNCTION(isOutput(rootClass, &isElementOutput));
         if (isElementOutput) {
             QVERIFY2(rootClass.nextSiblingElement("class").isNull(), "The document element should have only one class child");
-            SUB_TEST_FUNCTION(parseClass(model, QModelIndex(), rootClass, verbosity));
+            SUB_TEST_FUNCTION(parseClass(model, QModelIndex(), rootClass));
         }
     }
 }
 
 
-void PlainTextQTestLibParserTest::checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected, Verbosity verbosity)
+void PlainTextQTestLibParserTest::checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -153,7 +167,7 @@ void PlainTextQTestLibParserTest::checkResults(QLinkedList<QTestLibPlugin::Inter
 
     while ((currentResult != results.constEnd()) && (!currentExpected.isNull())) {
         bool isPrinted = false;
-        SUB_TEST_FUNCTION(isOutput(currentExpected, verbosity, &isPrinted));
+        SUB_TEST_FUNCTION(isOutput(currentExpected, &isPrinted));
         if (isPrinted) {
             switch (*currentResult) {
             case QTestLibPlugin::Internal::TestModelFactory::Unsure:
@@ -173,7 +187,7 @@ void PlainTextQTestLibParserTest::checkResults(QLinkedList<QTestLibPlugin::Inter
 
     while (!currentExpected.isNull()) {
         bool isPrinted = false;
-        SUB_TEST_FUNCTION(isOutput(currentExpected, verbosity, &isPrinted));
+        SUB_TEST_FUNCTION(isOutput(currentExpected, &isPrinted));
         QVERIFY2(!isPrinted, "Number of printed results mismatch");
         currentExpected = currentExpected.nextSiblingElement();
     }
@@ -183,7 +197,37 @@ void PlainTextQTestLibParserTest::checkResults(QLinkedList<QTestLibPlugin::Inter
     END_SUB_TEST_FUNCTION
 }
 
-void PlainTextQTestLibParserTest::isOutput(const QDomElement& element, Verbosity verbose, bool *ret)
+void PlainTextQTestLibParserTest::isOutput(const QDomElement& element, bool *ret)
+{
+    BEGIN_SUB_TEST_FUNCTION
+
+    SUB_TEST_FUNCTION(isOutputFormat(element, ret));
+    if (*ret)
+        SUB_TEST_FUNCTION(isOutputVerbosity(element, ret));
+
+    END_SUB_TEST_FUNCTION
+}
+
+void PlainTextQTestLibParserTest::isOutputFormat(const QDomElement& element, bool *ret)
+{
+    BEGIN_SUB_TEST_FUNCTION
+
+    QString formatString = element.attribute("format", "all");
+
+    if (QString::compare(formatString, "all", Qt::CaseSensitive) == 0) {
+        *ret = true;
+    } else if (formatString.startsWith('!')) {
+        QStringList formatList = formatString.mid(1).split(',', QString::SkipEmptyParts);
+        *ret = !formatList.contains(mParserFormat);
+    } else {
+        QStringList formatList = formatString.split(',', QString::SkipEmptyParts);
+        *ret = formatList.contains(mParserFormat);
+    }
+
+    END_SUB_TEST_FUNCTION
+}
+
+void PlainTextQTestLibParserTest::isOutputVerbosity(const QDomElement& element, bool *ret)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -197,14 +241,14 @@ void PlainTextQTestLibParserTest::isOutput(const QDomElement& element, Verbosity
     QVERIFY2(resultLevel != -1, qPrintable(QString("Unknown level: %1").arg(resultLevelString)));
     resultLevel = resultLevel/8 - 1;
 
-    int verboseLevel = (int) verbose;
+    int verboseLevel = (int) mVerbosity;
 
-    QVERIFY2(ret != NULL, "THe ret pointer should not be NULL");
+    QVERIFY2(ret != NULL, "The ret pointer should not be NULL");
 
     if (resultLevel == 3) {
-        *ret = (verbose == VerboseSignal);
+        *ret = (mVerbosity == VerboseSignal);
     } else {
-        if (verbose == VerboseSignal)
+        if (mVerbosity == VerboseSignal)
             verboseLevel = (int) Normal;
         *ret = (verboseLevel >= resultLevel);
     }
@@ -212,7 +256,7 @@ void PlainTextQTestLibParserTest::isOutput(const QDomElement& element, Verbosity
     END_SUB_TEST_FUNCTION
 }
 
-void PlainTextQTestLibParserTest::parseRoot(const QAbstractItemModel* model, const QDomElement& element, Verbosity verbosity)
+void PlainTextQTestLibParserTest::parseRoot(const QAbstractItemModel* model, const QDomElement& element)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -223,10 +267,10 @@ void PlainTextQTestLibParserTest::parseRoot(const QAbstractItemModel* model, con
     int i = 0;
     while (!classElement.isNull()) {
         bool isElementOutput = false;
-        SUB_TEST_FUNCTION(isOutput(classElement, verbosity, &isElementOutput));
+        SUB_TEST_FUNCTION(isOutput(classElement, &isElementOutput));
         if (isElementOutput) {
             QVERIFY2(model->index(i, 0, QModelIndex()).isValid(), qPrintable(QString("Children %1 of root element is not valid").arg(i)));
-            SUB_TEST_FUNCTION(parseClass(model, model->index(i, 0, QModelIndex()), classElement, verbosity));
+            SUB_TEST_FUNCTION(parseClass(model, model->index(i, 0, QModelIndex()), classElement));
             i++;
         }
         classElement = classElement.nextSiblingElement("class");
@@ -238,7 +282,7 @@ void PlainTextQTestLibParserTest::parseRoot(const QAbstractItemModel* model, con
     END_SUB_TEST_FUNCTION
 }
 
-void PlainTextQTestLibParserTest::parseClass(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity)
+void PlainTextQTestLibParserTest::parseClass(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -247,17 +291,24 @@ void PlainTextQTestLibParserTest::parseClass(const QAbstractItemModel* model, co
     QVERIFY2(model->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for class index should be a string");
     QVERIFY2(QString::compare(model->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null) , Qt::CaseInsensitive) == 0, "Result string for class do not match");
 
-    QDomElement functionElement = element.firstChildElement("function");
     int i = 0;
-    while (!functionElement.isNull()) {
+    QDomElement childElement = element.firstChildElement();
+    while (!childElement.isNull()) {
         bool isElementOutput = false;
-        SUB_TEST_FUNCTION(isOutput(functionElement, verbosity, &isElementOutput));
+        SUB_TEST_FUNCTION(isOutput(childElement, &isElementOutput));
         if (isElementOutput) {
-            QVERIFY2(model->index(i, 0, index).isValid(), qPrintable(QString("Children %1 of class element is not valid").arg(i)));
-            SUB_TEST_FUNCTION(parseFunction(model, model->index(i, 0, index), functionElement, verbosity));
-            i++;
+            if (QString::compare(childElement.tagName(), "function", Qt::CaseInsensitive) == 0) {
+                QVERIFY2(model->index(i, 0, index).isValid(), qPrintable(QString("Function children %1 of class element is not valid").arg(i)));
+                SUB_TEST_FUNCTION(parseFunction(model, model->index(i, 0, index), childElement));
+                i++;
+            }
+            if (QString::compare(childElement.tagName(), "message", Qt::CaseInsensitive) == 0) {
+                QVERIFY2(model->index(i, 0, index).isValid(), qPrintable(QString("Message children %1 of class element is not valid").arg(i)));
+                SUB_TEST_FUNCTION(parseMessage(model, model->index(i, 0, index), childElement));
+                i++;
+            }
         }
-        functionElement = functionElement.nextSiblingElement("function");
+        childElement = childElement.nextSiblingElement();
     }
 
     QVERIFY2(model->rowCount(index) == i, qPrintable(QString("The model index should have %1 rows").arg(i)));
@@ -266,12 +317,14 @@ void PlainTextQTestLibParserTest::parseClass(const QAbstractItemModel* model, co
     END_SUB_TEST_FUNCTION
 }
 
-void PlainTextQTestLibParserTest::parseFunction(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity)
+void PlainTextQTestLibParserTest::parseFunction(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element)
 {
     BEGIN_SUB_TEST_FUNCTION
 
     QVERIFY2(model->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for function index should be a string");
     QVERIFY2(QString::compare(model->data(index, Qt::DisplayRole).toString(), element.attribute("name", QString::null) , Qt::CaseSensitive) == 0, "Function name do not match");
+    qDebug() << model->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString()
+             << element.attribute("type", QString::null);
     QVERIFY2(model->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for function index should be a string");
     QVERIFY2(QString::compare(model->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null) , Qt::CaseInsensitive) == 0, "Result string for function do not match");
 
@@ -282,11 +335,11 @@ void PlainTextQTestLibParserTest::parseFunction(const QAbstractItemModel* model,
               || (QString::compare(childElement.tagName(), "message", Qt::CaseSensitive) == 0),
                  "A function child should be a row or a message.");
         bool isElementOutput = false;
-        SUB_TEST_FUNCTION(isOutput(childElement, verbosity, &isElementOutput));
+        SUB_TEST_FUNCTION(isOutput(childElement, &isElementOutput));
         if (isElementOutput) {
             if (QString::compare(childElement.tagName(), "row", Qt::CaseInsensitive) == 0) {
                 QVERIFY2(model->index(i, 0, index).isValid(), qPrintable(QString("Row children %1 of function element is not valid").arg(i)));
-                SUB_TEST_FUNCTION(parseRow(model, model->index(i, 0, index), childElement, verbosity));
+                SUB_TEST_FUNCTION(parseRow(model, model->index(i, 0, index), childElement));
                 i++;
             }
             if (QString::compare(childElement.tagName(), "message", Qt::CaseInsensitive) == 0) {
@@ -304,7 +357,7 @@ void PlainTextQTestLibParserTest::parseFunction(const QAbstractItemModel* model,
     END_SUB_TEST_FUNCTION
 }
 
-void PlainTextQTestLibParserTest::parseRow(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element, Verbosity verbosity)
+void PlainTextQTestLibParserTest::parseRow(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -319,7 +372,7 @@ void PlainTextQTestLibParserTest::parseRow(const QAbstractItemModel* model, cons
     int i = 0;
     while (!messageElement.isNull()) {
         bool isElementOutput = false;
-        SUB_TEST_FUNCTION(isOutput(messageElement, verbosity, &isElementOutput));
+        SUB_TEST_FUNCTION(isOutput(messageElement, &isElementOutput));
         if (isElementOutput) {
             QVERIFY2(model->index(i, 0, index).isValid(), qPrintable(QString("Children %1 of class element is not valid").arg(i)));
             SUB_TEST_FUNCTION(parseMessage(model, model->index(i, 0, index), messageElement));
@@ -356,12 +409,12 @@ void PlainTextQTestLibParserTest::parseMessage(const QAbstractItemModel* model, 
     END_SUB_TEST_FUNCTION
 }
 
-QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, const QString& test, Verbosity verbosity)
+QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, const QString& test)
 {
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results;
     QStringList cmdArgs;
-    cmdArgs << "-o" << "-,txt";
-    switch(verbosity) {
+    cmdArgs << "-o" << QString("-,%1").arg(mParserFormat);
+    switch(mVerbosity) {
     case Silent:
         cmdArgs << "-silent";
         break;

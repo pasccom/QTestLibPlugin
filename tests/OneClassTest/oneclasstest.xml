@@ -1,7 +1,53 @@
 <?xml version="1.0" ?>
 <!DOCTYPE qtestliboutput SYSTEM "qtestliboutput.dtd">
 <qtestliboutput>
-    <results>
+    <results format="xml">
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+    </results>
+    <results format="txt">
         <unsure/>
         <magicfound level="silent" />
         <unsure level="verbose1" />
@@ -42,6 +88,9 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
+            <message type="Info" strict="false" format="xml" >
+                Duration: 0.00ms
+            </message>
         </function>
         <function name="firstFunction" type="Pass">
             <message type="Info" strict="true" level="verbose1">
@@ -74,6 +123,9 @@ Loc: [oneclasstest.cpp(30)]
                     Test passed
                 </message>
             </row>
+            <message type="Info" strict="false" format="xml" >
+                Duration: 0.00ms
+            </message>
         </function>
         <function name="secondFunction" type="Fail" level="silent">
             <message type="Info" strict="true" level="verbose1">
@@ -109,6 +161,9 @@ Loc: [oneclasstest.cpp(45)]
 Loc: [oneclasstest.cpp(45)]
                 </message>
             </row>
+            <message type="Info" strict="false" format="xml" >
+                Duration: 0.00ms
+            </message>
         </function>
         <function name="cleanupTestCase" type="Pass">
             <message type="Info" strict="true" level="verbose1">
@@ -117,6 +172,12 @@ Loc: [oneclasstest.cpp(45)]
             <message type="Pass" strict="true">
                 Test passed
             </message>
+            <message type="Info" strict="false" format="xml" >
+                Duration: 0.00ms
+            </message>
         </function>
+        <message type="Info" strict="false" format="xml" >
+            Duration: 0.00ms
+        </message>
     </class>
 </qtestliboutput>

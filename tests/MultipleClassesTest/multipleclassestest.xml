@@ -1,7 +1,99 @@
 <?xml version="1.0" ?>
 <!DOCTYPE qtestliboutput SYSTEM "qtestliboutput.dtd">
 <qtestliboutput>
-    <results>
+    <results format="xml">
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+    </results>
+    <results format="txt">
         <unsure/>
         <magicfound level="silent" />
         <unsure level="verbose1" />
@@ -66,6 +158,9 @@
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
+                <message type="Info" strict="false" format="xml">
+                    Duration: 0ms
+                </message>
             </function>
             <function name="firstPass" type="Pass">
                 <message type="Info" strict="true" level="verbose1">
@@ -77,6 +172,9 @@ Loc: [multipleclassestest.cpp(42)]
                 </message>
                 <message type="Pass" strict="true">
                     Test passed
+                </message>
+                <message type="Info" strict="false" format="xml">
+                    Duration: 0ms
                 </message>
             </function>
             <function name="secondPass" type="Pass">
@@ -90,6 +188,9 @@ Loc: [multipleclassestest.cpp(47)]
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
+                <message type="Info" strict="false" format="xml">
+                    Duration: 0ms
+                </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
                 <message type="Info" strict="true" level="verbose1">
@@ -98,7 +199,13 @@ Loc: [multipleclassestest.cpp(47)]
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
+                <message type="Info" strict="false" format="xml">
+                    Duration: 0ms
+                </message>
             </function>
+            <message type="Info" strict="false" format="xml">
+                Duration: 0ms
+            </message>
         </class>
         <class name="SecondClassTest" type="Pass">
             <function name="initTestCase" type="Pass">
@@ -107,6 +214,9 @@ Loc: [multipleclassestest.cpp(47)]
                 </message>
                 <message type="Pass" strict="true">
                     Test passed
+                </message>
+                <message type="Info" strict="false" format="xml">
+                    Duration: 0ms
                 </message>
             </function>
             <function name="firstPass" type="Pass">
@@ -119,6 +229,9 @@ Loc: [multipleclassestest.cpp(52)]
                 </message>
                 <message type="Pass" strict="true">
                     Test passed
+                </message>
+                <message type="Info" strict="false" format="xml">
+                    Duration: 0ms
                 </message>
             </function>
             <function name="secondPass" type="Pass">
@@ -149,6 +262,9 @@ Loc: [multipleclassestest.cpp(67)]
                         Test passed
                     </message>
                 </row>
+                <message type="Info" strict="false" format="xml">
+                    Duration: 0ms
+                </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
                 <message type="Info" strict="true" level="verbose1">
@@ -157,7 +273,13 @@ Loc: [multipleclassestest.cpp(67)]
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
+                <message type="Info" strict="false" format="xml">
+                    Duration: 0ms
+                </message>
             </function>
+            <message type="Info" strict="false" format="xml">
+                Duration: 0ms
+            </message>
         </class>
         <class name="ThirdClassTest" type="Fail" level="silent">
             <function name="initTestCase" type="Pass">
@@ -166,6 +288,9 @@ Loc: [multipleclassestest.cpp(67)]
                 </message>
                 <message type="Pass" strict="true">
                     Test passed
+                </message>
+                <message type="Info" strict="false" format="xml">
+                    Duration: 0ms
                 </message>
             </function>
             <function name="firstFail" type="Fail" level="silent">
@@ -180,6 +305,9 @@ Loc: [multipleclassestest.cpp(72)]
                     'false' returned FALSE. (Test should fail)
 Loc: [multipleclassestest.cpp(72)]
                 </message>
+                <message type="Info" strict="false" format="xml">
+                    Duration: 0ms
+                </message>
             </function>
             <function name="secondPass" type="Pass">
                 <message type="Info" strict="true" level="verbose1">
@@ -192,6 +320,9 @@ Loc: [multipleclassestest.cpp(77)]
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
+                <message type="Info" strict="false" format="xml">
+                    Duration: 0ms
+                </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
                 <message type="Info" strict="true" level="verbose1">
@@ -200,7 +331,13 @@ Loc: [multipleclassestest.cpp(77)]
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
+                <message type="Info" strict="false" format="xml">
+                    Duration: 0ms
+                </message>
             </function>
+            <message type="Info" strict="false" format="xml">
+                Duration: 0ms
+            </message>
         </class>
     </root>
 </qtestliboutput>

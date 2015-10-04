@@ -1,7 +1,38 @@
 <?xml version="1.0" ?>
 <!DOCTYPE qtestliboutput SYSTEM "qtestliboutput.dtd">
 <qtestliboutput>
-    <results>
+    <results format="xml">
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+    </results>
+    <results format="txt">
         <unsure/>
         <magicfound level="silent" />
         <unsure level="verbose1" />
@@ -34,6 +65,9 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
+            <message type="Info" strict="false" format="xml">
+                Duration: 0ms
+            </message>
         </function>
         <function name="firstFunction" type="Pass">
             <message type="Info" strict="true" level="verbose1">
@@ -50,6 +84,9 @@
             </message>
             <message type="Pass" strict="true">
                 Test passed
+            </message>
+            <message type="Info" strict="false" format="xml">
+                Duration: 0ms
             </message>
         </function>
         <function name="secondFunction" type="Pass">
@@ -68,6 +105,9 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
+            <message type="Info" strict="false" format="xml">
+                Duration: 0ms
+            </message>
         </function>
         <function name="thirdFunction" type="Pass">
             <message type="Info" strict="true" level="verbose1">
@@ -85,6 +125,9 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
+            <message type="Info" strict="false" format="xml">
+                Duration: 0ms
+            </message>
         </function>
         <function name="cleanupTestCase" type="Pass">
             <message type="Info" strict="true" level="verbose1">
@@ -93,6 +136,12 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
+            <message type="Info" strict="false" format="xml">
+                Duration: 0ms
+            </message>
         </function>
+        <message type="Info" strict="false" format="xml">
+            Duration: 0ms
+        </message>
     </class>
 </qtestliboutput>
