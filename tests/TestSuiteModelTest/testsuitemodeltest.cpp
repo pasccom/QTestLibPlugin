@@ -54,13 +54,22 @@ private Q_SLOTS:
     inline void appendOneClearAppendOne_data(void) {data();}
     void appendOneClearAppendOne(void);
 private:
+    struct TestRunData {
+        QString testName;
+        QString parserFormat;
+        Verbosity testVerbosity;
+
+        inline TestRunData(const QString& name, const QString& format, Verbosity verbosity) :
+            testName(name), parserFormat(format), testVerbosity(verbosity) {}
+    };
+
     void data(void);
 
     void isOutput(const QDomElement& element, bool *ret);
     void isOutputFormat(const QDomElement& element, bool *ret);
     void isOutputVerbosity(const QDomElement& element, bool *ret);
 
-    void parseSuiteRoot(const QAbstractItemModel* model, const QList< QPair<QString, Verbosity> >& tests);
+    void parseSuiteRoot(const QAbstractItemModel* model, const QList< TestRunData* >& tests);
     void parseRoot(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
     void parseClass(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
     void parseFunction(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
@@ -73,6 +82,7 @@ private:
     void clearTests(QTestLibPlugin::Internal::TestSuiteModel *model);
 
     QStringList mTests;
+    QStringList mParserFormats;
     QString mParserFormat;
     Verbosity mVerbosity;
 };
@@ -90,7 +100,9 @@ TestSuiteModelTest::TestSuiteModelTest(void)
     mTests << "MultipleClassesTest";
     mTests << "SignalsTest";
 
-    mParserFormat = "txt"; // TODO to be removed!
+    mParserFormats.clear();
+    mParserFormats << "txt";
+    mParserFormats << "xml";
 }
 
 void TestSuiteModelTest::data(void)
@@ -107,7 +119,7 @@ void TestSuiteModelTest::data(void)
 void TestSuiteModelTest::zeroRemoveBad(void)
 {
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Try to remove non existing test
     SUB_TEST_FUNCTION(removeTestAt(&model, 0));
@@ -118,7 +130,7 @@ void TestSuiteModelTest::zeroRemoveBad(void)
 void TestSuiteModelTest::zeroClear(void)
 {
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Clear test suite
     SUB_TEST_FUNCTION(clearTests(&model));
@@ -131,15 +143,13 @@ void TestSuiteModelTest::appendOne(void)
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
 
@@ -148,15 +158,13 @@ void TestSuiteModelTest::appendOneRemoveOne()
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Remove the appended test
@@ -170,9 +178,8 @@ void TestSuiteModelTest::removeBadAppendOne(void)
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Try to remove non existing test
     SUB_TEST_FUNCTION(removeTestAt(&model, 0));
@@ -180,10 +187,9 @@ void TestSuiteModelTest::removeBadAppendOne(void)
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
 
@@ -192,15 +198,13 @@ void TestSuiteModelTest::appendOneRemoveBad()
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Try to remove non existing test
@@ -214,15 +218,13 @@ void TestSuiteModelTest::appendOneClear()
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Clear test suite
@@ -236,22 +238,19 @@ void TestSuiteModelTest::appendTwo(void)
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
 
@@ -260,22 +259,19 @@ void TestSuiteModelTest::appendTwoRemoveFirst(void)
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Remove first test
@@ -289,22 +285,19 @@ void TestSuiteModelTest::appendTwoRemoveSecond(void)
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Remove second test
@@ -318,22 +311,19 @@ void TestSuiteModelTest::appendTwoRemoveBad(void)
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData*> testRuns;
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Try to remove non existing test
@@ -347,15 +337,13 @@ void TestSuiteModelTest::appendOneRemoveAppendOne(void)
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Remove first test
@@ -364,10 +352,9 @@ void TestSuiteModelTest::appendOneRemoveAppendOne(void)
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
 }
@@ -377,15 +364,13 @@ void TestSuiteModelTest::appendOneRemoveBadAppendOne(void)
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Try to remove non existing test
@@ -394,10 +379,9 @@ void TestSuiteModelTest::appendOneRemoveBadAppendOne(void)
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
 
@@ -406,22 +390,19 @@ void TestSuiteModelTest::appendTwoClear(void)
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Clear test suite
@@ -435,15 +416,13 @@ void TestSuiteModelTest::appendOneClearAppendOne(void)
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    QString testRun;
     QTestLibPlugin::Internal::TestSuiteModel model(this);
-    QList< QPair<QString, Verbosity> > testRuns;
+    QList< TestRunData* > testRuns;
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Clear test suite
@@ -452,10 +431,9 @@ void TestSuiteModelTest::appendOneClearAppendOne(void)
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    testRun = mTests.at(qrand() % mTests.size());
-    qDebug() << testRun;
-    SUB_TEST_FUNCTION(appendTest(&model, testRun, "txt", Normal, outputFormat, errorFormat));
-    testRuns.append(QPair<QString, Verbosity>(testRun, Normal));
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
+    testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
 
@@ -518,7 +496,7 @@ void TestSuiteModelTest::isOutputVerbosity(const QDomElement& element, bool *ret
     END_SUB_TEST_FUNCTION
 }
 
-void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const QList<QPair<QString, Verbosity> > &tests)
+void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const QList< TestRunData* > &tests)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -526,13 +504,13 @@ void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const Q
     QVERIFY(model->columnCount(QModelIndex()) == 1);
 
     int i = 0;
-    QList< QPair<QString, Verbosity> >::const_iterator it = tests.constBegin();
+    QList< TestRunData* >::const_iterator it = tests.constBegin();
     for (; it!= tests.constEnd(); it++, i++) {
         QVERIFY2(model->index(i, 0, QModelIndex()).isValid(), qPrintable(QString("Children %1 of root element is not valid").arg(i)));
 
         /* Load the XML expected result */
-        QDomDocument dom((*it).first);
-        QFile domFile(TESTS_DIR "/" + (*it).first + "/" + (*it).first.toLower() + ".xml");
+        QDomDocument dom((*it)->testName);
+        QFile domFile(TESTS_DIR "/" + (*it)->testName + "/" + (*it)->testName.toLower() + ".xml");
         QVERIFY(domFile.open(QIODevice::ReadOnly));
         QString error;
         int line = 0;
@@ -544,7 +522,16 @@ void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const Q
         bool isElementOutput = false;
         QDomElement root = dom.documentElement().firstChildElement("root");
         QDomElement rootClass = dom.documentElement().firstChildElement("class");
-        mVerbosity = (*it).second;
+
+        mParserFormat = (*it)->parserFormat;
+        if (QString::compare(mParserFormat, "txt", Qt::CaseSensitive) == 0)
+            mVerbosity = (*it)->testVerbosity;
+        else if (QString::compare(mParserFormat, "xml", Qt::CaseSensitive) == 0)
+            mVerbosity = Normal;
+        else
+            QVERIFY2(false, qPrintable(QString("Unknown parser format: %1").arg(mParserFormat)));
+
+
         QVERIFY2(root.isNull() ^ rootClass.isNull(), "The document element should have either root or class child");
         if (!root.isNull()) {
             SUB_TEST_FUNCTION(isOutput(root, &isElementOutput));
@@ -560,6 +547,9 @@ void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const Q
                 SUB_TEST_FUNCTION(parseClass(model, model->index(i, 0, QModelIndex()), rootClass));
             }
         }
+
+        mVerbosity = Normal;
+        mParserFormat = QString::null;
     }
 
     END_SUB_TEST_FUNCTION

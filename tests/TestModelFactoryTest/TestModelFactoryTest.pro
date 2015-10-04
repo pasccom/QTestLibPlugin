@@ -13,10 +13,14 @@ SOURCES += testmodelfactorytest.cpp
 # Files to be tested
 SOURCES += ../../plaintextqtestlibparser.cpp \
            ../../plaintextqtestlibparserfactory.cpp \
+           ../../xmlqtestlibparser.cpp \
+           ../../xmlqtestlibparserfactory.cpp \
            ../../qtestlibmodel.cpp \
            ../../testmodelfactory.cpp
 HEADERS += ../../plaintextqtestlibparser.h \
            ../../plaintextqtestlibparserfactory.h \
+           ../../xmlqtestlibparser.h \
+           ../../xmlqtestlibparserfactory.h \
            ../../qtestlibmodel.h \
            ../../testmodelfactory.h
 
