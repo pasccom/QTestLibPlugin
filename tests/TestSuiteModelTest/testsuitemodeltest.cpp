@@ -21,6 +21,7 @@ public:
         Verbose1,
         Verbose2,
         VerboseSignal,
+        VerbosityCountMinusOne // NOTE Sentinel
     } Verbosity;
 private Q_SLOTS:
     void zeroRemoveBad(void);
@@ -147,7 +148,7 @@ void TestSuiteModelTest::appendOne(void)
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -162,7 +163,7 @@ void TestSuiteModelTest::appendOneRemoveOne()
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -187,7 +188,7 @@ void TestSuiteModelTest::removeBadAppendOne(void)
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -202,7 +203,7 @@ void TestSuiteModelTest::appendOneRemoveBad()
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -222,7 +223,7 @@ void TestSuiteModelTest::appendOneClear()
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -242,13 +243,13 @@ void TestSuiteModelTest::appendTwo(void)
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -263,13 +264,13 @@ void TestSuiteModelTest::appendTwoRemoveFirst(void)
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -289,13 +290,13 @@ void TestSuiteModelTest::appendTwoRemoveSecond(void)
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -315,13 +316,13 @@ void TestSuiteModelTest::appendTwoRemoveBad(void)
     QList< TestRunData*> testRuns;
 
     // Append one test
-    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -341,7 +342,7 @@ void TestSuiteModelTest::appendOneRemoveAppendOne(void)
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -352,7 +353,7 @@ void TestSuiteModelTest::appendOneRemoveAppendOne(void)
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -368,7 +369,7 @@ void TestSuiteModelTest::appendOneRemoveBadAppendOne(void)
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -379,7 +380,7 @@ void TestSuiteModelTest::appendOneRemoveBadAppendOne(void)
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -394,13 +395,13 @@ void TestSuiteModelTest::appendTwoClear(void)
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -420,7 +421,7 @@ void TestSuiteModelTest::appendOneClearAppendOne(void)
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData1(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -431,7 +432,7 @@ void TestSuiteModelTest::appendOneClearAppendOne(void)
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), Normal);
+    TestRunData testData2(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (Verbosity) ((qrand() % ((int) VerbosityCountMinusOne + 1)) - 1));
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity, outputFormat, errorFormat));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -527,10 +528,9 @@ void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const Q
         if (QString::compare(mParserFormat, "txt", Qt::CaseSensitive) == 0)
             mVerbosity = (*it)->testVerbosity;
         else if (QString::compare(mParserFormat, "xml", Qt::CaseSensitive) == 0)
-            mVerbosity = Normal;
+            mVerbosity = qMax(Normal, (*it)->testVerbosity);
         else
-            QVERIFY2(false, qPrintable(QString("Unknown parser format: %1").arg(mParserFormat)));
-
+            QVERIFY2(false, qPrintable(QString("Unknown parser format %1").arg(mParserFormat)));
 
         QVERIFY2(root.isNull() ^ rootClass.isNull(), "The document element should have either root or class child");
         if (!root.isNull()) {
@@ -621,7 +621,9 @@ void TestSuiteModelTest::parseFunction(const QAbstractItemModel* model, const QM
     BEGIN_SUB_TEST_FUNCTION
 
     QVERIFY2(model->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for function index should be a string");
-    QVERIFY2(QString::compare(model->data(index, Qt::DisplayRole).toString(), element.attribute("name", QString::null) , Qt::CaseSensitive) == 0, "Function name do not match");
+    /*qDebug() << model->data(index, Qt::DisplayRole).toString()
+             << element.attribute("name", QString::null);*/
+    QVERIFY2(QString::compare(model->data(index, Qt::DisplayRole).toString(), element.attribute("name", QString::null), Qt::CaseSensitive) == 0, "Function name do not match");
     QVERIFY2(model->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for function index should be a string");
     /*qDebug() << model->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString()
              << element.attribute("type", QString::null);*/
@@ -729,7 +731,12 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     case VerboseSignal:
         cmdArgs << "-vs";
         break;
+    default:
+        QVERIFY2(false, "Sentinel value VerbosityCountMinusOne must not be used as verbosity.");
+        break;
     }
+
+    qDebug() << verbosity << format << cmdArgs;
 
     ProjectExplorer::RunControl *runControl = new ProjectExplorer::RunControl(TESTS_DIR "/" + test + "/debug/" + test.toLower(), cmdArgs, test, this);
     runControl->setFormats(outputFormat, errorFormat);

@@ -26,27 +26,26 @@ public:
 private Q_SLOTS:
     void cleanup(void);
 
-    inline void oneClassTXT_data(void) {dataTXT();}
+    inline void oneClassTXT_data(void) {data();}
     void oneClassTXT(void);
-    inline void allMessagesTXT_data(void) {dataTXT();}
+    inline void allMessagesTXT_data(void) {data();}
     void allMessagesTXT(void);
-    inline void multipleClassesTXT_data(void) {dataTXT();}
+    inline void multipleClassesTXT_data(void) {data();}
     void multipleClassesTXT(void);
-    inline void signalsTestTXT_data(void) {dataTXT();}
+    inline void signalsTestTXT_data(void) {data();}
     void signalsTestTXT(void);
-    inline void oneClassXML_data(void) {dataXML();}
+    inline void oneClassXML_data(void) {data();}
     void oneClassXML(void);
-    inline void allMessagesXML_data(void) {dataXML();}
+    inline void allMessagesXML_data(void) {data();}
     void allMessagesXML(void);
-    inline void multipleClassesXML_data(void) {dataXML();}
+    inline void multipleClassesXML_data(void) {data();}
     void multipleClassesXML(void);
-    inline void signalsTestXML_data(void) {dataXML();}
+    inline void signalsTestXML_data(void) {data();}
     void signalsTestXML(void);
 private slots:
     inline void saveModel(QAbstractItemModel* model) {mModel = model;}
 private:
-    void dataTXT(void);
-    void dataXML(void);
+    void data(void);
     void runTest(const QString& testName, const QString& format, Verbosity verbosity = Normal, Utils::OutputFormat outputFormat = Utils::OutputFormat::StdOutFormat, Utils::OutputFormat errorFormat = Utils::OutputFormat::StdErrFormat);
     void checkTest(const QString& testName, Utils::OutputFormat outputFormat = Utils::OutputFormat::StdOutFormat, Utils::OutputFormat errorFormat = Utils::OutputFormat::StdErrFormat);
 
@@ -70,7 +69,7 @@ private:
 Q_DECLARE_METATYPE(TestModelFactoryTest::Verbosity)
 Q_DECLARE_METATYPE(Utils::OutputFormat)
 
-void TestModelFactoryTest::dataTXT(void)
+void TestModelFactoryTest::data(void)
 {
     QTest::addColumn<Verbosity>("verbosity");
     QTest::addColumn<Utils::OutputFormat>("outputFormat");
@@ -137,47 +136,40 @@ void TestModelFactoryTest::signalsTestTXT(void)
     runTest("SignalsTest", "txt", verbosity, outputFormat, errorFormat);
 }
 
-void TestModelFactoryTest::dataXML(void)
-{
-    QTest::addColumn<Utils::OutputFormat>("outputFormat");
-    QTest::addColumn<Utils::OutputFormat>("errorFormat");
-
-    QTest::newRow("Normal") << Utils::OutputFormat::StdOutFormat << Utils::OutputFormat::StdErrFormat;
-    QTest::newRow("SameLine") << Utils::OutputFormat::StdOutFormatSameLine << Utils::OutputFormat::StdErrFormatSameLine;
-    QTest::newRow("OutSameLine") << Utils::OutputFormat::StdOutFormatSameLine << Utils::OutputFormat::StdErrFormat;
-    QTest::newRow("ErrSameLine") << Utils::OutputFormat::StdOutFormat << Utils::OutputFormat::StdErrFormatSameLine;
-}
-
 void TestModelFactoryTest::oneClassXML(void)
 {
+    QFETCH(Verbosity, verbosity);
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    runTest("OneClassTest", "xml", Normal, outputFormat, errorFormat);
+    runTest("OneClassTest", "xml", verbosity, outputFormat, errorFormat);
 }
 
 void TestModelFactoryTest::allMessagesXML(void)
 {
+    QFETCH(Verbosity, verbosity);
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    runTest("AllMessagesTest", "xml", Normal, outputFormat, errorFormat);
+    runTest("AllMessagesTest", "xml", verbosity, outputFormat, errorFormat);
 }
 
 void TestModelFactoryTest::multipleClassesXML(void)
 {
+    QFETCH(Verbosity, verbosity);
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    runTest("MultipleClassesTest", "xml", Normal, outputFormat, errorFormat);
+    runTest("MultipleClassesTest", "xml", verbosity, outputFormat, errorFormat);
 }
 
 void TestModelFactoryTest::signalsTestXML(void)
 {
+    QFETCH(Verbosity, verbosity);
     QFETCH(Utils::OutputFormat, outputFormat);
     QFETCH(Utils::OutputFormat, errorFormat);
 
-    runTest("SignalsTest", "xml", Normal, outputFormat, errorFormat);
+    runTest("SignalsTest", "xml", verbosity, outputFormat, errorFormat);
 }
 
 void TestModelFactoryTest::cleanup(void)
@@ -190,12 +182,7 @@ void TestModelFactoryTest::cleanup(void)
 void TestModelFactoryTest::runTest(const QString& testName, const QString& format, Verbosity verbosity, Utils::OutputFormat outputFormat, Utils::OutputFormat errorFormat)
 {
     mParserFormat = format;
-    if (QString::compare(mParserFormat, "txt", Qt::CaseSensitive) == 0)
-        mVerbosity = verbosity;
-    else if (QString::compare(mParserFormat, "xml", Qt::CaseSensitive) == 0)
-        mVerbosity = Normal;
-    else
-        QVERIFY2(false, qPrintable(QString("Unknown parser format: %1").arg(mParserFormat)));
+    mVerbosity = verbosity;
 
     checkTest(testName, outputFormat, errorFormat);
 
@@ -223,6 +210,8 @@ void TestModelFactoryTest::checkTest(const QString& testName, Utils::OutputForma
     bool isElementOutput = false;
     QDomElement root = dom.documentElement().firstChildElement("root");
     QDomElement rootClass = dom.documentElement().firstChildElement("class");
+    if (QString::compare(mParserFormat, "xml", Qt::CaseSensitive) == 0)
+        mVerbosity = qMax(Normal, mVerbosity); // NOTE When running in XML silent is equal to normal
     QVERIFY2(root.isNull() ^ rootClass.isNull(), "The document element should have either root or class child");
     if (!root.isNull()) {
         SUB_TEST_FUNCTION(isOutput(root, &isElementOutput));

@@ -95,18 +95,7 @@ void XMLQTestLibParserTest::signalsTest(void)
 
 void XMLQTestLibParserTest::runTest(const QString& testName, Verbosity verbosity)
 {
-    /*switch(verbosity) {
-    case Silent:
-    case Normal:
-        mVerbosity = Normal; // NOTE When running in XML silent is equal to normal
-        break;
-    default:
-        mVerbosity = verbosity;
-        break;
-    }*/
-
-    Q_UNUSED(verbosity); // NOTE in XML mode, verbosity do not affect output.
-    mVerbosity = Normal;
+    mVerbosity = verbosity;
 
     /* Executes the test and feeds the parser with the result */
     ProjectExplorer::RunConfiguration runConfig(this);
@@ -116,6 +105,7 @@ void XMLQTestLibParserTest::runTest(const QString& testName, Verbosity verbosity
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, testName);
     QAbstractItemModel *model = parser->getModel();
 
+    mVerbosity = qMax(Normal, verbosity); // NOTE When running in XML silent is equal to normal
     checkTest(model, results, testName);
 
     delete model;
