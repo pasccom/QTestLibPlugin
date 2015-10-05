@@ -14,8 +14,63 @@
         <unsure/>
         <unsure/>
         <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure/>
         <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure/>
         <unsure/>
         <unsure/>
@@ -39,50 +94,18 @@
         <unsure/>
         <unsure/>
         <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <magicfound/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure/>
         <unsure/>
         <unsure/>
@@ -152,7 +175,7 @@
     <root type="Fail">
         <class name="FirstClassTest" type="Pass">
             <function name="initTestCase" type="Pass">
-                <message type="Info" strict="true" level="verbose1">
+                <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
                 <message type="Pass" strict="true">
@@ -163,7 +186,7 @@
                 </message>
             </function>
             <function name="firstPass" type="Pass">
-                <message type="Info" strict="true" level="verbose1">
+                <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
                 <message type="Info" strict="true" level="verbose2">
@@ -178,7 +201,7 @@ Loc: [multipleclassestest.cpp(42)]
                 </message>
             </function>
             <function name="secondPass" type="Pass">
-                <message type="Info" strict="true" level="verbose1">
+                <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
                 <message type="Info" strict="true" level="verbose2">
@@ -193,7 +216,7 @@ Loc: [multipleclassestest.cpp(47)]
                 </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
-                <message type="Info" strict="true" level="verbose1">
+                <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
                 <message type="Pass" strict="true">
@@ -209,7 +232,7 @@ Loc: [multipleclassestest.cpp(47)]
         </class>
         <class name="SecondClassTest" type="Pass">
             <function name="initTestCase" type="Pass">
-                <message type="Info" strict="true" level="verbose1">
+                <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
                 <message type="Pass" strict="true">
@@ -220,7 +243,7 @@ Loc: [multipleclassestest.cpp(47)]
                 </message>
             </function>
             <function name="firstPass" type="Pass">
-                <message type="Info" strict="true" level="verbose1">
+                <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
                 <message type="Info" strict="true" level="verbose2">
@@ -235,7 +258,7 @@ Loc: [multipleclassestest.cpp(52)]
                 </message>
             </function>
             <function name="secondPass" type="Pass">
-                <message type="Info" strict="true" level="verbose1">
+                <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
                 <row title="firstData" type="Pass">
@@ -267,7 +290,7 @@ Loc: [multipleclassestest.cpp(67)]
                 </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
-                <message type="Info" strict="true" level="verbose1">
+                <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
                 <message type="Pass" strict="true">
@@ -283,7 +306,7 @@ Loc: [multipleclassestest.cpp(67)]
         </class>
         <class name="ThirdClassTest" type="Fail" level="silent">
             <function name="initTestCase" type="Pass">
-                <message type="Info" strict="true" level="verbose1">
+                <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
                 <message type="Pass" strict="true">
@@ -294,7 +317,7 @@ Loc: [multipleclassestest.cpp(67)]
                 </message>
             </function>
             <function name="firstFail" type="Fail" level="silent">
-                <message type="Info" strict="true" level="verbose1">
+                <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
                 <message type="Info" strict="true" level="verbose2">
@@ -310,7 +333,7 @@ Loc: [multipleclassestest.cpp(72)]
                 </message>
             </function>
             <function name="secondPass" type="Pass">
-                <message type="Info" strict="true" level="verbose1">
+                <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
                 <message type="Info" strict="true" level="verbose2">
@@ -325,7 +348,7 @@ Loc: [multipleclassestest.cpp(77)]
                 </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
-                <message type="Info" strict="true" level="verbose1">
+                <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
                 <message type="Pass" strict="true">

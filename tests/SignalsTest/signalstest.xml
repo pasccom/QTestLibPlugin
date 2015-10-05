@@ -14,14 +14,41 @@
         <unsure/>
         <unsure/>
         <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
         <unsure/>
         <unsure/>
         <unsure/>
@@ -59,7 +86,7 @@
     </results>
     <class name="SignalsTest" type="Pass" level="normal">
         <function name="initTestCase" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Pass" strict="true">
@@ -70,7 +97,7 @@
             </message>
         </function>
         <function name="firstFunction" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Info" strict="false" level="verboses">
@@ -90,7 +117,7 @@
             </message>
         </function>
         <function name="secondFunction" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Info" strict="false" level="verboses">
@@ -110,7 +137,7 @@
             </message>
         </function>
         <function name="thirdFunction" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Info" strict="false" level="verboses">
@@ -130,7 +157,7 @@
             </message>
         </function>
         <function name="cleanupTestCase" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Pass" strict="true">

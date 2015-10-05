@@ -19,32 +19,50 @@
         <unsure/>
         <unsure/>
         <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure/>
         <unsure/>
         <unsure/>
@@ -172,7 +190,7 @@
     </results>
     <class name="AllMessagesTest" type="Fail">
         <function name="initTestCase" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Pass" strict="true">
@@ -183,7 +201,7 @@
             </message>
         </function>
         <function name="result" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Pass" strict="true">
@@ -197,7 +215,7 @@
             </message>
         </function>
         <function name="pass" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="info" strict="true" level="verbose2">
@@ -212,7 +230,7 @@ Loc: [allmessagestest.cpp(37)]
             </message>
         </function>
         <function name="bpass" type="BPass" level="silent">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="info" strict="true" level="verbose2">
@@ -227,7 +245,7 @@ Loc: [allmessagestest.cpp(42)]
             </message>
         </function>
         <function name="xpass" type="XPass" level="silent">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="info" strict="true" level="verbose2">
@@ -243,7 +261,7 @@ Loc: [allmessagestest.cpp(48)]
             </message>
         </function>
         <function name="fail" type="Fail" level="silent">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="info" strict="true" level="verbose2">
@@ -259,7 +277,7 @@ Loc: [allmessagestest.cpp(53)]
             </message>
         </function>
         <function name="bfail" type="BFail" level="silent">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="info" strict="true" level="verbose2">
@@ -275,7 +293,7 @@ Loc: [allmessagestest.cpp(58)]
             </message>
         </function>
         <function name="xfail" type="XFail">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="info" strict="true" level="verbose2">
@@ -294,7 +312,7 @@ Loc: [allmessagestest.cpp(64)]
             </message>
         </function>
         <function name="skip" type="Skip">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Skip" strict="true">
@@ -306,7 +324,7 @@ Loc: [allmessagestest.cpp(69)]
             </message>
         </function>
         <function name="qdebug" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="QDebug" strict="true">
@@ -320,7 +338,7 @@ Loc: [allmessagestest.cpp(69)]
             </message>
         </function>
         <function name="info" type="Fail" level="silent">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Info" strict="true">
@@ -334,7 +352,7 @@ Loc: [allmessagestest.cpp(69)]
             </message>
         </function>
         <function name="qsystem" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="QSystem" strict="true">
@@ -348,7 +366,7 @@ Loc: [allmessagestest.cpp(69)]
             </message>
         </function>
         <function name="warning" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Warning" strict="true">
@@ -363,7 +381,7 @@ Loc: [allmessagestest.cpp(90)]
             </message>
         </function>
         <function name="qwarning" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="QWarning" strict="true">
@@ -377,7 +395,7 @@ Loc: [allmessagestest.cpp(90)]
             </message>
         </function>
         <function name="qfatal" type="Fail" level="silent">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="QFatal" strict="true" level="silent">

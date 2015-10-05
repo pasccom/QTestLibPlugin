@@ -14,26 +14,50 @@
         <unsure />
         <unsure />
         <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure />
         <unsure />
         <unsure />
         <unsure />
         <unsure />
         <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure />
         <unsure />
         <unsure />
         <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure />
         <unsure />
         <unsure />
         <unsure />
-        <unsure />
-        <unsure />
-        <unsure />
-        <unsure />
-        <unsure />
-        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure />
         <unsure />
         <unsure />
@@ -82,7 +106,7 @@
     </results>
     <class name="OneClassTest" type="Fail" level="silent">
         <function name="initTestCase" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Pass" strict="true">
@@ -93,7 +117,7 @@
             </message>
         </function>
         <function name="firstFunction" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <row title="firstData" type="Pass">
@@ -128,7 +152,7 @@ Loc: [oneclasstest.cpp(30)]
             </message>
         </function>
         <function name="secondFunction" type="Fail" level="silent">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <row title="firstData" type="Fail" level="silent">
@@ -166,7 +190,7 @@ Loc: [oneclasstest.cpp(45)]
             </message>
         </function>
         <function name="cleanupTestCase" type="Pass">
-            <message type="Info" strict="true" level="verbose1">
+            <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Pass" strict="true">
