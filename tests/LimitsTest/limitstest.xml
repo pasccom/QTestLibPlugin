@@ -1,0 +1,230 @@
+<?xml version="1.0" ?>
+<!DOCTYPE qtestliboutput SYSTEM "qtestliboutput.dtd">
+<qtestliboutput>
+    <results format="xml">
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+    </results>
+    <results format="txt">
+        <unsure/>
+        <magicfound level="silent" />
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="silent" />
+        <unsure/>
+    </results>
+    <class name="LimitsTest" type="Fail" level="silent">
+        <function name="initTestCase" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Info" strict="false" format="xml" >
+                Duration: 0.00ms
+            </message>
+        </function>
+        <function name="p" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Info" strict="true" level="verbose2">
+                QVERIFY(true)
+Loc: [limitstest.cpp(20)]
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Info" strict="false" format="xml" >
+                Duration: 0.00ms
+            </message>
+        </function>
+        <function name="f" type="Fail" level="silent">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Info" strict="true" level="verbose2">
+                QVERIFY(false)
+Loc: [limitstest.cpp(25)]
+            </message>
+            <message type="Fail" strict="true" level="silent">
+                'false' returned FALSE. (This test should fail.)
+Loc: [limitstest.cpp(25)]
+            </message>
+            <message type="Info" strict="false" format="xml" >
+                Duration: 0.00ms
+            </message>
+        </function>
+        <function name="testRowNames" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <row title="simple" type="Pass">
+                <message type="QDebug" strict="true">
+                    "simple"
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </row>
+            <row title="a)" type="Pass">
+                <message type="QDebug" strict="true">
+                    "a)"
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </row>
+            <row title="fun()" type="Pass">
+                <message type="QDebug" strict="true">
+                    "fun()"
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </row>
+            <row title="fun(int test)" type="Pass">
+                <message type="QDebug" strict="true">
+                    "fun(int test)"
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </row>
+            <row title="str.at().unicode()" type="Pass">
+                <message type="QDebug" strict="true">
+                    "str.at().unicode()"
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </row>
+            <row title="( ( (nested) ) )" type="Pass">
+                <message type="QDebug" strict="true">
+                    "( ( (nested) ) )"
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </row>
+            <message type="Info" strict="false" format="xml" >
+                Duration: 0.00ms
+            </message>
+        </function>
+        <function name="cleanupTestCase" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Info" strict="false" format="xml" >
+                Duration: 0.00ms
+            </message>
+        </function>
+        <message type="Info" strict="false" format="xml" >
+            Duration: 0.00ms
+        </message>
+    </class>
+</qtestliboutput>

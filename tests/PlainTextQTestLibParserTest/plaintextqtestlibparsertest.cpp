@@ -30,6 +30,8 @@ private Q_SLOTS:
     void multipleClasses(void);
     inline void signalsTest_data(void) {data();}
     void signalsTest(void);
+    inline void limits_data(void) {data();}
+    void limits(void);
 private:
     void data(void);
     void runTest(const QString& testName, Verbosity verbosity = Normal);
@@ -91,6 +93,13 @@ void PlainTextQTestLibParserTest::signalsTest(void)
     QFETCH(Verbosity, verbosity);
 
     runTest("SignalsTest", verbosity);
+}
+
+void PlainTextQTestLibParserTest::limits(void)
+{
+    QFETCH(Verbosity, verbosity);
+
+    runTest("LimitsTest", verbosity);
 }
 
 void PlainTextQTestLibParserTest::runTest(const QString& testName, Verbosity verbosity)
@@ -394,8 +403,8 @@ void PlainTextQTestLibParserTest::parseMessage(const QAbstractItemModel* model, 
     QVERIFY2(model->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for message index should be a string");
     QVERIFY2(element.firstChild().isText(), "Child node should be a text node.");
     QVERIFY2(element.firstChild().nextSibling().isNull(), "The element should have only one child");
-    /*qDebug() << model->data(index, Qt::DisplayRole).toString()
-             << element.firstChild().toText().data().trimmed();*/
+    qDebug() << model->data(index, Qt::DisplayRole).toString()
+             << element.firstChild().toText().data().trimmed();
     if (QString::compare(element.attribute("strict", "false"), "true", Qt::CaseInsensitive) == 0)
         QVERIFY2(QString::compare(model->data(index, Qt::DisplayRole).toString(), element.firstChild().toText().data().trimmed() , Qt::CaseSensitive) == 0, "Message text do not match");
     QVERIFY2(model->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for message index should be a string");

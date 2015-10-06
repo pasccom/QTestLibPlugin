@@ -30,6 +30,8 @@ private Q_SLOTS:
     void multipleClasses(void);
     inline void signalsTest_data(void) {data();}
     void signalsTest(void);
+    inline void limits_data(void) {data();}
+    void limits(void);
 private:
     void data(void);
     void runTest(const QString& testName, Verbosity verbosity = Normal);
@@ -92,6 +94,14 @@ void XMLQTestLibParserTest::signalsTest(void)
 
     runTest("SignalsTest", verbosity);
 }
+
+void XMLQTestLibParserTest::limits(void)
+{
+    QFETCH(Verbosity, verbosity);
+
+    runTest("LimitsTest", verbosity);
+}
+
 
 void XMLQTestLibParserTest::runTest(const QString& testName, Verbosity verbosity)
 {
