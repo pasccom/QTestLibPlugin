@@ -100,6 +100,7 @@ TestSuiteModelTest::TestSuiteModelTest(void)
     mTests << "AllMessagesTest";
     mTests << "MultipleClassesTest";
     mTests << "SignalsTest";
+    mTests << "LimitsTest";
 
     mParserFormats.clear();
     mParserFormats << "txt";

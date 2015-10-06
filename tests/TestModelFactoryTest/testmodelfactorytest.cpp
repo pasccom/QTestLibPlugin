@@ -34,6 +34,9 @@ private Q_SLOTS:
     void multipleClassesTXT(void);
     inline void signalsTestTXT_data(void) {data();}
     void signalsTestTXT(void);
+    inline void limitsTXT_data(void) {data();}
+    void limitsTXT(void);
+
     inline void oneClassXML_data(void) {data();}
     void oneClassXML(void);
     inline void allMessagesXML_data(void) {data();}
@@ -42,6 +45,8 @@ private Q_SLOTS:
     void multipleClassesXML(void);
     inline void signalsTestXML_data(void) {data();}
     void signalsTestXML(void);
+    inline void limitsXML_data(void) {data();}
+    void limitsXML(void);
 private slots:
     inline void saveModel(QAbstractItemModel* model) {mModel = model;}
 private:
@@ -136,6 +141,16 @@ void TestModelFactoryTest::signalsTestTXT(void)
     runTest("SignalsTest", "txt", verbosity, outputFormat, errorFormat);
 }
 
+
+void TestModelFactoryTest::limitsTXT(void)
+{
+    QFETCH(Verbosity, verbosity);
+    QFETCH(Utils::OutputFormat, outputFormat);
+    QFETCH(Utils::OutputFormat, errorFormat);
+
+    runTest("LimitsTest", "txt", verbosity, outputFormat, errorFormat);
+}
+
 void TestModelFactoryTest::oneClassXML(void)
 {
     QFETCH(Verbosity, verbosity);
@@ -170,6 +185,15 @@ void TestModelFactoryTest::signalsTestXML(void)
     QFETCH(Utils::OutputFormat, errorFormat);
 
     runTest("SignalsTest", "xml", verbosity, outputFormat, errorFormat);
+}
+
+void TestModelFactoryTest::limitsXML(void)
+{
+    QFETCH(Verbosity, verbosity);
+    QFETCH(Utils::OutputFormat, outputFormat);
+    QFETCH(Utils::OutputFormat, errorFormat);
+
+    runTest("LimitsTest", "xml", verbosity, outputFormat, errorFormat);
 }
 
 void TestModelFactoryTest::cleanup(void)
