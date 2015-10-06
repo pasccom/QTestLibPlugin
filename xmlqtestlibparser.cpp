@@ -88,6 +88,8 @@ TestModelFactory::ParseResult XMLQTestLibParser::parseStderrLine(ProjectExplorer
 
 TestModelFactory::ParseResult XMLQTestLibParser::startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag)
 {
+    Q_UNUSED(runControl);
+
     if (QStringRef::compare(tag, QLatin1String("TestCase"), Qt::CaseSensitive) == 0)
         mCurrentClass = mReader->attributes().value(QLatin1String("name")).toString();
     if (QStringRef::compare(tag, QLatin1String("TestFunction"), Qt::CaseSensitive) == 0)
@@ -131,10 +133,10 @@ TestModelFactory::ParseResult XMLQTestLibParser::endElementParsed(ProjectExplore
                                 mCurrentFunction,
                                 mCurrentRow,
                                 mCurrentDescription);
-        if (!mCurrentAttributes.value(QLatin1String("file")).isNull() && (QString::compare(mCurrentAttributes.value(QLatin1String("line"), QLatin1String("0")), "0") != 0))
+        if (!mCurrentAttributes.value(QLatin1String("file")).isNull() && (QString::compare(mCurrentAttributes.value(QLatin1String("line"), QLatin1String("0")), QLatin1String("0")) != 0))
             mModel->appendTestItemMessage(runControl,
-                                          QString(QLatin1String("Loc: [%1(%2)]")).arg(mCurrentAttributes.value("file"))
-                                                                                 .arg(mCurrentAttributes.value("line")));
+                                          QString(QLatin1String("Loc: [%1(%2)]")).arg(mCurrentAttributes.value(QLatin1String("file")))
+                                                                                 .arg(mCurrentAttributes.value(QLatin1String("line"))));
         mCurrentRow = QString::null;
         mCurrentDescription = QString::null;
         mCurrentAttributes.clear();
@@ -166,6 +168,8 @@ TestModelFactory::ParseResult XMLQTestLibParser::endElementParsed(ProjectExplore
 
 TestModelFactory::ParseResult XMLQTestLibParser::textParsed(ProjectExplorer::RunControl* runControl)
 {
+    Q_UNUSED(runControl);
+
     if (QString::compare(mCurrentElement.top(), QLatin1String("QtVersion"), Qt::CaseInsensitive) == 0)
         mQtVersion = mReader->text().toString();
     if (QString::compare(mCurrentElement.top(), QLatin1String("QtBuild"), Qt::CaseInsensitive) == 0)
@@ -202,7 +206,7 @@ QTestLibModel::MessageType XMLQTestLibParser::currentMessageType(void)
                                          "qwarn   "
                                          "system  "
                                          "qfatal  "
-                                         "????????"
+                                         "??????  "
                                          "skip    "
                                          "pass    "
                                          "bpass   "
