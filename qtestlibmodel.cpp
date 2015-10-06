@@ -27,6 +27,8 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
 {
     Q_ASSERT(runControl == mTestRun);
 
+    qDebug() << type << className << functionName << rowTitle << message;
+
     TestItem *testItem;
     TestClassItem *testClassItem;
     TestCaseItem *testCaseItem;
@@ -156,6 +158,8 @@ QModelIndex QTestLibModel::parent(const QModelIndex& child) const
 
 QVariant QTestLibModel::data(const QModelIndex &index, int role) const
 {
+    if (mRoot == NULL)
+        return QVariant();
     if (!index.isValid())
         return mRoot->data(0, role);
 
