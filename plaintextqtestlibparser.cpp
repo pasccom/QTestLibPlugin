@@ -33,36 +33,16 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectEx
             return TestModelFactory::Unsure;
     }
 
-    // Tests for normal lines:
-    //QRegExp stdoutLineRegexp(QLatin1String("^([^:]):\\s+([A-Za-z_][A-Za-z0-9_])::([A-Za-z_][A-Za-z0-9_])\\((.*)\\)(\\s.*)?$"));
-    QRegExp stdoutLineRegexpSignal(QLatin1String("([^:]*):\\s+([A-Za-z_][A-Za-z0-9_]*)::([A-Za-z_][A-Za-z0-9_]*)\\((.*)\\)\\sSignal:\\s(.*)"));
-    QRegExp stdoutLineRegexp1(QLatin1String("([^:]*):\\s+([A-Za-z_][A-Za-z0-9_]*)::([A-Za-z_][A-Za-z0-9_]*)\\((.*)\\)(?:\\s|:)(.*)"));
-    QRegExp stdoutLineRegexp2(QLatin1String("([^:]*):\\s+([A-Za-z_][A-Za-z0-9_]*)::([A-Za-z_][A-Za-z0-9_]*)\\((.*)\\)"));
-
-    if (stdoutLineRegexpSignal.exactMatch(line))
-        mModel->addTestItem(runControl,
-                            messageType(stdoutLineRegexpSignal.capturedTexts().at(1).trimmed()),    /* Message type */
-                            stdoutLineRegexpSignal.capturedTexts().at(2),                           /* Test class */
-                            stdoutLineRegexpSignal.capturedTexts().at(3),                           /* Test function */
-                            stdoutLineRegexpSignal.capturedTexts().at(4),                           /* Test case */
-                            stdoutLineRegexpSignal.capturedTexts().at(5).trimmed());                /* Message */
-    else if (stdoutLineRegexp1.exactMatch(line))
-        mModel->addTestItem(runControl,
-                            messageType(stdoutLineRegexp1.capturedTexts().at(1).trimmed()), /* Message type */
-                            stdoutLineRegexp1.capturedTexts().at(2),                        /* Test class */
-                            stdoutLineRegexp1.capturedTexts().at(3),                        /* Test function */
-                            stdoutLineRegexp1.capturedTexts().at(4),                        /* Test case */
-                            stdoutLineRegexp1.capturedTexts().at(5).trimmed());             /* Message */
-    else if (stdoutLineRegexp2.exactMatch(line))
-        mModel->addTestItem(runControl,
-                            messageType(stdoutLineRegexp2.capturedTexts().at(1).trimmed()), /* Message type */
-                            stdoutLineRegexp2.capturedTexts().at(2),                        /* Test class */
-                            stdoutLineRegexp2.capturedTexts().at(3),                        /* Test function */
-                            stdoutLineRegexp2.capturedTexts().at(4),                        /* Test case */
-                            QString::null);
-    else
+    // For normal lines:
+    QTestLibModel::MessageType messageType = QTestLibModel::Unknown;
+    if (!isMessageBeginning(line, &messageType)) {
         /* NOTE the message is supposed to be part of the previous one ... */
         mModel->appendTestItemMessage(runControl, line.trimmed());
+    } else {
+        if (!processMessageBeginning(runControl, line.mid(9), messageType))
+            /* NOTE the message is supposed to be part of the previous one ... */
+            mModel->appendTestItemMessage(runControl, line.trimmed());
+    }
 
     return TestModelFactory::Unsure;
 }
@@ -75,9 +55,9 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStderrLine(ProjectEx
     return TestModelFactory::Unsure;
 }
 
-QTestLibModel::MessageType PlainTextQTestLibParser::messageType(const QString& messageType)
+bool PlainTextQTestLibParser::isMessageBeginning(const QString& line, QTestLibModel::MessageType *type)
 {
-    int type = -1;
+    int t = -1;
     const QString messages(QLatin1String("RESULT  "
                                          "QDEBUG  "
                                          "INFO    "
@@ -85,7 +65,7 @@ QTestLibModel::MessageType PlainTextQTestLibParser::messageType(const QString& m
                                          "QWARN   "
                                          "QSYSTEM "
                                          "QFATAL  "
-                                         "????????"
+                                         "??????  "
                                          "SKIP    "
                                          "PASS    "
                                          "BPASS   "
@@ -94,16 +74,61 @@ QTestLibModel::MessageType PlainTextQTestLibParser::messageType(const QString& m
                                          "BFAIL   "
                                          "FAIL!   "));
 
-
     // Find the type of the message
-    if (!messageType.isEmpty())
-        type = messages.indexOf(messageType, 0, Qt::CaseSensitive);
-    if (type == -1)
-        type = (int) QTestLibModel::Unknown;
-    else
-        type>>=3;
+    if (line.at(7) != QLatin1Char(':'))
+        return false;
+    if (!line.left(7).trimmed().isEmpty())
+        t = messages.indexOf(line.left(7).trimmed(), 0, Qt::CaseSensitive);
+    if (t == -1)
+        return false;
+    t>>=3;
 
-    return (QTestLibModel::MessageType) type;
+    if (type != NULL)
+        *type = (QTestLibModel::MessageType) t;
+    return true;
+}
+
+bool PlainTextQTestLibParser::processMessageBeginning(ProjectExplorer::RunControl* runControl, const QString& line, QTestLibModel::MessageType type)
+{
+    // Find class and function:
+    int p = line.indexOf(QLatin1Char('('));
+    int c = line.lastIndexOf(QLatin1String("::"), p);
+
+    if ((c < 1) || (p < c + 3))
+        return false;
+
+    QString className = line.left(c);
+    QString functionName = line.mid(c + 2, p - c - 2);
+    qDebug() << className << functionName;
+
+    // Find row title
+    int e = matchBracket(line, p);
+    while ((e < line.length() - 1) && (line.at(e + 1) != QLatin1Char(':')) && (line.at(e + 1) != QLatin1Char(' ')))
+        e = line.indexOf(QLatin1Char(')'), e + 1);
+    if (line.at(e) != QLatin1Char(')'))
+        return false;
+
+    QString rowTitle = line.mid(p + 1, e - p - 1);
+    QString message = line.mid(e + 2);
+    qDebug() << rowTitle << message;
+
+    mModel->addTestItem(runControl, type, className, functionName, rowTitle, message);
+    return true;
+}
+
+int PlainTextQTestLibParser::matchBracket(const QString& line, int b) const
+{
+    int l = 0;
+    b++;
+    while ((b < line.length()) && ((l != 0) || (line.at(b) != QLatin1Char(')')))) {
+        if (line.at(b) == QLatin1Char('('))
+            l++;
+        if (line.at(b) == QLatin1Char(')'))
+            l--;
+        b++;
+    }
+
+    return b;
 }
 
 } // namespace Internal

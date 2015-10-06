@@ -24,7 +24,10 @@ protected:
     PlainTextQTestLibParser(QObject *parent = 0) :
         AbstractTestParser(parent), mModel(NULL) {}
 private:
-    QTestLibModel::MessageType messageType(const QString& msg);
+    bool isMessageBeginning(const QString& line, QTestLibModel::MessageType *type = NULL);
+    bool processMessageBeginning(ProjectExplorer::RunControl* runControl, const QString& line, QTestLibModel::MessageType type);
+    int matchBracket(const QString& line, int b) const;
+    //QTestLibModel::MessageType messageType(const QString& msg);
 
     QTestLibModel *mModel;
 
