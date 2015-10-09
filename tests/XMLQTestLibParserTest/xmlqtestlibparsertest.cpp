@@ -47,6 +47,7 @@ private:
     void parseFunction(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
     void parseRow(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
     void parseMessage(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
+    void checkLocation(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element);
 
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, const QString& test);
 
@@ -287,7 +288,7 @@ void XMLQTestLibParserTest::parseRoot(const QAbstractItemModel* model, const QDo
     }
 
     QVERIFY2(model->rowCount(QModelIndex()) == i, qPrintable(QString("The model index should have %1 rows").arg(i)));
-    QVERIFY2(model->columnCount(QModelIndex()) == 1, "The model index should have 1 column.");
+    QVERIFY2(model->columnCount(QModelIndex()) == 3, "The model index should have 3 columns.");
 
     END_SUB_TEST_FUNCTION
 }
@@ -322,7 +323,7 @@ void XMLQTestLibParserTest::parseClass(const QAbstractItemModel* model, const QM
     }
 
     QVERIFY2(model->rowCount(index) == i, qPrintable(QString("The model index should have %1 rows").arg(i)));
-    QVERIFY2(model->columnCount(index) == 1, "The model index should have 1 column.");
+    QVERIFY2(model->columnCount(index) == 3, "The model index should have 3 columns.");
 
     END_SUB_TEST_FUNCTION
 }
@@ -362,7 +363,7 @@ void XMLQTestLibParserTest::parseFunction(const QAbstractItemModel* model, const
     }
 
     QVERIFY2(model->rowCount(index) == i, qPrintable(QString("The model index should have %1 rows").arg(i)));
-    QVERIFY2(model->columnCount(index) == 1, "The model index should have 1 column.");
+    QVERIFY2(model->columnCount(index) == 3, "The model index should have 3 columns.");
 
     END_SUB_TEST_FUNCTION
 }
@@ -392,7 +393,7 @@ void XMLQTestLibParserTest::parseRow(const QAbstractItemModel* model, const QMod
     }
 
     QVERIFY2(model->rowCount(index) == i, qPrintable(QString("The model index should have %1 rows").arg(i)));
-    QVERIFY2(model->columnCount(index) == 1, "The model index should have 1 column.");
+    QVERIFY2(model->columnCount(index) == 3, "The model index should have 3 columns.");
 
     END_SUB_TEST_FUNCTION
 }
@@ -414,7 +415,48 @@ void XMLQTestLibParserTest::parseMessage(const QAbstractItemModel* model, const 
     QVERIFY2(QString::compare(model->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null) , Qt::CaseInsensitive) == 0, "Result string for message do not match");
 
     QVERIFY2(model->rowCount(index) == 0, "The model index should have 0 rows");
-    QVERIFY2(model->columnCount(index) == 0, "The model index should have 0 column.");
+    QVERIFY2(model->columnCount(index) == 0, "The model index should have 0 columns.");
+
+    SUB_TEST_FUNCTION(checkLocation(model, index, element));
+
+    END_SUB_TEST_FUNCTION
+}
+
+void XMLQTestLibParserTest::checkLocation(const QAbstractItemModel* model, const QModelIndex& index, const QDomElement& element)
+{
+    BEGIN_SUB_TEST_FUNCTION
+
+    QVERIFY2(element.hasAttribute("file") == element.hasAttribute("line"), "Elements should either have a file and a line or none");
+
+    if (element.hasAttribute("file") && element.hasAttribute("line")) {
+        QString file = element.attribute("file");
+        bool ok = false;
+        unsigned int line = element.attribute("line", "0").toUInt(&ok, 10);
+
+        QVERIFY2(ok, qPrintable(QString("Bad line number %1").arg(element.attribute("line", "0"))));
+        QVERIFY2(model->sibling(index.row(), 1, index).isValid(), "There should be an item in column 2");
+        QVERIFY2(model->sibling(index.row(), 1, index).data(Qt::DisplayRole).type() == QVariant::String, "Item in column 2 should be a string (DisplayRole)");
+        /*qDebug() << model->sibling(index.row(), 1, index).data(Qt::DisplayRole).toString() << file;*/
+        QVERIFY2(QString::compare(model->sibling(index.row(), 1, index).data(Qt::DisplayRole).toString(), file, Qt::CaseSensitive) ==0, "File does not match (DisplayRole)");
+        QVERIFY2(model->sibling(index.row(), 1, index).data(Qt::ToolTipRole).type() == QVariant::String, "Item in column 2 should be a string (ToolTipRole)");
+        /*qDebug() << model->sibling(index.row(), 1, index).data(Qt::ToolTipRole).toString() << file;*/
+        QVERIFY2(QString::compare(model->sibling(index.row(), 1, index).data(Qt::ToolTipRole).toString(), file, Qt::CaseSensitive) ==0, "File does not match (ToolTipRole)");
+
+        QVERIFY2(model->sibling(index.row(), 2, index).isValid(), "There should be an item in column 3");
+        QVERIFY2(model->sibling(index.row(), 2, index).data(Qt::DisplayRole).type() == QVariant::UInt, "Item in column 3 should be an unsigned integer (DisplayRole)");
+        /*qDebug() << model->sibling(index.row(), 2, index).data(Qt::DisplayRole).toUInt() << line;*/
+        QVERIFY2(model->sibling(index.row(), 2, index).data(Qt::DisplayRole).toUInt() == line, "Line does not match (DisplayRole)");
+        QVERIFY2(model->sibling(index.row(), 2, index).data(Qt::ToolTipRole).type() == QVariant::UInt, "Item in column 2 should be an unsigned integer (ToolTipRole)");
+        /*qDebug() << model->sibling(index.row(), 2, index).data(Qt::ToolTipRole).toUInt() << line;*/
+        QVERIFY2(model->sibling(index.row(), 2, index).data(Qt::ToolTipRole).toUInt() == line, "Line does not match (ToolTipRole)");
+    } else {
+        QVERIFY2(model->sibling(index.row(), 1, index).isValid(), "There should be an item in column 2");
+        QVERIFY2(!model->sibling(index.row(), 1, index).data(Qt::DisplayRole).isValid(), "Item in column 2 should be empty (DisplayRole)");
+        QVERIFY2(!model->sibling(index.row(), 1, index).data(Qt::ToolTipRole).isValid(), "Item in column 2 should be empty (ToolTipRole)");
+        QVERIFY2(model->sibling(index.row(), 2, index).isValid(), "There should be an item in column 3");
+        QVERIFY2(!model->sibling(index.row(), 2, index).data(Qt::DisplayRole).isValid(), "Item in column 3 should be empty (DisplayRole)");
+        QVERIFY2(!model->sibling(index.row(), 2, index).data(Qt::ToolTipRole).isValid(), "Item in column 2 should be empty (ToolTipRole)");
+    }
 
     END_SUB_TEST_FUNCTION
 }
