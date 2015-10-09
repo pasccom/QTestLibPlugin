@@ -104,7 +104,7 @@ bool PlainTextQTestLibParser::processMessageBeginning(ProjectExplorer::RunContro
     // Find row title
     int e = matchBracket(line, p);
     while ((e < line.length() - 1) && (line.at(e + 1) != QLatin1Char(':')) && (line.at(e + 1) != QLatin1Char(' ')))
-        e = line.indexOf(QLatin1Char(')'), e + 1);
+        e = matchBracket(line, e);
     if (line.at(e) != QLatin1Char(')'))
         return false;
 
