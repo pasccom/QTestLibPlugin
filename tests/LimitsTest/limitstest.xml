@@ -80,6 +80,41 @@
         <unsure />
         <unsure />
         <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
     </results>
     <results format="txt">
         <unsure/>
@@ -96,6 +131,16 @@
         <unsure level="silent" />
         <unsure level="silent" />
         <unsure level="verbose1" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
@@ -200,9 +245,49 @@ Loc: [limitstest.cpp(25)]
                     Test passed
                 </message>
             </row>
+            <row title="( (a + b) + (c + d) ) + ( (e +f) + (g + h) )" type="Pass">
+                <message type="QDebug" strict="true">
+                    "( (a + b) + (c + d) ) + ( (e +f) + (g + h) )"
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </row>
+            <row title="a)( (a + b) + (c + d) ) + ( (e +f) + (g + h) )" type="Pass">
+                <message type="QDebug" strict="true">
+                    "a)( (a + b) + (c + d) ) + ( (e +f) + (g + h) )"
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </row>
             <row title="( ( (nested) ) )" type="Pass">
                 <message type="QDebug" strict="true">
                     "( ( (nested) ) )"
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </row>
+            <row title="a)( ( (nested) ) )" type="Pass">
+                <message type="QDebug" strict="true">
+                    "a)( ( (nested) ) )"
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </row>
+            <row title="( ( (double) ) ).( ( (nested) ) )" type="Pass">
+                <message type="QDebug" strict="true">
+                    "( ( (double) ) ).( ( (nested) ) )"
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+            </row>
+            <row title="a)( ( (double) ) ).( ( (nested) ) )" type="Pass">
+                <message type="QDebug" strict="true">
+                    "a)( ( (double) ) ).( ( (nested) ) )"
                 </message>
                 <message type="Pass" strict="true">
                     Test passed
