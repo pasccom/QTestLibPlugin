@@ -189,9 +189,8 @@
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
-                <message type="Info" strict="true" level="verbose2">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="42">
                     QVERIFY(true)
-Loc: [multipleclassestest.cpp(42)]
                 </message>
                 <message type="Pass" strict="true">
                     Test passed
@@ -204,9 +203,8 @@ Loc: [multipleclassestest.cpp(42)]
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
-                <message type="Info" strict="true" level="verbose2">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="47">
                     QVERIFY(true)
-Loc: [multipleclassestest.cpp(47)]
                 </message>
                 <message type="Pass" strict="true">
                     Test passed
@@ -246,9 +244,8 @@ Loc: [multipleclassestest.cpp(47)]
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
-                <message type="Info" strict="true" level="verbose2">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="52">
                     QVERIFY(true)
-Loc: [multipleclassestest.cpp(52)]
                 </message>
                 <message type="Pass" strict="true">
                     Test passed
@@ -265,9 +262,8 @@ Loc: [multipleclassestest.cpp(52)]
                     <message type="QDebug" strict="true">
                         "firstData"
                     </message>
-                    <message type="Info" strict="true" level="verbose2">
+                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="67">
                         QVERIFY(data.endsWith("Data"))
-Loc: [multipleclassestest.cpp(67)]
                     </message>
                     <message type="Pass" strict="true">
                         Test passed
@@ -277,9 +273,8 @@ Loc: [multipleclassestest.cpp(67)]
                     <message type="QDebug" strict="true">
                         "secondData"
                     </message>
-                    <message type="Info" strict="true" level="verbose2">
+                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="67">
                         QVERIFY(data.endsWith("Data"))
-Loc: [multipleclassestest.cpp(67)]
                     </message>
                     <message type="Pass" strict="true">
                         Test passed
@@ -320,13 +315,11 @@ Loc: [multipleclassestest.cpp(67)]
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
-                <message type="Info" strict="true" level="verbose2">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="72">
                     QVERIFY(false)
-Loc: [multipleclassestest.cpp(72)]
                 </message>
-                <message type="Fail" strict="true" level="silent">
+                <message type="Fail" strict="true" level="silent" file="multipleclassestest.cpp" line="72">
                     'false' returned FALSE. (Test should fail)
-Loc: [multipleclassestest.cpp(72)]
                 </message>
                 <message type="Info" strict="false" format="xml">
                     Duration: 0ms
@@ -336,9 +329,8 @@ Loc: [multipleclassestest.cpp(72)]
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
-                <message type="Info" strict="true" level="verbose2">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="77">
                     QVERIFY(true)
-Loc: [multipleclassestest.cpp(77)]
                 </message>
                 <message type="Pass" strict="true">
                     Test passed

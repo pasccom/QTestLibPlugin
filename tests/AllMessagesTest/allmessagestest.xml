@@ -218,9 +218,8 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="info" strict="true" level="verbose2">
+            <message type="info" strict="true" level="verbose2" file="allmessagestest.cpp" line="37">
                 QVERIFY(true)
-Loc: [allmessagestest.cpp(37)]
             </message>
             <message type="Pass" strict="true">
                 Test passed
@@ -233,9 +232,8 @@ Loc: [allmessagestest.cpp(37)]
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="info" strict="true" level="verbose2">
+            <message type="info" strict="true" level="verbose2" file="allmessagestest.cpp" line="42">
                 QVERIFY(true)
-Loc: [allmessagestest.cpp(42)]
             </message>
             <message type="BPass" strict="true" level="silent">
                 Blacklisted test passed
@@ -248,13 +246,11 @@ Loc: [allmessagestest.cpp(42)]
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="info" strict="true" level="verbose2">
+            <message type="info" strict="true" level="verbose2" file="allmessagestest.cpp" line="48">
                 QVERIFY(true)
-Loc: [allmessagestest.cpp(48)]
             </message>
-            <message type="XPass" strict="true" level="silent">
+            <message type="XPass" strict="true" level="silent" file="allmessagestest.cpp" line="48">
                 'true' returned TRUE unexpectedly. (This test should succeed)
-Loc: [allmessagestest.cpp(48)]
             </message>
             <message type="Info" strict="false" format="xml" >
                 Duration: 0.00ms
@@ -264,13 +260,11 @@ Loc: [allmessagestest.cpp(48)]
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="info" strict="true" level="verbose2">
+            <message type="info" strict="true" level="verbose2" file="allmessagestest.cpp" line="53">
                 QVERIFY(false)
-Loc: [allmessagestest.cpp(53)]
             </message>
-            <message type="Fail" strict="true" level="silent">
+            <message type="Fail" strict="true" level="silent" file="allmessagestest.cpp" line="53">
                 'false' returned FALSE. (This test should fail)
-Loc: [allmessagestest.cpp(53)]
             </message>
             <message type="Info" strict="false" format="xml" >
                 Duration: 0.00ms
@@ -280,13 +274,11 @@ Loc: [allmessagestest.cpp(53)]
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="info" strict="true" level="verbose2">
+            <message type="info" strict="true" level="verbose2" file="allmessagestest.cpp" line="58">
                 QVERIFY(false)
-Loc: [allmessagestest.cpp(58)]
             </message>
-            <message type="BFail" strict="true" level="silent">
+            <message type="BFail" strict="true" level="silent" file="allmessagestest.cpp" line="58">
                 'false' returned FALSE. (This test is blacklisted but it should fail)
-Loc: [allmessagestest.cpp(58)]
             </message>
             <message type="Info" strict="false" format="xml" >
                 Duration: 0.00ms
@@ -296,13 +288,11 @@ Loc: [allmessagestest.cpp(58)]
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="info" strict="true" level="verbose2">
+            <message type="info" strict="true" level="verbose2" file="allmessagestest.cpp" line="64">
                 QVERIFY(false)
-Loc: [allmessagestest.cpp(64)]
             </message>
-            <message type="XFail" strict="true">
+            <message type="XFail" strict="true" file="allmessagestest.cpp" line="64">
                 This test should fail as it is marked as expecting failure.
-Loc: [allmessagestest.cpp(64)]
             </message>
             <message type="Pass" strict="true">
                 Test passed
@@ -315,9 +305,8 @@ Loc: [allmessagestest.cpp(64)]
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Skip" strict="true">
+            <message type="Skip" strict="true" file="allmessagestest.cpp" line="69">
                 This test should be skipped
-Loc: [allmessagestest.cpp(69)]
             </message>
             <message type="Info" strict="false" format="xml" >
                 Duration: 0.00ms
@@ -369,9 +358,8 @@ Loc: [allmessagestest.cpp(69)]
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Warning" strict="true">
+            <message type="Warning" strict="true" file="allmessagestest.cpp" line="90">
                 QWARN message
-Loc: [allmessagestest.cpp(90)]
             </message>
             <message type="Pass" strict="true">
                 Test passed
@@ -403,7 +391,6 @@ Loc: [allmessagestest.cpp(90)]
             </message>
             <message type="Fail" strict="false" level="silent">
                 Received a fatal error.
-Loc: [Unknown file(0)]
             </message>
             <message type="Info" strict="false" format="xml" >
                 Duration: 0.00ms
