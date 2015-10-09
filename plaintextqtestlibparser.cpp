@@ -33,15 +33,27 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectEx
             return TestModelFactory::Unsure;
     }
 
-    // For normal lines:
-    QTestLibModel::MessageType messageType = QTestLibModel::Unknown;
-    if (!isMessageBeginning(line, &messageType)) {
-        /* NOTE the message is supposed to be part of the previous one ... */
-        mModel->appendTestItemMessage(runControl, line.trimmed());
+    QRegExp stdoutLocationRegexp(QLatin1String("   Loc: \\[(.*)\\(([1-9][0-9]+)\\)\\]"));
+    if (stdoutLocationRegexp.exactMatch(line)) {
+        // For location lines:
+        QString file = stdoutLocationRegexp.capturedTexts().at(1);
+        bool ok = false;
+        unsigned int fileLine = stdoutLocationRegexp.capturedTexts().at(2).toUInt(&ok, 10);
+        if (!ok)
+            fileLine = 0;
+        if (!file.isEmpty() && (fileLine != 0))
+            mModel->appendTestLocation(runControl, file, fileLine);
     } else {
-        if (!processMessageBeginning(runControl, line.mid(9), messageType))
+        // For normal lines:
+        QTestLibModel::MessageType messageType = QTestLibModel::Unknown;
+        if (!isMessageBeginning(line, &messageType)) {
             /* NOTE the message is supposed to be part of the previous one ... */
             mModel->appendTestItemMessage(runControl, line.trimmed());
+        } else {
+            if (!processMessageBeginning(runControl, line.mid(9), messageType))
+                /* NOTE the message is supposed to be part of the previous one ... */
+                mModel->appendTestItemMessage(runControl, line.trimmed());
+        }
     }
 
     return TestModelFactory::Unsure;
