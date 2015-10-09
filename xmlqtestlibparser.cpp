@@ -127,16 +127,16 @@ TestModelFactory::ParseResult XMLQTestLibParser::endElementParsed(ProjectExplore
     if ((QStringRef::compare(tag, QLatin1String("Incident"), Qt::CaseInsensitive) == 0)
      || (QStringRef::compare(tag, QLatin1String("Message"), Qt::CaseInsensitive) == 0)) {
         if (mModel != NULL)
-            mModel->addTestItem(runControl,
-                                currentMessageType(),
-                                mCurrentClass,
-                                mCurrentFunction,
-                                mCurrentRow,
-                                mCurrentDescription);
-        if (!mCurrentAttributes.value(QLatin1String("file")).isNull() && (QString::compare(mCurrentAttributes.value(QLatin1String("line"), QLatin1String("0")), QLatin1String("0")) != 0))
-            mModel->appendTestItemMessage(runControl,
-                                          QString(QLatin1String("Loc: [%1(%2)]")).arg(mCurrentAttributes.value(QLatin1String("file")))
-                                                                                 .arg(mCurrentAttributes.value(QLatin1String("line"))));
+            mModel->addTestItem(runControl, currentMessageType(), mCurrentClass, mCurrentFunction, mCurrentRow, mCurrentDescription);
+
+        QString file = mCurrentAttributes.value(QLatin1String("file"));
+        bool ok = false;
+        unsigned int fileLine = mCurrentAttributes.value(QLatin1String("line"), QLatin1String("0")).toUInt(&ok, 10);
+        if (!ok)
+            fileLine = 0;
+        if ((mModel != NULL) && !file.isEmpty() && (fileLine != 0))
+            mModel->appendTestLocation(runControl, file, fileLine);
+
         mCurrentRow = QString::null;
         mCurrentDescription = QString::null;
         mCurrentAttributes.clear();
