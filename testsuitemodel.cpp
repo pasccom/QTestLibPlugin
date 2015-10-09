@@ -24,7 +24,7 @@ int TestSuiteModel::rowCount(const QModelIndex& parent) const
 int TestSuiteModel::columnCount(const QModelIndex& parent) const
 {
     if (!parent.isValid())
-        return 1;
+        return 3;
 
     QAbstractItemModel *subModel = mInternalPointers.value(parent.internalPointer(), NULL);
     Q_ASSERT(subModel != NULL);
@@ -90,7 +90,10 @@ QVariant TestSuiteModel::data(const QModelIndex &index, int role) const
     if (subModel != index.internalPointer())
         return subModel->data(index, role);
 
-    return subModel->data(QModelIndex(), role);
+    if (index.column() == 0)
+        return subModel->data(QModelIndex(), role);
+
+    return QVariant();
 }
 
 void TestSuiteModel::appendTestRun(ProjectExplorer::RunControl* runControl)

@@ -110,6 +110,16 @@ void QTestLibModel::appendTestItemMessage(ProjectExplorer::RunControl* runContro
         mCurrentMessageItem->appendMessage(message);
 }
 
+void QTestLibModel::appendTestLocation(ProjectExplorer::RunControl* runControl, const QString& file, unsigned int line)
+{
+    Q_ASSERT(runControl == mTestRun);
+
+    if (mCurrentMessageItem != NULL) {
+        mCurrentMessageItem->setFile(file);
+        mCurrentMessageItem->setLine(line);
+    }
+}
+
 int QTestLibModel::rowCount(const QModelIndex& parent) const
 {
     TestItem *testItem = mRoot;
@@ -166,8 +176,25 @@ QVariant QTestLibModel::data(const QModelIndex &index, int role) const
     TestItem *testItem = static_cast<TestItem *>(index.internalPointer());
 
     Q_ASSERT(testItem != NULL);
-    if (testItem != NULL)
-        return testItem->data(index.column(), role);
+    if (testItem != NULL) {
+        switch (index.column()) {
+        case 0:
+            return testItem->data(index.column(), role);
+        case 1:
+            if (testItem->isLocated() && ((role == Qt::DisplayRole) || (role == Qt::ToolTipRole)))
+                return testItem->file();
+            else
+                return QVariant();
+        case 2:
+            if (testItem->isLocated() && ((role == Qt::DisplayRole) || (role == Qt::ToolTipRole)))
+                return testItem->line();
+            else
+                return QVariant();
+        default:
+            Q_ASSERT(false); // NOTE the column count is three, so the column number is less or equal to 2.
+            break;
+        }
+    }
     return QVariant();
 }
 
@@ -259,7 +286,7 @@ QString resultString(QTestLibModel::MessageType type)
 }
 
 QTestLibModel::TestItem::TestItem(TestItem *parent) :
-    mResult(QTestLibModel::Unknown), mChildrenCount(0), mParent(NULL)
+    mResult(QTestLibModel::Unknown), mChildrenCount(0), mParent(NULL), mFile(QString::null), mLine(0)
 {
     if (parent != NULL)
         parent->appendChild(this);

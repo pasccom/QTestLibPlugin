@@ -54,6 +54,7 @@ public slots:
                      const QString& functionName,
                      const QString& rowTitle,
                      const QString& message);
+    void appendTestLocation(ProjectExplorer::RunControl* runControl, const QString& file, unsigned int line);
     void appendTestItemMessage(ProjectExplorer::RunControl* runControl, const QString& message);
 private:
     //QIcon messageIcon(MessageType type) const;
@@ -88,12 +89,21 @@ private:
 
         inline TestItem* parent(void) const {return mParent;}
         void updateResult(MessageType result);
+
+        inline void setFile(const QString& file) {mFile = file;}
+        inline QString file(void) const {return mFile;}
+        inline void setLine(unsigned int line) {mLine = line;}
+        inline unsigned int line(void) const {return mLine;}
+        inline bool isLocated(void) const {return (!mFile.isEmpty() && (mLine != 0));}
     protected:
         MessageType mResult;
     private:
         QLinkedList<TestItem *> mChildren;
         int mChildrenCount;
         TestItem* mParent;
+
+        QString mFile;
+        unsigned int mLine;
     };
 
     class TestRootItem : public TestItem
@@ -103,7 +113,7 @@ private:
             TestItem(parent) {}
         inline TestItemType type(void) const {return TestRoot;}
         inline int compareName(const QString& name) const {Q_UNUSED(name); return 1;}
-        inline int columnCount(void) const {return 1;}
+        inline int columnCount(void) const {return 3;}
         //inline QVariant data(int column, int role = Qt::DisplayRole) const {Q_UNUSED(column); Q_UNUSED(role); return QVariant();}
     };
 
@@ -114,7 +124,7 @@ private:
             TestItem(parent), mClassName(className) {}
         inline TestItemType type(void) const {return TestClass;}
         inline int compareName(const QString& name) const {return QString::compare(mClassName, name, Qt::CaseSensitive);}
-        inline int columnCount(void) const {return 1;}
+        inline int columnCount(void) const {return 3;}
         QVariant data(int column, int role = Qt::DisplayRole) const;
         inline QString getClassName(void) const {return mClassName;}
     private:
@@ -128,7 +138,7 @@ private:
             TestItem(parent), mFunctionName(functionName) {}
         inline TestItemType type(void) const {return TestCase;}
         inline int compareName(const QString& name) const {return QString::compare(mFunctionName, name, Qt::CaseSensitive);}
-        inline int columnCount(void) const {return 1;}
+        inline int columnCount(void) const {return 3;}
         QVariant data(int column, int role = Qt::DisplayRole) const;
         inline QString getFunctionName(void) const {return mFunctionName;}
     private:
@@ -142,7 +152,7 @@ private:
             TestItem(parent), mTitle(title) {}
         inline TestItemType type(void) const {return TestRow;}
         inline int compareName(const QString& name) const {return QString::compare(mTitle, name, Qt::CaseSensitive);}
-        inline int columnCount(void) const {return 1;}
+        inline int columnCount(void) const {return 3;}
         QVariant data(int column, int role = Qt::DisplayRole) const;
         inline QString getTitle(void) const {return mTitle;}
     private:
