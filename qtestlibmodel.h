@@ -59,7 +59,6 @@ public slots:
     void appendTestLocation(ProjectExplorer::RunControl* runControl, const QString& file, unsigned int line);
     void appendTestItemMessage(ProjectExplorer::RunControl* runControl, const QString& message);
 private:
-    //QIcon messageIcon(MessageType type) const;
 
     ProjectExplorer::RunControl *mTestRun;
 
@@ -184,6 +183,8 @@ private:
     private:
         QString mMessage;
     };
+
+    TestMessageItem* createTestMessageItem(MessageType type, const QString& message, TestItem* parent);
 
     TestItem *mRoot;
     TestMessageItem *mCurrentMessageItem;
