@@ -10,6 +10,10 @@ DEFINES += TESTS_DIR=\\\"$$PWD/..\\\"
 
 SOURCES += xmlqtestlibparsertest.cpp
 
+# Model tester class
+SOURCES += ../common/qtestlibmodeltester.cpp
+HEADERS += ../common/qtestlibmodeltester.h
+
 # Files to be tested
 SOURCES += ../../xmlqtestlibparser.cpp \
            ../../xmlqtestlibparserfactory.cpp \
