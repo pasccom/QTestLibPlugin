@@ -53,6 +53,41 @@
         <unsure/>
         <unsure/>
         <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
@@ -77,6 +112,21 @@
         <unsure level="verbose1" />
         <unsure level="verboses" />
         <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verboses" />
+        <unsure/>
         <unsure level="verboses" />
         <unsure/>
         <unsure level="verbose1" />
@@ -148,6 +198,62 @@
             </message>
             <message type="Signal" strict="false" level="verboses">
                 SignalsTest(7ffe244a1c30) signal2 (QString(thirdFunction))
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false" format="xml">
+                0ms
+            </message>
+        </function>
+        <function name="multiline" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                SignalsTest(7ffececad870) signal2 (QString(Multiline message test:
+PASS   : fun()
+FAIL!  : other_fun(test)))
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false" format="xml">
+                0ms
+            </message>
+        </function>
+        <function name="otherClass" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                OtherClass(7ffececacbc0) constructed ()
+            </message>
+            <message type="QDebug" strict="false">
+                OtherClass(0x7ffececacbc0)
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                OtherClass(7ffececacbc0) destroyed ()
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false" format="xml">
+                0ms
+            </message>
+        </function>
+        <function name="otherClassNamespace" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                NameSpace::ClassInNameSpace(7ffececacbc0) constructed ()
+            </message>
+            <message type="QDebug" strict="false">
+                NameSpace::ClassInNameSpace(0x7ffececacbc0)
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                NameSpace::ClassInNameSpace(7ffececacbc0) destroyed ()
             </message>
             <message type="Pass" strict="true">
                 Test passed

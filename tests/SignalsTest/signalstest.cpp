@@ -1,6 +1,32 @@
 #include <QString>
 #include <QtTest>
 
+namespace NameSpace {
+
+class ClassInNameSpace : public QObject
+{
+    Q_OBJECT
+public:
+    inline ClassInNameSpace(QObject* parent =  NULL) : QObject(parent) {emit constructed();}
+    ~ClassInNameSpace(void) {emit destroyed();}
+signals:
+    void constructed(void);
+    void destroyed(void);
+};
+
+} // NameSpace
+
+class OtherClass : public QObject
+{
+    Q_OBJECT
+public:
+    inline OtherClass(QObject* parent = NULL) : QObject(parent) {emit constructed();}
+    ~OtherClass(void) {emit destroyed();}
+signals:
+    void constructed(void);
+    void destroyed(void);
+};
+
 class SignalsTest : public QObject
 {
     Q_OBJECT
@@ -15,6 +41,9 @@ private Q_SLOTS:
     void firstFunction(void);
     void secondFunction(void);
     void thirdFunction(void);
+    void multiline(void);
+    void otherClass(void);
+    void otherClassNamespace(void);
 };
 
 void SignalsTest::firstFunction(void)
@@ -36,6 +65,25 @@ void SignalsTest::thirdFunction(void)
     emit signal3(90, 108);
     emit signal1();
     emit signal2("thirdFunction");
+}
+
+void SignalsTest::multiline(void)
+{
+    emit signal2("Multiline message test:\nPASS   : fun()\nFAIL!  : other_fun(test)");
+}
+
+void SignalsTest::otherClass(void)
+{
+    OtherClass obj;
+
+    qDebug() << &obj;
+}
+
+void SignalsTest::otherClassNamespace(void)
+{
+    NameSpace::ClassInNameSpace obj;
+
+    qDebug() << &obj;
 }
 
 QTEST_APPLESS_MAIN(SignalsTest)
