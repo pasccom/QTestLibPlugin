@@ -100,14 +100,14 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Signal: SignalsTest(7ffe244a1c30) signal1 ()
+            <message type="Signal" strict="false" level="verboses">
+                SignalsTest(7ffe244a1c30) signal1 ()
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Signal: SignalsTest(7ffe244a1c30) signal2 (QString(firstFunction))
+            <message type="Signal" strict="false" level="verboses">
+                SignalsTest(7ffe244a1c30) signal2 (QString(firstFunction))
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Signal: SignalsTest(7ffe244a1c30) signal3 (int(18), int(36))
+            <message type="Signal" strict="false" level="verboses">
+                SignalsTest(7ffe244a1c30) signal3 (int(18), int(36))
             </message>
             <message type="Pass" strict="true">
                 Test passed
@@ -120,14 +120,14 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Signal: SignalsTest(7ffe244a1c30) signal2 (QString(secondFunction))
+            <message type="Signal" strict="false" level="verboses">
+                SignalsTest(7ffe244a1c30) signal2 (QString(secondFunction))
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Signal: SignalsTest(7ffe244a1c30) signal3 (int(54), int(72))
+            <message type="Signal" strict="false" level="verboses">
+                SignalsTest(7ffe244a1c30) signal3 (int(54), int(72))
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Signal: SignalsTest(7ffe244a1c30) signal1 ()
+            <message type="Signal" strict="false" level="verboses">
+                SignalsTest(7ffe244a1c30) signal1 ()
             </message>
             <message type="Pass" strict="true">
                 Test passed
@@ -140,14 +140,14 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Signal: SignalsTest(7ffe244a1c30) signal3 (int(90), int(108))
+            <message type="Signal" strict="false" level="verboses">
+                SignalsTest(7ffe244a1c30) signal3 (int(90), int(108))
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Signal: SignalsTest(7ffe244a1c30) signal1 ()
+            <message type="Signal" strict="false" level="verboses">
+                SignalsTest(7ffe244a1c30) signal1 ()
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Signal: SignalsTest(7ffe244a1c30) signal2 (QString(thirdFunction))
+            <message type="Signal" strict="false" level="verboses">
+                SignalsTest(7ffe244a1c30) signal2 (QString(thirdFunction))
             </message>
             <message type="Pass" strict="true">
                 Test passed
