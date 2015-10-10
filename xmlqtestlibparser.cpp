@@ -144,11 +144,11 @@ TestModelFactory::ParseResult XMLQTestLibParser::endElementParsed(ProjectExplore
     if (QStringRef::compare(tag, QLatin1String("Duration"), Qt::CaseInsensitive) == 0) {
         if ((mModel != NULL) && mCurrentAttributes.contains(QLatin1String("msecs")))
             mModel->addTestItem(runControl,
-                                QTestLibModel::Info,
+                                QTestLibModel::Duration,
                                 mCurrentClass,
                                 mCurrentFunction,
                                 mCurrentRow,
-                                trUtf8("Duration: %1ms.").arg(mCurrentAttributes.value(QLatin1String("msecs"))));
+                                trUtf8("%1ms").arg(mCurrentAttributes.value(QLatin1String("msecs"))));
         mCurrentAttributes.clear();
     }
     if (QStringRef::compare(tag, QLatin1String("BenchmarkResult"), Qt::CaseInsensitive) == 0) {
