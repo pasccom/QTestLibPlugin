@@ -504,7 +504,7 @@ void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const Q
     BEGIN_SUB_TEST_FUNCTION
 
     QVERIFY(model->rowCount(QModelIndex()) == tests.size());
-    QVERIFY(model->columnCount(QModelIndex()) == 1);
+    QVERIFY(model->columnCount(QModelIndex()) == 3);
 
     int i = 0;
     QList< TestRunData* >::const_iterator it = tests.constBegin();
