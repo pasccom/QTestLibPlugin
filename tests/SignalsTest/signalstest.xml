@@ -92,8 +92,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml">
-                Duration: 0ms
+            <message type="Duration" strict="false" format="xml">
+                0ms
             </message>
         </function>
         <function name="firstFunction" type="Pass">
@@ -112,8 +112,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml">
-                Duration: 0ms
+            <message type="Duration" strict="false" format="xml">
+                0ms
             </message>
         </function>
         <function name="secondFunction" type="Pass">
@@ -132,8 +132,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml">
-                Duration: 0ms
+            <message type="Duration" strict="false" format="xml">
+                0ms
             </message>
         </function>
         <function name="thirdFunction" type="Pass">
@@ -152,8 +152,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml">
-                Duration: 0ms
+            <message type="Duration" strict="false" format="xml">
+                0ms
             </message>
         </function>
         <function name="cleanupTestCase" type="Pass">
@@ -163,12 +163,12 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml">
-                Duration: 0ms
+            <message type="Duration" strict="false" format="xml">
+                0ms
             </message>
         </function>
-        <message type="Info" strict="false" format="xml">
-            Duration: 0ms
+        <message type="Duration" strict="false" format="xml">
+            0ms
         </message>
     </class>
 </qtestliboutput>

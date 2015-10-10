@@ -112,8 +112,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="firstFunction" type="Pass">
@@ -144,8 +144,8 @@
                     Test passed
                 </message>
             </row>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="secondFunction" type="Fail" level="silent">
@@ -176,8 +176,8 @@
                     'data.endsWith("Data of firstFunction")' returned FALSE. ()
                 </message>
             </row>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="cleanupTestCase" type="Pass">
@@ -187,12 +187,12 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
-        <message type="Info" strict="false" format="xml" >
-            Duration: 0.00ms
+        <message type="Duration" strict="false" format="xml" >
+            0.00ms
         </message>
     </class>
 </qtestliboutput>

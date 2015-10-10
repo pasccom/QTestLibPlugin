@@ -181,8 +181,8 @@
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
-                <message type="Info" strict="false" format="xml">
-                    Duration: 0ms
+                <message type="Duration" strict="false" format="xml">
+                    0ms
                 </message>
             </function>
             <function name="firstPass" type="Pass">
@@ -195,8 +195,8 @@
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
-                <message type="Info" strict="false" format="xml">
-                    Duration: 0ms
+                <message type="Duration" strict="false" format="xml">
+                    0ms
                 </message>
             </function>
             <function name="secondPass" type="Pass">
@@ -209,8 +209,8 @@
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
-                <message type="Info" strict="false" format="xml">
-                    Duration: 0ms
+                <message type="Duration" strict="false" format="xml">
+                    0ms
                 </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
@@ -220,12 +220,12 @@
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
-                <message type="Info" strict="false" format="xml">
-                    Duration: 0ms
+                <message type="Duration" strict="false" format="xml">
+                    0ms
                 </message>
             </function>
-            <message type="Info" strict="false" format="xml">
-                Duration: 0ms
+            <message type="Duration" strict="false" format="xml">
+                0ms
             </message>
         </class>
         <class name="SecondClassTest" type="Pass">
@@ -236,8 +236,8 @@
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
-                <message type="Info" strict="false" format="xml">
-                    Duration: 0ms
+                <message type="Duration" strict="false" format="xml">
+                    0ms
                 </message>
             </function>
             <function name="firstPass" type="Pass">
@@ -250,8 +250,8 @@
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
-                <message type="Info" strict="false" format="xml">
-                    Duration: 0ms
+                <message type="Duration" strict="false" format="xml">
+                    0ms
                 </message>
             </function>
             <function name="secondPass" type="Pass">
@@ -280,8 +280,8 @@
                         Test passed
                     </message>
                 </row>
-                <message type="Info" strict="false" format="xml">
-                    Duration: 0ms
+                <message type="Duration" strict="false" format="xml">
+                    0ms
                 </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
@@ -291,12 +291,12 @@
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
-                <message type="Info" strict="false" format="xml">
-                    Duration: 0ms
+                <message type="Duration" strict="false" format="xml">
+                    0ms
                 </message>
             </function>
-            <message type="Info" strict="false" format="xml">
-                Duration: 0ms
+            <message type="Duration" strict="false" format="xml">
+                0ms
             </message>
         </class>
         <class name="ThirdClassTest" type="Fail" level="silent">
@@ -307,8 +307,8 @@
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
-                <message type="Info" strict="false" format="xml">
-                    Duration: 0ms
+                <message type="Duration" strict="false" format="xml">
+                    0ms
                 </message>
             </function>
             <function name="firstFail" type="Fail" level="silent">
@@ -321,8 +321,8 @@
                 <message type="Fail" strict="true" level="silent" file="multipleclassestest.cpp" line="72">
                     'false' returned FALSE. (Test should fail)
                 </message>
-                <message type="Info" strict="false" format="xml">
-                    Duration: 0ms
+                <message type="Duration" strict="false" format="xml">
+                    0ms
                 </message>
             </function>
             <function name="secondPass" type="Pass">
@@ -335,8 +335,8 @@
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
-                <message type="Info" strict="false" format="xml">
-                    Duration: 0ms
+                <message type="Duration" strict="false" format="xml">
+                    0ms
                 </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
@@ -346,12 +346,12 @@
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
-                <message type="Info" strict="false" format="xml">
-                    Duration: 0ms
+                <message type="Duration" strict="false" format="xml">
+                    0ms
                 </message>
             </function>
-            <message type="Info" strict="false" format="xml">
-                Duration: 0ms
+            <message type="Duration" strict="false" format="xml">
+                0ms
             </message>
         </class>
     </root>

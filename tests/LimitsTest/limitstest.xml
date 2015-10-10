@@ -166,8 +166,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="p" type="Pass">
@@ -180,8 +180,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="f" type="Fail" level="silent">
@@ -194,8 +194,8 @@
             <message type="Fail" strict="true" level="silent" file="limitstest.cpp" line="25">
                 'false' returned FALSE. (This test should fail.)
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="testRowNames" type="Pass">
@@ -290,8 +290,8 @@
                     Test passed
                 </message>
             </row>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="cleanupTestCase" type="Pass">
@@ -301,12 +301,12 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
-        <message type="Info" strict="false" format="xml" >
-            Duration: 0.00ms
+        <message type="Duration" strict="false" format="xml" >
+            0.00ms
         </message>
     </class>
 </qtestliboutput>

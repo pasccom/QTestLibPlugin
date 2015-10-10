@@ -196,8 +196,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="result" type="Pass">
@@ -210,8 +210,8 @@
             <message type="Result" strict="false">
                 0.00050 msecs per iteration (total: 66, iterations: 131072)
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="pass" type="Pass">
@@ -224,8 +224,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="bpass" type="BPass" level="silent">
@@ -238,8 +238,8 @@
             <message type="BPass" strict="true" level="silent">
                 Blacklisted test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="xpass" type="XPass" level="silent">
@@ -252,8 +252,8 @@
             <message type="XPass" strict="true" level="silent" file="allmessagestest.cpp" line="48">
                 'true' returned TRUE unexpectedly. (This test should succeed)
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="fail" type="Fail" level="silent">
@@ -266,8 +266,8 @@
             <message type="Fail" strict="true" level="silent" file="allmessagestest.cpp" line="53">
                 'false' returned FALSE. (This test should fail)
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="bfail" type="BFail" level="silent">
@@ -280,8 +280,8 @@
             <message type="BFail" strict="true" level="silent" file="allmessagestest.cpp" line="58">
                 'false' returned FALSE. (This test is blacklisted but it should fail)
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="xfail" type="XFail">
@@ -297,8 +297,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="skip" type="Skip">
@@ -308,8 +308,8 @@
             <message type="Skip" strict="true" file="allmessagestest.cpp" line="69">
                 This test should be skipped
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="qdebug" type="Pass">
@@ -322,8 +322,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="info" type="Fail" level="silent">
@@ -336,8 +336,8 @@
             <message type="Fail" strict="true" level="silent">
                 Not all expected messages were received
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="qsystem" type="Pass">
@@ -350,8 +350,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="warning" type="Pass">
@@ -364,8 +364,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="qwarning" type="Pass">
@@ -378,8 +378,8 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
         <function name="qfatal" type="Fail" level="silent">
@@ -392,12 +392,12 @@
             <message type="Fail" strict="false" level="silent">
                 Received a fatal error.
             </message>
-            <message type="Info" strict="false" format="xml" >
-                Duration: 0.00ms
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
             </message>
         </function>
-        <message type="Info" strict="false" format="xml" >
-            Duration: 0.00ms
+        <message type="Duration" strict="false" format="xml" >
+            0.00ms
         </message>
     </class>
 </qtestliboutput>
