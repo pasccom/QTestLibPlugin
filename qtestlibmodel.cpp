@@ -231,6 +231,10 @@ QIcon messageIcon(QTestLibModel::MessageType type)
         return QIcon(QLatin1String(":/events/bfail.png"));
     case QTestLibModel::BenchmarkResult:
         return QIcon(QLatin1String(":/events/result.png"));
+    case QTestLibModel::Duration:
+        return QIcon(QLatin1String(":/messages/duration.png"));
+    case QTestLibModel::Signal:
+        return QIcon(QLatin1String(":/messages/signal.png"));
     }
     return QIcon();
 }
@@ -246,6 +250,8 @@ QString defaultMessage(QTestLibModel::MessageType type)
     case QTestLibModel::QFatal:
     case QTestLibModel::Info:
     case QTestLibModel::BenchmarkResult:
+    case QTestLibModel::Duration:
+    case QTestLibModel::Signal:
         break;
     case QTestLibModel::Skip:
         return QTestLibModel::trUtf8("Test skipped");
@@ -267,7 +273,9 @@ QString defaultMessage(QTestLibModel::MessageType type)
 
 QString resultString(QTestLibModel::MessageType type)
 {
-    QString str = QLatin1String("Result  "
+    QString str = QLatin1String("Signal  "
+                                "Duration"
+                                "Result  "
                                 "QDebug  "
                                 "Info    "
                                 "Warning "

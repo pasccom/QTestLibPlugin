@@ -20,6 +20,8 @@ public:
     ~QTestLibModel(void);
     // WARNING Order matters!
     typedef enum {
+        Signal,
+        Duration,
         BenchmarkResult,
         QDebug,
         Info,
