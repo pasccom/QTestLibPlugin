@@ -18,7 +18,7 @@ TestModelFactory::ParseResult XMLQTestLibParser::parseStdoutLine(ProjectExplorer
 {
     TestModelFactory::ParseResult result = TestModelFactory::Unsure;
 
-    mReader->addData(line.trimmed());
+    mReader->addData(line.trimmed() + "\n");
 
     while(!mReader->atEnd()) {
         QXmlStreamReader::TokenType currentToken = mReader->readNext();
