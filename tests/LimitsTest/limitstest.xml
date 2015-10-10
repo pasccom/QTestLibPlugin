@@ -115,6 +115,15 @@
         <unsure />
         <unsure />
         <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
     </results>
     <results format="txt">
         <unsure/>
@@ -130,6 +139,11 @@
         <unsure level="verbose1" />
         <unsure level="silent" />
         <unsure level="silent" />
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
         <unsure level="verbose1" />
         <unsure/>
         <unsure/>
@@ -174,7 +188,7 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="20">
+            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="21">
                 QVERIFY(true)
             </message>
             <message type="Pass" strict="true">
@@ -188,11 +202,27 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="25">
+            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="26">
                 QVERIFY(false)
             </message>
-            <message type="Fail" strict="true" level="silent" file="limitstest.cpp" line="25">
+            <message type="Fail" strict="true" level="silent" file="limitstest.cpp" line="26">
                 'false' returned FALSE. (This test should fail.)
+            </message>
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
+            </message>
+        </function>
+        <function name="multiline" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="QDebug" strict="true">
+                Multiline message test:
+PASS   : fun()
+FAIL!  : other_fun(test)
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
             </message>
             <message type="Duration" strict="false" format="xml" >
                 0.00ms

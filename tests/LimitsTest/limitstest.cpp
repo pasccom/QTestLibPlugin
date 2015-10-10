@@ -11,6 +11,7 @@ public:
 private Q_SLOTS:
     void p(void);
     void f(void);
+    void multiline(void);
     void testRowNames_data(void);
     void testRowNames(void);
 };
@@ -23,6 +24,11 @@ void LimitsTest::p(void)
 void LimitsTest::f(void)
 {
     QVERIFY2(false, "This test should fail.");
+}
+
+void LimitsTest::multiline(void)
+{
+    qDebug() << "Multiline message test:\nPASS   : fun()\nFAIL!  : other_fun(test)";
 }
 
 void LimitsTest::testRowNames_data(void)
