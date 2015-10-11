@@ -13,8 +13,11 @@ class XMLQTestLibParserFactory : public AbstractTestParserFactory
 public:
     inline XMLQTestLibParserFactory(QObject *parent = NULL):
         AbstractTestParserFactory(parent) {}
-    bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const;
-    AbstractTestParser* getParserInstance(QObject *parent = NULL) const {return new XMLQTestLibParser((parent != NULL) ? parent : this->parent());}
+    inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {return canParseModule(runConfiguration);}
+    AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const;
+private:
+    bool canParseModule(ProjectExplorer::RunConfiguration *runConfiguration) const;
+    bool canParseArguments(ProjectExplorer::RunConfiguration *runConfiguration) const;
 };
 
 } // namespace Internal
