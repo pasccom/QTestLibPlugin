@@ -11,7 +11,8 @@ SOURCES += \
     plaintextqtestlibparser.cpp \
     plaintextqtestlibparserfactory.cpp \
     xmlqtestlibparser.cpp \
-    xmlqtestlibparserfactory.cpp
+    xmlqtestlibparserfactory.cpp \
+    qtestlibargsparser.cpp
 
 HEADERS += \
         qtestlibplugin_global.h \
@@ -24,7 +25,8 @@ HEADERS += \
     plaintextqtestlibparser.h \
     plaintextqtestlibparserfactory.h \
     xmlqtestlibparser.h \
-    xmlqtestlibparserfactory.h
+    xmlqtestlibparserfactory.h \
+    qtestlibargsparser.h
 
 # Qt Creator linking
 
