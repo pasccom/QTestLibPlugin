@@ -27,7 +27,7 @@ public:
         Unsure,
         MagicFound,
         MagicNotFound
-    } ParseResult;
+    } ParseResult; // WARNING order matters !
 signals:
     void modelFound(QAbstractItemModel *model);
     void modelPopulated(QAbstractItemModel *model);
@@ -59,7 +59,7 @@ public:
     AbstractTestParserFactory(QObject *parent = NULL) :
         QObject(parent) {}
     virtual bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const = 0;
-    virtual AbstractTestParser* getParserInstance(QObject *parent) const = 0;
+    virtual AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const = 0;
 };
 
 } // namespace Internal

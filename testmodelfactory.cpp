@@ -1,5 +1,6 @@
 #include "testmodelfactory.h"
 #include "plaintextqtestlibparserfactory.h" // TODO remove it!
+#include "xmlqtestlibparserfactory.h" // TODO remove it!
 
 #include <projectexplorer/runconfiguration.h>
 
@@ -13,9 +14,14 @@ TestModelFactory::TestModelFactory(ProjectExplorer::RunControl *runControl, QObj
 {
     qDebug() << "Run control started:" << runControl->displayName();
 
-    PlainTextQTestLibParserFactory factory(this);
-    if (factory.canParse(runControl->runConfiguration()))
-        mParsers.append(factory.getParserInstance(this));
+    PlainTextQTestLibParserFactory plainTextFactory(this);
+    mParsers.append(plainTextFactory.getParserInstance(runControl->runConfiguration()));
+    if (mParsers.last() == NULL)
+        mParsers.removeLast();
+    XMLQTestLibParserFactory xmlFactory(this);
+    mParsers.append(xmlFactory.getParserInstance(runControl->runConfiguration()));
+    if (mParsers.last() == NULL)
+        mParsers.removeLast();
 
     connect(runControl, SIGNAL(appendMessage(ProjectExplorer::RunControl*, const QString&, Utils::OutputFormat)),
             this, SLOT(parseTestOutput(ProjectExplorer::RunControl*, const QString&, Utils::OutputFormat)));
