@@ -17,8 +17,19 @@ private Q_SLOTS:
     void outputFormatV1(void);
     void outputFileNameV1_data(void);
     void outputFileNameV1(void);
+    void outputV1_data(void);
+    void outputV1(void);
     void outputV2_data(void);
     void outputV2(void);
+    void outputV1vsV2_data(void);
+    void outputV1vsV2(void);
+    void outputVerbosityV1_data(void);
+    void outputVerbosityV1(void);
+    void outputVerbosityV2_data(void);
+    void outputVerbosityV2(void);
+    void outputV2Error_data(void);
+    void outputV2Error(void);
+
     void outputMode_data(void);
     void outputMode(void);
     void maxWarnings_data(void);
@@ -26,6 +37,13 @@ private Q_SLOTS:
     void delays_data(void);
     void delays(void);
     void crashHandler(void);
+
+    void flagError_data(void);
+    void flagError(void);
+    void prematureEndError_data(void);
+    void prematureEndError(void);
+
+
 private:
     void checkError(const QTestLibArgsParser& parser, QTestLibArgsParser::Error error = QTestLibArgsParser::NoError, const QString& errorString = QString::null);
     void checkOutput(const QTestLibArgsParser& parser, QTestLibArgsParser::TestVerbosity verb, QTestLibArgsParser::TestOutputFormat format, const QString& filename = QString::null);
@@ -36,6 +54,7 @@ private:
 Q_DECLARE_METATYPE(QTestLibArgsParser::TestVerbosity)
 Q_DECLARE_METATYPE(QTestLibArgsParser::TestOutputFormat)
 Q_DECLARE_METATYPE(QTestLibArgsParser::Output)
+Q_DECLARE_METATYPE(QTestLibArgsParser::Error)
 
 void QTestLibArgsParserTest::verbosity_data(void)
 {
@@ -130,6 +149,51 @@ void QTestLibArgsParserTest::outputFileNameV1(void)
     QVERIFY(parser.maxWarnings() == 2000);
 }
 
+void QTestLibArgsParserTest::outputV1_data(void)
+{
+    QTest::addColumn<QString>("args");
+    QTest::addColumn<QString>("filename");
+    QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
+
+    QTest::newRow("-o - -xunitxml") << "-o - -xunitxml" << QString() << QTestLibArgsParser::XUnitXmlFormat;
+    QTest::newRow("-o \"-\",xunitxml") << "-o \"-\" -xunitxml" << QString() << QTestLibArgsParser::XUnitXmlFormat;
+    QTest::newRow("-o testResult -xunitxml") << "-o testResult -xunitxml" << "testResult" << QTestLibArgsParser::XUnitXmlFormat;
+    QTest::newRow("-o testResult.log -xunitxml") << "-o testResult.log -xunitxml" << "testResult.log" << QTestLibArgsParser::XUnitXmlFormat;
+    QTest::newRow("-o test\\ result.log -xunitxml") << "-o test\\ result.log -xunitxml" << "test result.log" << QTestLibArgsParser::XUnitXmlFormat;
+    QTest::newRow("-o \"testResult\" -xunitxml") << "-o \"testResult\" -xunitxml" <<  "testResult" << QTestLibArgsParser::XUnitXmlFormat;
+    QTest::newRow("-o \"testResult.log\" -xunitxml") << "-o \"testResult.log\" -xunitxml" <<  "testResult.log" << QTestLibArgsParser::XUnitXmlFormat;
+    QTest::newRow("-o \"test result.log\" -xunitxml") << "-o \"test result.log\" -xunitxml" <<  "test result.log" << QTestLibArgsParser::XUnitXmlFormat;
+    QTest::newRow("-o \"test\\\" \\\"result.log\" -xunitxml") << "-o \"test\\\" \\\"result.log\" -xunitxml" <<  "test\" \"result.log" << QTestLibArgsParser::XUnitXmlFormat;
+
+    QTest::newRow("-xml -o -") << "-xml -o -" << QString() << QTestLibArgsParser::XmlFormat;
+    QTest::newRow("-xml -o \"-\"") << "-xml -o \"-\"" << QString() << QTestLibArgsParser::XmlFormat;
+    QTest::newRow("-xml -o testResult") << "-xml -o testResult" << "testResult" << QTestLibArgsParser::XmlFormat;
+    QTest::newRow("-xml -o testResult.log") << "-xml -o testResult.log" << "testResult.log" << QTestLibArgsParser::XmlFormat;
+    QTest::newRow("-xml -o test\\ result.log") << "-xml -o test\\ result.log" << "test result.log" << QTestLibArgsParser::XmlFormat;
+    QTest::newRow("-xml -o \"testResult\"") << "-xml -o \"testResult\"" <<  "testResult" << QTestLibArgsParser::XmlFormat;
+    QTest::newRow("-xml -o \"testResult.log\"") << "-xml -o \"testResult.log\"" <<  "testResult.log" << QTestLibArgsParser::XmlFormat;
+    QTest::newRow("-xml -o \"test result.log\"") << "-xml -o \"test result.log\"" <<  "test result.log" << QTestLibArgsParser::XmlFormat;
+    QTest::newRow("-xml -o \"test\\\" \\\"result.log\"") << "-xml -o \"test\\\" \\\"result.log\"" <<  "test\" \"result.log" << QTestLibArgsParser::XmlFormat;
+
+}
+
+void QTestLibArgsParserTest::outputV1(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QString, filename);
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+
+    QTestLibArgsParser parser(args);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkOutput(parser, QTestLibArgsParser::NormalVerbosity, format, filename));
+    SUB_TEST_FUNCTION(checkDelays(parser));
+    SUB_TEST_FUNCTION(checkOutputMode(parser));
+
+    QVERIFY(parser.crashHandlerEnabled());
+    QVERIFY(parser.maxWarnings() == 2000);
+}
+
 void QTestLibArgsParserTest::outputV2_data(void)
 {
     QTest::addColumn<QString>("args");
@@ -203,6 +267,197 @@ void QTestLibArgsParserTest::outputV2(void)
 
     QVERIFY(parser.crashHandlerEnabled());
     QVERIFY(parser.maxWarnings() == 2000);
+}
+
+
+void QTestLibArgsParserTest::outputV1vsV2_data(void)
+{
+    QTest::addColumn<QString>("args");
+    QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
+
+    QTest::newRow("-txt -xml") << "-txt -xml" << QTestLibArgsParser::XmlFormat;
+    QTest::newRow("-xml -txt") << "-xml -txt" << QTestLibArgsParser::TxtFormat;
+
+    QTest::newRow("-txt -o -,xml") << "-txt -o -,xml" << QTestLibArgsParser::XmlFormat;
+    QTest::newRow("-xml -o -,txt") << "-xml -o -,txt" << QTestLibArgsParser::TxtFormat;
+    QTest::newRow("-o -,txt -xml") << "-o -,txt -xml" << QTestLibArgsParser::TxtFormat;
+    QTest::newRow("-o -,xml -txt") << "-o -,xml -txt" << QTestLibArgsParser::XmlFormat;
+}
+
+void QTestLibArgsParserTest::outputV1vsV2(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+
+    QTestLibArgsParser parser(args);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkOutput(parser, QTestLibArgsParser::NormalVerbosity, format));
+    SUB_TEST_FUNCTION(checkDelays(parser));
+    SUB_TEST_FUNCTION(checkOutputMode(parser));
+
+    QVERIFY(parser.crashHandlerEnabled());
+    QVERIFY(parser.maxWarnings() == 2000);
+}
+
+
+void QTestLibArgsParserTest::outputVerbosityV1_data(void)
+{
+    QTest::addColumn<QString>("args");
+    QTest::addColumn<QString>("filename");
+    QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
+    QTest::addColumn<QTestLibArgsParser::TestVerbosity>("verb");
+
+    QLinkedList< QPair<QString, QString> > fileNames;
+    fileNames << QPair<QString, QString>("-o -", QString::null);
+    fileNames << QPair<QString, QString>("-o \"-\"", QString::null);
+    fileNames << QPair<QString, QString>("-o testResults.log", "testResults.log");
+    fileNames << QPair<QString, QString>("-o \"testResults.log\"", "testResults.log");
+    fileNames << QPair<QString, QString>("-o \"test results.log\"", "test results.log");
+    fileNames << QPair<QString, QString>("-o test\\ results.log", "test results.log");
+
+    QLinkedList < QPair<QString, QTestLibArgsParser::TestOutputFormat> > formats;
+    formats << QPair<QString, QTestLibArgsParser::TestOutputFormat>("-txt", QTestLibArgsParser::TxtFormat);
+    formats << QPair<QString, QTestLibArgsParser::TestOutputFormat>("-csv", QTestLibArgsParser::CsvFormat);
+    formats << QPair<QString, QTestLibArgsParser::TestOutputFormat>("-xunitxml", QTestLibArgsParser::XUnitXmlFormat);
+    formats << QPair<QString, QTestLibArgsParser::TestOutputFormat>("-xml", QTestLibArgsParser::XmlFormat);
+    formats << QPair<QString, QTestLibArgsParser::TestOutputFormat>("-lightxml", QTestLibArgsParser::LightXmlFormat);
+
+    QLinkedList < QPair<QString, QTestLibArgsParser::TestVerbosity> > verbosities;
+    verbosities << QPair<QString, QTestLibArgsParser::TestVerbosity>("-silent", QTestLibArgsParser::Silent);
+    verbosities << QPair<QString, QTestLibArgsParser::TestVerbosity>("", QTestLibArgsParser::NormalVerbosity);
+    verbosities << QPair<QString, QTestLibArgsParser::TestVerbosity>("-v1", QTestLibArgsParser::Verbose1);
+    verbosities << QPair<QString, QTestLibArgsParser::TestVerbosity>("-v2", QTestLibArgsParser::Verbose2);
+    verbosities << QPair<QString, QTestLibArgsParser::TestVerbosity>("-vs", QTestLibArgsParser::VerboseSignal);
+    verbosities << QPair<QString, QTestLibArgsParser::TestVerbosity>("-vb", QTestLibArgsParser::VerboseBenchmark);
+
+    for (QLinkedList< QPair<QString, QTestLibArgsParser::TestVerbosity> >::const_iterator v = verbosities.constBegin(); v != verbosities.constEnd(); v++) {
+        for (QLinkedList< QPair<QString, QTestLibArgsParser::TestOutputFormat> >::const_iterator f = formats.constBegin(); f != formats.constEnd(); f++) {
+            for (QLinkedList< QPair<QString, QString> >::const_iterator n = fileNames.constBegin(); n != fileNames.constEnd(); n++) {
+                QTest::newRow(qPrintable((*v).first + " " + (*f).first + " " + (*n).first)) << (*v).first + " " + (*f).first + " " + (*n).first << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*v).first + " " + (*n).first + " " + (*f).first)) << (*v).first + " " + (*n).first + " " + (*f).first << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*f).first + " " + (*v).first + " " + (*n).first)) << (*f).first + " " + (*v).first + " " + (*n).first << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*f).first + " " + (*n).first + " " + (*v).first)) << (*f).first + " " + (*n).first + " " + (*v).first << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*n).first + " " + (*v).first + " " + (*f).first)) << (*n).first + " " + (*v).first + " " + (*f).first << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*n).first + " " + (*f).first + " " + (*v).first)) << (*n).first + " " + (*f).first + " " + (*v).first << (*n).second << (*f).second << (*v).second;
+            }
+        }
+    }
+}
+
+void QTestLibArgsParserTest::outputVerbosityV1(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QString, filename);
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QTestLibArgsParser::TestVerbosity, verb);
+
+    QTestLibArgsParser parser(args);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkOutput(parser, verb, format, filename));
+    SUB_TEST_FUNCTION(checkDelays(parser));
+    SUB_TEST_FUNCTION(checkOutputMode(parser));
+
+    QVERIFY(parser.crashHandlerEnabled());
+    QVERIFY(parser.maxWarnings() == 2000);
+}
+
+void QTestLibArgsParserTest::outputVerbosityV2_data(void)
+{
+    QTest::addColumn<QString>("args");
+    QTest::addColumn<QString>("filename");
+    QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
+    QTest::addColumn<QTestLibArgsParser::TestVerbosity>("verb");
+
+    QLinkedList< QPair<QString, QString> > fileNames;
+    fileNames << QPair<QString, QString>("-o -", QString::null);
+    fileNames << QPair<QString, QString>("-o \"-\"", QString::null);
+    fileNames << QPair<QString, QString>("-o testResults.log", "testResults.log");
+    fileNames << QPair<QString, QString>("-o \"testResults.log\"", "testResults.log");
+    fileNames << QPair<QString, QString>("-o \"test results.log\"", "test results.log");
+    fileNames << QPair<QString, QString>("-o test\\ results.log", "test results.log");
+
+    QLinkedList < QPair<QString, QTestLibArgsParser::TestOutputFormat> > formats;
+    formats << QPair<QString, QTestLibArgsParser::TestOutputFormat>("txt", QTestLibArgsParser::TxtFormat);
+    formats << QPair<QString, QTestLibArgsParser::TestOutputFormat>("csv", QTestLibArgsParser::CsvFormat);
+    formats << QPair<QString, QTestLibArgsParser::TestOutputFormat>("xunitxml", QTestLibArgsParser::XUnitXmlFormat);
+    formats << QPair<QString, QTestLibArgsParser::TestOutputFormat>("xml", QTestLibArgsParser::XmlFormat);
+    formats << QPair<QString, QTestLibArgsParser::TestOutputFormat>("lightxml", QTestLibArgsParser::LightXmlFormat);
+
+    QLinkedList < QPair<QString, QTestLibArgsParser::TestVerbosity> > verbosities;
+    verbosities << QPair<QString, QTestLibArgsParser::TestVerbosity>("-silent", QTestLibArgsParser::Silent);
+    verbosities << QPair<QString, QTestLibArgsParser::TestVerbosity>("", QTestLibArgsParser::NormalVerbosity);
+    verbosities << QPair<QString, QTestLibArgsParser::TestVerbosity>("-v1", QTestLibArgsParser::Verbose1);
+    verbosities << QPair<QString, QTestLibArgsParser::TestVerbosity>("-v2", QTestLibArgsParser::Verbose2);
+    verbosities << QPair<QString, QTestLibArgsParser::TestVerbosity>("-vs", QTestLibArgsParser::VerboseSignal);
+    verbosities << QPair<QString, QTestLibArgsParser::TestVerbosity>("-vb", QTestLibArgsParser::VerboseBenchmark);
+
+    for (QLinkedList< QPair<QString, QTestLibArgsParser::TestVerbosity> >::const_iterator v = verbosities.constBegin(); v != verbosities.constEnd(); v++) {
+        for (QLinkedList< QPair<QString, QTestLibArgsParser::TestOutputFormat> >::const_iterator f = formats.constBegin(); f != formats.constEnd(); f++) {
+            for (QLinkedList< QPair<QString, QString> >::const_iterator n = fileNames.constBegin(); n != fileNames.constEnd(); n++) {
+                QTest::newRow(qPrintable((*v).first + " " + (*n).first + "," + (*f).first)) << (*v).first + " " + (*n).first + "," + (*f).first << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*n).first + "," + (*f).first + " " + (*v).first)) << (*n).first + "," + (*f).first + " " + (*v).first << (*n).second << (*f).second << (*v).second;
+            }
+        }
+    }
+}
+
+void QTestLibArgsParserTest::outputVerbosityV2(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QString, filename);
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QTestLibArgsParser::TestVerbosity, verb);
+
+    QTestLibArgsParser parser(args);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkOutput(parser, verb, format, filename));
+    SUB_TEST_FUNCTION(checkDelays(parser));
+    SUB_TEST_FUNCTION(checkOutputMode(parser));
+
+    QVERIFY(parser.crashHandlerEnabled());
+    QVERIFY(parser.maxWarnings() == 2000);
+}
+
+void QTestLibArgsParserTest::outputV2Error_data(void)
+{
+    QTest::addColumn<QString>("args");
+    QTest::addColumn<QTestLibArgsParser::Error>("err");
+    QTest::addColumn<QString>("errStr");
+
+    QTest::newRow("-o -,xxx") << "-o -,xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where output format was expected.";
+    QTest::newRow("-o -,\"txt\"") << "-o -,\"txt\"" << QTestLibArgsParser::InvalidArgumentError << "Got \"\"txt\"\" where output format was expected.";
+    QTest::newRow("-o -,,txt") << "-o -,,txt" << QTestLibArgsParser::InvalidArgumentError << "Got \",txt\" where output format was expected.";
+
+    QTest::newRow("-o testResult.log,xxx") << "-o testResult.log,xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where output format was expected.";
+    QTest::newRow("-o testResult.log,\"txt\"") << "-o testResult.log,\"txt\"" << QTestLibArgsParser::InvalidArgumentError << "Got \"\"txt\"\" where output format was expected.";
+    QTest::newRow("-o testResult.log,,txt") << "-o testResult.log,,txt" << QTestLibArgsParser::InvalidArgumentError << "Got \",txt\" where output format was expected.";
+
+    QTest::newRow("-o test\\ result.log,xxx") << "-o test\\ result.log,xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where output format was expected.";
+    QTest::newRow("-o test\\ result.log,\"txt\"") << "-o test\\ result.log,\"txt\"" << QTestLibArgsParser::InvalidArgumentError << "Got \"\"txt\"\" where output format was expected.";
+    QTest::newRow("-o test\\ result.log,,txt") << "-o test\\ result.log,,txt" << QTestLibArgsParser::InvalidArgumentError << "Got \",txt\" where output format was expected.";
+
+    QTest::newRow("-o \"test result.log\",xxx") << "-o \"test result.log\",xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where output format was expected.";
+    QTest::newRow("-o \"test result.log\",\"txt\"") << "-o \"test result.log\",\"txt\"" << QTestLibArgsParser::InvalidArgumentError << "Got \"\"txt\"\" where output format was expected.";
+    QTest::newRow("-o \"test result.log\",,txt") << "-o \"test result.log\",,txt" << QTestLibArgsParser::InvalidArgumentError << "Got \",txt\" where output format was expected.";
+
+    QTest::newRow("-o \"test,result.log\",xxx") << "-o \"test,result.log\",xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where output format was expected.";
+    QTest::newRow("-o \"test,result.log\",\"txt\"") << "-o \"test,result.log\",\"txt\"" << QTestLibArgsParser::InvalidArgumentError << "Got \"\"txt\"\" where output format was expected.";
+    QTest::newRow("-o \"test,result.log\",,txt") << "-o \"test,result.log\",,txt" << QTestLibArgsParser::InvalidArgumentError << "Got \",txt\" where output format was expected.";
+}
+
+void QTestLibArgsParserTest::outputV2Error(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QTestLibArgsParser::Error, err);
+    QFETCH(QString, errStr);
+
+    QTestLibArgsParser parser(args);
+
+    QVERIFY(parser.error() == err);
+    QVERIFY(QString::compare(parser.errorString(), errStr, Qt::CaseSensitive) == 0);
 }
 
 void QTestLibArgsParserTest::outputMode_data(void)
@@ -437,6 +692,63 @@ void QTestLibArgsParserTest::checkOutputMode(const QTestLibArgsParser& parser, Q
     }
 
     END_SUB_TEST_FUNCTION
+}
+
+void QTestLibArgsParserTest::flagError_data(void)
+{
+    QTest::addColumn<QString>("args");
+    QTest::addColumn<QTestLibArgsParser::Error>("err");
+    QTest::addColumn<QString>("errStr");
+
+    QTest::newRow("-xxx") << "-xxx" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-xxx\"";
+    QTest::newRow("-,txt") << "-,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-,txt\"";
+    QTest::newRow("-\"txt\"") << "-\"txt\"" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-\"txt\"\"";
+    QTest::newRow("-silent -xxx") << "-silent -xxx" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-xxx\"";
+    QTest::newRow("-silent -,txt") << "-silent -,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-,txt\"";
+    QTest::newRow("-maxwarnings 2000 -xxx") << "-maxwarnings 2000 -xxx" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-xxx\"";
+    QTest::newRow("-maxwarnings 2000 -,txt") << "-maxwarnings 2000 -,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-,txt\"";
+}
+
+void QTestLibArgsParserTest::flagError(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QTestLibArgsParser::Error, err);
+    QFETCH(QString, errStr);
+
+    QTestLibArgsParser parser(args);
+
+    QVERIFY(parser.error() == err);
+    QVERIFY(QString::compare(parser.errorString(), errStr, Qt::CaseSensitive) == 0);
+}
+
+void QTestLibArgsParserTest::prematureEndError_data(void)
+{
+    QTest::addColumn<QString>("args");
+    QTest::addColumn<QTestLibArgsParser::Error>("err");
+    QTest::addColumn<QString>("errStr");
+
+    QTest::newRow("-o") << "-o" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
+    QTest::newRow("-silent -o") << "-silent -o" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
+    QTest::newRow("-maxwarnings") << "-maxwarnings" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
+    QTest::newRow("-silent -maxwarnings") << "-silent -maxwarnings" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
+    QTest::newRow("-eventdelay") << "-eventdelay" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
+    QTest::newRow("-silent -eventdelay") << "-silent -eventdelay" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
+    QTest::newRow("-keydelay") << "-keydelay" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
+    QTest::newRow("-silent -keydelay") << "-silent -keydelay" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
+    QTest::newRow("-mousedelay") << "-mousedelay" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
+    QTest::newRow("-silent -mousedelay") << "-silent -mousedelay" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
+}
+
+void QTestLibArgsParserTest::prematureEndError(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QTestLibArgsParser::Error, err);
+    QFETCH(QString, errStr);
+
+    QTestLibArgsParser parser(args);
+
+    QVERIFY(parser.error() == err);
+    QVERIFY(QString::compare(parser.errorString(), errStr, Qt::CaseSensitive) == 0);
 }
 
 QTEST_APPLESS_MAIN(QTestLibArgsParserTest)
