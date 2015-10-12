@@ -44,27 +44,7 @@ isEmpty(IDE_BUILD_TREE):IDE_BUILD_TREE=/usr/lib64/qtcreator
 ##    "%LOCALAPPDATA%\QtProject\qtcreator" on Windows Vista and later
 ##    "$XDG_DATA_HOME/data/QtProject/qtcreator" or "~/.local/share/data/QtProject/qtcreator" on Linux
 ##    "~/Library/Application Support/QtProject/Qt Creator" on Mac
-
 USE_USER_DESTDIR = yes
-
-###### If the plugin can be depended upon by other plugins, this code needs to be outsourced to
-###### <dirname>_dependencies.pri, where <dirname> is the name of the directory containing the
-###### plugin's sources.
-
-QTC_PLUGIN_NAME = QTestLibPlugin
-QTC_LIB_DEPENDS += \
-    # nothing here at this time
-
-QTC_PLUGIN_DEPENDS += \
-    coreplugin \
-    projectexplorer \
-    qmakeprojectmanager
-
-QTC_PLUGIN_RECOMMENDS += \
-    # nothing here at this time
-
-
-###### End _dependencies.pri contents ######
 
 include($$QTCREATOR_SOURCES/src/qtcreatorplugin.pri)
 
