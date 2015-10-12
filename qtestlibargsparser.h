@@ -18,7 +18,7 @@ public:
         XUnitXmlFormat,
         XmlFormat,
         LightXmlFormat,
-    } TestOutputFormat; // WARNING order matters
+    } TestOutputFormat; // WARNING order matters!
     typedef enum {
         Silent = -1,
         NormalVerbosity,
@@ -26,7 +26,7 @@ public:
         Verbose2,
         VerboseSignal,
         VerboseBenchmark,
-    } TestVerbosity; // WARNING order matters
+    } TestVerbosity; // WARNING order matters!
     typedef enum {
         NormalOutput,
         HelpOutput,

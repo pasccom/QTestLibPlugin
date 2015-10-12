@@ -170,6 +170,7 @@ void QTestLibArgsParser::parseOutput(const QString& token)
 
     if (token.startsWith(QLatin1String("-,"))) {
         format = token.mid(2);
+        mSeenOutputWithFormat = true;
     } else {
         int pos = 0;
         bool quoted = false;
@@ -192,6 +193,7 @@ void QTestLibArgsParser::parseOutput(const QString& token)
         } else {
             fileName = parseString(token.left(pos));
             format = token.mid(pos + 1);
+            mSeenOutputWithFormat = true;
         }
     }
 
