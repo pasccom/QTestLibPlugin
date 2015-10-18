@@ -1,23 +1,29 @@
-#ifndef RUNCONTROL_H
-#define RUNCONTROL_H
+#ifndef RUNCONFIGURATION_H
+#define RUNCONFIGURATION_H
 
 #include <QProcess>
 #include <utils/outputformat.h>
+#include "target.h"
 
 namespace ProjectExplorer {
 
 class RunConfiguration : public QObject
 {
+    Q_OBJECT
 public:
-    inline RunConfiguration(QObject *parent):
-        QObject(parent) {}
+    inline RunConfiguration(ProjectExplorer::Target *target) :
+        QObject(target), mTarget(target) {}
+    inline virtual QString displayName(void) const {return QString::null;}
+    inline Target *target(void) const {return mTarget;}
+private:
+    Target *mTarget;
 };
 
 class RunControl : public QObject
 {
     Q_OBJECT
 public:
-    RunControl(const QString& file, const QStringList& args = QStringList(), const QString& name = QString::null, QObject *parent = 0);
+    RunControl(RunConfiguration *runConfig, const QString& name = QString::null, QObject *parent = NULL);
     inline QString displayName(void) const {return mName;}
     inline RunConfiguration* runConfiguration() const {return mConfig;}
 
@@ -31,22 +37,15 @@ signals:
     void finished(void);
     void started(void);
 public slots:
-    void start(void);
-private slots:
-    void readStandardOutput(void);
-    void readStandardError(void);
-    void testProcessFinished(int exitCode, QProcess::ExitStatus status);
+    virtual void start(void) = 0;
 private:
     QProcess* mTestProc;
-    QString mPath;
-    QString mFile;
-    QStringList mArgs;
-    QString mName;
     Utils::OutputFormat mOutputFormat;
     Utils::OutputFormat mErrorFormat;
     RunConfiguration* mConfig;
+    QString mName;
 };
 
 } // ProjectExplorer
 
-#endif // RUNCONTROL_H
+#endif // RUNCONFIGURATION_H
