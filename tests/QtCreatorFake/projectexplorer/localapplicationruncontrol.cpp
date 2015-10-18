@@ -1,5 +1,7 @@
 #include "localapplicationruncontrol.h"
 
+#include "../qtcreatorfake_global.h"
+
 #include "localapplicationrunconfiguration.h"
 
 #include <QDir>
@@ -29,7 +31,7 @@ void LocalApplicationRunControl::start(void)
     connect(mTestProc, SIGNAL(readyReadStandardError()), this, SLOT(readStandardError()));
     connect(mTestProc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(testProcessFinished(int, QProcess::ExitStatus)));
 
-    //qDebug() << "Starting:" << localConfig->executable() << "with arguments:" << localConfig->commandLineArguments();
+    debugMsg("Starting:" << localConfig->executable() << "with arguments:" << localConfig->commandLineArguments());
     mTestProc->start(localConfig->executable() + " " + localConfig->commandLineArguments(), QIODevice::ReadOnly);
 }
 
@@ -41,7 +43,7 @@ void LocalApplicationRunControl::readStandardOutput(void)
         QString line = mTestProc->readLine();
         while (line.endsWith('\n') || line.endsWith('\r'))
             line.chop(1);
-        //qDebug() << "stdout:" << line;
+        traceMsg("stdout:" << line);
         emit appendMessage(this, line, outputFormat());
     }
 }
@@ -53,7 +55,7 @@ void LocalApplicationRunControl::readStandardError(void)
         QString line = mTestProc->readLine();
         while (line.endsWith('\n') || line.endsWith('\r'))
             line.chop(1);
-        //qDebug() << "stderr:" << line;
+        traceMsg("stderr:" << line);
         emit appendMessage(this, line, errorFormat());
     }
 }

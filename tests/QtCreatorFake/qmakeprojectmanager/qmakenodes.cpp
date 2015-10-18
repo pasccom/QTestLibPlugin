@@ -2,6 +2,8 @@
 
 #include "qmakeproject.h"
 
+#include "../qtcreatorfake_global.h"
+
 #include <qmakeparser.h>
 
 #include <utils/hostosinfo.h>
@@ -19,14 +21,14 @@ QmakeProFileNode::QmakeProFileNode(QmakeProject *project, const QString& proFile
     QDir proFileDir(proFile);
     mProFileName = QDir::cleanPath(proFileDir.absolutePath());
 
-    qDebug() << "Starting parse of:" << mProFileName;
+    debugMsg("Starting parse of:" << mProFileName);
     ProFile *parsed = parsedProFile(mProFileName, QMakeParser::ParseReportMissing);
     if (parsed->isOk()) {
         mEvalSuceeded = accept(parsed, QMakeEvaluator::LoadPreFiles);
         if (!mEvalSuceeded)
-            qDebug() << "Failed evaluation of:" << parsed->fileName();
+            debugMsg("Failed evaluation of:" << parsed->fileName());
     } else {
-        qDebug() << "Failed parsing of:" << QDir::cleanPath(proFileDir.absolutePath());
+        debugMsg("Failed parsing of:" << mProFileName);
     }
 
     parsed->deref();
@@ -52,47 +54,50 @@ void QmakeProFileNode::message(int type, const QString& msg, const QString& file
     case QMakeParserHandler::ErrorMessage:
         qCritical() << "QMake error:"
                     << (location.isNull() ? msg : QString("%1 (%2)").arg(msg).arg(location));
+        break;
     case QMakeParserHandler::WarningMessage:
         qWarning() << "QMake warning:"
                    << (location.isNull() ? msg : QString("%1 (%2)").arg(msg).arg(location));
+        break;
     default:
-        qDebug() << "QMake message:"
-                 << (location.isNull() ? msg : QString("%1 (%2)").arg(msg).arg(location));
+        debugMsg("QMake message:" << (location.isNull() ? msg : QString("%1 (%2)").arg(msg).arg(location)));
+        break;
     }
 }
 
 void QmakeProFileNode::fileMessage(const QString& msg)
 {
-    qDebug() << "Project message:" << msg;
+    USED_ONLY_FOR_DEBUG(msg);
+    debugMsg("Project message:" << msg);
 }
 
 void QmakeProFileNode::aboutToEval(ProFile *parent, ProFile *proFile, EvalFileType type)
 {
     switch (type) {
     case EvalProjectFile:
-        qDebug() << "About to eval:" << proFile->fileName();
+        traceMsg("About to eval:" << proFile->fileName());
         if (parent != NULL)
-            qDebug() << "for main project:" << parent->fileName();
+            traceMsg("for main project:" << parent->fileName());
         break;
     case EvalIncludeFile:
-        qDebug() << "About to eval:" << proFile->fileName();
+        traceMsg("About to eval:" << proFile->fileName());
         if (parent != NULL)
-            qDebug() << "included in project:" << parent->fileName();
+            traceMsg("included in project:" << parent->fileName());
         break;
     case EvalConfigFile:
-        qDebug() << "About to eval config file:" << proFile->fileName();
+        traceMsg("About to eval config file:" << proFile->fileName());
         if (parent != NULL)
-            qDebug() << "for project:" << parent->fileName();
+            traceMsg("for project:" << parent->fileName());
         break;
     case EvalFeatureFile:
-        qDebug() << "About to eval feature file:" << proFile->fileName();
+        traceMsg("About to eval feature file:" << proFile->fileName());
         if (parent != NULL)
-            qDebug() << "for project:" << parent->fileName();
+            traceMsg("for project:" << parent->fileName());
         break;
     case EvalAuxFile:
-        qDebug() << "About to eval auxiliary file:" << proFile->fileName();
+        traceMsg("About to eval auxiliary file:" << proFile->fileName());
         if (parent != NULL)
-            qDebug() << "for project:" << parent->fileName();
+            traceMsg("for project:" << parent->fileName());
         break;
     }
 
@@ -104,11 +109,11 @@ void QmakeProFileNode::aboutToEval(ProFile *parent, ProFile *proFile, EvalFileTy
 void QmakeProFileNode::doneWithEval(ProFile *parent)
 {
     if (parent != NULL) {
-        qDebug() << "Done with eval of:" << parent->fileName();
+        traceMsg("Done with eval of:" << parent->fileName());
         if (QString::compare(parent->fileName(), mProFileName, Utils::HostOsInfo::fileNameCaseSensitivity()) == 0)
             emit mProject->doneWithEval(parent->fileName());
     } else {
-        qDebug() << "Done with eval of some file";
+        traceMsg("Done with eval of some file");
     }
 }
 
