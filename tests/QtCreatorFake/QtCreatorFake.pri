@@ -2,6 +2,8 @@
 # Ensure object is compiled in C++ 11
 CONFIG += c++11
 
+HEADERS += $$PWD/qtcreatorfake_global.h
+
 # Needeed functions ###########################################################
 defineReplace(qtLibraryName) {
    unset(LIBRARY_NAME)
