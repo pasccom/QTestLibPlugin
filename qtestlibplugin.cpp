@@ -50,21 +50,6 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
 
     connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl*)),
             mModel, SLOT(appendTestRun(ProjectExplorer::RunControl*)));
-    /*connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlFinished(ProjectExplorer::RunControl*)),
-            outputPane, SLOT(reloadModel()));*/
-
-    /* TODO remove it */
-    QAction *action = new QAction(tr("QTestLibPlugin action"), this);
-    Core::Command *cmd = Core::ActionManager::registerAction(action, Constants::ACTION_ID,
-                                                             Core::Context(Core::Constants::C_GLOBAL));
-    cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+Alt+Meta+A")));
-    connect(action, SIGNAL(triggered()), this, SLOT(triggerAction()));
-
-    Core::ActionContainer *menu = Core::ActionManager::createMenu(Constants::MENU_ID);
-    menu->menu()->setTitle(tr("QTestLibPlugin"));
-    menu->addAction(cmd);
-    Core::ActionManager::actionContainer(Core::Constants::M_TOOLS)->addMenu(menu);
-    /* End remove */
 
     return true;
 }
@@ -83,11 +68,3 @@ ExtensionSystem::IPlugin::ShutdownFlag QTestLibPluginPlugin::aboutToShutdown()
     // Hide UI (if you add UI that is not in the main window directly)
     return SynchronousShutdown;
 }
-
-void QTestLibPluginPlugin::triggerAction()
-{
-    QMessageBox::information(Core::ICore::mainWindow(),
-                             tr("Action triggered"),
-                             tr("This is an action from QTestLibPlugin."));
-}
-

@@ -23,8 +23,6 @@ public:
     void extensionsInitialized();
     ShutdownFlag aboutToShutdown();
 
-private slots:
-    void triggerAction();
 private:
     TestSuiteModel* mModel;
 };
