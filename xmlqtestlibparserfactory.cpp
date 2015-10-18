@@ -8,6 +8,8 @@
 #include <qmakeprojectmanager/qmakeproject.h>
 #include <qmakeprojectmanager/qmakenodes.h>
 
+#include <QtDebug>
+
 namespace QTestLibPlugin {
 namespace Internal {
 

@@ -112,7 +112,7 @@ bool PlainTextQTestLibParser::processMessageBeginning(ProjectExplorer::RunContro
 
     QString className = line.left(c);
     QString functionName = line.mid(c + 2, p - c - 2);
-    qDebug() << className << functionName;
+    //qDebug() << className << functionName;
 
     // Find row title
     int e = matchBracket(line, p);
@@ -123,7 +123,7 @@ bool PlainTextQTestLibParser::processMessageBeginning(ProjectExplorer::RunContro
 
     QString rowTitle = line.mid(p + 1, e - p - 1);
     QString message = line.mid(e + 2);
-    qDebug() << rowTitle << message;
+    //qDebug() << rowTitle << message;
 
     mModel->addTestItem(runControl, type, className, functionName, rowTitle, message);
     return true;
