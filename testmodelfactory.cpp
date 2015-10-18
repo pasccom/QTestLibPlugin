@@ -1,8 +1,8 @@
 #include "testmodelfactory.h"
-#include "plaintextqtestlibparserfactory.h" // TODO remove it!
-#include "xmlqtestlibparserfactory.h" // TODO remove it!
 
 #include <projectexplorer/runconfiguration.h>
+
+#include <extensionsystem/pluginmanager.h>
 
 #include <QtDebug>
 
@@ -14,14 +14,15 @@ TestModelFactory::TestModelFactory(ProjectExplorer::RunControl *runControl, QObj
 {
     qDebug() << "Run control started:" << runControl->displayName();
 
-    PlainTextQTestLibParserFactory plainTextFactory(this);
-    mParsers.append(plainTextFactory.getParserInstance(runControl->runConfiguration()));
-    if (mParsers.last() == NULL)
-        mParsers.removeLast();
-    XMLQTestLibParserFactory xmlFactory(this);
-    mParsers.append(xmlFactory.getParserInstance(runControl->runConfiguration()));
-    if (mParsers.last() == NULL)
-        mParsers.removeLast();
+    auto canParsePredicate = [runControl] (AbstractTestParserFactory *factory) -> bool {
+        return factory->canParse(runControl->runConfiguration());
+    };
+
+    foreach (AbstractTestParserFactory* factory, ExtensionSystem::PluginManager::getObjects<AbstractTestParserFactory>(canParsePredicate)) {
+        qDebug() << "Found factory with class name:" << factory->metaObject()->className();
+        mParsers.append(factory->getParserInstance(runControl->runConfiguration()));
+        Q_ASSERT(mParsers.last() != NULL);
+    }
 
     connect(runControl, SIGNAL(appendMessage(ProjectExplorer::RunControl*, const QString&, Utils::OutputFormat)),
             this, SLOT(parseTestOutput(ProjectExplorer::RunControl*, const QString&, Utils::OutputFormat)));

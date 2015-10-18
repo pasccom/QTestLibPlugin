@@ -1,6 +1,9 @@
 #include "qtestlibplugin.h"
 #include "qtestlibpluginconstants.h"
 
+#include "plaintextqtestlibparserfactory.h"
+#include "xmlqtestlibparserfactory.h"
+
 #include "testoutputpane.h"
 #include "testsuitemodel.h"
 
@@ -44,6 +47,11 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
 
     Q_UNUSED(arguments)
     Q_UNUSED(errorString)
+
+    PlainTextQTestLibParserFactory *plainTextFactory = new PlainTextQTestLibParserFactory(this);
+    addAutoReleasedObject(plainTextFactory);
+    XMLQTestLibParserFactory *xmlFactory = new XMLQTestLibParserFactory(this);
+    addAutoReleasedObject(xmlFactory);
 
     TestOutputPane *outputPane = new TestOutputPane(mModel);
     addAutoReleasedObject(outputPane);

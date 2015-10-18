@@ -2,12 +2,13 @@
 
 QTC_PLUGIN_NAME = QTestLibPlugin
 QTC_LIB_DEPENDS += \
-    # nothing here at this time
+    utils \
+    extensionsystem \
 
 QTC_PLUGIN_DEPENDS += \
     coreplugin \
     projectexplorer \
-    qmakeprojectmanager
+    qmakeprojectmanager \
 
 QTC_PLUGIN_RECOMMENDS += \
     # nothing here at this time
