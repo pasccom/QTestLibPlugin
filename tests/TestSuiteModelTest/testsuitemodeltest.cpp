@@ -1,8 +1,12 @@
 #include "../../testsuitemodel.h"
 
+#include "../../plaintextqtestlibparserfactory.h"
+#include "../../xmlqtestlibparserfactory.h"
+
 #include "../common/qtestlibmodeltester.h"
 
 #include <utils/outputformat.h>
+#include <extensionsystem/pluginmanager.h>
 #include <projectexplorer/localapplicationrunconfiguration.h>
 #include <projectexplorer/localapplicationruncontrol.h>
 #include <projectexplorer/kit.h>
@@ -18,6 +22,7 @@ class TestSuiteModelTest : public QObject
     HAS_SUB_TEST_FUNCTIONS
 public:
     TestSuiteModelTest(void);
+    inline ~TestSuiteModelTest(void) {qDeleteAll(mManager->allObjects()); delete mManager;}
 private Q_SLOTS:
     void zeroRemoveBad(void);
     void zeroClear(void);
@@ -70,6 +75,8 @@ private:
 
     QStringList mTests;
     QStringList mParserFormats;
+
+    ExtensionSystem::PluginManager *mManager;
 };
 
 Q_DECLARE_METATYPE(Utils::OutputFormat)
@@ -78,6 +85,12 @@ TestSuiteModelTest::TestSuiteModelTest(void)
 {
     qsrand(QDateTime::currentMSecsSinceEpoch());
     QmakeProjectManager::QmakeProjectManager::initialize();
+
+    mManager = new ExtensionSystem::PluginManager();
+    QTestLibPlugin::Internal::AbstractTestParserFactory *plainTextFactory = new QTestLibPlugin::Internal::PlainTextQTestLibParserFactory(this);
+    ExtensionSystem::PluginManager::addObject(plainTextFactory);
+    QTestLibPlugin::Internal::AbstractTestParserFactory *xmlFactory = new QTestLibPlugin::Internal::XMLQTestLibParserFactory(this);
+    ExtensionSystem::PluginManager::addObject(xmlFactory);
 
     mTests.clear();
     mTests << "OneClassTest";

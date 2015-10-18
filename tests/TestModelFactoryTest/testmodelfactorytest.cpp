@@ -1,8 +1,12 @@
 #include "../../testmodelfactory.h"
 
+#include "../../plaintextqtestlibparserfactory.h"
+#include "../../xmlqtestlibparserfactory.h"
+
 #include "../common/qtestlibmodeltester.h"
 
 #include <utils/outputformat.h>
+#include <extensionsystem/pluginmanager.h>
 #include <projectexplorer/localapplicationrunconfiguration.h>
 #include <projectexplorer/localapplicationruncontrol.h>
 #include <projectexplorer/kit.h>
@@ -17,8 +21,8 @@ class TestModelFactoryTest : public QObject
     Q_OBJECT
     HAS_SUB_TEST_FUNCTIONS
 public:
-    inline TestModelFactoryTest(void) :
-        mModel(NULL) {qsrand(QDateTime::currentMSecsSinceEpoch()); QmakeProjectManager::QmakeProjectManager::initialize();}
+    TestModelFactoryTest(void);
+    inline ~TestModelFactoryTest(void) {qDeleteAll(mManager->allObjects()); delete mManager;}
 private Q_SLOTS:
     void cleanup(void);
 
@@ -55,9 +59,24 @@ private:
     QAbstractItemModel *mModel;
     QString mParserFormat;
     QTestLibModelTester::Verbosity mVerbosity;
+
+    ExtensionSystem::PluginManager *mManager;
 };
 
 Q_DECLARE_METATYPE(Utils::OutputFormat)
+
+TestModelFactoryTest::TestModelFactoryTest(void) :
+    mModel(NULL)
+{
+    qsrand(QDateTime::currentMSecsSinceEpoch());
+    QmakeProjectManager::QmakeProjectManager::initialize();
+
+    mManager = new ExtensionSystem::PluginManager();
+    QTestLibPlugin::Internal::AbstractTestParserFactory *plainTextFactory = new QTestLibPlugin::Internal::PlainTextQTestLibParserFactory(this);
+    ExtensionSystem::PluginManager::addObject(plainTextFactory);
+    QTestLibPlugin::Internal::AbstractTestParserFactory *xmlFactory = new QTestLibPlugin::Internal::XMLQTestLibParserFactory(this);
+    ExtensionSystem::PluginManager::addObject(xmlFactory);
+}
 
 void TestModelFactoryTest::data(void)
 {
