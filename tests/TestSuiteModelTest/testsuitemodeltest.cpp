@@ -2,8 +2,13 @@
 
 #include "../common/qtestlibmodeltester.h"
 
-#include "utils/outputformat.h"
-#include "projectexplorer/runconfiguration.h"
+#include <utils/outputformat.h>
+#include <projectexplorer/localapplicationrunconfiguration.h>
+#include <projectexplorer/localapplicationruncontrol.h>
+#include <projectexplorer/kit.h>
+#include <projectexplorer/target.h>
+#include <qmakeprojectmanager/qmakeprojectmanager.h>
+#include <qmakeprojectmanager/qmakeproject.h>
 
 #include <QtTest>
 
@@ -72,6 +77,7 @@ Q_DECLARE_METATYPE(Utils::OutputFormat)
 TestSuiteModelTest::TestSuiteModelTest(void)
 {
     qsrand(QDateTime::currentMSecsSinceEpoch());
+    QmakeProjectManager::QmakeProjectManager::initialize();
 
     mTests.clear();
     mTests << "OneClassTest";
@@ -449,31 +455,48 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    QStringList cmdArgs;
-    cmdArgs << "-o" << QString("-,%1").arg(format);
+    QString cmdArgs;
+    int argsVersion = qrand() % 3;
+    if ((format != "txt") && (argsVersion == 0))
+        argsVersion = 2;
+    if (argsVersion == 1)
+        cmdArgs.append(QString("-%1 ").arg(format));
+    else if (argsVersion == 2)
+        cmdArgs.append(QString("-o -,%1 ").arg(format));
+
     switch(verbosity) {
     case QTestLibModelTester::Silent:
-        cmdArgs << "-silent";
+        cmdArgs.append("-silent");
         break;
     case QTestLibModelTester::Normal:
         break;
     case QTestLibModelTester::Verbose1:
-        cmdArgs << "-v1";
+        cmdArgs.append("-v1");
         break;
     case QTestLibModelTester::Verbose2:
-        cmdArgs << "-v2";
+        cmdArgs.append("-v2");
         break;
     case QTestLibModelTester::VerboseSignal:
-        cmdArgs << "-vs";
+        cmdArgs.append("-vs");
         break;
     default:
-        QVERIFY2(false, "Sentinel value VerbosityCountMinusOne must not be used as verbosity.");
+        qWarning() << "Sentinel value VerbosityCountMinusOne must not be used as verbosity.";
         break;
     }
+    cmdArgs.trimmed();
 
     qDebug() << verbosity << format << cmdArgs;
 
-    ProjectExplorer::RunControl *runControl = new ProjectExplorer::RunControl(TESTS_DIR "/" + test + "/debug/" + test.toLower(), cmdArgs, test, this);
+    // Creation of RunConfiguration
+    QmakeProjectManager::QmakeProject project(TESTS_DIR "/" + test + "/" + test + ".pro", this);
+    ProjectExplorer::Kit kit;
+    ProjectExplorer::Target target(&project, &kit);
+    ProjectExplorer::LocalApplicationRunConfiguration runConfig(&target);
+    runConfig.setCommandLineArguments(cmdArgs);
+    runConfig.setExecutable(TESTS_DIR "/" + test + "/debug/" + test.toLower());
+    runConfig.setWorkingDirectory(TESTS_DIR "/" + test);
+
+    ProjectExplorer::RunControl *runControl = new ProjectExplorer::LocalApplicationRunControl(&runConfig, this);
     runControl->setFormats(outputFormat, errorFormat);
     model->appendTestRun(runControl);
     QSignalSpy rowsAboutToBeInsertedSpy(model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));

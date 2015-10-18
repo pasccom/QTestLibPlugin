@@ -1,6 +1,10 @@
 #include "../../xmlqtestlibparserfactory.h"
 
-#include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/localapplicationrunconfiguration.h>
+#include <projectexplorer/kit.h>
+#include <projectexplorer/project.h>
+#include <qmakeprojectmanager/qmakeproject.h>
+#include <qmakeprojectmanager/qmakeprojectmanager.h>
 
 #include "../common/qtestlibmodeltester.h"
 
@@ -10,7 +14,7 @@ class XMLQTestLibParserTest : public QObject
 {
     Q_OBJECT
 public:
-    inline XMLQTestLibParserTest(void) {}
+    inline XMLQTestLibParserTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch()); QmakeProjectManager::QmakeProjectManager::initialize();}
 private Q_SLOTS:
     inline void oneClass_data(void) {data();}
     void oneClass(void);
@@ -80,22 +84,34 @@ void XMLQTestLibParserTest::limits(void)
 
 void XMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
+    // Creation of RunConfiguration
+    QmakeProjectManager::QmakeProject project(TESTS_DIR "/" + testName + "/" + testName + ".pro", this);
+    ProjectExplorer::Kit kit;
+    ProjectExplorer::Target target(&project, &kit);
+    ProjectExplorer::LocalApplicationRunConfiguration runConfig(&target);
+    if (qrand() % 2 == 1)
+        runConfig.setCommandLineArguments("-xml");
+    else
+        runConfig.setCommandLineArguments("-o -,xml");
+
+    // Creation of parser
+    QTestLibPlugin::Internal::XMLQTestLibParserFactory factory(this);
+    QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
+    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(&runConfig);
+    QVERIFY2(parser, "Factory should return a valid parser");
+
     mVerbosity = verbosity;
 
-    /* Executes the test and feeds the parser with the result */
-    ProjectExplorer::RunConfiguration runConfig(this);
-    QTestLibPlugin::Internal::XMLQTestLibParserFactory factory(this);
-    // TODO: This should be done elsewhere: QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
-    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(this);
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, testName);
     QAbstractItemModel *model = parser->getModel();
 
     mVerbosity = qMax(QTestLibModelTester::Normal, verbosity); // NOTE When running in XML silent is equal to normal
     checkTest(model, results, testName);
 
+    mVerbosity = QTestLibModelTester::Normal;
+
     delete model;
     delete parser;
-    mVerbosity = QTestLibModelTester::Normal;
 }
 
 void XMLQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName)

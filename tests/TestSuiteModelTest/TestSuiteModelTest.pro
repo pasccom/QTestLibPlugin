@@ -19,6 +19,7 @@ SOURCES += ../../plaintextqtestlibparser.cpp \
            ../../plaintextqtestlibparserfactory.cpp \
            ../../xmlqtestlibparser.cpp \
            ../../xmlqtestlibparserfactory.cpp \
+           ../../qtestlibargsparser.cpp \
            ../../qtestlibmodel.cpp \
            ../../testmodelfactory.cpp \
            ../../testsuitemodel.cpp
@@ -26,14 +27,13 @@ HEADERS += ../../plaintextqtestlibparser.h \
            ../../plaintextqtestlibparserfactory.h \
            ../../xmlqtestlibparser.h \
            ../../xmlqtestlibparserfactory.h \
+           ../../qtestlibargsparser.h \
            ../../qtestlibmodel.h \
            ../../testmodelfactory.h \
            ../../testsuitemodel.h
 
-# QtCreator dependencies
-QTCREATOR_DEPS += "projectexplorer"
-
 # Fake QtCreator tree
+include(../../QTestLibPlugin_dependencies.pri)
 include(../QtCreatorFake/QtCreatorFake.pri)
 
 # The directory where to put MOC-generated files :

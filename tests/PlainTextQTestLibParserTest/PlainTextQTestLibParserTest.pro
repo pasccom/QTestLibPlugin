@@ -5,6 +5,7 @@ CONFIG  += console
 CONFIG  -= app_bundle
 QT      += testlib
 QT      += xml
+QT      += widgets
 
 DEFINES += TESTS_DIR=\\\"$$PWD/..\\\"
 
@@ -17,14 +18,17 @@ HEADERS += ../common/qtestlibmodeltester.h
 # Files to be tested
 SOURCES += ../../plaintextqtestlibparser.cpp \
            ../../plaintextqtestlibparserfactory.cpp \
+           ../../qtestlibargsparser.cpp \
            ../../qtestlibmodel.cpp \
            ../../testmodelfactory.cpp
 HEADERS += ../../plaintextqtestlibparser.h \
            ../../plaintextqtestlibparserfactory.h \
+           ../../qtestlibargsparser.h \
            ../../qtestlibmodel.h \
            ../../testmodelfactory.h
 
 # Fake QtCreator tree
+include(../../QTestLibPlugin_dependencies.pri)
 include(../QtCreatorFake/QtCreatorFake.pri)
 
 # The directory where to put MOC-generated files :

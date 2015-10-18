@@ -17,14 +17,17 @@ HEADERS += ../common/qtestlibmodeltester.h
 # Files to be tested
 SOURCES += ../../xmlqtestlibparser.cpp \
            ../../xmlqtestlibparserfactory.cpp \
+           ../../qtestlibargsparser.cpp \
            ../../qtestlibmodel.cpp \
            ../../testmodelfactory.cpp
 HEADERS += ../../xmlqtestlibparser.h \
            ../../xmlqtestlibparserfactory.h \
+           ../../qtestlibargsparser.h \
            ../../qtestlibmodel.h \
            ../../testmodelfactory.h
 
 # Fake QtCreator tree
+include(../../QTestLibPlugin_dependencies.pri)
 include(../QtCreatorFake/QtCreatorFake.pri)
 
 # The directory where to put MOC-generated files :

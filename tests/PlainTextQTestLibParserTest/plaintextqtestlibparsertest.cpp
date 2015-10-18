@@ -1,6 +1,10 @@
 #include "../../plaintextqtestlibparserfactory.h"
 
-#include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/localapplicationrunconfiguration.h>
+#include <projectexplorer/kit.h>
+#include <projectexplorer/project.h>
+#include <qmakeprojectmanager/qmakeproject.h>
+#include <qmakeprojectmanager/qmakeprojectmanager.h>
 
 #include "../common/qtestlibmodeltester.h"
 
@@ -10,7 +14,7 @@ class PlainTextQTestLibParserTest : public QObject
 {
     Q_OBJECT
 public:
-    inline PlainTextQTestLibParserTest(void) {}
+    inline PlainTextQTestLibParserTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch()); QmakeProjectManager::QmakeProjectManager::initialize();}
 private Q_SLOTS:
     inline void oneClass_data(void) {data();}
     void oneClass(void);
@@ -79,21 +83,34 @@ void PlainTextQTestLibParserTest::limits(void)
 
 void PlainTextQTestLibParserTest::runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
+    // Creation of RunConfiguration
+    QmakeProjectManager::QmakeProject project(TESTS_DIR "/" + testName + "/" + testName + ".pro", this);
+    ProjectExplorer::Kit kit;
+    ProjectExplorer::Target target(&project, &kit);
+    ProjectExplorer::LocalApplicationRunConfiguration runConfig(&target);
+    int argsVersion = qrand() % 3;
+    if (argsVersion == 1)
+        runConfig.setCommandLineArguments("-txt");
+    else if (argsVersion == 2)
+        runConfig.setCommandLineArguments("-o -,txt");
+
+    // Creation of parser
+    QTestLibPlugin::Internal::PlainTextQTestLibParserFactory factory(this);
+    QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
+    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(&runConfig);
+    QVERIFY2(parser, "Factory should return a valid parser");
+
     mVerbosity = verbosity;
 
-    /* Executes the test and feeds the parser with the result */
-    ProjectExplorer::RunConfiguration runConfig(this);
-    QTestLibPlugin::Internal::PlainTextQTestLibParserFactory factory(this);
-    // TODO: This should be done elsewhere: QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
-    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(this);
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, testName);
     QAbstractItemModel *model = parser->getModel();
 
     checkTest(model, results, testName);
 
+    mVerbosity = QTestLibModelTester::Normal;
+
     delete model;
     delete parser;
-    mVerbosity = QTestLibModelTester::Normal;
 }
 
 void PlainTextQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName)
