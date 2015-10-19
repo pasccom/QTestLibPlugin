@@ -30,50 +30,35 @@ TestModelFactory::TestModelFactory(ProjectExplorer::RunControl *runControl, QObj
             this, SLOT(runControlFinished()));
 }
 
-void TestModelFactory::parseTestOutput(ProjectExplorer::RunControl * runControl, const QString & msg, Utils::OutputFormat format)
+void TestModelFactory::parseTestOutput(ProjectExplorer::RunControl* runControl, const QString& msg, Utils::OutputFormat format)
 {
     foreach (QString line, msg.split(QRegExp(QLatin1String("[\n\r]")))) {
         if (line.isEmpty())
             continue;
 
-        switch (format) {
-        case Utils::OutputFormat::NormalMessageFormat:
-            qDebug() << "Normal message" << line;
-            break;
-        case Utils::OutputFormat::ErrorMessageFormat:
-            qDebug() << "Error message" << line;
-            break;
-        case Utils::OutputFormat::DebugFormat:
-            qDebug() << "Debug message" << line;
-            break;
-        case Utils::OutputFormat::StdOutFormat:
-            parseStdoutLine(runControl, line);
-            break;
-        case Utils::OutputFormat::StdErrFormat:
-            qDebug() << "Stderr message" << line;
-            break;
-        case Utils::OutputFormat::StdOutFormatSameLine:
-            parseStdoutLine(runControl, line);
-            break;
-        case Utils::OutputFormat::StdErrFormatSameLine:
-            qDebug() << "Stderr same line message" << line;
-            break;
-        default:
-            break;
-        }
+        callParsers(runControl, line, format);
     }
 }
 
-void TestModelFactory::parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line)
+void TestModelFactory::runControlFinished(void)
 {
     if (mModelFound) {
-        mParsers.first()->parseStdoutLine(runControl, line);
+        Q_ASSERT(mParsers.size() == 1);
+        emit modelPopulated(mParsers.first()->getModel());
+    }
+    deleteLater();
+}
+
+void TestModelFactory::callParsers(ProjectExplorer::RunControl * runControl, const QString & line, Utils::OutputFormat format)
+{
+    if (mModelFound) {
+        callParser(mParsers.first(), runControl, line, format);
     } else {
         QLinkedList<AbstractTestParser *>::iterator it;
         ParseResult currentResult;
 
         for (it = mParsers.begin(); it != mParsers.end();) {
-            currentResult = (*it)->parseStdoutLine(runControl, line);
+            currentResult = callParser(*it, runControl, line, format);
 
             if (currentResult == MagicFound)
                 break;
@@ -100,15 +85,32 @@ void TestModelFactory::parseStdoutLine(ProjectExplorer::RunControl* runControl, 
     }
 }
 
-void TestModelFactory::runControlFinished(void)
+TestModelFactory::ParseResult TestModelFactory::callParser(AbstractTestParser* parser, ProjectExplorer::RunControl* runControl, const QString& line, Utils::OutputFormat format)
 {
-    if (mModelFound) {
-        Q_ASSERT(mParsers.size() == 1);
-        emit modelPopulated(mParsers.first()->getModel());
+    switch (format) {
+    case Utils::OutputFormat::NormalMessageFormat:
+        qDebug() << "Normal message" << line;
+        break;
+    case Utils::OutputFormat::ErrorMessageFormat:
+        qDebug() << "Error message" << line;
+        break;
+    case Utils::OutputFormat::DebugFormat:
+        qDebug() << "Debug message" << line;
+        break;
+    case Utils::OutputFormat::StdOutFormat:
+        return parser->parseStdoutLine(runControl, line);
+    case Utils::OutputFormat::StdErrFormat:
+        return parser->parseStderrLine(runControl, line);
+    case Utils::OutputFormat::StdOutFormatSameLine:
+        return parser->parseStdoutLine(runControl, line);
+    case Utils::OutputFormat::StdErrFormatSameLine:
+        return parser->parseStderrLine(runControl, line);
+    default:
+        break;
     }
-    deleteLater();
-}
 
+    return Unsure;
+}
 
 } // namespace Internal
 } // namespace QTestLibPlugin

@@ -60,7 +60,7 @@ signals:
     /*!
      * \brief Emitted when a model has been found.
      *
-     * This signal is emmitted as soon as a parser returns MagicFound.
+     * This signal is emmitted as soon as a parser returns TestModelFactory::MagicFound.
      *
      * \param model A pointer the the newly allocated model.
      * \sa modelPopulated()
@@ -81,8 +81,7 @@ private slots:
      * \brief Parses run control output.
      *
      * This slots receives the output from the ProjectExplorer::RunControl being run.
-     * Only the formats Utils::OutputFormat::StdOutFormat and
-     * Utils::OutputFormat::StdOutFormatSameLine are currently used.
+     * It splits the message into line and call callParser() on each one.
      *
      * \param runControl The run control from which this message originates.
      * \param msg The message
@@ -99,17 +98,37 @@ private slots:
     void runControlFinished(void);
 private:
     /*!
-     * \internal
-     * \brief Pass the line to known parsers.
+     * \brief Call each known parser on the line.
      *
-     * It calls the known parsers methods AbstractTestParser::parseStdoutLine().
+     * Loops on the list of available parsers and call callParser() with each one.
+     * Once a parser has returned TestModelFactory::MagicNotFound, it becomes unavailable.
+     * Once a parser has returned TestModelFactory::MagicFound, all other ones are discarded.
      *
-     * \param runControl The run control from which this message originates.
-     * \param msg The message
+     * \param runControl The run control from which the line originates.
+     * \param line A message line.
+     * \param format The format.
      */
-    void parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line);
-    QLinkedList<AbstractTestParser *> mParsers; /*!<  \internal The list of available parsers (parsers are removed when they return MagicNotFound) */
-    bool mModelFound; /*!< \internal Whether a parser succeeded in finding a model (i.e. returned MagicFound) */
+    void callParsers(ProjectExplorer::RunControl* runControl, const QString& line, Utils::OutputFormat format);
+    /*!
+     * \internal
+     * \brief Pass the line to specified parser.
+     *
+     * It calls the specified parser methods AbstractTestParser::parseStdoutLine() or
+     * AbstractTestParser::parseStderrLine() depending on format.
+     * Only the formats Utils::OutputFormat::StdOutFormat,
+     * Utils::OutputFormat::StdOutFormatSameLine, Utils::OutputFormat::StdErrFormat and
+     * Utils::OutputFormat::StdErrFormatSameLine are currently used.
+     *
+     * \param parser The parser which will parse the message.
+     * \param runControl The run control from which the line originates.
+     * \param line A message line.
+     * \param format The format.
+     * \return The resut of the parser (the maximum value of the results
+     * returned by the parser for each line of the message).
+     */
+    ParseResult callParser(AbstractTestParser* parser, ProjectExplorer::RunControl* runControl, const QString& line, Utils::OutputFormat format);
+    QLinkedList<AbstractTestParser *> mParsers; /*!<  \internal The list of available parsers (parsers are removed when they return TestModelFactory::MagicNotFound) */
+    bool mModelFound; /*!< \internal Whether a parser succeeded in finding a model (i.e. returned TestModelFactory::MagicFound) */
 };
 
 /*!
