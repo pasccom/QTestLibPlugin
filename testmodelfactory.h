@@ -98,6 +98,7 @@ private slots:
     void runControlFinished(void);
 private:
     /*!
+     * \internal
      * \brief Call each known parser on the line.
      *
      * Loops on the list of available parsers and call callParser() with each one.
