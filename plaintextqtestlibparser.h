@@ -51,7 +51,11 @@ public:
      * continuation of the previous line and the information is added to the model
      * using QTestLibModel::appendTestItemMessage().
      *
-     * \todo Complete the doc here.
+     * This parser never returns TestModelFactory::MagicNotFound
+     * as other lines may be output before the beginning of the test.
+     *
+     * The magic is implemented as two regular expressions (one for silent mode)
+     * and the other for verboses modes. They can be seen at any moment in the test execution.
      *
      * \param runControl The run control from which the line comes.
      * \param line The line of \c stdout.
