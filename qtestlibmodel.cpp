@@ -27,7 +27,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
 {
     Q_ASSERT(runControl == mTestRun);
 
-    qDebug() << type << className << functionName << rowTitle << message;
+    //qDebug() << type << className << functionName << rowTitle << message;
 
     TestItem *testItem;
     TestClassItem *testClassItem;
