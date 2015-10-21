@@ -145,6 +145,7 @@ private:
     int matchBracket(const QString& line, int b) const;
 
     QTestLibModel *mModel; /*!< \internal The model for the test output (it is \c NULL while TestModelFactory::MagicFound has not been returned by parseStdoutLine() or parseStderrLine()) */
+    bool mParserActive; /*!< \internal \c true when a test is being parsed */
 
     friend class PlainTextQTestLibParserFactory;
 };

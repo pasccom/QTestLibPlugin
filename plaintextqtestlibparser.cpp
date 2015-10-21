@@ -14,12 +14,14 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectEx
     if (stdoutIgnoreRegexp.indexIn(line) == 0)
         return TestModelFactory::Unsure;
 
-    QRegExp stdoutMagicRegexp1(QLatin1String("Config: Using Qt?Test library (\\d+\\.\\d+\\.\\d+), Qt (\\d+\\.\\d+\\.\\d+)(?: \\((.*)\\))?"));
-    QRegExp stdoutMagicRegexp2(QLatin1String("Testing ([A-Za-z_][A-Za-z0-9_]*)"));
-    if (mModel == NULL) {
+    if (!mParserActive) {
         // Test for begin magic line
+        QRegExp stdoutMagicRegexp1(QLatin1String("Config: Using Qt?Test library (\\d+\\.\\d+\\.\\d+), Qt (\\d+\\.\\d+\\.\\d+)(?: \\((.*)\\))?"));
+        QRegExp stdoutMagicRegexp2(QLatin1String("Testing ([A-Za-z_][A-Za-z0-9_]*)"));
         if (stdoutMagicRegexp1.exactMatch(line) || stdoutMagicRegexp2.exactMatch(line)) {
-            mModel = new QTestLibModel(runControl);
+            if (mModel == NULL)
+                mModel = new QTestLibModel(runControl);
+            mParserActive = true;
             return TestModelFactory::MagicFound;
         } else {
             return TestModelFactory::Unsure;
@@ -27,10 +29,10 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectEx
     } else {
         // Test for result line
         QRegExp stdoutResultRegexp(QLatin1String("Totals: (\\d+) passed, (\\d+) failed, (\\d+) skipped(?:, (\\d+) blacklisted)?"));
-        if (stdoutMagicRegexp1.exactMatch(line) || stdoutMagicRegexp2.exactMatch(line))
-            return TestModelFactory::MagicFound;
-        if (stdoutResultRegexp.exactMatch(line))
+        if (stdoutResultRegexp.exactMatch(line)) {
+            mParserActive = false;
             return TestModelFactory::Unsure;
+        }
     }
 
     QRegExp stdoutLocationRegexp(QLatin1String("   Loc: \\[(.*)\\(([1-9][0-9]+)\\)\\]"));
