@@ -57,6 +57,9 @@ public:
      * The magic is implemented as two regular expressions (one for silent mode)
      * and the other for verboses modes. They can be seen at any moment in the test execution.
      *
+     * Lines before the first magic are ignored as well as lines after a result magic.
+     * However the parser can restart if a line with a begin magic occurs after.
+     *
      * \param runControl The run control from which the line comes.
      * \param line The line of \c stdout.
      * \return A TestModelFactory::ParseResult as specified in the description.
