@@ -12,13 +12,21 @@ XMLQTestLibParser::XMLQTestLibParser(QObject *parent) :
     AbstractTestParser(parent), mModel(NULL)
 {
    mReader = new QXmlStreamReader();
+   mParserActive = NULL;
 }
 
 TestModelFactory::ParseResult XMLQTestLibParser::parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line)
 {
     TestModelFactory::ParseResult result = TestModelFactory::Unsure;
 
-    mReader->addData(line.trimmed() + QLatin1Char('\n'));
+    QString cleanedLine = line.trimmed() + QLatin1Char('\n');
+    if (!mParserActive && !cleanedLine.contains(QLatin1String("<?xml")))
+        return result;
+    if (!mParserActive)
+        cleanedLine = cleanedLine.mid(cleanedLine.indexOf("<?xml", 0));
+    mParserActive = true;
+
+    mReader->addData(cleanedLine);
 
     while(!mReader->atEnd()) {
         QXmlStreamReader::TokenType currentToken = mReader->readNext();

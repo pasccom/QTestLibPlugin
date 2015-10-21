@@ -36,6 +36,7 @@ private:
 
     QTestLibModel *mModel;
     QXmlStreamReader *mReader;
+    bool mParserActive;
 
     QString mCurrentClass;
     QString mCurrentFunction;
