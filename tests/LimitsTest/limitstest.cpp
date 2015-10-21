@@ -9,6 +9,7 @@ class LimitsTest : public QObject
 
 public:
     LimitsTest(void);
+    ~LimitsTest(void);
 
 private Q_SLOTS:
     void p(void);
@@ -20,8 +21,14 @@ private Q_SLOTS:
 
 LimitsTest::LimitsTest(void)
 {
-    std::cout << "Subreptive stdout message" << std::endl;
-    qDebug() << "Subreptive debug message";
+    std::cout << "Subreptive constructor stdout message" << std::endl;
+    qDebug() << "Subreptive constructor debug message";
+}
+
+LimitsTest::~LimitsTest(void)
+{
+    std::cout << "Subreptive destructor stdout message" << std::endl;
+    qDebug() << "Subreptive destructor debug message";
 }
 
 void LimitsTest::p(void)

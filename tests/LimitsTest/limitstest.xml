@@ -126,6 +126,8 @@
         <unsure />
         <unsure />
         <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
     </results>
     <results format="txt">
         <unsure level="silent" />
@@ -175,6 +177,8 @@
         <unsure level="silent" />
         <unsure/>
         <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
     </results>
     <class name="LimitsTest" type="Fail" level="silent">
         <function name="initTestCase" type="Pass">
@@ -192,7 +196,7 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="29">
+            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="36">
                 QVERIFY(true)
             </message>
             <message type="Pass" strict="true">
@@ -206,10 +210,10 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="34">
+            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="41">
                 QVERIFY(false)
             </message>
-            <message type="Fail" strict="true" level="silent" file="limitstest.cpp" line="34">
+            <message type="Fail" strict="true" level="silent" file="limitstest.cpp" line="41">
                 'false' returned FALSE. (This test should fail.)
             </message>
             <message type="Duration" strict="false" format="xml" >
