@@ -2,6 +2,7 @@
 <!DOCTYPE qtestliboutput SYSTEM "qtestliboutput.dtd">
 <qtestliboutput>
     <results format="xml">
+        <unsure level="silent" />
         <unsure />
         <unsure />
         <unsure />
@@ -124,8 +125,10 @@
         <unsure />
         <unsure />
         <unsure />
+        <unsure level="silent" />
     </results>
     <results format="txt">
+        <unsure level="silent" />
         <unsure/>
         <magicfound level="silent" />
         <unsure level="verbose1" />
@@ -171,6 +174,7 @@
         <unsure/>
         <unsure level="silent" />
         <unsure/>
+        <unsure level="silent" />
     </results>
     <class name="LimitsTest" type="Fail" level="silent">
         <function name="initTestCase" type="Pass">
@@ -188,7 +192,7 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="21">
+            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="29">
                 QVERIFY(true)
             </message>
             <message type="Pass" strict="true">
@@ -202,10 +206,10 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="26">
+            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="34">
                 QVERIFY(false)
             </message>
-            <message type="Fail" strict="true" level="silent" file="limitstest.cpp" line="26">
+            <message type="Fail" strict="true" level="silent" file="limitstest.cpp" line="34">
                 'false' returned FALSE. (This test should fail.)
             </message>
             <message type="Duration" strict="false" format="xml" >

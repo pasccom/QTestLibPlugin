@@ -1,12 +1,14 @@
 #include <QString>
 #include <QtTest>
 
+#include <iostream>
+
 class LimitsTest : public QObject
 {
     Q_OBJECT
 
 public:
-    inline LimitsTest(void) {}
+    LimitsTest(void);
 
 private Q_SLOTS:
     void p(void);
@@ -15,6 +17,12 @@ private Q_SLOTS:
     void testRowNames_data(void);
     void testRowNames(void);
 };
+
+LimitsTest::LimitsTest(void)
+{
+    std::cout << "Subreptive stdout message" << std::endl;
+    qDebug() << "Subreptive debug message";
+}
 
 void LimitsTest::p(void)
 {
