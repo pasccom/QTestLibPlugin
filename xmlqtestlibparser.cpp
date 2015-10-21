@@ -54,6 +54,7 @@ TestModelFactory::ParseResult XMLQTestLibParser::parseStdoutLine(ProjectExplorer
             break;
         case QXmlStreamReader::EndDocument:
             mReader->clear();
+            mParserActive = false;
             qDebug() << "End of document";
             break;
         case QXmlStreamReader::StartElement:
