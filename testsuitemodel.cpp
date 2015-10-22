@@ -11,7 +11,7 @@ namespace Internal {
 int AggregateItemModel::rowCount(const QModelIndex& parent) const
 {
     if (!parent.isValid())
-        return mTests.size();
+        return mSubModels.size();
 
     QAbstractItemModel *subModel = mInternalPointers.value(parent.internalPointer(), NULL);
     Q_ASSERT(subModel != NULL);
@@ -40,8 +40,8 @@ QModelIndex AggregateItemModel::index(int row, int column, const QModelIndex& pa
     QAbstractItemModel *subModel = NULL;
 
     if (!parent.isValid()) {
-        subModel = mTests.at(row);
-        internalPointer = mTests.at(row);
+        subModel = mSubModels.at(row);
+        internalPointer = mSubModels.at(row);
     } else {
         subModel =  mInternalPointers.value(parent.internalPointer(), NULL);
         Q_ASSERT(subModel != NULL);
@@ -68,7 +68,7 @@ QModelIndex AggregateItemModel::parent(const QModelIndex& child) const
         return QModelIndex();
 
     QModelIndex parentIndex = subModel->parent(child);
-    int row = mTests.indexOf(subModel);
+    int row = mSubModels.indexOf(subModel);
 
     if (!parentIndex.isValid())
         return index(row, child.column(), QModelIndex());
@@ -98,21 +98,21 @@ QVariant AggregateItemModel::data(const QModelIndex &index, int role) const
 
 void AggregateItemModel::appendSubModel(QAbstractItemModel *model)
 {
-    beginInsertRows(QModelIndex(), mTests.size(), mTests.size());
+    beginInsertRows(QModelIndex(), mSubModels.size(), mSubModels.size());
     Q_ASSERT(model->parent() == NULL);
     model->setParent(this);
-    mTests.append(model);
+    mSubModels.append(model);
     endInsertRows();
 }
 
 void AggregateItemModel::removeSubModel(int index)
 {
-    if ((index < 0) || (index >= mTests.size()))
+    if ((index < 0) || (index >= mSubModels.size()))
         return;
 
     beginRemoveRows(QModelIndex(), index, index);
 
-    QAbstractItemModel *testRun = mTests.takeAt(index);
+    QAbstractItemModel *testRun = mSubModels.takeAt(index);
     delete testRun;
 
     endRemoveRows();
@@ -129,11 +129,11 @@ void AggregateItemModel::removeSubModel(int index)
 void AggregateItemModel::clear(void)
 {
     beginResetModel();
-    foreach (QAbstractItemModel* model, mTests) {
+    foreach (QAbstractItemModel* model, mSubModels) {
         delete model;
     }
 
-    mTests.clear();
+    mSubModels.clear();
     mInternalPointers.clear();
     endResetModel();
 }

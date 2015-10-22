@@ -28,7 +28,7 @@ public slots:
     void removeSubModel(int index);
     void clear(void);
 private:
-    QList<QAbstractItemModel *> mTests;
+    QList<QAbstractItemModel *> mSubModels;
     mutable QMap<void *, QAbstractItemModel *> mInternalPointers;
 };
 
