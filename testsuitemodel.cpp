@@ -8,7 +8,7 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-int TestSuiteModel::rowCount(const QModelIndex& parent) const
+int AggregateItemModel::rowCount(const QModelIndex& parent) const
 {
     if (!parent.isValid())
         return mTests.size();
@@ -21,7 +21,7 @@ int TestSuiteModel::rowCount(const QModelIndex& parent) const
     return subModel->rowCount(parent);
 }
 
-int TestSuiteModel::columnCount(const QModelIndex& parent) const
+int AggregateItemModel::columnCount(const QModelIndex& parent) const
 {
     if (!parent.isValid())
         return 3;
@@ -34,7 +34,7 @@ int TestSuiteModel::columnCount(const QModelIndex& parent) const
     return subModel->columnCount(parent);
 }
 
-QModelIndex TestSuiteModel::index(int row, int column, const QModelIndex& parent) const
+QModelIndex AggregateItemModel::index(int row, int column, const QModelIndex& parent) const
 {
     void *internalPointer = NULL;
     QAbstractItemModel *subModel = NULL;
@@ -56,7 +56,7 @@ QModelIndex TestSuiteModel::index(int row, int column, const QModelIndex& parent
     return createIndex(row, column, internalPointer);
 }
 
-QModelIndex TestSuiteModel::parent(const QModelIndex& child) const
+QModelIndex AggregateItemModel::parent(const QModelIndex& child) const
 {
     if (!child.isValid())
         return QModelIndex();
@@ -79,7 +79,7 @@ QModelIndex TestSuiteModel::parent(const QModelIndex& child) const
         return index(parentIndex.row(), parentIndex.column(), index(row, 0, QModelIndex()));
 }
 
-QVariant TestSuiteModel::data(const QModelIndex &index, int role) const
+QVariant AggregateItemModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
@@ -96,23 +96,16 @@ QVariant TestSuiteModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void TestSuiteModel::appendTestRun(ProjectExplorer::RunControl* runControl)
-{
-    TestModelFactory *factory = new TestModelFactory(runControl, this);
-    connect(factory, SIGNAL(modelPopulated(QAbstractItemModel *)),
-            this, SLOT(endAppendTestRun(QAbstractItemModel *)));
-}
-
-void TestSuiteModel::endAppendTestRun(QAbstractItemModel *testModel)
+void AggregateItemModel::appendSubModel(QAbstractItemModel *model)
 {
     beginInsertRows(QModelIndex(), mTests.size(), mTests.size());
-    Q_ASSERT(testModel->parent() == NULL);
-    testModel->setParent(this);
-    mTests.append(testModel);
+    Q_ASSERT(model->parent() == NULL);
+    model->setParent(this);
+    mTests.append(model);
     endInsertRows();
 }
 
-void TestSuiteModel::removeTestRun(int index)
+void AggregateItemModel::removeSubModel(int index)
 {
     if ((index < 0) || (index >= mTests.size()))
         return;
@@ -121,7 +114,6 @@ void TestSuiteModel::removeTestRun(int index)
 
     QAbstractItemModel *testRun = mTests.takeAt(index);
     delete testRun;
-
 
     endRemoveRows();
 
@@ -134,11 +126,11 @@ void TestSuiteModel::removeTestRun(int index)
     }
 }
 
-void TestSuiteModel::clear(void)
+void AggregateItemModel::clear(void)
 {
     beginResetModel();
-    foreach (QAbstractItemModel* testModel, mTests) {
-        delete testModel;
+    foreach (QAbstractItemModel* model, mTests) {
+        delete model;
     }
 
     mTests.clear();
@@ -146,6 +138,12 @@ void TestSuiteModel::clear(void)
     endResetModel();
 }
 
+void TestSuiteModel::appendTestRun(ProjectExplorer::RunControl* runControl)
+{
+    TestModelFactory *factory = new TestModelFactory(runControl, this);
+    connect(factory, SIGNAL(modelPopulated(QAbstractItemModel *)),
+            this, SLOT(endAppendTestRun(QAbstractItemModel *)));
+}
 
 } // namespace Internal
 } // namespace QTestLibPlugin

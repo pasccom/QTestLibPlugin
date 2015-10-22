@@ -12,11 +12,11 @@ namespace Internal {
 
 class QTestLibModel;
 
-class TestSuiteModel : public QAbstractItemModel
+class AggregateItemModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    inline TestSuiteModel(QObject* parent = NULL):
+    inline AggregateItemModel(QObject* parent = NULL):
         QAbstractItemModel(parent) {}
     QModelIndex index(int row, int column, const QModelIndex& parent) const;
     QModelIndex parent(const QModelIndex& child) const;
@@ -24,17 +24,25 @@ public:
     int columnCount(const QModelIndex& parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
 public slots:
-    void appendTestRun(ProjectExplorer::RunControl* runControl);
-    void removeTestRun(int index);
-    //void removeTestRun(const QModelIndex& index);
+    void appendSubModel(QAbstractItemModel *model);
+    void removeSubModel(int index);
     void clear(void);
-private slots:
-    void endAppendTestRun(QAbstractItemModel *testModel);
 private:
-    /*QModelIndex findAncestor(const QModelIndex& index) const;
-    QModelIndex subModelIndex(QAbstractItemModel *subModel, const QModelIndex& index) const;*/
     QList<QAbstractItemModel *> mTests;
     mutable QMap<void *, QAbstractItemModel *> mInternalPointers;
+};
+
+class TestSuiteModel : public AggregateItemModel
+{
+    Q_OBJECT
+public:
+    inline TestSuiteModel(QObject* parent = NULL):
+        AggregateItemModel(parent) {}
+public slots:
+    void appendTestRun(ProjectExplorer::RunControl* runControl);
+    inline void removeTestRun(int index) {removeSubModel(index);}
+private slots:
+    inline void endAppendTestRun(QAbstractItemModel *testModel) {appendSubModel(testModel);}
 };
 
 } // namespace Internal
