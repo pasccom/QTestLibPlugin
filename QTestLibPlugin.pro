@@ -49,6 +49,9 @@ USE_USER_DESTDIR = yes
 include($$QTCREATOR_SOURCES/src/qtcreatorplugin.pri)
 
 ###### Added stuff to bypass IDE_BUILD_TREE
+target.path = $$DESTDIR
+INSTALLS =
+INSTALLS += target
 DESTDIR = ./bin
 
 LIBS+= -L/usr/lib64/qtcreator
