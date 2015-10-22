@@ -32,7 +32,6 @@ public:
     AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const;
 private:
     /*!
-     * \internal
      * \brief Check if the project uses \c testlib Qt module.
      *
      * As the associated parser can only parse QTestLib output,
@@ -44,7 +43,6 @@ private:
      */
     bool canParseModule(ProjectExplorer::RunConfiguration *runConfiguration) const;
     /*!
-     * \internal
      * \brief Check the command line arguments
      *
      * Once the \c testlib module is found, the arguments are checked

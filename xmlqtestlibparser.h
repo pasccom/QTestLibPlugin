@@ -87,7 +87,6 @@ protected:
     XMLQTestLibParser(QObject *parent = NULL);
 private:
     /*!
-     * \internal
      * \brief Handles beginning of elements
      *
      * Current token is the beginning of an element:
@@ -100,7 +99,6 @@ private:
      */
     TestModelFactory::ParseResult startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag);
     /*!
-     * \internal
      * \brief Handles end of elements
      *
      * Current token is the end of an element:
@@ -115,7 +113,6 @@ private:
      */
     TestModelFactory::ParseResult endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag);
     /*!
-     * \internal
      * \brief Handles CDATA sections
      *
      * Extracts the contents of CDATA sections.
@@ -125,7 +122,6 @@ private:
      */
     TestModelFactory::ParseResult textParsed(ProjectExplorer::RunControl* runControl);
     /*!
-     * \internal
      * \brief Saves the attributes
      *
      * Stores the given attributes in the attributes map
@@ -134,7 +130,6 @@ private:
      */
     void saveAttributes(const QXmlStreamAttributes& attrs);
     /*!
-     * \internal
      * \brief Gives the message type
      *
      * Converts the type attribute of the current tag
@@ -144,21 +139,21 @@ private:
      */
     QTestLibModel::MessageType currentMessageType(void);
 
-    QTestLibModel *mModel; /*!< \internal The model for the test output (it is \c NULL while TestModelFactory::MagicFound has not been returned by parseStdoutLine() or parseStderrLine()) */
-    QXmlStreamReader *mReader; /*! \internal The XML stream reader used to parse XML */
-    bool mParserActive; /*!< \internal \c true when a test is being parsed */
+    QTestLibModel *mModel; /*!< The model for the test output (it is \c NULL while TestModelFactory::MagicFound has not been returned by parseStdoutLine() or parseStderrLine()) */
+    QXmlStreamReader *mReader; /*!< The XML stream reader used to parse XML */
+    bool mParserActive; /*!< \c true when a test is being parsed */
 
-    QString mCurrentClass; /*!< \internal The name of the class currently parsed */
-    QString mCurrentFunction; /*!< \internal The name of the function currently parsed */
-    QString mCurrentRow; /*!< \internal The name of the data row currently parsed */
-    QString mCurrentDescription; /*!< \internal The description of the test currently parsed */
+    QString mCurrentClass; /*!< The name of the class currently parsed */
+    QString mCurrentFunction; /*!< The name of the function currently parsed */
+    QString mCurrentRow; /*!< The name of the data row currently parsed */
+    QString mCurrentDescription; /*!< The description of the test currently parsed */
 
-    QStack<QString> mCurrentElement; /*!< \internal A stack for the names of elements currently parsed */
-    QMap<QString, QString> mCurrentAttributes; /*!< \internal A map which stores the attributes of the current element */
+    QStack<QString> mCurrentElement; /*!< A stack for the names of elements currently parsed */
+    QMap<QString, QString> mCurrentAttributes; /*!< A map which stores the attributes of the current element */
 
-    QString mQtVersion; /*!< \internal The version of Qt used by the test */
-    QString mQtBuild;  /*!< \internal Build information corresponding to the version of Qt used in the test */
-    QString mQTestLibVersion;  /*!< \internal The version of QTestLib used by the test */
+    QString mQtVersion; /*!< The version of Qt used by the test */
+    QString mQtBuild;  /*!< Build information corresponding to the version of Qt used in the test */
+    QString mQTestLibVersion;  /*!< The version of QTestLib used by the test */
 
     friend class XMLQTestLibParserFactory;
 };

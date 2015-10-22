@@ -94,7 +94,6 @@ protected:
         AbstractTestParser(parent), mModel(NULL) {}
 private:
     /*!
-     * \internal
      * \brief Tells whether a line is the beginning of a line of test output.
      *
      * Checks whether a line is the beginning of a line of test output and
@@ -111,7 +110,6 @@ private:
      */
     bool isMessageBeginning(const QString& line, QTestLibModel::MessageType *type = NULL);
     /*!
-     * \internal
      * \brief Process the beginning of a line of test output.
      *
      * This function extracts the information contained in a line of test output
@@ -130,7 +128,6 @@ private:
      */
     bool processMessageBeginning(ProjectExplorer::RunControl* runControl, const QString& line, QTestLibModel::MessageType type);
     /*!
-     * \internal
      * \brief Match the brackets.
      *
      * This function returns the position of the closing bracket
@@ -147,8 +144,8 @@ private:
      */
     int matchBracket(const QString& line, int b) const;
 
-    QTestLibModel *mModel; /*!< \internal The model for the test output (it is \c NULL while TestModelFactory::MagicFound has not been returned by parseStdoutLine() or parseStderrLine()) */
-    bool mParserActive; /*!< \internal \c true when a test is being parsed */
+    QTestLibModel *mModel; /*!< The model for the test output (it is \c NULL while TestModelFactory::MagicFound has not been returned by parseStdoutLine() or parseStderrLine()) */
+    bool mParserActive; /*!< \c true when a test is being parsed */
 
     friend class PlainTextQTestLibParserFactory;
 };

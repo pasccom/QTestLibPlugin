@@ -77,7 +77,6 @@ signals:
     void modelPopulated(QAbstractItemModel *model);
 private slots:
     /*!
-     * \internal
      * \brief Parses run control output.
      *
      * This slots receives the output from the ProjectExplorer::RunControl being run.
@@ -89,7 +88,6 @@ private slots:
      */
     void parseTestOutput(ProjectExplorer::RunControl* runControl, const QString& msg, Utils::OutputFormat format);
     /*!
-     * \internal
      * \brief Called when a run control finishes.
      *
      * Thanks to this slot, the factory is notified of the end of the currently run ProjectExplorer::RunControl.
@@ -98,7 +96,6 @@ private slots:
     void runControlFinished(void);
 private:
     /*!
-     * \internal
      * \brief Call each known parser on the line.
      *
      * Loops on the list of available parsers and call callParser() with each one.
@@ -111,7 +108,6 @@ private:
      */
     void callParsers(ProjectExplorer::RunControl* runControl, const QString& line, Utils::OutputFormat format);
     /*!
-     * \internal
      * \brief Pass the line to specified parser.
      *
      * It calls the specified parser methods AbstractTestParser::parseStdoutLine() or
@@ -128,8 +124,8 @@ private:
      * returned by the parser for each line of the message).
      */
     ParseResult callParser(AbstractTestParser* parser, ProjectExplorer::RunControl* runControl, const QString& line, Utils::OutputFormat format);
-    QLinkedList<AbstractTestParser *> mParsers; /*!<  \internal The list of available parsers (parsers are removed when they return TestModelFactory::MagicNotFound) */
-    bool mModelFound; /*!< \internal Whether a parser succeeded in finding a model (i.e. returned TestModelFactory::MagicFound) */
+    QLinkedList<AbstractTestParser *> mParsers; /*!< The list of available parsers (parsers are removed when they return TestModelFactory::MagicNotFound) */
+    bool mModelFound; /*!< Whether a parser succeeded in finding a model (i.e. returned TestModelFactory::MagicFound) */
 };
 
 /*!
@@ -198,7 +194,6 @@ public:
     virtual QAbstractItemModel *getModel(void) const = 0;
 protected:
     /*!
-     * \internal
      * \brief Constructor
      * \param parent The parent of the parser.
      */
@@ -242,7 +237,6 @@ public:
     virtual AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const = 0;
 protected:
     /*!
-     * \internal
      * \brief Constructor
      * \param parent The parent of the parser factory.
      */
