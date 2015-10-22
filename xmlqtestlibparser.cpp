@@ -23,7 +23,7 @@ TestModelFactory::ParseResult XMLQTestLibParser::parseStdoutLine(ProjectExplorer
     if (!mParserActive && !cleanedLine.contains(QLatin1String("<?xml")))
         return result;
     if (!mParserActive)
-        cleanedLine = cleanedLine.mid(cleanedLine.indexOf("<?xml", 0));
+        cleanedLine = cleanedLine.mid(cleanedLine.indexOf(QLatin1String("<?xml"), 0));
     mParserActive = true;
 
     mReader->addData(cleanedLine);
