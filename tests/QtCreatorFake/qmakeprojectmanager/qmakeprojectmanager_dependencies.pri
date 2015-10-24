@@ -24,4 +24,4 @@ HEADERS += \
 
 #DEFINES += PROEVALUATOR_DEBUG
 
-include($$QTC_SOURCE_TREE/shared/proparser/proparser.pri)
+include($$QTCREATOR_SOURCES/src/shared/proparser/proparser.pri)
