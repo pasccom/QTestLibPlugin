@@ -196,7 +196,7 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="36">
+            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="54">
                 QVERIFY(true)
             </message>
             <message type="Pass" strict="true">
@@ -210,10 +210,10 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="41">
+            <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="59">
                 QVERIFY(false)
             </message>
-            <message type="Fail" strict="true" level="silent" file="limitstest.cpp" line="41">
+            <message type="Fail" strict="true" level="silent" file="limitstest.cpp" line="59">
                 'false' returned FALSE. (This test should fail.)
             </message>
             <message type="Duration" strict="false" format="xml" >

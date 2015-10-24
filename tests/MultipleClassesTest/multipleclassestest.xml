@@ -189,7 +189,7 @@
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="42">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="60">
                     QVERIFY(true)
                 </message>
                 <message type="Pass" strict="true">
@@ -203,7 +203,7 @@
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="47">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="65">
                     QVERIFY(true)
                 </message>
                 <message type="Pass" strict="true">
@@ -244,7 +244,7 @@
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="52">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="70">
                     QVERIFY(true)
                 </message>
                 <message type="Pass" strict="true">
@@ -262,7 +262,7 @@
                     <message type="QDebug" strict="true">
                         "firstData"
                     </message>
-                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="67">
+                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="85">
                         QVERIFY(data.endsWith("Data"))
                     </message>
                     <message type="Pass" strict="true">
@@ -273,7 +273,7 @@
                     <message type="QDebug" strict="true">
                         "secondData"
                     </message>
-                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="67">
+                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="85">
                         QVERIFY(data.endsWith("Data"))
                     </message>
                     <message type="Pass" strict="true">
@@ -315,10 +315,10 @@
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="72">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="90">
                     QVERIFY(false)
                 </message>
-                <message type="Fail" strict="true" level="silent" file="multipleclassestest.cpp" line="72">
+                <message type="Fail" strict="true" level="silent" file="multipleclassestest.cpp" line="90">
                     'false' returned FALSE. (Test should fail)
                 </message>
                 <message type="Duration" strict="false" format="xml">
@@ -329,7 +329,7 @@
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="77">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="95">
                     QVERIFY(true)
                 </message>
                 <message type="Pass" strict="true">

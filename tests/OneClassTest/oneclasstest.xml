@@ -121,7 +121,7 @@
                 entering
             </message>
             <row title="firstData" type="Pass">
-                <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="30">
+                <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="48">
                     QVERIFY(data.endsWith("Data of firstFunction"))
                 </message>
                 <message type="Pass" strict="true">
@@ -129,7 +129,7 @@
                 </message>
             </row>
             <row title="secondData" type="Pass">
-                <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="30">
+                <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="48">
                     QVERIFY(data.endsWith("Data of firstFunction"))
                 </message>
                 <message type="Pass" strict="true">
@@ -137,7 +137,7 @@
                 </message>
             </row>
             <row title="thirdData" type="Pass">
-                <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="30">
+                <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="48">
                     QVERIFY(data.endsWith("Data of firstFunction"))
                 </message>
                 <message type="Pass" strict="true">
@@ -153,26 +153,26 @@
                 entering
             </message>
             <row title="firstData" type="Fail" level="silent">
-                <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="45">
+                <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="63">
                     QVERIFY(data.endsWith("Data of firstFunction"))
                 </message>
-                <message type="Fail" strict="true" level="silent" file="oneclasstest.cpp" line="45">
+                <message type="Fail" strict="true" level="silent" file="oneclasstest.cpp" line="63">
                     'data.endsWith("Data of firstFunction")' returned FALSE. ()
                 </message>
             </row>
             <row title="secondData" type="Fail" level="silent">
-                <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="45">
+                <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="63">
                     QVERIFY(data.endsWith("Data of firstFunction"))
                 </message>
-                <message type="Fail" strict="true" level="silent" file="oneclasstest.cpp" line="45">
+                <message type="Fail" strict="true" level="silent" file="oneclasstest.cpp" line="63">
                     'data.endsWith("Data of firstFunction")' returned FALSE. ()
                 </message>
             </row>
             <row title="thirdData" type="Fail" level="silent">
-                <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="45">
+                <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="63">
                     QVERIFY(data.endsWith("Data of firstFunction"))
                 </message>
-                <message type="Fail" strict="true" level="silent" file="oneclasstest.cpp" line="45">
+                <message type="Fail" strict="true" level="silent" file="oneclasstest.cpp" line="63">
                     'data.endsWith("Data of firstFunction")' returned FALSE. ()
                 </message>
             </row>
