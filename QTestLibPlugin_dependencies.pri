@@ -1,5 +1,5 @@
-# QTestLibPlugin dependencies #################################################
 
+# QTestLibPlugin dependencies #################################################
 QTC_PLUGIN_NAME = QTestLibPlugin
 QTC_LIB_DEPENDS += \
     utils \

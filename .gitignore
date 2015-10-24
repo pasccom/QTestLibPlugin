@@ -29,6 +29,9 @@ qrc_*.cpp
 *~
 *.old
 
+# Temporary folder:
+.tmp/
+
 # Local project include files:
 *.local.pri
 
