@@ -64,6 +64,8 @@ public:
     inline bool isHelpOutput(void) const {return (mOutput == HelpOutput);}
     inline bool areFunctionsOutput(void) const {return (mOutput == FunctionsOutput);}
     inline bool areDatatagsOutput(void) const {return (mOutput == DataTagsOutput);}
+
+    inline TestCaseList selectedTestCases(void) const {return mSelectedTestCases;}
 private:
     void parse(bool incremental = false);
     void incrementalParse(void);
