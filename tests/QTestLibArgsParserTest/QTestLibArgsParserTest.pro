@@ -15,7 +15,7 @@ SOURCES += ../../qtestlibargsparser.cpp
 HEADERS += ../../qtestlibargsparser.h
 
 # QtCreator dependencies
-QTCREATOR_DEPS += utils
+QTC_LIB_DEPENDS += utils
 
 # Fake QtCreator tree
 include(../QtCreatorFake/QtCreatorFake.pri)
