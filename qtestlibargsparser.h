@@ -6,6 +6,9 @@
 #include <QStringList>
 #include <QLinkedList>
 
+namespace QTestLibPlugin {
+namespace Internal {
+
 class QTestLibArgsParser
 {
 public:
@@ -97,5 +100,8 @@ private:
     int mMouseDelay;
     bool mSeenOutputWithFormat;
 };
+
+} // namespace Internal
+} // namespace QTestLibPlugin
 
 #endif // QTESTLIBARGSPARSER_H

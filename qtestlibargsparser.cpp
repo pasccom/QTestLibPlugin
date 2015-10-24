@@ -4,6 +4,9 @@
 #include <QLinkedList>
 #include <QtDebug>
 
+namespace QTestLibPlugin {
+namespace Internal {
+
 void QTestLibArgsParser::parse(bool incremental)
 {
     if (!incremental)
@@ -310,3 +313,6 @@ QString QTestLibArgsParser::nextToken(void)
 
     return mArgs.mid(b, mPos - b);
 }
+
+} // namespace Internal
+} // namespace QTestLibPlugin

@@ -1,4 +1,5 @@
 #include "../../qtestlibargsparser.h"
+using namespace QTestLibPlugin::Internal;
 
 #include "../common/qttestsubfunction.h"
 
