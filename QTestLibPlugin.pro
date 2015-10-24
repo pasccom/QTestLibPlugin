@@ -28,15 +28,19 @@ HEADERS += \
     xmlqtestlibparserfactory.h \
     qtestlibargsparser.h
 
-# Qt Creator linking
+RESOURCES += \
+    qtestlibplugin.qrc
 
-## set the QTC_SOURCE environment variable to override the setting here
+# Qt Creator from environment
+# Set the QTC_SOURCE environment variable to override the setting here
 QTCREATOR_SOURCES = $$(QTC_SOURCE)
-isEmpty(QTCREATOR_SOURCES):QTCREATOR_SOURCES=/home/pascal/Téléchargements/Logiciels/Dev/qt-creator-opensource-src-3.4.2
-
-## set the QTC_BUILD environment variable to override the setting here
+# Set the QTC_BUILD environment variable to override the setting here
 IDE_BUILD_TREE = $$(QTC_BUILD)
-isEmpty(IDE_BUILD_TREE):IDE_BUILD_TREE=/usr/lib64/qtcreator
+
+# Qt Creator from local pri file if it exists
+exists(QtCreator.local.pri) {
+    include(QtCreator.local.pri)
+}
 
 ## uncomment to build plugin into user config directory
 ## <localappdata>/plugins/<ideversion>
@@ -54,8 +58,5 @@ INSTALLS =
 INSTALLS += target
 DESTDIR = ./bin
 
-LIBS+= -L/usr/lib64/qtcreator
-LIBS+= -L/usr/lib64/qtcreator/plugins
-
-RESOURCES += \
-    qtestlibplugin.qrc
+LIBS+= -L$$IDE_BUILD_TREE
+LIBS+= -L$$IDE_BUILD_TREE/plugins

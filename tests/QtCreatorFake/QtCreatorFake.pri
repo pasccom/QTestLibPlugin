@@ -19,11 +19,19 @@ defineReplace(qtLibraryName) {
 }
 
 # Pathes for libs and fake plugins ############################################
-IDE_LIB_PATH=/usr/lib64/qtcreator
-QTC_SOURCE_TREE=/home/pascal/Téléchargements/Logiciels/Dev/qt-creator-opensource-src-3.4.2/src
+# Qt Creator from environment
+# Set the QTC_SOURCE environment variable to override the setting here
+QTCREATOR_SOURCES = $$(QTC_SOURCE)
+# Set the QTC_BUILD environment variable to override the setting here
+IDE_BUILD_TREE = $$(QTC_BUILD)
+
+# Qt Creator from local pri file if it exists
+exists(../../QtCreator.local.pri) {
+    include(../../QtCreator.local.pri)
+}
 QTC_PLUGIN_DIRS=$$PWD
 
-INCLUDEPATH += $$QTC_SOURCE_TREE/libs
+INCLUDEPATH += $$QTCREATOR_SOURCES/src/libs
 for(dir, QTC_PLUGIN_DIRS) {
     INCLUDEPATH += $$dir
 }
@@ -52,8 +60,8 @@ for(ever) {
 
 # Parse libs dependencies #####################################################
 # Link against real libraries
-!isEmpty(QTC_LIB_DEPENDS):LIBS *= -L$$IDE_LIB_PATH
-!isEmpty(QTC_LIB_DEPENDS):QMAKE_LFLAGS += -Wl,-rpath=$${IDE_LIB_PATH}
+!isEmpty(QTC_LIB_DEPENDS):LIBS *= -L$$IDE_BUILD_TREE
+!isEmpty(QTC_LIB_DEPENDS):QMAKE_LFLAGS += -Wl,-rpath=$${IDE_BUILD_TREE}
 # Recursively resolve library deps
 done_libs =
 for(ever) {
@@ -61,7 +69,7 @@ for(ever) {
         break()
     done_libs += $$QTC_LIB_DEPENDS
     for(dep, QTC_LIB_DEPENDS) {
-        include($$QTC_SOURCE_TREE/libs/$$dep/$${dep}_dependencies.pri)
+        include($$QTCREATOR_SOURCES/src/libs/$$dep/$${dep}_dependencies.pri)
         LIBS += -l$$qtLibraryName($$QTC_LIB_NAME)
     }
     QTC_LIB_DEPENDS = $$unique(QTC_LIB_DEPENDS)
