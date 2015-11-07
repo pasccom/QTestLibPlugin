@@ -37,6 +37,8 @@ private Q_SLOTS:
     void addTestItem(void);
     inline void appendTestItemMessage_data(void) {testNames();}
     void appendTestItemMessage(void);
+    inline void appendTestLocation_data(void) {testNames();}
+    void appendTestLocation(void);
 private slots:
     void rowsAboutToBeInserted(const QModelIndex& index, int first, int last);
     void rowsInserted(const QModelIndex& index, int first, int last);
@@ -224,6 +226,72 @@ void QTestLibModelTest::appendTestItemMessage(void)
         qDebug() << dataChangedSpy.first().at(1).toModelIndex();
         QVERIFY2(dataChangedSpy.first().at(0).toModelIndex() == currentIndex, "Bad value for signal argument 1");
         QVERIFY2(dataChangedSpy.first().at(1).toModelIndex() == currentIndex, "Bad value for signal argument 2");
+
+        testItem = testItem.nextSiblingElement("item");
+    }
+}
+
+void QTestLibModelTest::appendTestLocation(void)
+{
+    QFETCH(QString, testName);
+
+    QDomDocument dom;
+    SUB_TEST_FUNCTION(loadTest(dom, testName));
+    QDomElement testItems = dom.documentElement().firstChildElement("items");
+    QDomElement testSignals = dom.documentElement().firstChildElement("signals");
+    QVERIFY2(!testItems.isNull() && testItems.nextSiblingElement("items").isNull(), "There should be one and only one items element in root childrens");
+    QVERIFY2(!testSignals.isNull() && testSignals.nextSiblingElement("signals").isNull(), "There should be one and only one signals element in root childrens");
+
+    QTestLibModel model(NULL, this);
+    QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)));
+
+    QDomElement testItem = testItems.firstChildElement("item");
+    QString root = QString::null;
+    while (!testItem.isNull()) {
+        QVERIFY2(testItem.firstChild().isText(), "Child of item element should be text");
+        QVERIFY2(testItem.firstChild().nextSibling().isNull(), "item element should have only one child");
+        qDebug() << testItem.attribute("class", QString::null)
+                 << testItem.attribute("function", QString::null)
+                 << testItem.attribute("row", QString::null)
+                 << testItem.firstChild().toText().data();
+
+        if (root.isNull()) {
+            if (testItem.attribute("class", QString::null).isNull())
+                root = "root";
+            else
+                root = "class:" + testItem.attribute("class", QString::null);
+        } else if (root.startsWith("class:", Qt::CaseSensitive)) {
+            if (QString::compare(testItem.attribute("class", QString::null), root.mid(6)) != 0)
+                root = "root";
+        }
+
+        model.addTestItem(NULL,
+                          QTestLibModel::Unknown,
+                          testItem.attribute("class", QString::null),
+                          testItem.attribute("function", QString::null),
+                          testItem.attribute("row", QString::null),
+                          testItem.firstChild().toText().data());
+
+        QStringList list;
+        if (QString::compare(root, "root", Qt::CaseSensitive) == 0)
+            list << testItem.attribute("class", QString::null);
+        list << testItem.attribute("function", QString::null);
+        list << testItem.attribute("row", QString::null);
+
+        QModelIndex firstIndex = index(&model, list, 1);
+        QModelIndex lastIndex = index(&model, list, 2);
+        qDebug() << firstIndex;
+        qDebug() << lastIndex;
+
+        dataChangedSpy.clear();
+        model.appendTestLocation(NULL, "Unknown file", 0);
+        QVERIFY2(dataChangedSpy.count() == 1, "dataChanged() signal should be emitted once.");
+        QVERIFY2(dataChangedSpy.first().at(0).type() == QVariant::ModelIndex, "Invalid type for signal argument 1");
+        QVERIFY2(dataChangedSpy.first().at(1).type() == QVariant::ModelIndex, "Invalid type for signal argument 2");
+        qDebug() << dataChangedSpy.first().at(0).toModelIndex();
+        qDebug() << dataChangedSpy.first().at(1).toModelIndex();
+        QVERIFY2(dataChangedSpy.first().at(0).toModelIndex() == firstIndex, "Bad value for signal argument 1");
+        QVERIFY2(dataChangedSpy.first().at(1).toModelIndex() == lastIndex, "Bad value for signal argument 2");
 
         testItem = testItem.nextSiblingElement("item");
     }
