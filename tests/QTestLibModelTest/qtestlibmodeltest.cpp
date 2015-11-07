@@ -33,8 +33,10 @@ public:
     typedef QPair<QString, QVariantList> Signal;
     inline QTestLibModelTest(void) {}
 private Q_SLOTS:
-    void addTestItem_data(void);
+    inline void addTestItem_data(void) {testNames();}
     void addTestItem(void);
+    inline void appendTestItemMessage_data(void) {testNames();}
+    void appendTestItemMessage(void);
 private slots:
     void rowsAboutToBeInserted(const QModelIndex& index, int first, int last);
     void rowsInserted(const QModelIndex& index, int first, int last);
@@ -42,6 +44,8 @@ private slots:
     void rowsMoved(const QModelIndex& src, int first, int last, const QModelIndex& dst, int row);
     void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
 private:
+    void testNames(void);
+
     void loadTest(QDomDocument& dom, const QString& testName);
     void loadResult(QDomDocument& dom, const QString& testName);
 
@@ -51,6 +55,7 @@ private:
     void checkSignal(const QAbstractItemModel* model, const QVariantList& argList, const QDomElement& testSignal, const QDomElement& testResult);
 
     QModelIndex index(const QString& id, const QDomElement& element, const QAbstractItemModel* model, const QModelIndex& idx = QModelIndex());
+    QModelIndex index(const QAbstractItemModel* model, const QStringList& list, int column, const QModelIndex& idx = QModelIndex());
 
     QLinkedList<QString> mConnectedSignals;
     QLinkedList<Signal> mSignals;
@@ -110,50 +115,13 @@ void QTestLibModelTest::dataChanged(const QModelIndex& topLeft, const QModelInde
     mSignals.append(QPair<QString, QVariantList>(__func__, argsList));
 }
 
-void QTestLibModelTest::addTestItem_data(void)
+void QTestLibModelTest::testNames(void)
 {
     QTest::addColumn<QString>("testName");
 
 #ifdef TESTS_LST_EXISTS
 #   include "tests/tests.lst"
 #endif
-
-//    QTest::newRow("addOneItemNoClass") << "addOneItemNoClass";
-//    QTest::newRow("addOneItemClass") << "addOneItemClass";
-//    QTest::newRow("addOneItemFunction") << "addOneItemFunction";
-//    QTest::newRow("addOneItemDataRow") << "addOneItemDataRow";
-//    QTest::newRow("test0") << "test0";
-//    QTest::newRow("test1") << "test1";
-//    QTest::newRow("test2") << "test2";
-//    QTest::newRow("test3") << "test3";
-//    QTest::newRow("test4") << "test4";
-//    QTest::newRow("test5") << "test5";
-//    QTest::newRow("test6") << "test6";
-//    QTest::newRow("test7") << "test7";
-//    QTest::newRow("test8") << "test8";
-//    QTest::newRow("test9") << "test9";
-//    QTest::newRow("test10") << "test10";
-//    QTest::newRow("test11") << "test11";
-//    QTest::newRow("test12") << "test12";
-//    QTest::newRow("test12") << "test13";
-//    QTest::newRow("test12") << "test14";
-//    QTest::newRow("test12") << "test15";
-    /*QTest::newRow("addOneItemNoClass") << "addTwoItemNoClass";
-    QTest::newRow("addOneItemNoClassClass") << "addTwoItemNoClassClass";
-    QTest::newRow("addOneItemNoClassFunction") << "addTwoItemNoClassFunction";
-    QTest::newRow("addOneItemNoClassDataRow") << "addTwoItemNoClassDataRow";
-    QTest::newRow("addTwoItemsSameClass") << "addTwoItemsSameClass";
-    QTest::newRow("addTwoItemsSameClassFunction") << "addTwoItemsSameClassFunction";
-    QTest::newRow("addTwoItemsSameClassDataRow") << "addTwoItemsSameClassDataRow";
-    QTest::newRow("addTwoItemsSameClassFunctionClass") << "addTwoItemsSameClassFunctionClass";
-    QTest::newRow("addTwoItemsSameClassDataRowClass") << "addTwoItemsSameClassDataRowClass";
-    QTest::newRow("addTwoItemsSameClassFunctionDataRow") << "addTwoItemsSameClassFunctionDataRow";
-    QTest::newRow("addTwoItemsTwoClasses") << "addTwoItemsTwoClasses";
-    QTest::newRow("addTwoItemsTwoClassesFunction") << "addTwoItemsTwoClassesFunction";
-    QTest::newRow("addTwoItemsTwoClassesDataRow") << "addTwoItemsTwoClassesDataRow";
-    QTest::newRow("addTwoItemsTwoClassesFunctionClass") << "addTwoItemsTwoClassesFunctionClass";
-    QTest::newRow("addTwoItemsTwoClassesDataRowClass") << "addTwoItemsTwoClassesDataRowClass";
-    QTest::newRow("addTwoItemsTwoClassesFunctionDataRow") << "addTwoItemsTwoClassesFunctionDataRow";*/
 }
 
 void QTestLibModelTest::addTestItem(void)
@@ -195,6 +163,70 @@ void QTestLibModelTest::addTestItem(void)
     QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
 
     SUB_TEST_FUNCTION(checkSignals(&model, testSignals, testName));
+}
+
+void QTestLibModelTest::appendTestItemMessage(void)
+{
+    QFETCH(QString, testName);
+
+    QDomDocument dom;
+    SUB_TEST_FUNCTION(loadTest(dom, testName));
+    QDomElement testItems = dom.documentElement().firstChildElement("items");
+    QDomElement testSignals = dom.documentElement().firstChildElement("signals");
+    QVERIFY2(!testItems.isNull() && testItems.nextSiblingElement("items").isNull(), "There should be one and only one items element in root childrens");
+    QVERIFY2(!testSignals.isNull() && testSignals.nextSiblingElement("signals").isNull(), "There should be one and only one signals element in root childrens");
+
+    QTestLibModel model(NULL, this);
+    QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)));
+
+    QDomElement testItem = testItems.firstChildElement("item");
+    QString root = QString::null;
+    while (!testItem.isNull()) {
+        QVERIFY2(testItem.firstChild().isText(), "Child of item element should be text");
+        QVERIFY2(testItem.firstChild().nextSibling().isNull(), "item element should have only one child");
+        qDebug() << testItem.attribute("class", QString::null)
+                 << testItem.attribute("function", QString::null)
+                 << testItem.attribute("row", QString::null)
+                 << testItem.firstChild().toText().data();
+
+        if (root.isNull()) {
+            if (testItem.attribute("class", QString::null).isNull())
+                root = "root";
+            else
+                root = "class:" + testItem.attribute("class", QString::null);
+        } else if (root.startsWith("class:", Qt::CaseSensitive)) {
+            if (QString::compare(testItem.attribute("class", QString::null), root.mid(6)) != 0)
+                root = "root";
+        }
+
+        model.addTestItem(NULL,
+                          QTestLibModel::Unknown,
+                          testItem.attribute("class", QString::null),
+                          testItem.attribute("function", QString::null),
+                          testItem.attribute("row", QString::null),
+                          testItem.firstChild().toText().data());
+
+        QStringList list;
+        if (QString::compare(root, "root", Qt::CaseSensitive) == 0)
+            list << testItem.attribute("class", QString::null);
+        list << testItem.attribute("function", QString::null);
+        list << testItem.attribute("row", QString::null);
+
+        QModelIndex currentIndex = index(&model, list, 0);
+        qDebug() << currentIndex;
+
+        dataChangedSpy.clear();
+        model.appendTestItemMessage(NULL, "Appended message");
+        QVERIFY2(dataChangedSpy.count() == 1, "dataChanged() signal should be emitted once.");
+        QVERIFY2(dataChangedSpy.first().at(0).type() == QVariant::ModelIndex, "Invalid type for signal argument 1");
+        QVERIFY2(dataChangedSpy.first().at(1).type() == QVariant::ModelIndex, "Invalid type for signal argument 2");
+        qDebug() << dataChangedSpy.first().at(0).toModelIndex();
+        qDebug() << dataChangedSpy.first().at(1).toModelIndex();
+        QVERIFY2(dataChangedSpy.first().at(0).toModelIndex() == currentIndex, "Bad value for signal argument 1");
+        QVERIFY2(dataChangedSpy.first().at(1).toModelIndex() == currentIndex, "Bad value for signal argument 2");
+
+        testItem = testItem.nextSiblingElement("item");
+    }
 }
 
 void QTestLibModelTest::loadTest(QDomDocument& dom, const QString& testName)
@@ -346,6 +378,21 @@ QModelIndex QTestLibModelTest::index(const QString& id, const QDomElement& eleme
         childRow++;
         childElement = childElement.nextSiblingElement();
     }
+
+    return QModelIndex();
+}
+
+QModelIndex QTestLibModelTest::index(const QAbstractItemModel* model, const QStringList& list, int column, const QModelIndex& idx)
+{
+    if (list.isEmpty() || list.first().isNull())
+        return model->index(model->rowCount(idx) - 1, column, idx);
+
+    QStringList newList = list;
+    QString name = newList.takeFirst();
+
+    for (int r = 0; r < model->rowCount(idx); r++)
+        if (QString::compare(model->data(model->index(r, 0, idx), Qt::DisplayRole).toString(), name, Qt::CaseSensitive) == 0)
+            return index(model, newList, column, model->index(r, 0, idx));
 
     return QModelIndex();
 }
