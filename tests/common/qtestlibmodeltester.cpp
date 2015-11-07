@@ -223,24 +223,33 @@ void QTestLibModelTester::parseRoot(const QModelIndex& index, const QDomElement&
 {
     BEGIN_SUB_TEST_FUNCTION
 
+    qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole);
     QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for root index should be a string");
     QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null), Qt::CaseInsensitive) == 0, "Result string for root do not match");
 
-    QDomElement classElement = element.firstChildElement("class");
+    QDomElement childElement = element.firstChildElement();
     int i = 0;
-    while (!classElement.isNull()) {
+    while (!childElement.isNull()) {
         bool isElementOutput = false;
-        SUB_TEST_FUNCTION(isOutput(classElement, &isElementOutput));
+        SUB_TEST_FUNCTION(isOutput(childElement, &isElementOutput));
         if (isElementOutput) {
-            QVERIFY2(mModel->index(i, 0, index).isValid(), qPrintable(QString("Children %1 of root element is not valid").arg(i)));
-            SUB_TEST_FUNCTION(parseClass(mModel->index(i, 0, index), classElement));
-            i++;
+            if (QString::compare(childElement.tagName(), "class", Qt::CaseInsensitive) == 0) {
+                QVERIFY2(mModel->index(i, 0, index).isValid(), qPrintable(QString("Class child %1 of root element is not valid").arg(i)));
+                SUB_TEST_FUNCTION(parseClass(mModel->index(i, 0, index), childElement));
+                i++;
+            }
+            if (QString::compare(childElement.tagName(), "message", Qt::CaseInsensitive) == 0) {
+                QVERIFY2(mModel->index(i, 0, index).isValid(), qPrintable(QString("Message child %1 of class element is not valid").arg(i)));
+                SUB_TEST_FUNCTION(parseMessage(mModel->index(i, 0, index), childElement));
+                i++;
+            }
         }
-        classElement = classElement.nextSiblingElement("class");
+        childElement = childElement.nextSiblingElement();
     }
 
     QVERIFY2(mModel->rowCount(index) == i, qPrintable(QString("The model index should have %1 rows").arg(i)));
-    QVERIFY2(mModel->columnCount(index) == 3, "The model index should have 3 columns.");
+    if (i != 0)
+        QVERIFY2(mModel->columnCount(index) == 3, "The model index should have 3 columns.");
 
     END_SUB_TEST_FUNCTION
 }
@@ -250,6 +259,7 @@ void QTestLibModelTester::parseClass(const QModelIndex& index, const QDomElement
     BEGIN_SUB_TEST_FUNCTION
 
     QVERIFY2(mModel->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for class index should be a string");
+    qDebug() << mModel->data(index, Qt::DisplayRole).toString() << element.attribute("name", QString::null);
     QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.attribute("name", QString::null) , Qt::CaseSensitive) == 0, "Class name do not match");
     QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for class index should be a string");
     QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null) , Qt::CaseInsensitive) == 0, "Result string for class do not match");
@@ -261,12 +271,12 @@ void QTestLibModelTester::parseClass(const QModelIndex& index, const QDomElement
         SUB_TEST_FUNCTION(isOutput(childElement, &isElementOutput));
         if (isElementOutput) {
             if (QString::compare(childElement.tagName(), "function", Qt::CaseInsensitive) == 0) {
-                QVERIFY2(mModel->index(i, 0, index).isValid(), qPrintable(QString("Function children %1 of class element is not valid").arg(i)));
+                QVERIFY2(mModel->index(i, 0, index).isValid(), qPrintable(QString("Function child %1 of class element is not valid").arg(i)));
                 SUB_TEST_FUNCTION(parseFunction(mModel->index(i, 0, index), childElement));
                 i++;
             }
             if (QString::compare(childElement.tagName(), "message", Qt::CaseInsensitive) == 0) {
-                QVERIFY2(mModel->index(i, 0, index).isValid(), qPrintable(QString("Message children %1 of class element is not valid").arg(i)));
+                QVERIFY2(mModel->index(i, 0, index).isValid(), qPrintable(QString("Message child %1 of class element is not valid").arg(i)));
                 SUB_TEST_FUNCTION(parseMessage(mModel->index(i, 0, index), childElement));
                 i++;
             }
@@ -303,12 +313,12 @@ void QTestLibModelTester::parseFunction(const QModelIndex& index, const QDomElem
         SUB_TEST_FUNCTION(isOutput(childElement, &isElementOutput));
         if (isElementOutput) {
             if (QString::compare(childElement.tagName(), "row", Qt::CaseInsensitive) == 0) {
-                QVERIFY2(mModel->index(i, 0, index).isValid(), qPrintable(QString("Row children %1 of function element is not valid").arg(i)));
+                QVERIFY2(mModel->index(i, 0, index).isValid(), qPrintable(QString("Row child %1 of function element is not valid").arg(i)));
                 SUB_TEST_FUNCTION(parseRow(mModel->index(i, 0, index), childElement));
                 i++;
             }
             if (QString::compare(childElement.tagName(), "message", Qt::CaseInsensitive) == 0) {
-                QVERIFY2(mModel->index(i, 0, index).isValid(), qPrintable(QString("Message children %1 of function element is not valid").arg(i)));
+                QVERIFY2(mModel->index(i, 0, index).isValid(), qPrintable(QString("Message child %1 of function element is not valid").arg(i)));
                 SUB_TEST_FUNCTION(parseMessage(mModel->index(i, 0, index), childElement));
                 i++;
             }
