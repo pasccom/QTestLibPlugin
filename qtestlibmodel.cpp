@@ -179,6 +179,7 @@ void QTestLibModel::appendTestLocation(ProjectExplorer::RunControl* runControl, 
     if (mCurrentMessageItem != NULL) {
         mCurrentMessageItem->setFile(file);
         mCurrentMessageItem->setLine(line);
+        emit dataChanged(index(mCurrentMessageItem, 1), index(mCurrentMessageItem, 2));
     }
 }
 
