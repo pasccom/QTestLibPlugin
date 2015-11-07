@@ -166,8 +166,10 @@ void QTestLibModel::appendTestItemMessage(ProjectExplorer::RunControl* runContro
 {
     Q_ASSERT(runControl == mTestRun);
 
-    if (mCurrentMessageItem != NULL)
+    if (mCurrentMessageItem != NULL) {
         mCurrentMessageItem->appendMessage(message);
+        emit dataChanged(index(mCurrentMessageItem, 0), index(mCurrentMessageItem, 0));
+    }
 }
 
 void QTestLibModel::appendTestLocation(ProjectExplorer::RunControl* runControl, const QString& file, unsigned int line)
