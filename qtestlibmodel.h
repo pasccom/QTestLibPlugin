@@ -216,9 +216,6 @@ public slots:
      */
     void appendTestItemMessage(ProjectExplorer::RunControl* runControl, const QString& message);
 private:
-
-    ProjectExplorer::RunControl *mTestRun; /*!< The run control from which test data originates */
-
     /*!
      * \brief Test item type.
      *
@@ -356,6 +353,16 @@ private:
          * \param item The item to append to children list of the current item
          */
         virtual void appendChild(TestItem *item);
+        /*!
+         * \brief Replace the parent
+         *
+         * This item will replace the given item by taking ownershop of its children.
+         * \note The parent of child items is changed accordingly.
+         * \note The result is set to the result of the replaced item.
+         *
+         * \param item The item to be replaced.
+         */
+        virtual void replace(TestItem *item, int first = 0, int last = -1);
         /*!
          * \brief Remove a child from current item
          *
@@ -669,6 +676,17 @@ private:
          */
         inline void appendChild(TestItem *item) {Q_UNUSED(item); Q_ASSERT(false);}
         /*!
+         * \brief Replace the parent
+         *
+         * This item will replace the given item by taking ownershop of its children.
+         *
+         * \warning This function does nothing and should not be called
+         * as test message items can not have any children.
+         *
+         * \param item The item to be replaced (Unused)
+         */
+        virtual void replace(TestItem *item, int first = 0, int last = -1) {Q_UNUSED(item); Q_UNUSED(first); Q_UNUSED(last); Q_ASSERT(false);}
+        /*!
          * \brief Remove a child from current item
          *
          * Removes a child from current item and delete it.
@@ -725,14 +743,29 @@ private:
      * Allocates a test message item.
      * Automatically detects signal messages and
      * set the message type accordingly.
+     * The newly allocated test message item
+     * is set as mCurrentMessageItem.
      *
      * \param type The original message type
      * \param message The text of the test message
      * \param parent The parent item for the constructed test message item
-     * \return The newly allocated test message item.
      */
-    TestMessageItem* createTestMessageItem(MessageType type, const QString& message, TestItem* parent);
+    void createTestMessageItem(MessageType type, const QString& message, TestItem* parent);
 
+    /*!
+     * \brief Returns QModelIndex corresponding to TestItem
+     *
+     * Recursively computes the QModelIndex associated with this test item for the given column.
+     * \note In future releases, caching test item may be envisaged
+     * as this function is quite expensive, when the model is big.
+     *
+     * \param testItem A test item whose corresponding QModelIndex is desired
+     * \param column The column of the QModelIndex.
+     * \return The corresponding QModelIndex
+     */
+    QModelIndex index(TestItem *testItem, int column = 0) const;
+
+    ProjectExplorer::RunControl *mTestRun; /*!< The run control from which test data originates */
     TestItem *mRoot; /*!< The internal root item (may be a TestClassItem or a TestRootItem) */
     TestMessageItem *mCurrentMessageItem; /*!< The last test message item added (where message are appended by appendTestItemMessage() */
 };

@@ -60,9 +60,18 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
         } else if (mRoot->type() != TestRoot) {
             TestItem *oldRoot = mRoot;
             mRoot = new TestRootItem();
+            mRoot->replace(oldRoot);
+            emit dataChanged(index(mRoot, 0), index(mRoot, 2));
+
+            beginInsertRows(QModelIndex(), mRoot->childrenCount(), mRoot->childrenCount());
             mRoot->appendChild(oldRoot);
+            endInsertRows();
+
+            beginMoveRows(QModelIndex(), 0, mRoot->childrenCount() - 2, createIndex(mRoot->childrenCount(), 0, oldRoot), 0);
+            oldRoot->replace(mRoot, 0, -2);
+            endMoveRows();
         }
-        mCurrentMessageItem = createTestMessageItem(type, message, mRoot);
+        createTestMessageItem(type, message, mRoot);
         return;
     }
 
@@ -70,62 +79,87 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
     if (mRoot == NULL) {
         testClassItem = new TestClassItem(className);
         mRoot = testClassItem;
+        emit dataChanged(index(mRoot, 0), index(mRoot, 2));
     } else if (mRoot->type() == TestClass) {
         if (mRoot->compareName(className) == 0) {
             testClassItem = dynamic_cast<TestClassItem *>(mRoot);
         } else {
             TestItem *oldRoot = mRoot;
             mRoot = new TestRootItem();
+            mRoot->replace(oldRoot);
+            emit dataChanged(index(mRoot, 0), index(mRoot, 2));
+
+            beginInsertRows(QModelIndex(), mRoot->childrenCount(), mRoot->childrenCount());
             mRoot->appendChild(oldRoot);
+            endInsertRows();
+
+            beginMoveRows(QModelIndex(), 0, mRoot->childrenCount() - 2, createIndex(mRoot->childrenCount(), 0, oldRoot), 0);
+            oldRoot->replace(mRoot, 0, -2);
+            endMoveRows();
+
+            beginInsertRows(QModelIndex(), 1, 1);
             testClassItem = new TestClassItem(className, mRoot);
+            endInsertRows();
         }
     } else {
         testItem = mRoot->findChild(className);
-        if (testItem == NULL)
+        if (testItem == NULL) {
             // Create a new class item
+            beginInsertRows(QModelIndex(), mRoot->childrenCount(), mRoot->childrenCount());
             testClassItem = new TestClassItem(className, mRoot);
-        else
+            endInsertRows();
+        } else {
             // Cast existing class item
             testClassItem = dynamic_cast<TestClassItem *>(testItem);
+        }
     }
 
     if (functionName.isEmpty()) {
-        mCurrentMessageItem = createTestMessageItem(type, message, testClassItem);
+        createTestMessageItem(type, message, testClassItem);
         return;
     }
 
     // Find the case item
     testItem = testClassItem->findChild(functionName);
-    if (testItem == NULL)
+    if (testItem == NULL) {
         // Create a new case item
+        beginInsertRows(index(testClassItem), testClassItem->childrenCount(), testClassItem->childrenCount());
         testCaseItem = new TestCaseItem(functionName, testClassItem);
-    else
+        endInsertRows();
+    } else {
         // Cast existing case item
         testCaseItem = dynamic_cast<TestCaseItem *>(testItem);
+    }
 
     if (rowTitle.isEmpty()) {
-        mCurrentMessageItem = createTestMessageItem(type, message, testCaseItem);
+        createTestMessageItem(type, message, testCaseItem);
         return;
     }
 
     // Find the row item
     testItem = testCaseItem->findChild(rowTitle);
-    if (testItem == NULL)
+    if (testItem == NULL) {
         // Create a new row item
+        beginInsertRows(index(testCaseItem), testCaseItem->childrenCount(), testCaseItem->childrenCount());
         testRowItem = new TestRowItem(rowTitle, testCaseItem);
-    else
+        endInsertRows();
+    } else {
         // Cast existing case item
         testRowItem = dynamic_cast<TestRowItem *>(testItem);
+    }
 
-    mCurrentMessageItem = createTestMessageItem(type, message, testRowItem);
+    createTestMessageItem(type, message, testRowItem);
 }
 
 
-QTestLibModel::TestMessageItem* QTestLibModel::createTestMessageItem(MessageType type, const QString& message, TestItem* parent)
+void QTestLibModel::createTestMessageItem(MessageType type, const QString& message, TestItem* parent)
 {
+    beginInsertRows(index(parent), parent->childrenCount(), parent->childrenCount());
     if (message.startsWith(QLatin1String("Signal: ")))
-        return new TestMessageItem(Signal, message.mid(8).trimmed(), parent);
-    return new TestMessageItem(type, message, parent);
+        mCurrentMessageItem = new TestMessageItem(Signal, message.mid(8).trimmed(), parent);
+    else
+        mCurrentMessageItem = new TestMessageItem(type, message, parent);
+    endInsertRows();
 }
 
 void QTestLibModel::appendTestItemMessage(ProjectExplorer::RunControl* runControl, const QString& message)
@@ -168,6 +202,17 @@ int QTestLibModel::columnCount(const QModelIndex& parent) const
     return testItem->columnCount();
 }
 
+QModelIndex QTestLibModel::index(TestItem *testItem, int column) const
+{
+    if (testItem == mRoot)
+        return QModelIndex();
+
+    TestItem *parentItem = testItem->parent();
+
+    return createIndex(parentItem->findChid(testItem), column, testItem);
+}
+
+
 QModelIndex QTestLibModel::index(int row, int column, const QModelIndex& parent) const
 {
     TestItem *testItem = mRoot;
@@ -194,8 +239,17 @@ QModelIndex QTestLibModel::parent(const QModelIndex& child) const
 
 QVariant QTestLibModel::data(const QModelIndex &index, int role) const
 {
-    if (mRoot == NULL)
+    if (mRoot == NULL) {
+        if (!index.isValid()) {
+            if (role ==  Qt::DecorationRole)
+                return QVariant(QIcon(QLatin1String(":/messages/unknown.png")));
+            if (role == ResultRole)
+                return QVariant::fromValue<MessageType>(Unknown);
+            if (role == ResultStringRole)
+                return QVariant(QLatin1String("Unknown"));
+        }
         return QVariant();
+    }
     if (!index.isValid())
         return mRoot->data(0, role);
 
@@ -342,6 +396,32 @@ void QTestLibModel::TestItem::appendChild(TestItem *item)
     mChildren.append(item);
     item->mParent = this;
     mChildrenCount++;
+}
+
+void QTestLibModel::TestItem::replace(TestItem *item, int first, int last)
+{
+    QLinkedList<TestItem*>::iterator firstIt = item->mChildren.begin();
+    QLinkedList<TestItem*>::iterator lastIt = (last < 0) ? item->mChildren.end() : item->mChildren.begin();
+
+    while (first-- > 0)
+        firstIt++;
+    while (last-- > 0)
+        lastIt++;
+    last++;
+    while (++last < 0)
+        lastIt--;
+
+    while (firstIt != lastIt) {
+        TestItem *child = *firstIt;
+        firstIt = item->mChildren.erase(firstIt);
+        item->mChildrenCount--;
+
+        mChildren.append(child);
+        child->mParent = this;
+        mChildrenCount++;
+    }
+
+    updateResult(item->mResult);
 }
 
 void QTestLibModel::TestItem::updateResult(MessageType result)
