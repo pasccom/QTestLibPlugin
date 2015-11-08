@@ -36,6 +36,9 @@ class QTestLibModel;
  * This class implements a QAbstractItemModel by aggregating sub QAbstractItemModel.
  * Each children of the root corresponds to the root item of a sub model.
  *
+ * QAbstractItemModel signals from sub models are forwarded by this class.
+ * Their QModelIndex arguments are converted to QModelIndexes for this class.
+ *
  * Sub models are added with the slot AggregateItemModel::appendSubModel() and
  * removed with the slot AggregateItemModel::removeSubModel().
  */
@@ -133,9 +136,99 @@ public slots:
      * \sa removeSubModel()
      */
     void clear(void);
+private slots:
+    /*!
+     * \brief Sub model data changed
+     *
+     * This slot is intended to be connected to sub model dataChanged() signal.
+     * It converts the QModelIndexes (see index(const QAbstractItemModel*, const QModelIndex&) const)
+     * and send the signal again.
+     *
+     * \param topLeft Top-left QModelIndex affected
+     * \param bottomRight Bottom-right QModelIndex affected
+     * \param roles The roles affected (if empty, all roles are affected)
+     */
+    void subModelDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles = QVector<int>());
+    /*!
+     * \brief Rows about to be inserted in sub model
+     *
+     * This slot is intended to be connected to sub model rowsAboutToBeInserted() signal.
+     * It converts the QModelIndexes (see index(const QAbstractItemModel*, const QModelIndex&) const)
+     * and send the signal again.
+     *
+     * \note This function uses beginInsertRows().
+     *
+     * \param parent The QModelIndex where rows will be inserted
+     * \param start First row being affected
+     * \param end Last row being affected
+     * \sa subModelRowsInserted()
+     */
+    void subModelRowsAboutToBeInserted(const QModelIndex& parent, int start, int end);
+    /*!
+     * \brief Rows inserted in sub model
+     *
+     * This slot is intended to be connected to sub model rowsInserted() signal.
+     * It converts the QModelIndexes (see index(const QAbstractItemModel*, const QModelIndex&) const)
+     * and send the signal again.
+     *
+     * \note This function uses endInsertRows(), thus it does not use its arguments.
+     *
+     * \param parent The QModelIndex where rows were inserted (Unused)
+     * \param start First row being affected (Unused)
+     * \param end Last row being affected (Unused)
+     * \sa subModelRowsAboutToBeInserted()
+     */
+    void subModelRowsInserted(const QModelIndex& parent, int start, int end);
+    /*!
+     * \brief Rows about to be moved in sub model
+     *
+     * This slot is intended to be connected to sub model rowsAboutToBeMoved() signal.
+     * It converts the QModelIndexes (see index(const QAbstractItemModel*, const QModelIndex&) const)
+     * and send the signal again.
+     *
+     * \note This function uses beginMoveRows().
+     *
+     * \param sourceParent The QModelIndex where rows will be moved from
+     * \param sourceStart First row being affected in the source
+     * \param sourceEnd Last row being affected in the source
+     * \param destinationParent The QModelIndex where rows will be moved to
+     * \param destinationRow Row where QModelIndexes will be moved to
+     * \sa subModelRowsMoved()
+     */
+    void subModelRowsAboutToBeMoved(const QModelIndex& sourceParent, int sourceStart, int sourceEnd, const QModelIndex& destinationParent, int destinationRow);
+    /*!
+     * \brief Rows moved in sub model
+     *
+     * This slot is intended to be connected to sub model rowsMoved() signal.
+     * It converts the QModelIndexes (see index(const QAbstractItemModel*, const QModelIndex&) const)
+     * and send the signal again.
+     *
+     * \note This function uses endMoveRows(), thus it does not use its arguments.
+     *
+     * \param sourceParent The QModelIndex where rows were moved from (Unused)
+     * \param sourceStart First row being affected in the source (Unused)
+     * \param sourceEnd Last row being affected in the source (Unused)
+     * \param destinationParent The QModelIndex where rows were moved to (Unused)
+     * \param destinationRow Row where QModelIndexes were moved to (Unused)
+     * \sa subModelRowsAboutToBeMoved()
+     */
+    void subModelRowsMoved(const QModelIndex& sourceParent, int sourceStart, int sourceEnd, const QModelIndex& destinationParent, int destinationRow);
 private:
-    QList<QAbstractItemModel *> mSubModels; /*!< The list of sub models */
-    mutable QMap<void *, QAbstractItemModel *> mInternalPointers; /*!< A map between indexes internal pointers and submodels */
+    /*!
+     * \brief Convert sub model QModelIndex
+     *
+     * Convert a QModelIndex coming from a given sub model
+     * into a QModelIndex of this model.
+     * Also updates mInternalPointers accordingly.
+     *
+     * \param model The model of the QModelIndex (should be a sub model)
+     * \param idx The QModelIndex (belonging to the given sub model)
+     * \return The same QModelIndex for this model
+     */
+    QModelIndex index(const QAbstractItemModel* model, const QModelIndex& idx = QModelIndex()) const;
+
+    QList<const QAbstractItemModel *> mSubModels; /*!< The list of sub models */
+    mutable QMap<const void *, const QAbstractItemModel *> mInternalPointers; /*!< A map between indexes internal pointers and submodels */
 };
 
 /*!
