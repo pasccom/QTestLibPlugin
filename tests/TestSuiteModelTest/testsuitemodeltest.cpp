@@ -532,10 +532,12 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     model->appendTestRun(runControl);
     QSignalSpy rowsAboutToBeInsertedSpy(model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
     QSignalSpy rowsInsertedSpy(model, SIGNAL(rowsInserted(QModelIndex, int, int)));
+    QSignalSpy runControlFinishedSpy(runControl, SIGNAL(finished()));
     runControl->start();
 
-    QVERIFY2(rowsInsertedSpy.wait(30000), "RowsInserted signal was not emitted within 30s");
-    QVERIFY2(rowsAboutToBeInsertedSpy.count() == 1, "RowsAboutToBeInserted was not emitted before rowsInserted sinal");
+    QVERIFY2(runControlFinishedSpy.wait(30000), "Run control did not finish within 30s");
+    QVERIFY2(rowsInsertedSpy.count() > 1, "RowsInserted signal was not emitted before run control finished");
+    QVERIFY2(rowsAboutToBeInsertedSpy.count() > 1, "RowsAboutToBeInserted was not emitted before rowsInserted sinal");
 
     SUB_TEST_FUNCTION(checkSignalArguments("rowsAboutToBeInserted()", rowsAboutToBeInsertedSpy.takeFirst(), model->rowCount() - 1, model->rowCount() - 1));
     SUB_TEST_FUNCTION(checkSignalArguments("rowsInserted()", rowsInsertedSpy.takeFirst(), model->rowCount() - 1, model->rowCount() - 1));
