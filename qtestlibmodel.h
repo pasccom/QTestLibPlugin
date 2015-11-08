@@ -356,11 +356,13 @@ private:
         /*!
          * \brief Replace the parent
          *
-         * This item will replace the given item by taking ownershop of its children.
+         * This item will replace the given item by taking ownership of its children.
          * \note The parent of child items is changed accordingly.
          * \note The result is set to the result of the replaced item.
          *
-         * \param item The item to be replaced.
+         * \param item The item to be replaced
+         * \param first The first child whose ownership is taken
+         * \param last The last child whose ownership is taken
          */
         virtual void replace(TestItem *item, int first = 0, int last = -1);
         /*!
@@ -684,6 +686,8 @@ private:
          * as test message items can not have any children.
          *
          * \param item The item to be replaced (Unused)
+         * \param first The first child whose ownership is taken (Unused)
+         * \param last The last child whose ownership is taken (Unused)
          */
         virtual void replace(TestItem *item, int first = 0, int last = -1) {Q_UNUSED(item); Q_UNUSED(first); Q_UNUSED(last); Q_ASSERT(false);}
         /*!
