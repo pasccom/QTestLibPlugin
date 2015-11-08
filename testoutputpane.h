@@ -23,6 +23,7 @@
 #include <utils/outputformat.h>
 
 class QTreeView;
+class QAbstractItemModel;
 
 namespace ProjectExplorer {
     class RunControl;
@@ -32,7 +33,6 @@ namespace QTestLibPlugin {
 namespace Internal {
 
 // TODO Change it into class QAbstractItemModel;
-class TestSuiteModel;
 class TestProxyModel;
 
 // TODO some functions will be inlined
@@ -40,7 +40,7 @@ class TestOutputPane : public Core::IOutputPane
 {
     Q_OBJECT
 public:
-    TestOutputPane(TestSuiteModel *model);
+    TestOutputPane(QAbstractItemModel *model);
     bool canFocus(void) const {return false;}
     bool canNavigate(void) const {return true;}
     bool canNext(void) const {return false;}
@@ -57,7 +57,7 @@ public:
     void visibilityChanged(bool visible) {}
 private:
     TestProxyModel *mProxy;
-    TestSuiteModel *mModel;
+    QAbstractItemModel *mModel;
     QTreeView *mOutputWidget;
 //    Core::MessageOutputWindow *mDebug;
 };
