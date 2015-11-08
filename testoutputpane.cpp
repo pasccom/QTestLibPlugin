@@ -18,6 +18,7 @@
 
 #include "testoutputpane.h"
 #include "testsuitemodel.h"
+#include "testproxymodel.h"
 
 #include <QtCore>
 #include <QtWidgets>
@@ -29,11 +30,18 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
+TestOutputPane::TestOutputPane(TestSuiteModel *model) :
+    mModel(model), mOutputWidget(NULL)
+{
+    mProxy = new TestProxyModel(this);
+    mProxy->setSourceModel(model);
+}
+
 QWidget* TestOutputPane::outputWidget(QWidget * parent)
 {
     if (mOutputWidget ==  NULL) {
         mOutputWidget = new QTreeView(parent);
-        mOutputWidget->setModel(mModel);
+        mOutputWidget->setModel(mProxy);
         mOutputWidget->setRootIndex(QModelIndex());
         mOutputWidget->setAllColumnsShowFocus(true);
         mOutputWidget->setExpandsOnDoubleClick(true);

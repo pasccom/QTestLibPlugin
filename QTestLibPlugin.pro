@@ -29,11 +29,12 @@ SOURCES += \
     plaintextqtestlibparserfactory.cpp \
     xmlqtestlibparser.cpp \
     xmlqtestlibparserfactory.cpp \
-    qtestlibargsparser.cpp
+    qtestlibargsparser.cpp \
+    testproxymodel.cpp
 
 HEADERS += \
-        qtestlibplugin_global.h \
-        qtestlibpluginconstants.h \
+    qtestlibplugin_global.h \
+    qtestlibpluginconstants.h \
     testoutputpane.h \
     testsuitemodel.h \
     qtestlibmodel.h \
@@ -43,7 +44,8 @@ HEADERS += \
     plaintextqtestlibparserfactory.h \
     xmlqtestlibparser.h \
     xmlqtestlibparserfactory.h \
-    qtestlibargsparser.h
+    qtestlibargsparser.h \
+    testproxymodel.h
 
 RESOURCES += \
     qtestlibplugin.qrc
