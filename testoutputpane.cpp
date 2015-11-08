@@ -17,7 +17,7 @@
  */
 
 #include "testoutputpane.h"
-#include "testsuitemodel.h"
+//#include "testsuitemodel.h"
 #include "testproxymodel.h"
 
 #include <QtCore>
@@ -30,7 +30,7 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-TestOutputPane::TestOutputPane(TestSuiteModel *model) :
+TestOutputPane::TestOutputPane(QAbstractItemModel *model) :
     mModel(model), mOutputWidget(NULL)
 {
     mProxy = new TestProxyModel(this);
@@ -57,7 +57,10 @@ QWidget* TestOutputPane::outputWidget(QWidget * parent)
 void TestOutputPane::clearContents(void)
 {
     qDebug() << "User asked to clear test output pane";
-    mModel->clear();
+    if (!QMetaObject::invokeMethod(mModel, "clear"))
+        qWarning() << "Failed to clear model";
+
+    // TODO add something more visible for the user (MessageBox?)
 }
 
 
