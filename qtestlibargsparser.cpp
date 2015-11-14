@@ -60,7 +60,7 @@ void QTestLibArgsParser::parse(bool incremental)
                     parseSelectedTest(token);
                 } else {
                     mError = UnknownFlagError;
-                    mErrorString = QCoreApplication::translate("QTestLibArgsParser", "Unknown flag \"%1\"").arg(token);
+                    mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Unknown flag \"%1\"").arg(token);
                 }
                 break;
             case 0: // -o
@@ -141,7 +141,7 @@ void QTestLibArgsParser::parse(bool incremental)
 
     if (currentFlag != -1) {
         mError = PrematureEndError;
-        mErrorString = QCoreApplication::translate("QTestLibArgsParser", "String of command line arguments ended prematurely");
+        mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "String of command line arguments ended prematurely");
     }
 
 }
@@ -227,7 +227,7 @@ void QTestLibArgsParser::parseOutput(const QString& token)
         mParser = (TestOutputFormat) (parserFormats.indexOf(format) + 1);
         if (mParser == NoneFormat) {
             mError = InvalidArgumentError;
-            mErrorString = QCoreApplication::translate("QTestLibArgsParser", "Got \"%1\" where output format was expected.").arg(format);
+            mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Got \"%1\" where output format was expected.").arg(format);
         }
     }
 }
@@ -240,7 +240,7 @@ unsigned int QTestLibArgsParser::parseUnsignedInteger(const QString& token, unsi
         return ret;
 
     mError = InvalidArgumentError;
-    mErrorString = QCoreApplication::translate("QTestLibArgsParser", "Got \"%1\" where unsigned integer was expected.").arg(token);
+    mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Got \"%1\" where unsigned integer was expected.").arg(token);
     return defaultValue;
 }
 
@@ -252,7 +252,7 @@ int QTestLibArgsParser::parseInteger(const QString& token, int defaultValue)
         return ret;
 
     mError = InvalidArgumentError;
-    mErrorString = QCoreApplication::translate("QTestLibArgsParser", "Got \"%1\" where integer was expected.").arg(token);
+    mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Got \"%1\" where integer was expected.").arg(token);
     return defaultValue;
 }
 
