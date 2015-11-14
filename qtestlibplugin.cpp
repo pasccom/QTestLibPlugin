@@ -34,10 +34,9 @@
 
 #include <projectexplorer/projectexplorer.h>
 
-#include <QAction>
-#include <QMessageBox>
-#include <QMainWindow>
-#include <QMenu>
+#include <QCoreApplication>
+#include <QTranslator>
+#include <QDir>
 
 #include <QtPlugin>
 
@@ -65,6 +64,18 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
 
     Q_UNUSED(arguments)
     Q_UNUSED(errorString)
+
+    QString qmFile = Core::ICore::userInterfaceLanguage();
+    if (qmFile.isEmpty())
+        qmFile = QLatin1String("en");
+    qmFile = QString(QLatin1String("qtestlibplugin_%1.qm")).arg(qmFile);
+
+    QTranslator *translator = new QTranslator(this);
+    if (translator->load(qmFile, Core::ICore::resourcePath() + QDir::separator() + QLatin1String("translations")) ||
+        translator->load(qmFile, Core::ICore::userResourcePath() + QDir::separator() + QLatin1String("translations")))
+        qApp->installTranslator(translator);
+    else
+        qWarning() << qPrintable(QString(QLatin1String("Translator file \"%1\" not found")).arg(qmFile));
 
     PlainTextQTestLibParserFactory *plainTextFactory = new PlainTextQTestLibParserFactory(this);
     addAutoReleasedObject(plainTextFactory);
