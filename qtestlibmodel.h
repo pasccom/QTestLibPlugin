@@ -77,6 +77,7 @@ public:
      * \note It is declared as a Qt metatype.
      */
     typedef enum {// WARNING Order matters!
+        FirstMessageType = -1, /*!< Sentinel value. Does not represent any signal. Must be first enum value! */
         Signal, /*!< The message describes a signal */
         Duration, /*!< The message gives the duration of a function or a test */
         BenchmarkResult, /*!< The message gives the result of a benchmark */
@@ -94,6 +95,7 @@ public:
         XFail, /*!< The message signals a test case has failed unexpectedly */
         BlackListedFail, /*!< The message signals a blacklisted test case has failed */
         Fail, /*!< The message signals a test case has failed */
+        LastMessageType /*!< Sentinel value. Does not represent any signal. Must be last enum value! */
     } MessageType;
     /*!
      * \brief New item roles
@@ -159,6 +161,37 @@ public:
      * \return The data for the given role and the given model index
      */
     QVariant data(const QModelIndex &index, int role) const;
+
+    /*!
+     * \brief Icon for message type
+     *
+     * Returns the QIcon for the given message type.
+     *
+     * \param type The message type
+     * \return A QIcon for the given message type
+     * \sa MessageType
+     */
+    static QIcon messageIcon(QTestLibModel::MessageType type);
+    /*!
+     * \brief String for message type
+     *
+     * Converts the given message type into a non-localized QString.
+     *
+     * \param type The message type
+     * \return A non-localized QString for the given message type.
+     * \sa MessageType, resultStringTr()
+     */
+    static QString resultString(QTestLibModel::MessageType type);
+    /*!
+     * \brief Text for message type
+     *
+     * Converts the given message type into a localized QString.
+     *
+     * \param type The message type
+     * \return A localized QString for the given message type.
+     * \sa MessageType, resultString()
+     */
+    static QString resultStringTr(QTestLibModel::MessageType type);
 public slots:
     /*!
      * \brief Clears the model

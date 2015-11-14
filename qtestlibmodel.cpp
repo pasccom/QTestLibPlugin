@@ -24,6 +24,8 @@
 #include <QtGui>
 #include <QtDebug>
 
+#define GOOBLE(x)
+
 namespace QTestLibPlugin {
 namespace Internal {
 
@@ -281,7 +283,7 @@ QVariant QTestLibModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QIcon messageIcon(QTestLibModel::MessageType type)
+QIcon QTestLibModel::messageIcon(QTestLibModel::MessageType type)
 {
     switch(type) {
     case QTestLibModel::Unknown:
@@ -289,7 +291,7 @@ QIcon messageIcon(QTestLibModel::MessageType type)
     case QTestLibModel::Warning:
         return QIcon(QLatin1String(":/messages/warning.png"));
     case QTestLibModel::QWarning:
-        return QIcon(QLatin1String(":/messages/warning.png"));
+        return QIcon(QLatin1String(":/messages/qwarning.png"));
     case QTestLibModel::QDebug:
         return QIcon(QLatin1String(":/messages/debug.png"));
     case QTestLibModel::QSystem:
@@ -318,6 +320,8 @@ QIcon messageIcon(QTestLibModel::MessageType type)
         return QIcon(QLatin1String(":/messages/duration.png"));
     case QTestLibModel::Signal:
         return QIcon(QLatin1String(":/messages/signal.png"));
+    default:
+        qWarning() << "Sentinel value used in" << __func__;
     }
     return QIcon();
 }
@@ -350,11 +354,13 @@ QString defaultMessage(QTestLibModel::MessageType type)
         return QTestLibModel::trUtf8("Test failed unexpectedly");
     case QTestLibModel::BlackListedFail:
         return QTestLibModel::trUtf8("Blacklisted test failed");
+    default:
+        qWarning() << "Sentinel value used in" << __func__;
     }
     return QString::null;
 }
 
-QString resultString(QTestLibModel::MessageType type)
+QString QTestLibModel::resultString(QTestLibModel::MessageType type)
 {
     QString str = QLatin1String("Signal  "
                                 "Duration"
@@ -373,7 +379,35 @@ QString resultString(QTestLibModel::MessageType type)
                                 "XFail   "
                                 "BFail   "
                                 "Fail    ");
-    return str.mid((int) type * 8, 8).trimmed();
+
+    if ((type != FirstMessageType) && (type != LastMessageType))
+        return str.mid((int) type * 8, 8).trimmed();
+
+    qWarning() << "Sentinel value used in" << __func__;
+    return QString::null;
+}
+
+QString QTestLibModel::resultStringTr(QTestLibModel::MessageType type)
+{
+    GOOBLE(QT_TR_NOOP("Signal"));
+    GOOBLE(QT_TR_NOOP("Duration"));
+    GOOBLE(QT_TR_NOOP("Result"));
+    GOOBLE(QT_TR_NOOP("QDebug"));
+    GOOBLE(QT_TR_NOOP("Info"));
+    GOOBLE(QT_TR_NOOP("Warning"));
+    GOOBLE(QT_TR_NOOP("QWarning"));
+    GOOBLE(QT_TR_NOOP("QSystem"));
+    GOOBLE(QT_TR_NOOP("QFatal"));
+    GOOBLE(QT_TR_NOOP("Unknown"));
+    GOOBLE(QT_TR_NOOP("Skip"));
+    GOOBLE(QT_TR_NOOP("Pass"));
+    GOOBLE(QT_TR_NOOP("BPass"));
+    GOOBLE(QT_TR_NOOP("XPass"));
+    GOOBLE(QT_TR_NOOP("XFail"));
+    GOOBLE(QT_TR_NOOP("BFail"));
+    GOOBLE(QT_TR_NOOP("Fail"));
+
+    return tr(qPrintable(QTestLibModel::resultString(type)));
 }
 
 QTestLibModel::TestItem::TestItem(TestItem *parent) :
@@ -498,11 +532,11 @@ void QTestLibModel::TestItem::removeChildren(void)
 QVariant QTestLibModel::TestItem::data(int column, int role) const
 {
     if ((column == 0) && (role ==  Qt::DecorationRole))
-        return QVariant(messageIcon(mResult));
+        return QVariant(QTestLibModel::messageIcon(mResult));
     if ((column == 0) && (role == ResultRole))
         return QVariant::fromValue<MessageType>(mResult);
     if ((column == 0) && (role == ResultStringRole))
-        return QVariant(resultString(mResult));
+        return QVariant(QTestLibModel::resultString(mResult));
     return QVariant();
 }
 
@@ -530,7 +564,7 @@ QVariant QTestLibModel::TestRowItem::data(int column, int role) const
 QVariant QTestLibModel::TestMessageItem::data(int column, int role) const
 {
     if ((column == 0) && (role ==  Qt::DecorationRole))
-        return QVariant(messageIcon(mResult));
+        return QVariant(QTestLibModel::messageIcon(mResult));
     if ((column == 0) && ((role == Qt::DisplayRole) || (role == Qt::ToolTipRole)))
         return mMessage.isEmpty() ? QVariant(defaultMessage(mResult)) : QVariant(mMessage.trimmed());
     return TestItem::data(column, role);
