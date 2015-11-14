@@ -8,6 +8,7 @@
         <file alias="unknown.png">icons/unknown.png</file>
         <file alias="duration.png">icons/duration.png</file>
         <file alias="signal.png">icons/signal.png</file>
+        <file alias="qwarning.png">icons/qwarning.png</file>
     </qresource>
     <qresource prefix="/events">
         <file alias="pass.png">icons/pass.png</file>
