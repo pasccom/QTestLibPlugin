@@ -19,6 +19,7 @@ qrc_*.cpp
 *.qm
 
 # Autosave files :
+*.kate-swp
 *.autosave
 *.bak
 
