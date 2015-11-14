@@ -50,6 +50,10 @@ HEADERS += \
 RESOURCES += \
     qtestlibplugin.qrc
 
+TRANSLATIONS += \
+    qtestlibplugin_en.ts \
+    qtestlibplugin_fr.ts
+
 # Qt Creator from environment
 # Set the QTC_SOURCE environment variable to override the setting here
 QTCREATOR_SOURCES = $$(QTC_SOURCE)
@@ -70,10 +74,50 @@ exists(QtCreator.local.pri) {
 USE_USER_DESTDIR = yes
 
 include($$QTCREATOR_SOURCES/src/qtcreatorplugin.pri)
+INSTALLS =
+
+###### Translation files generation (not handled by Qt)
+isEmpty(QMAKE_LRELEASE) {
+    win32:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\lrelease.exe
+    else:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
+}
+
+updateqm.input = TRANSLATIONS
+updateqm.output = ./bin/${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
+updateqm.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ./bin/${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
+updateqm.CONFIG += no_link
+
+QMAKE_EXTRA_COMPILERS += updateqm
+PRE_TARGETDEPS += compiler_updateqm_make_all
+
+###### Translation files installation (not handled yet by Qt Creator)
+COMPILED_TRANSLATIONS =
+for (TRANSLATION, TRANSLATIONS) {
+    COMPILED_TRANSLATIONS += "./bin/$$replace(TRANSLATION, ".ts", ".qm")"
+}
+isEmpty(USE_USER_DESTDIR) {
+    translations.path = "$$IDE_DATA_PATH/translations"
+} else {
+    win32 {
+        USERDATAAPPNAME = "qtcreator"
+        USERDATABASE = "$$(LOCALAPPDATA)"
+        isEmpty(USERDATABASE):USERDATABASE="$$(USERPROFILE)\Local Settings\Application Data"
+    } else:macx {
+        USERDATAAPPNAME = "Qt Creator"
+        USERDATABASE = "$$(HOME)/Library/Application Support"
+    } else:unix {
+        USERDATAAPPNAME = "qtcreator"
+        USERDATABASE = "$$(XDG_DATA_HOME)"
+        isEmpty(USERDATABASE):USERDATABASE = "$$(HOME)/.config"
+        else:USERDATABASE = "$$USERDATABASE/data"
+    }
+    translations.path = "$$USERDATABASE/QtProject/$$USERDATAAPPNAME/translations"
+}
+translations.files = $$COMPILED_TRANSLATIONS
+INSTALLS += translations
 
 ###### Added stuff to bypass IDE_BUILD_TREE
 target.path = $$DESTDIR
-INSTALLS =
 INSTALLS += target
 DESTDIR = ./bin
 
