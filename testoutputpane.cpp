@@ -17,7 +17,7 @@
  */
 
 #include "testoutputpane.h"
-//#include "testsuitemodel.h"
+#include "qtestlibmodel.h"
 #include "testproxymodel.h"
 
 #include <QtCore>
@@ -52,6 +52,17 @@ QWidget* TestOutputPane::outputWidget(QWidget * parent)
     }
 
     return mOutputWidget;
+}
+
+QList<QWidget *> TestOutputPane::toolBarWidgets(void) const
+{
+    QList<QWidget *> tbWidgets;
+
+    int t = QTestLibModel::FirstMessageType;
+    while (++t < QTestLibModel::LastMessageType)
+        tbWidgets.append(new TestProxyButton((QTestLibModel::MessageType) t, mProxy));
+
+    return tbWidgets;
 }
 
 void TestOutputPane::clearContents(void)

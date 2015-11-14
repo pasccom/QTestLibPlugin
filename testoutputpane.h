@@ -32,7 +32,6 @@ namespace ProjectExplorer {
 namespace QTestLibPlugin {
 namespace Internal {
 
-// TODO Change it into class QAbstractItemModel;
 class TestProxyModel;
 
 // TODO some functions will be inlined
@@ -53,7 +52,7 @@ public:
     QWidget* outputWidget(QWidget * parent);
     int priorityInStatusBar(void) const {return 10;}
     void setFocus(void) {}
-    QList<QWidget *> toolBarWidgets(void) const {return QList<QWidget *>();}
+    QList<QWidget *> toolBarWidgets(void) const;
     void visibilityChanged(bool visible) {}
 private:
     TestProxyModel *mProxy;
