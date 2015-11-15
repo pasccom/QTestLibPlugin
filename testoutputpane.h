@@ -58,6 +58,7 @@ private:
     TestProxyModel *mProxy;
     QAbstractItemModel *mModel;
     QTreeView *mOutputWidget;
+    QList<QWidget *> mToolbarWidgets;
 //    Core::MessageOutputWindow *mDebug;
 };
 

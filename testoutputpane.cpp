@@ -51,18 +51,18 @@ QWidget* TestOutputPane::outputWidget(QWidget * parent)
         mOutputWidget->setParent(parent);
     }
 
+    if (mToolbarWidgets.isEmpty()) {
+        int t = QTestLibModel::FirstMessageType;
+        while (++t < QTestLibModel::LastMessageType)
+            mToolbarWidgets.append(new TestProxyButton((QTestLibModel::MessageType) t, mProxy, parent));
+    }
+
     return mOutputWidget;
 }
 
 QList<QWidget *> TestOutputPane::toolBarWidgets(void) const
 {
-    QList<QWidget *> tbWidgets;
-
-    int t = QTestLibModel::FirstMessageType;
-    while (++t < QTestLibModel::LastMessageType)
-        tbWidgets.append(new TestProxyButton((QTestLibModel::MessageType) t, mProxy));
-
-    return tbWidgets;
+    return mToolbarWidgets;
 }
 
 void TestOutputPane::clearContents(void)
