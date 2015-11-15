@@ -24,6 +24,7 @@
 
 class QTreeView;
 class QAbstractItemModel;
+class QSettings;
 
 namespace ProjectExplorer {
     class RunControl;
@@ -54,6 +55,8 @@ public:
     void setFocus(void) {}
     QList<QWidget *> toolBarWidgets(void) const;
     void visibilityChanged(bool visible) {}
+
+    void saveSettings(QSettings* settings);
 private:
     TestProxyModel *mProxy;
     QAbstractItemModel *mModel;

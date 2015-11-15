@@ -27,6 +27,7 @@ namespace QTestLibPlugin {
 namespace Internal {
 
 class TestSuiteModel;
+class TestOutputPane;
 
 class QTestLibPluginPlugin : public ExtensionSystem::IPlugin
 {
@@ -43,6 +44,7 @@ public:
 
 private:
     TestSuiteModel* mModel;
+    TestOutputPane *mOutputPane;
 };
 
 } // namespace Internal

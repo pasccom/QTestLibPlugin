@@ -16,6 +16,7 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
+#include "qtestlibpluginconstants.h"
 #include "testoutputpane.h"
 #include "qtestlibmodel.h"
 #include "testproxymodel.h"
@@ -74,6 +75,21 @@ void TestOutputPane::clearContents(void)
     // TODO add something more visible for the user (MessageBox?)
 }
 
+void TestOutputPane::saveSettings(QSettings* settings)
+{
+    settings->beginGroup(QTestLibPlugin::Constants::ViewGroup);
+    settings->setValue(QTestLibPlugin::Constants::DescWidthKey, QVariant(mOutputWidget->columnWidth(0)));
+    settings->setValue(QTestLibPlugin::Constants::FileWidthKey, QVariant(mOutputWidget->columnWidth(1)));
+    settings->setValue(QTestLibPlugin::Constants::LineWidthKey, QVariant(mOutputWidget->columnWidth(2)));
+    settings->endGroup();
+
+    settings->beginGroup(QTestLibPlugin::Constants::FilterProxyGroup);
+    int t = QTestLibModel::FirstMessageType;
+    while (++t < QTestLibModel::LastMessageType)
+        settings->setValue(QTestLibModel::resultString((QTestLibModel::MessageType) t),
+                           QVariant(mProxy->isMessageTypeEnabled((QTestLibModel::MessageType) t)));
+    settings->endGroup();
+}
 
 } // namespace Internal
 } // namespace QTestLibPlugin

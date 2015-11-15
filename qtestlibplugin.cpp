@@ -82,8 +82,8 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
     XMLQTestLibParserFactory *xmlFactory = new XMLQTestLibParserFactory(this);
     addAutoReleasedObject(xmlFactory);
 
-    TestOutputPane *outputPane = new TestOutputPane(mModel);
-    addAutoReleasedObject(outputPane);
+    mOutputPane = new TestOutputPane(mModel);
+    addAutoReleasedObject(mOutputPane);
 
     connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl*)),
             mModel, SLOT(appendTestRun(ProjectExplorer::RunControl*)));
@@ -103,5 +103,10 @@ ExtensionSystem::IPlugin::ShutdownFlag QTestLibPluginPlugin::aboutToShutdown()
     // Save settings
     // Disconnect from signals that are not needed during shutdown
     // Hide UI (if you add UI that is not in the main window directly)
+
+    QSettings *settings = Core::ICore::settings(QSettings::UserScope);
+    settings->beginGroup(QTestLibPlugin::Constants::PluginName);
+    mOutputPane->saveSettings(settings);
+    settings->endGroup();
     return SynchronousShutdown;
 }
