@@ -19,11 +19,18 @@
 #ifndef QTESTLIBPLUGINCONSTANTS_H
 #define QTESTLIBPLUGINCONSTANTS_H
 
+#include <QString>
+
 namespace QTestLibPlugin {
 namespace Constants {
 
-const char ACTION_ID[] = "QTestLibPlugin.Action";
-const char MENU_ID[] = "QTestLibPlugin.Menu";
+const QString PluginName = QLatin1String("QTestLibPlugin");
+
+const QString FilterProxyGroup = QLatin1String("FilterProxy");
+const QString ViewGroup = QLatin1String("View");
+const QString DescWidthKey = QLatin1String("DescWidth");
+const QString FileWidthKey = QLatin1String("FileWidth");
+const QString LineWidthKey = QLatin1String("LineWidth");
 
 } // namespace QTestLibPlugin
 } // namespace Constants
