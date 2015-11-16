@@ -35,7 +35,8 @@ TestProxyButton::TestProxyButton(QTestLibModel::MessageType messageType, TestPro
     setIcon(QTestLibModel::messageIcon(messageType));
     setToolTip(QTestLibModel::resultStringTr(messageType));
     setCheckable(true);
-    setChecked(true);
+    if (mProxy != NULL)
+        setChecked(mProxy->isMessageTypeEnabled(messageType));
 
     connect(this, SIGNAL(clicked(bool)),
             this, SLOT(handleClick(bool)));
