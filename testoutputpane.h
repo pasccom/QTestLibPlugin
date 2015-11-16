@@ -21,6 +21,7 @@
 
 #include <coreplugin/ioutputpane.h>
 #include <utils/outputformat.h>
+#include <QVector>
 
 class QTreeView;
 class QAbstractItemModel;
@@ -56,12 +57,16 @@ public:
     QList<QWidget *> toolBarWidgets(void) const;
     void visibilityChanged(bool visible) {}
 
+    void loadSettings(QSettings* settings);
     void saveSettings(QSettings* settings);
 private:
+    void loadColumnWidth(QSettings* settings, int column, const QString& key);
+
     TestProxyModel *mProxy;
     QAbstractItemModel *mModel;
     QTreeView *mOutputWidget;
     QList<QWidget *> mToolbarWidgets;
+    QVector<int> mColumnWidths;
 //    Core::MessageOutputWindow *mDebug;
 };
 

@@ -85,6 +85,11 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
     mOutputPane = new TestOutputPane(mModel);
     addAutoReleasedObject(mOutputPane);
 
+    QSettings *settings = Core::ICore::settings(QSettings::UserScope);
+    settings->beginGroup(QTestLibPlugin::Constants::PluginName);
+    mOutputPane->loadSettings(settings);
+    settings->endGroup();
+
     connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl*)),
             mModel, SLOT(appendTestRun(ProjectExplorer::RunControl*)));
 

@@ -34,6 +34,8 @@ namespace Internal {
 TestOutputPane::TestOutputPane(QAbstractItemModel *model) :
     mModel(model), mOutputWidget(NULL)
 {
+    mColumnWidths.resize(3);
+
     mProxy = new TestProxyModel(this);
     mProxy->setSourceModel(model);
 }
@@ -48,6 +50,10 @@ QWidget* TestOutputPane::outputWidget(QWidget * parent)
         mOutputWidget->setExpandsOnDoubleClick(true);
         mOutputWidget->setIndentation(22);
         mOutputWidget->setRootIsDecorated(false);
+
+        for (int i = 0; i < mColumnWidths.size(); i++)
+            if (mColumnWidths[i] >= 0)
+                mOutputWidget->setColumnWidth(i, mColumnWidths[i]);
     } else {
         mOutputWidget->setParent(parent);
     }
@@ -73,6 +79,35 @@ void TestOutputPane::clearContents(void)
         qWarning() << "Failed to clear model";
 
     // TODO add something more visible for the user (MessageBox?)
+}
+
+void TestOutputPane::loadColumnWidth(QSettings* settings, int column, const QString& key)
+{
+    QVariant width = settings->value(key, QVariant(-1));
+    if (width.canConvert<int>())
+        mColumnWidths[column] = width.toInt();
+}
+
+void TestOutputPane::loadSettings(QSettings* settings)
+{
+    settings->beginGroup(QTestLibPlugin::Constants::ViewGroup);
+    loadColumnWidth(settings, 0, QTestLibPlugin::Constants::DescWidthKey);
+    loadColumnWidth(settings, 1, QTestLibPlugin::Constants::FileWidthKey);
+    loadColumnWidth(settings, 2, QTestLibPlugin::Constants::LineWidthKey);
+    settings->endGroup();
+
+    settings->beginGroup(QTestLibPlugin::Constants::FilterProxyGroup);
+    int t = QTestLibModel::FirstMessageType;
+    while (++t < QTestLibModel::LastMessageType) {
+        QVariant boolean = settings->value(QTestLibModel::resultString((QTestLibModel::MessageType) t), QVariant(true));
+        if (boolean.canConvert<bool>()) {
+            if (boolean.toBool())
+                mProxy->enableMessageType((QTestLibModel::MessageType) t);
+            else
+                mProxy->disableMessageType((QTestLibModel::MessageType) t);
+        }
+    }
+    settings->endGroup();
 }
 
 void TestOutputPane::saveSettings(QSettings* settings)
