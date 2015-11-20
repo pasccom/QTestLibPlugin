@@ -218,7 +218,7 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="info" strict="true" level="verbose2" file="allmessagestest.cpp" line="55">
+            <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="55">
                 QVERIFY(true)
             </message>
             <message type="Pass" strict="true">
@@ -232,7 +232,7 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="info" strict="true" level="verbose2" file="allmessagestest.cpp" line="60">
+            <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="60">
                 QVERIFY(true)
             </message>
             <message type="BPass" strict="true" level="silent">
@@ -246,7 +246,7 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="info" strict="true" level="verbose2" file="allmessagestest.cpp" line="66">
+            <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="66">
                 QVERIFY(true)
             </message>
             <message type="XPass" strict="true" level="silent" file="allmessagestest.cpp" line="66">
@@ -260,7 +260,7 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="info" strict="true" level="verbose2" file="allmessagestest.cpp" line="71">
+            <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="71">
                 QVERIFY(false)
             </message>
             <message type="Fail" strict="true" level="silent" file="allmessagestest.cpp" line="71">
@@ -274,7 +274,7 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="info" strict="true" level="verbose2" file="allmessagestest.cpp" line="76">
+            <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="76">
                 QVERIFY(false)
             </message>
             <message type="BFail" strict="true" level="silent" file="allmessagestest.cpp" line="76">
@@ -288,7 +288,7 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <message type="info" strict="true" level="verbose2" file="allmessagestest.cpp" line="82">
+            <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="82">
                 QVERIFY(false)
             </message>
             <message type="XFail" strict="true" file="allmessagestest.cpp" line="82">
