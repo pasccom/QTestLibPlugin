@@ -38,6 +38,15 @@
         } \
     } while(false); \
 
+QTestLibModelTester::QTestLibModelTester(const QAbstractItemModel *model, Verbosity verbosity, const QString& format) :
+    mModel(model), mError(QString::null), mParserFormat(format), mVerbosity(verbosity)
+{
+    mFilters.resize((int) QTestLibPlugin::Internal::QTestLibModel::LastMessageType);
+
+    for (int i = 0; i < mFilters.size(); i++)
+        mFilters[i] = true;
+}
+
 bool QTestLibModelTester::checkResults(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results, const QString& testName)
 {
     mError = QString::null;
@@ -121,13 +130,15 @@ void QTestLibModelTester::loadTestResult(QDomDocument& dom, const QString& testN
     END_SUB_TEST_FUNCTION
 }
 
-void QTestLibModelTester::isOutput(const QDomElement& element, bool *ret)
+void QTestLibModelTester::isOutput(const QDomElement& element, bool *ret, bool filter)
 {
     BEGIN_SUB_TEST_FUNCTION
 
     SUB_TEST_FUNCTION(isOutputFormat(element, ret));
     if (*ret)
         SUB_TEST_FUNCTION(isOutputVerbosity(element, ret));
+    if (*ret && filter)
+        SUB_TEST_FUNCTION(isOutputType(element, ret));
 
     END_SUB_TEST_FUNCTION
 }
@@ -180,6 +191,41 @@ void QTestLibModelTester::isOutputVerbosity(const QDomElement& element, bool *re
     END_SUB_TEST_FUNCTION
 }
 
+void QTestLibModelTester::isOutputType(const QDomElement& element, bool* ret)
+{
+    BEGIN_SUB_TEST_FUNCTION
+
+    const QString results = "Signal  "
+                            "Duration"
+                            "Result  "
+                            "QDebug  "
+                            "Info    "
+                            "Warning "
+                            "QWarning"
+                            "QSystem "
+                            "QFatal  "
+                            "Unknown "
+                            "Skip    "
+                            "Pass    "
+                            "BPass   "
+                            "XPass   "
+                            "XFail   "
+                            "BFail   "
+                            "Fail    ";
+
+    QString result = element.attribute("type", QString::null);
+    QVERIFY2(!result.isNull(), "Elements must have a type attribute");
+
+    int t = -1;
+    do {
+       t = results.indexOf(result, t + 1);
+    } while((t != -1) && (t % 8 != 0));
+    QVERIFY2(t != -1, qPrintable(QString("Unknown type \"%1\"").arg(result)));
+    *ret = mFilters.at(t / 8);
+
+    END_SUB_TEST_FUNCTION
+}
+
 void QTestLibModelTester::checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected)
 {
     BEGIN_SUB_TEST_FUNCTION
@@ -189,7 +235,7 @@ void QTestLibModelTester::checkResults(QLinkedList<QTestLibPlugin::Internal::Tes
 
     while ((currentResult != results.constEnd()) && (!currentExpected.isNull())) {
         bool isPrinted = false;
-        SUB_TEST_FUNCTION(isOutput(currentExpected, &isPrinted));
+        SUB_TEST_FUNCTION(isOutput(currentExpected, &isPrinted, false));
         if (isPrinted) {
             switch (*currentResult) {
             case QTestLibPlugin::Internal::TestModelFactory::Unsure:

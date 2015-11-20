@@ -20,6 +20,7 @@
 #define MODELTESTER_H
 
 #include <QObject>
+#include "../../qtestlibmodel.h"
 #include "../../testmodelfactory.h"
 #include "qttestsubfunction.h"
 
@@ -41,13 +42,17 @@ public:
         VerboseSignal,
         VerbosityCountMinusOne // WARNING must be the last one!
     } Verbosity;
-    inline QTestLibModelTester(const QAbstractItemModel *model, Verbosity verbosity = Normal, const QString& format = "txt"):
-        mModel(model), mError(QString::null), mParserFormat(format), mVerbosity(verbosity) {}
+    QTestLibModelTester(const QAbstractItemModel *model, Verbosity verbosity = Normal, const QString& format = "txt");
 
     inline void setVerbosity(Verbosity verbosity) {mVerbosity = verbosity;}
     inline Verbosity verbosity(void) const {return mVerbosity;}
     inline void setFormat(const QString& format) {mParserFormat = format;}
     inline QString format(void) const {return mParserFormat;}
+
+    inline void enableMessageType(QTestLibPlugin::Internal::QTestLibModel::MessageType type) {mFilters[(int) type] = true;}
+    inline void disableMessageType(QTestLibPlugin::Internal::QTestLibModel::MessageType type) {mFilters[(int) type] = false;}
+    inline void toogleMessageType(QTestLibPlugin::Internal::QTestLibModel::MessageType type) {mFilters[(int) type] = !mFilters.at((int) type);}
+    inline bool isMessageTypeEnabled(QTestLibPlugin::Internal::QTestLibModel::MessageType type) const {return mFilters.at((int) type);}
 
     bool checkResults(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results, const QString& testName);
     bool checkIndex(const QModelIndex& index, const QString& testName);
@@ -57,9 +62,10 @@ private:
     void checkResultsInternal(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results, const QString& testName);
     void checkIndexInternal(const QModelIndex& model, const QString& testName);
 
-    void isOutput(const QDomElement& element, bool *ret);
+    void isOutput(const QDomElement& element, bool *ret, bool filter = true);
     void isOutputFormat(const QDomElement& element, bool *ret);
     void isOutputVerbosity(const QDomElement& element, bool *ret);
+    void isOutputType(const QDomElement& element, bool* ret);
 
     void checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected);
 
@@ -74,6 +80,7 @@ private:
     QString mError;
     QString mParserFormat;
     Verbosity mVerbosity;
+    QVector<bool> mFilters;
 };
 
 
