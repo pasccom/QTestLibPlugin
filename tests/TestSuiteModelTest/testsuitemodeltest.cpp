@@ -111,15 +111,15 @@ TestSuiteModelTest::TestSuiteModelTest(void)
     ExtensionSystem::PluginManager::addObject(xmlFactory);
 
     mTests.clear();
-    /*mTests << "OneClassTest";
+    mTests << "OneClassTest";
     mTests << "AllMessagesTest";
-    mTests << "MultipleClassesTest";*/
+    mTests << "MultipleClassesTest";
     mTests << "SignalsTest";
-    //mTests << "LimitsTest";
+    mTests << "LimitsTest";
 
     mParserFormats.clear();
     mParserFormats << "txt";
-    //mParserFormats << "xml";
+    mParserFormats << "xml";
 }
 
 void TestSuiteModelTest::data(void)
