@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!DOCTYPE qtestliboutput SYSTEM "qtestliboutput.dtd">
+<!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
     <results format="xml">
         <unsure level="silent" />

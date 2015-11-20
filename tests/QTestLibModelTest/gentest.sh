@@ -425,7 +425,7 @@ mkdir "$TESTNAME" || error "Could not create folder $TESTNAME"
 ## Creation of test result file ###############################################
 # Initializes test result file
 echo "<?xml version=\"1.0\" ?>" > "$TESTNAME/$RESULTFILENAME"
-echo "<!DOCTYPE qtestliboutput SYSTEM \"qtestliboutput.dtd\">" >> "$TESTNAME/$RESULTFILENAME"
+echo "<!DOCTYPE qtestliboutput SYSTEM \"../../../../qtestliboutput.dtd\">" >> "$TESTNAME/$RESULTFILENAME"
 echo "<qtestliboutput>" >> "$TESTNAME/$RESULTFILENAME"
 
 # Populates results
@@ -552,7 +552,7 @@ success "Created result file \"$TESTNAME/$RESULTFILENAME\""
 ## Creation of test file ######################################################
 # Initializes test file
 echo "<?xml version=\"1.0\" ?>" > "$TESTNAME/$TESTFILENAME"
-echo "<!DOCTYPE qtestlibmodeltest SYSTEM \"qtestlibmodeltest.dtd\">" >> "$TESTNAME/$TESTFILENAME"
+echo "<!DOCTYPE qtestlibmodeltest SYSTEM \"../../../../qtestlibmodeltest.dtd\">" >> "$TESTNAME/$TESTFILENAME"
 echo "<qtestlibmodeltest>" >> "$TESTNAME/$TESTFILENAME"
 INDENT="    "
 
