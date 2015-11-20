@@ -1,33 +1,40 @@
-<!DOCTYPE qtestliboutput [
-    <!ELEMENT qtestliboutput (results+,root|class)>
-    <!ELEMENT root (class+)>
-    <!ELEMENT class (function+)>
-    <!ELEMENT function (row+|message+)>
-    <!ELEMENT row (message+)>
-    <!ELEMENT message (#PCDATA)>
-    <!ELEMENT results (unsure+|magicfound+|magicnotfound+)>
-    <!ELEMENT unsure EMPTY>
-    <!ELEMENT magicfound EMPTY>
-    <!ELEMENT magicnotfound EMPTY>
+<!ELEMENT qtestliboutput (results+,root|class)>
+<!ELEMENT root (class+)>
+<!ELEMENT class (function+)>
+<!ELEMENT function (row+|message+)>
+<!ELEMENT row (message+)>
+<!ELEMENT message (#PCDATA)>
+<!ELEMENT results (unsure+|magicfound+|magicnotfound+)>
+<!ELEMENT unsure EMPTY>
+<!ELEMENT magicfound EMPTY>
+<!ELEMENT magicnotfound EMPTY>
 
-    <!ATTLIST root type CDATA "Unknown">
+<!ATTLIST results format (all|txt|xml) #REQUIRED>
 
-    <!ATTLIST results format CDATA #REQUIRED>
+<!ATTLIST unsure level (silent|normal|verbose1|verbose2|verboses) "normal">
+<!ATTLIST magicfound level (silent|normal|verbose1|verbose2|verboses) "normal">
+<!ATTLIST magicnotfound level (silent|normal|verbose1|verbose2|verboses) "normal">
 
-    <!ATTLIST class name CDATA #REQUIRED>
-    <!ATTLIST class type CDATA "Unknown">
-    <!ATTLIST class level CDATA "normal">
+<!ATTLIST root type CDATA "Unknown">
+<!ATTLIST root id ID #IMPLIED>
 
-    <!ATTLIST function name CDATA #REQUIRED>
-    <!ATTLIST function type CDATA "Unknown">
-    <!ATTLIST function level CDATA "normal">
+<!ATTLIST class name CDATA #REQUIRED>
+<!ATTLIST class type CDATA "Unknown">
+<!ATTLIST class level (silent|normal|verbose1|verbose2|verboses) "normal">
+<!ATTLIST class id ID #IMPLIED>
 
-    <!ATTLIST row title CDATA #REQUIRED>
-    <!ATTLIST row type CDATA "Unknown">
-    <!ATTLIST row level CDATA "normal">
+<!ATTLIST function name CDATA #REQUIRED>
+<!ATTLIST function type CDATA "Unknown">
+<!ATTLIST function level  CDATA "normal">
+<!ATTLIST function id ID #IMPLIED>
 
-    <!ATTLIST message type CDATA "Unknown">
-    <!ATTLIST message strict>
-    <!ATTLIST message level CDATA "normal">
-    <!ATTLIST message format CDATA "all">
-]>
+<!ATTLIST row title CDATA #REQUIRED>
+<!ATTLIST row type CDATA "Unknown">
+<!ATTLIST row level (silent|normal|verbose1|verbose2|verboses) "normal">
+<!ATTLIST row id ID #IMPLIED>
+
+<!ATTLIST message type CDATA "Unknown">
+<!ATTLIST message strict>
+<!ATTLIST message level (silent|normal|verbose1|verbose2|verboses) "normal">
+<!ATTLIST message format (all|txt|xml) "all">
+<!ATTLIST message id ID #IMPLIED>

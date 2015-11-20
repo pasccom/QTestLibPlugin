@@ -1,0 +1,14 @@
+<!ELEMENT qtestlibmodeltest (items,signals)>
+<!ELEMENT items item*>
+<!ELEMENT item (#PCDATA)>
+<!ELEMENT signals signal*>
+<!ELEMENT signal arg*>
+
+<!ATTLIST item class CDATA #IMPLIED>
+<!ATTLIST item function CDATA #IMPLIED>
+<!ATTLIST item row CDATA #IMPLIED>
+
+<!ATTLIST signal name CDATA #REQUIRED>
+
+<!ATTLIST arg type CDATA #REQUIRED>
+<!ATTLIST arg value CDATA #REQUIRED>
