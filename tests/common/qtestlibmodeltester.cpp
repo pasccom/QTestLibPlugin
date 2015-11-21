@@ -195,7 +195,8 @@ void QTestLibModelTester::isOutputType(const QDomElement& element, bool* ret)
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    const QString results = "Signal  "
+    const QString results = "Slot    "
+                            "Signal  "
                             "Duration"
                             "Result  "
                             "QDebug  "
