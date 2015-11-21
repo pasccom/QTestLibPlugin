@@ -67,7 +67,7 @@ bool XMLQTestLibParserFactory::canParseArguments(ProjectExplorer::RunConfigurati
 
         return ((parser.error() == QTestLibArgsParser::NoError)
              && (parser.outputFormat() == QTestLibArgsParser::XmlFormat)
-              && parser.outFileName().toString().isNull());
+              && parser.outFileName().toString().isEmpty());
     }
 
     return false;

@@ -68,7 +68,7 @@ bool PlainTextQTestLibParserFactory::canParseArguments(ProjectExplorer::RunConfi
 
         return ((parser.error() == QTestLibArgsParser::NoError)
              && (parser.outputFormat() == QTestLibArgsParser::TxtFormat)
-              && parser.outFileName().toString().isNull());
+              && parser.outFileName().toString().isEmpty());
     }
 
     return false;
