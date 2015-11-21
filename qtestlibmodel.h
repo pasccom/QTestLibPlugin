@@ -78,6 +78,7 @@ public:
      */
     typedef enum {// WARNING Order matters!
         FirstMessageType = -1, /*!< Sentinel value. Does not represent any signal. Must be first enum value! */
+        Slot, /*!< The message describes a slot */
         Signal, /*!< The message describes a signal */
         Duration, /*!< The message gives the duration of a function or a test */
         BenchmarkResult, /*!< The message gives the result of a benchmark */

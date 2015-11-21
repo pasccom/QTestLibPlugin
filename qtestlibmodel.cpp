@@ -159,6 +159,8 @@ void QTestLibModel::createTestMessageItem(MessageType type, const QString& messa
     beginInsertRows(index(parent), parent->childrenCount(), parent->childrenCount());
     if (message.startsWith(QLatin1String("Signal: ")))
         mCurrentMessageItem = new TestMessageItem(Signal, message.mid(8).trimmed(), parent);
+    else if (message.startsWith(QLatin1String("    Slot: ")))
+        mCurrentMessageItem = new TestMessageItem(Slot, message.mid(10).trimmed(), parent);
     else
         mCurrentMessageItem = new TestMessageItem(type, message, parent);
     endInsertRows();
@@ -320,6 +322,8 @@ QIcon QTestLibModel::messageIcon(QTestLibModel::MessageType type)
         return QIcon(QLatin1String(":/messages/duration.png"));
     case QTestLibModel::Signal:
         return QIcon(QLatin1String(":/messages/signal.png"));
+    case QTestLibModel::Slot:
+        return QIcon(QLatin1String(":/messages/slot.png"));
     default:
         qWarning() << "Sentinel value used in" << __func__;
     }
@@ -339,6 +343,7 @@ QString defaultMessage(QTestLibModel::MessageType type)
     case QTestLibModel::BenchmarkResult:
     case QTestLibModel::Duration:
     case QTestLibModel::Signal:
+    case QTestLibModel::Slot:
         break;
     case QTestLibModel::Skip:
         return QTestLibModel::trUtf8("Test skipped");
@@ -362,7 +367,8 @@ QString defaultMessage(QTestLibModel::MessageType type)
 
 QString QTestLibModel::resultString(QTestLibModel::MessageType type)
 {
-    QString str = QLatin1String("Signal  "
+    QString str = QLatin1String("Slot    "
+                                "Signal  "
                                 "Duration"
                                 "Result  "
                                 "QDebug  "
@@ -389,6 +395,7 @@ QString QTestLibModel::resultString(QTestLibModel::MessageType type)
 
 QString QTestLibModel::resultStringTr(QTestLibModel::MessageType type)
 {
+    GOOBLE(QT_TR_NOOP("Slot"));
     GOOBLE(QT_TR_NOOP("Signal"));
     GOOBLE(QT_TR_NOOP("Duration"));
     GOOBLE(QT_TR_NOOP("Result"));
