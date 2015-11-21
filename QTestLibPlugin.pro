@@ -100,7 +100,7 @@ isEmpty(USE_USER_DESTDIR) {
 } else {
     win32 {
         USERDATAAPPNAME = "qtcreator"
-        USERDATABASE = "$$(LOCALAPPDATA)"
+        USERDATABASE = "$$(APPDATA)"
         isEmpty(USERDATABASE):USERDATABASE="$$(USERPROFILE)\Local Settings\Application Data"
     } else:macx {
         USERDATAAPPNAME = "Qt Creator"
