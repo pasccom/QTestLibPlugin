@@ -188,6 +188,13 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLib
         while (line.endsWith('\n') || line.endsWith('\r'))
             line.chop(1);
         //qDebug() << line;
+        if (line.isEmpty())
+            continue;
+        // Lines added by windows
+        if (QString::compare(line, "This application has requested the Runtime to terminate it in an unusual way.") == 0)
+            continue;
+        if (QString::compare(line, "Please contact the application's support team for more information.") == 0)
+            continue;
         results << parser->parseStderrLine(NULL, line);
     }
 
