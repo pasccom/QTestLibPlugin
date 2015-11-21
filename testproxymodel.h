@@ -70,6 +70,7 @@ public:
     inline bool isMessageTypeEnabled(QTestLibModel::MessageType type) const {return mFilters.at((int) type);}
 protected:
     /*!
+     * \internal
      * \brief Does the row pass through  the filter?
      *
      * This is the core function of TestProxyModel.
