@@ -250,7 +250,7 @@ QTestLibModel::MessageType XMLQTestLibParser::currentMessageType(void)
     if (type == -1)
         type = (int) QTestLibModel::Unknown;
     else
-        type = (type >> 3) + 2;
+        type = (type >> 3) + 3;
 
     return (QTestLibModel::MessageType) type;
 }

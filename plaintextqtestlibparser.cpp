@@ -125,7 +125,7 @@ bool PlainTextQTestLibParser::isMessageBeginning(const QString& line, QTestLibMo
     if (t == -1)
         return false;
     t>>=3;
-    t+=2;
+    t+=3;
 
     if (type != NULL)
         *type = (QTestLibModel::MessageType) t;
