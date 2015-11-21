@@ -33,8 +33,9 @@ qrc_*.cpp
 # Temporary folder:
 .tmp/
 
-# Local project include files:
+# Local include files:
 *.local.pri
+*.local.h
 
 # Directory settings files
 .directory
