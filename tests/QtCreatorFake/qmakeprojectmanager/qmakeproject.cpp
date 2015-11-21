@@ -17,6 +17,7 @@
  */
 
 #include "qmakeproject.h"
+#include "qmake_paths.local.h"
 
 #include <qmakevfs.h>
 #include <profileevaluator.h>
@@ -28,35 +29,35 @@ QmakeProject::QmakeProject(const QString& proFile, QObject *parent) :
 {
     mVfs = new QMakeVfs;
     mGlobals = new ProFileGlobals;
-    mGlobals->qmake_abslocation = "/usr/bin/qmake-qt5";
-    mGlobals->qmakespec = "/usr/lib64/qt5/mkspecs/linux-g++-64";
-    mGlobals->xqmakespec = "/usr/lib64/qt5/mkspecs/linux-g++-64";
+    mGlobals->qmake_abslocation = QMAKE_ABSLOCATION;
+    mGlobals->qmakespec = QMAKESPEC;
+    mGlobals->xqmakespec = XQMAKESPEC;
     mGlobals->sysroot = QString::null;
 
     QHash<QString, QString> qtVersionInfo;
-    qtVersionInfo.insert("QT_SYSROOT", QString::null);
-    qtVersionInfo.insert("QT_INSTALL_PREFIX", "/usr");
-    qtVersionInfo.insert("QT_INSTALL_ARCHDATA", "/usr/lib64/qt5");
-    qtVersionInfo.insert("QT_INSTALL_DATA", "/usr/share/qt5");
-    qtVersionInfo.insert("QT_INSTALL_DOCS", "/usr/share/doc/packages/qt5");
-    qtVersionInfo.insert("QT_INSTALL_HEADERS", "/usr/include/qt5");
-    qtVersionInfo.insert("QT_INSTALL_LIBS", "/usr/lib64");
-    qtVersionInfo.insert("QT_INSTALL_LIBEXECS", "/usr/lib64/qt5/libexec");
-    qtVersionInfo.insert("QT_INSTALL_BINS", "/usr/lib64/qt5/bin");
-    qtVersionInfo.insert("QT_INSTALL_TESTS", "/usr/tests");
-    qtVersionInfo.insert("QT_INSTALL_PLUGINS", "/usr/lib64/qt5/plugins");
-    qtVersionInfo.insert("QT_INSTALL_IMPORTS", "/usr/lib64/qt5/imports");
-    qtVersionInfo.insert("QT_INSTALL_QML", "/usr/lib64/qt5/qml");
-    qtVersionInfo.insert("QT_INSTALL_TRANSLATIONS", "/usr/share/qt5/translations");
-    qtVersionInfo.insert("QT_INSTALL_CONFIGURATION", "/etc/xdg");
-    qtVersionInfo.insert("QT_INSTALL_EXAMPLES", "/usr/lib64/qt5/examples");
-    qtVersionInfo.insert("QT_INSTALL_DEMOS", "/usr/lib64/qt5/examples");
-    qtVersionInfo.insert("QT_HOST_PREFIX", "/usr");
-    qtVersionInfo.insert("QT_HOST_DATA", "/usr/lib64/qt5");
-    qtVersionInfo.insert("QT_HOST_BINS", "/usr/lib64/qt5/bin");
-    qtVersionInfo.insert("QT_HOST_LIBS", "/usr/lib64");
-    qtVersionInfo.insert("QMAKE_VERSION", "3.0");
-    qtVersionInfo.insert("QT_VERSION", "5.4.2");
+    qtVersionInfo.insert("QT_SYSROOT", QT_SYSROOT);
+    qtVersionInfo.insert("QT_INSTALL_PREFIX", QT_INSTALL_PREFIX);
+    qtVersionInfo.insert("QT_INSTALL_ARCHDATA", QT_INSTALL_ARCHDATA);
+    qtVersionInfo.insert("QT_INSTALL_DATA", QT_INSTALL_DATA);
+    qtVersionInfo.insert("QT_INSTALL_DOCS", QT_INSTALL_DOCS);
+    qtVersionInfo.insert("QT_INSTALL_HEADERS", QT_INSTALL_HEADERS);
+    qtVersionInfo.insert("QT_INSTALL_LIBS", QT_INSTALL_LIBS);
+    qtVersionInfo.insert("QT_INSTALL_LIBEXECS", QT_INSTALL_LIBEXECS);
+    qtVersionInfo.insert("QT_INSTALL_BINS", QT_INSTALL_BINS);
+    qtVersionInfo.insert("QT_INSTALL_TESTS", QT_INSTALL_TESTS);
+    qtVersionInfo.insert("QT_INSTALL_PLUGINS", QT_INSTALL_TESTS);
+    qtVersionInfo.insert("QT_INSTALL_IMPORTS", QT_INSTALL_IMPORTS);
+    qtVersionInfo.insert("QT_INSTALL_QML", QT_INSTALL_QML);
+    qtVersionInfo.insert("QT_INSTALL_TRANSLATIONS", QT_INSTALL_TRANSLATIONS);
+    qtVersionInfo.insert("QT_INSTALL_CONFIGURATION", QT_INSTALL_CONFIGURATION);
+    qtVersionInfo.insert("QT_INSTALL_EXAMPLES", QT_INSTALL_EXAMPLES);
+    qtVersionInfo.insert("QT_INSTALL_DEMOS", QT_INSTALL_DEMOS);
+    qtVersionInfo.insert("QT_HOST_PREFIX", QT_HOST_PREFIX);
+    qtVersionInfo.insert("QT_HOST_DATA", QT_HOST_DATA);
+    qtVersionInfo.insert("QT_HOST_BINS", QT_HOST_BINS);
+    qtVersionInfo.insert("QT_HOST_LIBS", QT_HOST_LIBS);
+    qtVersionInfo.insert("QMAKE_VERSION", QMAKE_VERSION);
+    qtVersionInfo.insert("QT_VERSION", QT_VERSION_STR);
     mGlobals->setProperties(qtVersionInfo);
 
     mRootProFileNode = new QmakeProFileNode(this, proFile);
