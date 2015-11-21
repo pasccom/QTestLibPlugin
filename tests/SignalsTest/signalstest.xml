@@ -436,8 +436,8 @@ FAIL!  : other_fun(test)))
             <message type="Signal" strict="false" level="verboses">
                 Emitter(7ffececacbc0) objectDestroyed ()
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Slot: Receiver(7ffececacbc0) objectDestroyed ()
+            <message type="Slot" strict="false" level="verboses">
+                Receiver(7ffececacbc0) objectDestroyed ()
             </message>
             <message type="QDebug" strict="false">
                 Emitter(0x7ffececacbc0) destroyed
@@ -459,8 +459,8 @@ FAIL!  : other_fun(test)))
             <message type="Signal" strict="false" level="verboses">
                 Emitter(7ffececacbc0) objectDestroyed ()
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Slot: Receiver(7ffececacbc0) objectDestroyed ()
+            <message type="Slot" strict="false" level="verboses">
+                Receiver(7ffececacbc0) objectDestroyed ()
             </message>
             <message type="QDebug" strict="false">
                 Emitter(0x7ffececacbc0) destroyed
@@ -482,8 +482,8 @@ FAIL!  : other_fun(test)))
             <message type="Signal" strict="false" level="verboses">
                 NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Slot: NameSpace::ReceiverInNameSpace(7ffececacbc0) objectDestroyed ()
+            <message type="Slot" strict="false" level="verboses">
+                NameSpace::ReceiverInNameSpace(7ffececacbc0) objectDestroyed ()
             </message>
             <message type="QDebug" strict="false">
                 NameSpace::EmitterInNameSpace(0x7ffececacbc0) destroyed
@@ -505,8 +505,8 @@ FAIL!  : other_fun(test)))
             <message type="Signal" strict="false" level="verboses">
                 NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()
             </message>
-            <message type="Info" strict="false" level="verboses">
-                Slot: NameSpace::ReceiverInNameSpace(7ffececacbc0) objectDestroyed ()
+            <message type="Slot" strict="false" level="verboses">
+                NameSpace::ReceiverInNameSpace(7ffececacbc0) objectDestroyed ()
             </message>
             <message type="QDebug" strict="false">
                 NameSpace::EmitterInNameSpace(0x7ffececacbc0) destroyed
