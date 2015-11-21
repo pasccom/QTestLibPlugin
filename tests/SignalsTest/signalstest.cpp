@@ -21,28 +21,48 @@
 
 namespace NameSpace {
 
-class ClassInNameSpace : public QObject
+class EmitterInNameSpace : public QObject
 {
     Q_OBJECT
 public:
-    inline ClassInNameSpace(QObject* parent =  NULL) : QObject(parent) {emit constructed();}
-    ~ClassInNameSpace(void) {emit destroyed();}
+    inline EmitterInNameSpace(QObject* parent =  NULL) : QObject(parent) {emit objectConstructed();}
+    inline ~EmitterInNameSpace(void) {emit objectDestroyed();}
 signals:
-    void constructed(void);
-    void destroyed(void);
+    void objectConstructed(void);
+    void objectDestroyed(void);
+};
+
+class ReceiverInNameSpace : public QObject
+{
+    Q_OBJECT
+public:
+    inline ReceiverInNameSpace(QObject* parent =  NULL) : QObject(parent) {}
+public slots:
+    inline void objectConstructed(void) {qDebug() << sender() << "constructed";}
+    inline void objectDestroyed(void) {qDebug() << sender() << "destroyed";}
 };
 
 } // NameSpace
 
-class OtherClass : public QObject
+class Emitter : public QObject
 {
     Q_OBJECT
 public:
-    inline OtherClass(QObject* parent = NULL) : QObject(parent) {emit constructed();}
-    ~OtherClass(void) {emit destroyed();}
+    inline Emitter(QObject* parent = NULL) : QObject(parent) {emit objectConstructed();}
+    inline ~Emitter(void) {emit objectDestroyed();}
 signals:
-    void constructed(void);
-    void destroyed(void);
+    void objectConstructed(void);
+    void objectDestroyed(void);
+};
+
+class Receiver : public QObject
+{
+    Q_OBJECT
+public:
+    inline Receiver(QObject* parent =  NULL) : QObject(parent) {}
+public slots:
+    inline void objectConstructed(void) {qDebug() << sender() << "constructed";}
+    inline void objectDestroyed(void) {qDebug() << sender() << "destroyed";}
 };
 
 class SignalsTest : public QObject
@@ -60,8 +80,14 @@ private Q_SLOTS:
     void secondFunction(void);
     void thirdFunction(void);
     void multiline(void);
-    void otherClass(void);
-    void otherClassNamespace(void);
+    void emitterStack(void);
+    void emitterHeap(void);
+    void emitterInNameSpaceStack(void);
+    void emitterInNameSpaceHeap(void);
+    void receiverStack(void);
+    void receiverHeap(void);
+    void receiverInNameSpaceStack(void);
+    void receiverInNameSpaceHeap(void);
 };
 
 void SignalsTest::firstFunction(void)
@@ -90,18 +116,78 @@ void SignalsTest::multiline(void)
     emit signal2("Multiline message test:\nPASS   : fun()\nFAIL!  : other_fun(test)");
 }
 
-void SignalsTest::otherClass(void)
+void SignalsTest::emitterStack(void)
 {
-    OtherClass obj;
+    Emitter obj;
 
     qDebug() << &obj;
 }
 
-void SignalsTest::otherClassNamespace(void)
+void SignalsTest::emitterInNameSpaceStack(void)
 {
-    NameSpace::ClassInNameSpace obj;
+    NameSpace::EmitterInNameSpace obj;
 
     qDebug() << &obj;
+}
+
+void SignalsTest::emitterHeap(void)
+{
+    Emitter *obj = new Emitter(this);
+
+    qDebug() << obj;
+
+    delete obj;
+}
+
+void SignalsTest::emitterInNameSpaceHeap(void)
+{
+    NameSpace::EmitterInNameSpace* obj = new NameSpace::EmitterInNameSpace(this);
+
+    qDebug() << obj;
+
+    delete obj;
+}
+
+void SignalsTest::receiverStack(void)
+{
+    Emitter emitter;
+    Receiver *receiver = new Receiver(this);
+
+    connect(&emitter, SIGNAL(objectDestroyed()), receiver, SLOT(objectDestroyed()));
+
+    receiver->deleteLater();
+}
+
+void SignalsTest::receiverHeap(void)
+{
+    Emitter *emitter = new Emitter(this);
+    Receiver *receiver = new Receiver(this);
+
+    connect(emitter, SIGNAL(objectDestroyed()), receiver, SLOT(objectDestroyed()));
+
+    delete emitter;
+    receiver->deleteLater();
+}
+
+void SignalsTest::receiverInNameSpaceStack(void)
+{
+    NameSpace::EmitterInNameSpace emitter;
+    NameSpace::ReceiverInNameSpace *receiver = new NameSpace::ReceiverInNameSpace(this);
+
+    connect(&emitter, SIGNAL(objectDestroyed()), receiver, SLOT(objectDestroyed()));
+
+    receiver->deleteLater();
+}
+
+void SignalsTest::receiverInNameSpaceHeap(void)
+{
+    NameSpace::EmitterInNameSpace *emitter = new NameSpace::EmitterInNameSpace(this);
+    NameSpace::ReceiverInNameSpace *receiver = new NameSpace::ReceiverInNameSpace(this);
+
+    connect(emitter, SIGNAL(objectDestroyed()), receiver, SLOT(objectDestroyed()));
+
+    delete emitter;
+    receiver->deleteLater();
 }
 
 QTEST_APPLESS_MAIN(SignalsTest)

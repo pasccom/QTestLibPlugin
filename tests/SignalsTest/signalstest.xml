@@ -88,6 +88,96 @@
         <unsure/>
         <unsure/>
         <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
@@ -128,6 +218,40 @@
         <unsure level="verboses" />
         <unsure/>
         <unsure level="verboses" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure level="verboses" />
+        <unsure/>
         <unsure/>
         <unsure level="verbose1" />
         <unsure/>
@@ -222,18 +346,18 @@ FAIL!  : other_fun(test)))
                 0ms
             </message>
         </function>
-        <function name="otherClass" type="Pass">
+        <function name="emitterStack" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Signal" strict="false" level="verboses">
-                OtherClass(7ffececacbc0) constructed ()
+                Emitter(7ffececacbc0) objectConstructed ()
             </message>
             <message type="QDebug" strict="false">
-                OtherClass(0x7ffececacbc0)
+                Emitter(0x7ffececacbc0)
             </message>
             <message type="Signal" strict="false" level="verboses">
-                OtherClass(7ffececacbc0) destroyed ()
+                Emitter(7ffececacbc0) objectDestroyed ()
             </message>
             <message type="Pass" strict="true">
                 Test passed
@@ -242,18 +366,150 @@ FAIL!  : other_fun(test)))
                 0ms
             </message>
         </function>
-        <function name="otherClassNamespace" type="Pass">
+        <function name="emitterHeap" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
             <message type="Signal" strict="false" level="verboses">
-                NameSpace::ClassInNameSpace(7ffececacbc0) constructed ()
+                Emitter(7ffececacbc0) objectConstructed ()
             </message>
             <message type="QDebug" strict="false">
-                NameSpace::ClassInNameSpace(0x7ffececacbc0)
+                Emitter(0x7ffececacbc0)
             </message>
             <message type="Signal" strict="false" level="verboses">
-                NameSpace::ClassInNameSpace(7ffececacbc0) destroyed ()
+                Emitter(7ffececacbc0) objectDestroyed ()
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false" format="xml">
+                0ms
+            </message>
+        </function>
+        <function name="emitterInNameSpaceStack" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()
+            </message>
+            <message type="QDebug" strict="false">
+                NameSpace::EmitterInNameSpace(0x7ffececacbc0)
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false" format="xml">
+                0ms
+            </message>
+        </function>
+        <function name="emitterInNameSpaceHeap" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()
+            </message>
+            <message type="QDebug" strict="false">
+                NameSpace::EmitterInNameSpace(0x7ffececacbc0)
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false" format="xml">
+                0ms
+            </message>
+        </function>
+        <function name="receiverStack" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                Emitter(7ffececacbc0) objectConstructed ()
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                Emitter(7ffececacbc0) objectDestroyed ()
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Slot: Receiver(7ffececacbc0) objectDestroyed ()
+            </message>
+            <message type="QDebug" strict="false">
+                Emitter(0x7ffececacbc0) destroyed
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false" format="xml">
+                0ms
+            </message>
+        </function>
+        <function name="receiverHeap" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                Emitter(7ffececacbc0) objectConstructed ()
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                Emitter(7ffececacbc0) objectDestroyed ()
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Slot: Receiver(7ffececacbc0) objectDestroyed ()
+            </message>
+            <message type="QDebug" strict="false">
+                Emitter(0x7ffececacbc0) destroyed
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false" format="xml">
+                0ms
+            </message>
+        </function>
+        <function name="receiverInNameSpaceStack" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Slot: NameSpace::ReceiverInNameSpace(7ffececacbc0) objectDestroyed ()
+            </message>
+            <message type="QDebug" strict="false">
+                NameSpace::EmitterInNameSpace(0x7ffececacbc0) destroyed
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false" format="xml">
+                0ms
+            </message>
+        </function>
+        <function name="receiverInNameSpaceHeap" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()
+            </message>
+            <message type="Signal" strict="false" level="verboses">
+                NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()
+            </message>
+            <message type="Info" strict="false" level="verboses">
+                Slot: NameSpace::ReceiverInNameSpace(7ffececacbc0) objectDestroyed ()
+            </message>
+            <message type="QDebug" strict="false">
+                NameSpace::EmitterInNameSpace(0x7ffececacbc0) destroyed
             </message>
             <message type="Pass" strict="true">
                 Test passed
