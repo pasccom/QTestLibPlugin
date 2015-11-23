@@ -17,6 +17,8 @@ namespace Internal {
  *
  * The filter can be configured easily thanks to TestProxyButton, which allow to
  * filter in or out some message types easily.
+ *
+ * \sa TestProxyButton
  */
 class TestProxyModel : public QSortFilterProxyModel
 {
@@ -90,18 +92,59 @@ private:
     QVector<bool> mFilters;
 };
 
+/*!
+ * \brief The TestProxyButton class allow to configure easily TestProxyModel.
+ *
+ * This class is a derivation of QToolButton which is used for the configuration
+ * of the QTestLibModel filter, TestProxyModel.
+ *
+ * The button automatically comes with the right QIcon and tool tip
+ * and uses the methods TestProxyModel::enableMessageType() and TestProxyModel::disableMessageType().
+ *
+ * \sa TestProxyModel
+ */
 class TestProxyButton : public QToolButton
 {
     Q_OBJECT
 public:
+    /*!
+     * \brief Constructor
+     *
+     * Constructs a new instance linked with the given model for the given type.
+     * The tool tip and QIcon are automatically found using
+     * QTestLibModel::resultStringTr() and QTestLibModel::messageIcon().
+     *
+     * \param messageType The type of message this button configures
+     * \param proxy The model this button configures
+     * \param parent The parent of the model
+     */
     TestProxyButton(QTestLibModel::MessageType messageType, TestProxyModel *proxy = NULL, QWidget *parent = NULL);
 protected:
+    /*!
+     * \internal
+     * \brief The paint event
+     *
+     * This function is called when the button must be repainted.
+     *
+     * It draws the background of the button and then call the appropriate
+     * method in QStyle to draw the foreground (QIcon).
+     *
+     * \param pe The paint event
+     */
     void paintEvent(QPaintEvent *pe);
 private slots:
+    /*!
+     * \brief Handles a click
+     *
+     * This slot is connected to the clicked button of the button.
+     * It is in charge of changing the state of TestProxyModel filter.
+     *
+     * \param checked \c true when the button is checked.
+     */
     void handleClick(bool checked);
 private:
-    QTestLibModel::MessageType mType;
-    TestProxyModel *mProxy;
+    QTestLibModel::MessageType mType; /*!< The message type which is filtered in of out by this button */
+    TestProxyModel *mProxy; /*!< The test proxy filter model on which this button acts */
 };
 
 } // namespace Internal
