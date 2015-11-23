@@ -27,10 +27,9 @@ namespace QTestLibPlugin {
 namespace Internal {
 
 XMLQTestLibParser::XMLQTestLibParser(QObject *parent) :
-    AbstractTestParser(parent), mModel(NULL)
+    AbstractTestParser(parent), mModel(NULL), mParserActive(false)
 {
    mReader = new QXmlStreamReader();
-   mParserActive = NULL;
 }
 
 TestModelFactory::ParseResult XMLQTestLibParser::parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line)

@@ -109,7 +109,7 @@ protected:
      * \param parent The parent object of the factory.
      */
     PlainTextQTestLibParser(QObject *parent = 0) :
-        AbstractTestParser(parent), mModel(NULL) {}
+        AbstractTestParser(parent), mModel(NULL), mParserActive(false) {}
 private:
     /*!
      * \brief Tells whether a line is the beginning of a line of test output.
