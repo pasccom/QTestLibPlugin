@@ -156,11 +156,13 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
 
 void QTestLibModel::createTestMessageItem(MessageType type, const QString& message, TestItem* parent)
 {
+    QString messageTrimmed = message.trimmed();
+
     beginInsertRows(index(parent), parent->childrenCount(), parent->childrenCount());
-    if (message.startsWith(QLatin1String("Signal: ")))
-        mCurrentMessageItem = new TestMessageItem(Signal, message.mid(8).trimmed(), parent);
-    else if (message.startsWith(QLatin1String("    Slot: ")))
-        mCurrentMessageItem = new TestMessageItem(Slot, message.mid(10).trimmed(), parent);
+    if (messageTrimmed.startsWith(QLatin1String("Signal: ")))
+        mCurrentMessageItem = new TestMessageItem(Signal, messageTrimmed.mid(8), parent);
+    else if (messageTrimmed.startsWith(QLatin1String("Slot: ")))
+        mCurrentMessageItem = new TestMessageItem(Slot, messageTrimmed.mid(6).trimmed(), parent);
     else
         mCurrentMessageItem = new TestMessageItem(type, message, parent);
     endInsertRows();
