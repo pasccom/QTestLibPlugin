@@ -116,6 +116,12 @@ isEmpty(USE_USER_DESTDIR) {
 translations.files = $$COMPILED_TRANSLATIONS
 INSTALLS += translations
 
+###### Special tuning for output dir on Win32
+win32 {
+    MOC_DIR = ./.moc
+    OBJECTS_DIR = ./.obj_win
+}
+
 ###### Special tunings for DESTDIR on Win32
 win32 {
     DESTDIRAPPNAME = "qtcreator"
