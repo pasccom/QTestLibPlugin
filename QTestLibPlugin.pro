@@ -116,6 +116,14 @@ isEmpty(USE_USER_DESTDIR) {
 translations.files = $$COMPILED_TRANSLATIONS
 INSTALLS += translations
 
+###### Special tunings for DESTDIR on Win32
+win32 {
+    DESTDIRAPPNAME = "qtcreator"
+    DESTDIRBASE = "$$(LOCALAPPDATA)"
+    isEmpty(DESTDIRBASE):DESTDIRBASE="$$(USERPROFILE)\Local Settings\Application Data"
+    DESTDIR = "$$DESTDIRBASE/data/QtProject/$$DESTDIRAPPNAME/plugins/$$QTCREATOR_VERSION"
+}
+
 ###### Added stuff to bypass IDE_BUILD_TREE
 target.path = $$DESTDIR
 INSTALLS += target
