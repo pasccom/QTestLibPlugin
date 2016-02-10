@@ -19,6 +19,7 @@
 #include "../../xmlqtestlibparserfactory.h"
 
 #include <projectexplorer/localapplicationrunconfiguration.h>
+#include <projectexplorer/localapplicationruncontrol.h>
 #include <projectexplorer/kit.h>
 #include <projectexplorer/project.h>
 #include <qmakeprojectmanager/qmakeproject.h>
@@ -173,13 +174,20 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLib
         return results;
     }
 
+    ProjectExplorer::Kit *kit = new ProjectExplorer::Kit(this);
+    ProjectExplorer::Project *project = new ProjectExplorer::Project(this);
+    ProjectExplorer::Target *target = new ProjectExplorer::Target(project, kit);
+    ProjectExplorer::LocalApplicationRunConfiguration *runConfig = new ProjectExplorer::LocalApplicationRunConfiguration(target);
+    runConfig->setExecutable(test + ".exe");
+    ProjectExplorer::RunControl *runControl = new ProjectExplorer::LocalApplicationRunControl(runConfig);
+
     testProc.setReadChannel(QProcess::StandardOutput);
     while (!testProc.atEnd()) {
         QString line = testProc.readLine();
         while (line.endsWith('\n') || line.endsWith('\r'))
             line.chop(1);
         //qDebug() << line;
-        results << parser->parseStdoutLine(NULL, line);
+        results << parser->parseStdoutLine(runControl, line);
     }
 
     testProc.setReadChannel(QProcess::StandardError);
@@ -195,7 +203,7 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLib
             continue;
         if (QString::compare(line, "Please contact the application's support team for more information.") == 0)
             continue;
-        results << parser->parseStderrLine(NULL, line);
+        results << parser->parseStderrLine(runControl, line);
     }
 
     return results;
