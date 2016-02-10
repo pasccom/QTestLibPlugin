@@ -1,6 +1,112 @@
 <?xml version="1.0" ?>
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
+	<results format="lightxml">
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+    </results>
     <results format="xml">
         <unsure/>
         <unsure/>
@@ -173,7 +279,7 @@
         <unsure/>
     </results>
     <root type="Fail">
-        <class name="FirstClassTest" type="Pass">
+        <class name="FirstClassTest" type="Pass" format="!lightxml">
             <function name="initTestCase" type="Pass">
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
@@ -228,7 +334,50 @@
                 0ms
             </message>
         </class>
-        <class name="SecondClassTest" type="Pass">
+		<class name="MultipleClassesTest#1" type="Pass" format="lightxml">
+            <function name="initTestCase" type="Pass">
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="firstPass" type="Pass">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="60">
+                    QVERIFY(true)
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="secondPass" type="Pass">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="65">
+                    QVERIFY(true)
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="cleanupTestCase" type="Pass">
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <message type="Duration" strict="false">
+                0ms
+            </message>
+        </class>
+        <class name="SecondClassTest" type="Pass" format="!lightxml">
             <function name="initTestCase" type="Pass">
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
@@ -299,7 +448,66 @@
                 0ms
             </message>
         </class>
-        <class name="ThirdClassTest" type="Fail" level="silent">
+		<class name="MultipleClassesTest#2" type="Pass" format="lightxml">
+            <function name="initTestCase" type="Pass">
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="firstPass" type="Pass">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="70">
+                    QVERIFY(true)
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="secondPass" type="Pass">
+                <row title="firstData" type="Pass">
+                    <message type="QDebug" strict="true">
+                        "firstData"
+                    </message>
+                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="85">
+                        QVERIFY(data.endsWith("Data"))
+                    </message>
+                    <message type="Pass" strict="true">
+                        Test passed
+                    </message>
+                </row>
+                <row title="secondData" type="Pass">
+                    <message type="QDebug" strict="true">
+                        "secondData"
+                    </message>
+                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="85">
+                        QVERIFY(data.endsWith("Data"))
+                    </message>
+                    <message type="Pass" strict="true">
+                        Test passed
+                    </message>
+                </row>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="cleanupTestCase" type="Pass">
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <message type="Duration" strict="false">
+                0ms
+            </message>
+        </class>
+        <class name="ThirdClassTest" type="Fail" level="silent" format="!lightxml">
             <function name="initTestCase" type="Pass">
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
@@ -351,6 +559,49 @@
                 </message>
             </function>
             <message type="Duration" strict="false" format="xml">
+                0ms
+            </message>
+        </class>
+		<class name="MultipleClassesTest#3" type="Fail" level="silent" format="lightxml">
+            <function name="initTestCase" type="Pass">
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="firstFail" type="Fail" level="silent">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="90">
+                    QVERIFY(false)
+                </message>
+                <message type="Fail" strict="true" level="silent" file="multipleclassestest.cpp" line="90">
+                    'false' returned FALSE. (Test should fail)
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="secondPass" type="Pass">
+                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="95">
+                    QVERIFY(true)
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="cleanupTestCase" type="Pass">
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <message type="Duration" strict="false">
                 0ms
             </message>
         </class>

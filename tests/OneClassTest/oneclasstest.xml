@@ -1,6 +1,73 @@
 <?xml version="1.0" ?>
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
+	<results format="lightxml">
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+    </results>
     <results format="xml">
         <unsure />
         <unsure />
@@ -112,7 +179,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -144,7 +211,7 @@
                     Test passed
                 </message>
             </row>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -176,7 +243,7 @@
                     'data.endsWith("Data of firstFunction")' returned FALSE. ()
                 </message>
             </row>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -187,11 +254,11 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
-        <message type="Duration" strict="false" format="xml" >
+        <message type="Duration" strict="false" format="xml,lightxml" >
             0.00ms
         </message>
     </class>

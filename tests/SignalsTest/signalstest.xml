@@ -1,6 +1,186 @@
 <?xml version="1.0" ?>
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
+	<results format="lightxml">
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+    </results>
     <results format="xml">
         <unsure/>
         <unsure/>
@@ -266,7 +446,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -286,7 +466,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -306,7 +486,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -326,7 +506,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -342,7 +522,7 @@ FAIL!  : other_fun(test)))
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -362,7 +542,7 @@ FAIL!  : other_fun(test)))
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -382,7 +562,7 @@ FAIL!  : other_fun(test)))
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -402,7 +582,7 @@ FAIL!  : other_fun(test)))
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -422,7 +602,7 @@ FAIL!  : other_fun(test)))
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -445,7 +625,7 @@ FAIL!  : other_fun(test)))
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -468,7 +648,7 @@ FAIL!  : other_fun(test)))
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -491,7 +671,7 @@ FAIL!  : other_fun(test)))
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -514,7 +694,7 @@ FAIL!  : other_fun(test)))
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
@@ -525,11 +705,11 @@ FAIL!  : other_fun(test)))
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml">
+            <message type="Duration" strict="false" format="xml,lightxml">
                 0ms
             </message>
         </function>
-        <message type="Duration" strict="false" format="xml">
+        <message type="Duration" strict="false" format="xml,lightxml">
             0ms
         </message>
     </class>

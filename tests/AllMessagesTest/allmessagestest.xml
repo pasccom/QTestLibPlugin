@@ -1,6 +1,126 @@
 <?xml version="1.0" ?>
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
+	<results format="lightxml">
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+    </results>
     <results format="xml">
         <unsure/>
         <unsure/>
@@ -196,7 +316,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -210,7 +330,7 @@
             <message type="Result" strict="false">
                 0.00050 msecs per iteration (total: 66, iterations: 131072)
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -224,7 +344,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -238,7 +358,7 @@
             <message type="BPass" strict="true" level="silent">
                 Blacklisted test passed
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -252,7 +372,7 @@
             <message type="XPass" strict="true" level="silent" file="allmessagestest.cpp" line="66">
                 'true' returned TRUE unexpectedly. (This test should succeed)
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -266,7 +386,7 @@
             <message type="Fail" strict="true" level="silent" file="allmessagestest.cpp" line="71">
                 'false' returned FALSE. (This test should fail)
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -280,7 +400,7 @@
             <message type="BFail" strict="true" level="silent" file="allmessagestest.cpp" line="76">
                 'false' returned FALSE. (This test is blacklisted but it should fail)
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -297,7 +417,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -308,7 +428,7 @@
             <message type="Skip" strict="true" file="allmessagestest.cpp" line="87">
                 This test should be skipped
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -322,7 +442,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -336,7 +456,7 @@
             <message type="Fail" strict="true" level="silent">
                 Not all expected messages were received
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -350,7 +470,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -364,7 +484,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -378,7 +498,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
@@ -392,11 +512,11 @@
             <message type="Fail" strict="false" level="silent">
                 Received a fatal error.
             </message>
-            <message type="Duration" strict="false" format="xml" >
+            <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>
         </function>
-        <message type="Duration" strict="false" format="xml" >
+        <message type="Duration" strict="false" format="xml,lightxml" >
             0.00ms
         </message>
     </class>
