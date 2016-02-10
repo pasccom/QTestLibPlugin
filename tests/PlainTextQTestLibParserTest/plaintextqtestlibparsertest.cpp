@@ -49,7 +49,7 @@ private:
     void data(void);
     void runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
     void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName);
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, const QString& test);
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::LocalApplicationRunConfiguration* runConfig);
 
     QTestLibModelTester::Verbosity mVerbosity;
 };
@@ -107,6 +107,7 @@ void PlainTextQTestLibParserTest::runTest(const QString& testName, QTestLibModel
     ProjectExplorer::Kit kit;
     ProjectExplorer::Target target(&project, &kit);
     ProjectExplorer::LocalApplicationRunConfiguration runConfig(&target);
+    runConfig.setExecutable(testName + ".exe");
     int argsVersion = qrand() % 3;
     if (argsVersion == 1)
         runConfig.setCommandLineArguments("-txt");
@@ -121,7 +122,7 @@ void PlainTextQTestLibParserTest::runTest(const QString& testName, QTestLibModel
 
     mVerbosity = verbosity;
 
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, testName);
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, &runConfig);
     QAbstractItemModel *model = parser->getModel();
 
     checkTest(model, results, testName);
@@ -139,7 +140,7 @@ void PlainTextQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLi
     QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
 }
 
-QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, const QString& test)
+QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::LocalApplicationRunConfiguration* runConfig)
 {
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results;
     QStringList cmdArgs;
@@ -165,19 +166,14 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQT
     }
 
     QProcess testProc(this);
-    testProc.setWorkingDirectory(TESTS_DIR "/" + test + "/");
-    testProc.start(TESTS_DIR "/" + test + "/debug/" + test.toLower(), cmdArgs, QIODevice::ReadOnly);
+    testProc.setWorkingDirectory(TESTS_DIR "/" + runConfig->displayName() + "/");
+    testProc.start(TESTS_DIR "/" + runConfig->displayName() + "/debug/" + runConfig->displayName().toLower(), cmdArgs, QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
         qCritical() << "Test timed out";
         return results;
     }
 
-    ProjectExplorer::Kit *kit = new ProjectExplorer::Kit(this);
-    ProjectExplorer::Project *project = new ProjectExplorer::Project(this);
-    ProjectExplorer::Target *target = new ProjectExplorer::Target(project, kit);
-    ProjectExplorer::LocalApplicationRunConfiguration *runConfig = new ProjectExplorer::LocalApplicationRunConfiguration(target);
-    runConfig->setExecutable(test + ".exe");
     ProjectExplorer::RunControl *runControl = new ProjectExplorer::LocalApplicationRunControl(runConfig);
 
     testProc.setReadChannel(QProcess::StandardOutput);
