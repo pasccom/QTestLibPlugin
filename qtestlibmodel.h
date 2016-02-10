@@ -108,6 +108,18 @@ public:
         ResultStringRole, /*!< The message type as a QString */
         UserRole /*!< New begin for other defined roles */ // WARNING No value after this one!
     } ItemRole;
+
+    /*!
+     * \brief Rename a class item
+     *
+     * Changes the name of the matching class.
+     *
+     * \param oldName The current name of the class item
+     * \param newName The new name for the class item
+     * \return \c true, if an item was actually renamed, \c false otherwise.
+     */
+    bool renameClass(const QString& oldName, const QString& newName);
+
     /*!
      * \brief Returns child model index
      *
@@ -544,15 +556,7 @@ private:
         inline int compareName(const QString& name) const {return QString::compare(mClassName, name, Qt::CaseSensitive);}
         inline int columnCount(void) const {return 3;}
         QVariant data(int column, int role = Qt::DisplayRole) const;
-        /*!
-         * \brief The name of the test class
-         *
-         * Returns the name of the test class.
-         *
-         * \return The name of the test class
-         */
-        inline QString getClassName(void) const {return mClassName;}
-    private:
+
         QString mClassName; /*!< The name of the test class */
     };
 

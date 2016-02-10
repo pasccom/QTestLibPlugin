@@ -47,14 +47,12 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
 {
     Q_ASSERT(runControl == mTestRun);
 
-    //qDebug() << type << className << functionName << rowTitle << message;
-
     TestItem *testItem;
     TestClassItem *testClassItem;
     TestCaseItem *testCaseItem;
     TestRowItem *testRowItem;
 
-    //qDebug() << messageType << type << ":" << className << "::" << functionName << "(\"" << rowTitle << "\"):" << message;
+    //qDebug() << type << ":" << className << "::" << functionName << "(\"" << rowTitle << "\"):" << message;
 
     if (className.isEmpty()) {
         if (mRoot == NULL) {
@@ -187,6 +185,39 @@ void QTestLibModel::appendTestLocation(ProjectExplorer::RunControl* runControl, 
         mCurrentMessageItem->setLine(line);
         emit dataChanged(index(mCurrentMessageItem, 1), index(mCurrentMessageItem, 2));
     }
+}
+
+bool QTestLibModel::renameClass(const QString& oldName, const QString& newName)
+{
+    if (mRoot == NULL)
+        return false;
+
+    TestClassItem *classItem;
+
+    switch (mRoot->type()) {
+    case TestRoot:
+        for (int c = 0; c < mRoot->childrenCount(); c++) {
+            if ((mRoot->child(c)->type() != TestClass) || (mRoot->child(c)->compareName(oldName) != 0))
+                continue;
+            classItem = dynamic_cast<TestClassItem *>(mRoot->child(c));
+            Q_ASSERT(classItem != NULL);
+            classItem->mClassName = newName;
+            return true;
+        }
+        break;
+    case TestClass:
+        if (mRoot->compareName(oldName) != 0)
+            break;
+        classItem = dynamic_cast<TestClassItem *>(mRoot);
+        Q_ASSERT(classItem != NULL);
+        classItem->mClassName = newName;
+        return true;
+    default:
+        Q_ASSERT_X(false, "Unreachable place", "Root should either be of type TestRoot of TestClass");
+        break;
+    }
+
+    return false;
 }
 
 int QTestLibModel::rowCount(const QModelIndex& parent) const
