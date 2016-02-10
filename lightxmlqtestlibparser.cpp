@@ -26,13 +26,13 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-XMLQTestLibParser::XMLQTestLibParser(QObject *parent) :
+LightXMLQTestLibParser::LightXMLQTestLibParser(QObject *parent) :
     AbstractTestParser(parent), mModel(NULL), mParserActive(false), mClassStartCount(0)
 {
    mReader = new QXmlStreamReader();
 }
 
-TestModelFactory::ParseResult XMLQTestLibParser::parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line)
+TestModelFactory::ParseResult LightXMLQTestLibParser::parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line)
 {
     TestModelFactory::ParseResult result = TestModelFactory::Unsure;
 
@@ -110,7 +110,7 @@ TestModelFactory::ParseResult XMLQTestLibParser::parseStdoutLine(ProjectExplorer
     return result;
 }
 
-TestModelFactory::ParseResult XMLQTestLibParser::parseStderrLine(ProjectExplorer::RunControl* runControl, const QString& line)
+TestModelFactory::ParseResult LightXMLQTestLibParser::parseStderrLine(ProjectExplorer::RunControl* runControl, const QString& line)
 {
     Q_UNUSED(runControl);
     Q_UNUSED(line);
@@ -118,7 +118,7 @@ TestModelFactory::ParseResult XMLQTestLibParser::parseStderrLine(ProjectExplorer
     return TestModelFactory::Unsure;
 }
 
-TestModelFactory::ParseResult XMLQTestLibParser::startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag)
+TestModelFactory::ParseResult LightXMLQTestLibParser::startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag)
 {
     Q_UNUSED(runControl);
 
@@ -138,7 +138,7 @@ TestModelFactory::ParseResult XMLQTestLibParser::startElementParsed(ProjectExplo
     return TestModelFactory::Unsure;
 }
 
-TestModelFactory::ParseResult XMLQTestLibParser::endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag)
+TestModelFactory::ParseResult LightXMLQTestLibParser::endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag)
 {
     if (QStringRef::compare(tag, QLatin1String("Environment"), Qt::CaseSensitive) == 0) {
         if (!mQtVersion.isNull() && !mQtBuild.isNull() && !mQTestLibVersion.isNull()) {
@@ -206,7 +206,7 @@ TestModelFactory::ParseResult XMLQTestLibParser::endElementParsed(ProjectExplore
     return TestModelFactory::Unsure;
 }
 
-TestModelFactory::ParseResult XMLQTestLibParser::textParsed(ProjectExplorer::RunControl* runControl)
+TestModelFactory::ParseResult LightXMLQTestLibParser::textParsed(ProjectExplorer::RunControl* runControl)
 {
     Q_UNUSED(runControl);
 
@@ -225,7 +225,7 @@ TestModelFactory::ParseResult XMLQTestLibParser::textParsed(ProjectExplorer::Run
     return TestModelFactory::Unsure;
 }
 
-void XMLQTestLibParser::saveAttributes(const QXmlStreamAttributes& attrs)
+void LightXMLQTestLibParser::saveAttributes(const QXmlStreamAttributes& attrs)
 {
     Q_ASSERT(mCurrentAttributes.isEmpty());
 
@@ -235,7 +235,7 @@ void XMLQTestLibParser::saveAttributes(const QXmlStreamAttributes& attrs)
     }
 }
 
-QTestLibModel::MessageType XMLQTestLibParser::currentMessageType(void)
+QTestLibModel::MessageType LightXMLQTestLibParser::currentMessageType(void)
 {
     int type = -1;
     const QString messageType = mCurrentAttributes.value(QLatin1String("type"));

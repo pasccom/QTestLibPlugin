@@ -114,7 +114,7 @@ void LightXMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelT
         runConfig.setCommandLineArguments("-o -,lightxml");
 
     // Creation of parser
-    QTestLibPlugin::Internal::XMLQTestLibParserFactory factory(this);
+    QTestLibPlugin::Internal::LightXMLQTestLibParserFactory factory(this);
     QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
     QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(&runConfig);
     QVERIFY2(parser, "Factory should return a valid parser");

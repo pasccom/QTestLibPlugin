@@ -45,7 +45,7 @@ class QTestLibModel;
  *
  * See parseStdoutLine() and parseStderrLine() for details on line parsing.
  */
-class XMLQTestLibParser : public AbstractTestParser
+class LightXMLQTestLibParser : public AbstractTestParser
 {
     Q_OBJECT
 public:
@@ -54,7 +54,7 @@ public:
      *
      * Deletes the XML stream reader allocated in the constructor.
      */
-    inline ~XMLQTestLibParser(void) {delete mReader;}
+    inline ~LightXMLQTestLibParser(void) {delete mReader;}
     /*!
      * \brief \copybrief AbstractTestParser::parseStdoutLine()
      *
@@ -102,7 +102,7 @@ protected:
      *
      * \param parent The parent object of the factory.
      */
-    XMLQTestLibParser(QObject *parent = NULL);
+    LightXMLQTestLibParser(QObject *parent = NULL);
 private:
     /*!
      * \brief Handles beginning of elements
@@ -174,7 +174,7 @@ private:
     QString mQtBuild;  /*!< Build information corresponding to the version of Qt used in the test */
     QString mQTestLibVersion;  /*!< The version of QTestLib used by the test */
 
-    friend class XMLQTestLibParserFactory;
+    friend class LightXMLQTestLibParserFactory;
 };
 
 } // namespace Internal

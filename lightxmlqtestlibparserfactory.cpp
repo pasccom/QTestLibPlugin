@@ -16,7 +16,7 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "xmlqtestlibparserfactory.h"
+#include "lightxmlqtestlibparserfactory.h"
 
 #include "qtestlibargsparser.h"
 
@@ -31,17 +31,17 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-AbstractTestParser* XMLQTestLibParserFactory::getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const
+AbstractTestParser* LightXMLQTestLibParserFactory::getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const
 {
     Q_ASSERT(runConfiguration != NULL);
 
     if (!canParse(runConfiguration))
         return NULL;
     qDebug() << "XMLTextQTestLibParser can parse this file";
-    return new XMLQTestLibParser(runConfiguration);
+    return new LightXMLQTestLibParser(runConfiguration);
 }
 
-bool XMLQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfiguration *runConfiguration) const
+bool LightXMLQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfiguration *runConfiguration) const
 {
     Q_ASSERT(runConfiguration != NULL);
 
@@ -58,7 +58,7 @@ bool XMLQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfiguration 
     return false;
 }
 
-bool XMLQTestLibParserFactory::canParseArguments(ProjectExplorer::RunConfiguration *runConfiguration) const
+bool LightXMLQTestLibParserFactory::canParseArguments(ProjectExplorer::RunConfiguration *runConfiguration) const
 {
     ProjectExplorer::LocalApplicationRunConfiguration *localRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration *>(runConfiguration);
     if (localRunConfig != NULL) {
