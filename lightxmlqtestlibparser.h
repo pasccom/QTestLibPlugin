@@ -161,6 +161,7 @@ private:
     QXmlStreamReader *mReader; /*!< The XML stream reader used to parse XML */
     bool mParserActive; /*!< \c true when a test is being parsed */
 
+    int mClassStartCount; /*!< The number of class start encountered until now */
     QString mCurrentClass; /*!< The name of the class currently parsed */
     QString mCurrentFunction; /*!< The name of the function currently parsed */
     QString mCurrentRow; /*!< The name of the data row currently parsed */

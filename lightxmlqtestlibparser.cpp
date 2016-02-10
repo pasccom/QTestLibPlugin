@@ -16,7 +16,7 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "xmlqtestlibparser.h"
+#include "lightxmlqtestlibparser.h"
 
 #include <projectexplorer/runconfiguration.h>
 
@@ -27,7 +27,7 @@ namespace QTestLibPlugin {
 namespace Internal {
 
 XMLQTestLibParser::XMLQTestLibParser(QObject *parent) :
-    AbstractTestParser(parent), mModel(NULL), mParserActive(false)
+    AbstractTestParser(parent), mModel(NULL), mParserActive(false), mClassStartCount(0)
 {
    mReader = new QXmlStreamReader();
 }
@@ -37,11 +37,16 @@ TestModelFactory::ParseResult XMLQTestLibParser::parseStdoutLine(ProjectExplorer
     TestModelFactory::ParseResult result = TestModelFactory::Unsure;
 
     QString cleanedLine = line.trimmed() + QLatin1Char('\n');
-    qDebug() << cleanedLine;
-    if (!mParserActive && !cleanedLine.contains(QLatin1String("<?xml")))
+    if (!mParserActive && !cleanedLine.contains(QLatin1String("<Environment>"))
+                       && !cleanedLine.contains(QLatin1String("<TestFunction"))
+                       && !cleanedLine.contains(QLatin1String("<Duration")))
         return result;
-    if (!mParserActive)
-        cleanedLine = cleanedLine.mid(cleanedLine.indexOf(QLatin1String("<?xml"), 0));
+    if (cleanedLine.contains(QLatin1String("<Environment>")))
+        cleanedLine = cleanedLine.mid(cleanedLine.indexOf(QLatin1String("<Environment>"), 0));
+    if (cleanedLine.contains(QLatin1String("<TestFunction")))
+        cleanedLine = cleanedLine.mid(cleanedLine.indexOf(QLatin1String("<TestFunction"), 0));
+    if (cleanedLine.contains(QLatin1String("<Duration")))
+        cleanedLine = cleanedLine.mid(cleanedLine.indexOf(QLatin1String("<Duration"), 0));
     mParserActive = true;
 
     mReader->addData(cleanedLine);
@@ -117,8 +122,8 @@ TestModelFactory::ParseResult XMLQTestLibParser::startElementParsed(ProjectExplo
 {
     Q_UNUSED(runControl);
 
-    if (QStringRef::compare(tag, QLatin1String("TestCase"), Qt::CaseSensitive) == 0)
-        mCurrentClass = mReader->attributes().value(QLatin1String("name")).toString();
+    /*if (QStringRef::compare(tag, QLatin1String("TestCase"), Qt::CaseSensitive) == 0)
+        mCurrentClass = mReader->attributes().value(QLatin1String("name")).toString();*/
     if (QStringRef::compare(tag, QLatin1String("TestFunction"), Qt::CaseSensitive) == 0)
         mCurrentFunction = mReader->attributes().value(QLatin1String("name")).toString();
 
@@ -137,17 +142,25 @@ TestModelFactory::ParseResult XMLQTestLibParser::endElementParsed(ProjectExplore
 {
     if (QStringRef::compare(tag, QLatin1String("Environment"), Qt::CaseSensitive) == 0) {
         if (!mQtVersion.isNull() && !mQtBuild.isNull() && !mQTestLibVersion.isNull()) {
-            qDebug() << "Create QTestLibMOdel" << mQtVersion << mQtBuild << mQTestLibVersion;
-            if (mModel ==  NULL)
+            if (mModel ==  NULL) {
+                mClassStartCount++;
+                mCurrentClass = runControl->displayName();
                 mModel = new QTestLibModel(runControl);
+            } else {
+                if (mClassStartCount == 1)
+                    mModel->renameClass(mCurrentClass, QString(QLatin1String("%1#1")).arg(runControl->displayName()));
+                mClassStartCount++;
+                mCurrentClass = QString(QLatin1String("%1#%2")).arg(runControl->displayName()).arg(mClassStartCount);
+            }
+            qDebug() << "Created QTestLibModel" << mQtVersion << mQtBuild << mQTestLibVersion << mCurrentClass;
             return TestModelFactory::MagicFound;
         } else {
             return TestModelFactory::MagicNotFound;
         }
     }
 
-    if (QStringRef::compare(tag, QLatin1String("TestCase"), Qt::CaseSensitive) == 0)
-        mCurrentClass = QString::null;
+    /*if (QStringRef::compare(tag, QLatin1String("TestCase"), Qt::CaseSensitive) == 0)
+        mCurrentClass = QString::null;*/
     if (QStringRef::compare(tag, QLatin1String("TestFunction"), Qt::CaseSensitive) == 0)
         mCurrentFunction = QString::null;
 
