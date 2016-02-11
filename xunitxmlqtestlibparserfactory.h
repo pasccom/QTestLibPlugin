@@ -16,8 +16,8 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef XMLQTESTLIBPARSERFACTORY_H
-#define XMLQTESTLIBPARSERFACTORY_H
+#ifndef XUNITXMLQTESTLIBPARSERFACTORY_H
+#define XUNITXMLQTESTLIBPARSERFACTORY_H
 
 #include "testmodelfactory.h"
 #include "xunitxmlqtestlibparser.h"
@@ -75,4 +75,4 @@ private:
 } // namespace Internal
 } // namespace QTestLibPlugin
 
-#endif // XMLQTESTLIBPARSERFACTORY_H
+#endif // XUNITXMLQTESTLIBPARSERFACTORY_H

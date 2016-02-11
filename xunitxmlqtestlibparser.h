@@ -16,8 +16,8 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef XMLQTESTLIBPARSER_H
-#define XMLQTESTLIBPARSER_H
+#ifndef XUNITXMLQTESTLIBPARSER_H
+#define XUNITXMLQTESTLIBPARSER_H
 
 #include "testmodelfactory.h"
 #include "qtestlibmodel.h"
@@ -138,7 +138,16 @@ private:
      * \param runControl The run control from which the parsed line comes
      * \return TestModelFactory::Unsure in all cases
      */
-    TestModelFactory::ParseResult textParsed(ProjectExplorer::RunControl* runControl);
+    //TestModelFactory::ParseResult textParsed(ProjectExplorer::RunControl* runControl);
+    /*!
+     * \brief Handles comments
+     *
+     * Extracts the contents of comments.
+     *
+     * \param runControl The run control from which the parsed line comes
+     * \return TestModelFactory::Unsure in all cases
+     */
+    TestModelFactory::ParseResult commentParsed(ProjectExplorer::RunControl* runControl);
     /*!
      * \brief Saves the attributes
      *
@@ -156,6 +165,14 @@ private:
      * \return The type corresponding to the type attribute of the current tag
      */
     QTestLibModel::MessageType currentMessageType(void);
+    /*!
+     * \brief Converts a QString into a message type
+     *
+     * Converts the given QString into a QTestLibModel::MessageType.
+     *
+     * \return The type corresponding to the given QString
+     */
+    QTestLibModel::MessageType messageType(const QString& messageType);
 
     QTestLibModel *mModel; /*!< The model for the test output (it is \c NULL while TestModelFactory::MagicFound has not been returned by parseStdoutLine() or parseStderrLine()) */
     QXmlStreamReader *mReader; /*!< The XML stream reader used to parse XML */
@@ -165,6 +182,7 @@ private:
     QString mCurrentFunction; /*!< The name of the function currently parsed */
     QString mCurrentRow; /*!< The name of the data row currently parsed */
     QString mCurrentDescription; /*!< The description of the test currently parsed */
+    QTestLibModel::MessageType mCurrentMessageType; /*!< The type of the current message */
 
     QStack<QString> mCurrentElement; /*!< A stack for the names of elements currently parsed */
     QMap<QString, QString> mCurrentAttributes; /*!< A map which stores the attributes of the current element */
@@ -173,10 +191,26 @@ private:
     QString mQtBuild;  /*!< Build information corresponding to the version of Qt used in the test */
     QString mQTestLibVersion;  /*!< The version of QTestLib used by the test */
 
+    /*!
+     * \brief Initialize XML entities table
+     *
+     * Initializes the XML entities tables which is used by decodeXMLEntities().
+     */
+    static void initXMLEntities(void);
+    /*!
+     * \brief Decodes XML entities in a QString.
+     *
+     * Replaces XML entities by corresponding unicode characters in a QString.
+     * \param encoded An XML encoded QString
+     * \return A QString in which the XML entities were decoded.
+     */
+    static QString decodeXMLEntities(const QString& encoded);
+
+    static QHash<QString, QString> sEntities; /*!< The map of known XML entities */
     friend class XUnitXMLQTestLibParserFactory;
 };
 
 } // namespace Internal
 } // namespace QTestLibPlugin
 
-#endif // XMLQTESTLIBPARSER_H
+#endif // XUNITXMLQTESTLIBPARSER_H

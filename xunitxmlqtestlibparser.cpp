@@ -84,10 +84,10 @@ TestModelFactory::ParseResult XUnitXMLQTestLibParser::parseStdoutLine(ProjectExp
             result = qMax(result, endElementParsed(runControl, mReader->name()));
             break;
         case QXmlStreamReader::Characters:
-            result = qMax(result, textParsed(runControl));
+            //result = qMax(result, textParsed(runControl));
             break;
         case QXmlStreamReader::Comment:
-            qDebug() << "Comment";
+            result = qMax(result, commentParsed(runControl));
             break;
         case QXmlStreamReader::DTD:
             qDebug() << "Seen DTD";
@@ -116,27 +116,43 @@ TestModelFactory::ParseResult XUnitXMLQTestLibParser::startElementParsed(Project
 {
     Q_UNUSED(runControl);
 
-    if (QStringRef::compare(tag, QLatin1String("TestCase"), Qt::CaseSensitive) == 0)
-        mCurrentClass = mReader->attributes().value(QLatin1String("name")).toString();
-    if (QStringRef::compare(tag, QLatin1String("TestFunction"), Qt::CaseSensitive) == 0)
-        mCurrentFunction = mReader->attributes().value(QLatin1String("name")).toString();
+    if (QStringRef::compare(tag, QLatin1String("property"), Qt::CaseSensitive) == 0) {
+        if (QStringRef::compare(mReader->attributes().value(QLatin1String("name")), QLatin1String("QTestVersion"), Qt::CaseSensitive) == 0)
+            mQTestLibVersion = decodeXMLEntities(mReader->attributes().value(QLatin1String("value")).toString());
+        else if (QStringRef::compare(mReader->attributes().value(QLatin1String("name")), QLatin1String("QtVersion"), Qt::CaseSensitive) == 0)
+            mQtVersion = decodeXMLEntities(mReader->attributes().value(QLatin1String("value")).toString());
+        else if (QStringRef::compare(mReader->attributes().value(QLatin1String("name")), QLatin1String("QtBuild"), Qt::CaseSensitive) == 0)
+            mQtBuild = decodeXMLEntities(mReader->attributes().value(QLatin1String("value")).toString());
+        else
+            qWarning() << "Unknown build property:" << mReader->attributes().value(QLatin1String("name"));
+        return TestModelFactory::Unsure;
+    }
 
-    if ((QStringRef::compare(tag, QLatin1String("Incident"), Qt::CaseInsensitive) == 0)
-     || (QStringRef::compare(tag, QLatin1String("Message"), Qt::CaseInsensitive) == 0))
-        saveAttributes(mReader->attributes());
-    if (QStringRef::compare(tag, QLatin1String("Duration"), Qt::CaseInsensitive) == 0)
-        saveAttributes(mReader->attributes());
-    if (QStringRef::compare(tag, QLatin1String("BenchmarkResult"), Qt::CaseInsensitive) == 0)
-        saveAttributes(mReader->attributes());
+    if (QStringRef::compare(tag, QLatin1String("testsuite"), Qt::CaseSensitive) == 0)
+        mCurrentClass = mReader->attributes().value(QLatin1String("name")).toString();
+    if (QStringRef::compare(tag, QLatin1String("testcase"), Qt::CaseSensitive) == 0) {
+        mCurrentFunction = mReader->attributes().value(QLatin1String("name")).toString();
+        mCurrentMessageType = currentMessageType();
+    }
+    if (QStringRef::compare(tag, QLatin1String("failure"), Qt::CaseInsensitive) == 0) {
+        if (mModel != NULL) {
+            if (mReader->attributes().hasAttribute(QLatin1String("tag")))
+                mModel->addTestItem(runControl, currentMessageType(), mCurrentClass, mCurrentFunction, mReader->attributes().value(QLatin1String("tag")).toString(), decodeXMLEntities(mReader->attributes().value(QLatin1String("message")).toString()));
+            else
+                mModel->addTestItem(runControl, currentMessageType(), mCurrentClass, mCurrentFunction, QString::null, decodeXMLEntities(mReader->attributes().value(QLatin1String("message")).toString()));
+        }
+        if (mCurrentMessageType == currentMessageType())
+            mCurrentMessageType = QTestLibModel::Unknown;
+    }
 
     return TestModelFactory::Unsure;
 }
 
 TestModelFactory::ParseResult XUnitXMLQTestLibParser::endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag)
 {
-    if (QStringRef::compare(tag, QLatin1String("Environment"), Qt::CaseSensitive) == 0) {
+    if (QStringRef::compare(tag, QLatin1String("properties"), Qt::CaseSensitive) == 0) {
         if (!mQtVersion.isNull() && !mQtBuild.isNull() && !mQTestLibVersion.isNull()) {
-            qDebug() << "Create QTestLibMOdel" << mQtVersion << mQtBuild << mQTestLibVersion;
+            qDebug() << "Create QTestLibModel" << mQtVersion << mQtBuild << mQTestLibVersion;
             if (mModel ==  NULL)
                 mModel = new QTestLibModel(runControl);
             return TestModelFactory::MagicFound;
@@ -145,54 +161,19 @@ TestModelFactory::ParseResult XUnitXMLQTestLibParser::endElementParsed(ProjectEx
         }
     }
 
-    if (QStringRef::compare(tag, QLatin1String("TestCase"), Qt::CaseSensitive) == 0)
+    if (QStringRef::compare(tag, QLatin1String("testsuite"), Qt::CaseSensitive) == 0)
         mCurrentClass = QString::null;
-    if (QStringRef::compare(tag, QLatin1String("TestFunction"), Qt::CaseSensitive) == 0)
+    if (QStringRef::compare(tag, QLatin1String("testcase"), Qt::CaseSensitive) == 0) {
+        if ((mCurrentMessageType != QTestLibModel::Unknown) && (mModel != NULL))
+            mModel->addTestItem(runControl, mCurrentMessageType, mCurrentClass, mCurrentFunction, QString::null, QString::null);
         mCurrentFunction = QString::null;
-
-    if ((QStringRef::compare(tag, QLatin1String("Incident"), Qt::CaseInsensitive) == 0)
-     || (QStringRef::compare(tag, QLatin1String("Message"), Qt::CaseInsensitive) == 0)) {
-        if (mModel != NULL)
-            mModel->addTestItem(runControl, currentMessageType(), mCurrentClass, mCurrentFunction, mCurrentRow, mCurrentDescription);
-
-        QString file = mCurrentAttributes.value(QLatin1String("file"));
-        bool ok = false;
-        unsigned int fileLine = mCurrentAttributes.value(QLatin1String("line"), QLatin1String("0")).toUInt(&ok, 10);
-        if (!ok)
-            fileLine = 0;
-        if ((mModel != NULL) && !file.isEmpty() && (fileLine != 0))
-            mModel->appendTestLocation(runControl, file, fileLine);
-
-        mCurrentRow = QString::null;
-        mCurrentDescription = QString::null;
-        mCurrentAttributes.clear();
-    }
-    if (QStringRef::compare(tag, QLatin1String("Duration"), Qt::CaseInsensitive) == 0) {
-        if ((mModel != NULL) && mCurrentAttributes.contains(QLatin1String("msecs")))
-            mModel->addTestItem(runControl,
-                                QTestLibModel::Duration,
-                                mCurrentClass,
-                                mCurrentFunction,
-                                mCurrentRow,
-                                trUtf8("%1ms").arg(mCurrentAttributes.value(QLatin1String("msecs"))));
-        mCurrentAttributes.clear();
-    }
-    if (QStringRef::compare(tag, QLatin1String("BenchmarkResult"), Qt::CaseInsensitive) == 0) {
-        if (mModel != NULL)
-            mModel->addTestItem(runControl,
-                                QTestLibModel::BenchmarkResult,
-                                mCurrentClass,
-                                mCurrentFunction,
-                                mCurrentRow,
-                                trUtf8("%1 msecs per iteration (iterations: %2)").arg(mCurrentAttributes.value(QLatin1String("value")))
-                                                                                 .arg(mCurrentAttributes.value(QLatin1String("iterations"))));
-        mCurrentAttributes.clear();
+        mCurrentMessageType = QTestLibModel::Unknown;
     }
 
     return TestModelFactory::Unsure;
 }
 
-TestModelFactory::ParseResult XUnitXMLQTestLibParser::textParsed(ProjectExplorer::RunControl* runControl)
+/*TestModelFactory::ParseResult XUnitXMLQTestLibParser::textParsed(ProjectExplorer::RunControl* runControl)
 {
     Q_UNUSED(runControl);
 
@@ -209,6 +190,31 @@ TestModelFactory::ParseResult XUnitXMLQTestLibParser::textParsed(ProjectExplorer
         mCurrentDescription = mReader->text().toString();
 
     return TestModelFactory::Unsure;
+}*/
+
+TestModelFactory::ParseResult XUnitXMLQTestLibParser::commentParsed(ProjectExplorer::RunControl* runControl)
+{
+    QString message = QString::null;
+    QString tag = QString::null;
+    QTestLibModel::MessageType type = QTestLibModel::Unknown;
+
+    QRegExp messageRegExp(QLatin1String("message=\"([^\"]*)\""), Qt::CaseSensitive);
+    QRegExp tagRegExp(QLatin1String("tag=\"([^\"]*)\""), Qt::CaseSensitive);
+    QRegExp typeRegExp(QLatin1String("type=\"(result|qdebug|info|warn|qwarn|system|qfatal|\\?\\?\\?\\?\\?\\?|skip|pass|bpass|xpass|xfail|bfail|fail)\""), Qt::CaseSensitive);
+
+    if (messageRegExp.indexIn(mReader->text().toString()) != -1)
+        message = decodeXMLEntities(messageRegExp.capturedTexts().at(1));
+    if (tagRegExp.indexIn(mReader->text().toString()) != -1)
+        tag = tagRegExp.capturedTexts().at(1);
+    if (typeRegExp.indexIn(mReader->text().toString()) != -1)
+        type = messageType(typeRegExp.capturedTexts().at(1));
+
+    qDebug() << "Comment:" << message << type << tag;
+
+    if (mModel != NULL)
+        mModel->addTestItem(runControl, type, mCurrentClass, mCurrentFunction, tag, message);
+
+    return TestModelFactory::Unsure;
 }
 
 void XUnitXMLQTestLibParser::saveAttributes(const QXmlStreamAttributes& attrs)
@@ -223,8 +229,12 @@ void XUnitXMLQTestLibParser::saveAttributes(const QXmlStreamAttributes& attrs)
 
 QTestLibModel::MessageType XUnitXMLQTestLibParser::currentMessageType(void)
 {
+    return messageType(mReader->attributes().value(QLatin1String("result")).toString());
+}
+
+QTestLibModel::MessageType XUnitXMLQTestLibParser::messageType(const QString& messageType)
+{
     int type = -1;
-    const QString messageType = mCurrentAttributes.value(QLatin1String("type"));
     const QString messages(QLatin1String("result  "
                                          "qdebug  "
                                          "info    "
@@ -252,6 +262,309 @@ QTestLibModel::MessageType XUnitXMLQTestLibParser::currentMessageType(void)
         type = (type >> 3) + 3;
 
     return (QTestLibModel::MessageType) type;
+}
+
+QHash<QString, QString> XUnitXMLQTestLibParser::sEntities;
+
+void XUnitXMLQTestLibParser::initXMLEntities(void)
+{
+    sEntities.insert(QLatin1String("AElig"), QLatin1String("Æ"));
+    sEntities.insert(QLatin1String("Aacute"), QLatin1String("Á"));
+    sEntities.insert(QLatin1String("Acirc"), QLatin1String("Â"));
+    sEntities.insert(QLatin1String("Agrave"), QLatin1String("À"));
+    sEntities.insert(QLatin1String("Alpha"), QLatin1String("Α"));
+    sEntities.insert(QLatin1String("Aring"), QLatin1String("Å"));
+    sEntities.insert(QLatin1String("Atilde"), QLatin1String("Ã"));
+    sEntities.insert(QLatin1String("Auml"), QLatin1String("Ä"));
+    sEntities.insert(QLatin1String("Beta"), QLatin1String("Β"));
+    sEntities.insert(QLatin1String("Ccedil"), QLatin1String("Ç"));
+    sEntities.insert(QLatin1String("Chi"), QLatin1String("Χ"));
+    sEntities.insert(QLatin1String("Dagger"), QLatin1String("‡"));
+    sEntities.insert(QLatin1String("Delta"), QLatin1String("Δ"));
+    sEntities.insert(QLatin1String("ETH"), QLatin1String("Ð"));
+    sEntities.insert(QLatin1String("Eacute"), QLatin1String("É"));
+    sEntities.insert(QLatin1String("Ecirc"), QLatin1String("Ê"));
+    sEntities.insert(QLatin1String("Egrave"), QLatin1String("È"));
+    sEntities.insert(QLatin1String("Epsilon"), QLatin1String("Ε"));
+    sEntities.insert(QLatin1String("Eta"), QLatin1String("Η"));
+    sEntities.insert(QLatin1String("Euml"), QLatin1String("Ë"));
+    sEntities.insert(QLatin1String("Gamma"), QLatin1String("Γ"));
+    sEntities.insert(QLatin1String("Iacute"), QLatin1String("Í"));
+    sEntities.insert(QLatin1String("Icirc"), QLatin1String("Î"));
+    sEntities.insert(QLatin1String("Igrave"), QLatin1String("Ì"));
+    sEntities.insert(QLatin1String("Iota"), QLatin1String("Ι"));
+    sEntities.insert(QLatin1String("Iuml"), QLatin1String("Ï"));
+    sEntities.insert(QLatin1String("Kappa"), QLatin1String("Κ"));
+    sEntities.insert(QLatin1String("Lambda"), QLatin1String("Λ"));
+    sEntities.insert(QLatin1String("Mu"), QLatin1String("Μ"));
+    sEntities.insert(QLatin1String("Ntilde"), QLatin1String("Ñ"));
+    sEntities.insert(QLatin1String("Nu"), QLatin1String("Ν"));
+    sEntities.insert(QLatin1String("OElig"), QLatin1String("Œ"));
+    sEntities.insert(QLatin1String("Oacute"), QLatin1String("Ó"));
+    sEntities.insert(QLatin1String("Ocirc"), QLatin1String("Ô"));
+    sEntities.insert(QLatin1String("Ograve"), QLatin1String("Ò"));
+    sEntities.insert(QLatin1String("Omega"), QLatin1String("Ω"));
+    sEntities.insert(QLatin1String("Omicron"), QLatin1String("Ο"));
+    sEntities.insert(QLatin1String("Oslash"), QLatin1String("Ø"));
+    sEntities.insert(QLatin1String("Otilde"), QLatin1String("Õ"));
+    sEntities.insert(QLatin1String("Ouml"), QLatin1String("Ö"));
+    sEntities.insert(QLatin1String("Phi"), QLatin1String("Φ"));
+    sEntities.insert(QLatin1String("Pi"), QLatin1String("Π"));
+    sEntities.insert(QLatin1String("Prime"), QLatin1String("″"));
+    sEntities.insert(QLatin1String("Psi"), QLatin1String("Ψ"));
+    sEntities.insert(QLatin1String("Rho"), QLatin1String("Ρ"));
+    sEntities.insert(QLatin1String("Scaron"), QLatin1String("Š"));
+    sEntities.insert(QLatin1String("Sigma"), QLatin1String("Σ"));
+    sEntities.insert(QLatin1String("THORN"), QLatin1String("Þ"));
+    sEntities.insert(QLatin1String("Tau"), QLatin1String("Τ"));
+    sEntities.insert(QLatin1String("Theta"), QLatin1String("Θ"));
+    sEntities.insert(QLatin1String("Uacute"), QLatin1String("Ú"));
+    sEntities.insert(QLatin1String("Ucirc"), QLatin1String("Û"));
+    sEntities.insert(QLatin1String("Ugrave"), QLatin1String("Ù"));
+    sEntities.insert(QLatin1String("Upsilon"), QLatin1String("Υ"));
+    sEntities.insert(QLatin1String("Uuml"), QLatin1String("Ü"));
+    sEntities.insert(QLatin1String("Xi"), QLatin1String("Ξ"));
+    sEntities.insert(QLatin1String("Yacute"), QLatin1String("Ý"));
+    sEntities.insert(QLatin1String("Yuml"), QLatin1String("Ÿ"));
+    sEntities.insert(QLatin1String("Zeta"), QLatin1String("Ζ"));
+    sEntities.insert(QLatin1String("aacute"), QLatin1String("á"));
+    sEntities.insert(QLatin1String("acirc"), QLatin1String("â"));
+    sEntities.insert(QLatin1String("acute"), QLatin1String("´"));
+    sEntities.insert(QLatin1String("aelig"), QLatin1String("æ"));
+    sEntities.insert(QLatin1String("agrave"), QLatin1String("à"));
+    sEntities.insert(QLatin1String("alefsym"), QLatin1String("ℵ"));
+    sEntities.insert(QLatin1String("alpha"), QLatin1String("α"));
+    sEntities.insert(QLatin1String("amp"), QLatin1String("&"));
+    sEntities.insert(QLatin1String("and"), QLatin1String("∧"));
+    sEntities.insert(QLatin1String("ang"), QLatin1String("∠"));
+    sEntities.insert(QLatin1String("apos"), QLatin1String("'"));
+    sEntities.insert(QLatin1String("aring"), QLatin1String("å"));
+    sEntities.insert(QLatin1String("asymp"), QLatin1String("≈"));
+    sEntities.insert(QLatin1String("atilde"), QLatin1String("ã"));
+    sEntities.insert(QLatin1String("auml"), QLatin1String("ä"));
+    sEntities.insert(QLatin1String("bdquo"), QLatin1String("„"));
+    sEntities.insert(QLatin1String("beta"), QLatin1String("β"));
+    sEntities.insert(QLatin1String("brvbar"), QLatin1String("¦"));
+    sEntities.insert(QLatin1String("bull"), QLatin1String("•"));
+    sEntities.insert(QLatin1String("cap"), QLatin1String("∩"));
+    sEntities.insert(QLatin1String("ccedil"), QLatin1String("ç"));
+    sEntities.insert(QLatin1String("cedil"), QLatin1String("¸"));
+    sEntities.insert(QLatin1String("cent"), QLatin1String("¢"));
+    sEntities.insert(QLatin1String("chi"), QLatin1String("χ"));
+    sEntities.insert(QLatin1String("circ"), QLatin1String("ˆ"));
+    sEntities.insert(QLatin1String("clubs"), QLatin1String("♣"));
+    sEntities.insert(QLatin1String("cong"), QLatin1String("≅"));
+    sEntities.insert(QLatin1String("copy"), QLatin1String("©"));
+    sEntities.insert(QLatin1String("crarr"), QLatin1String("↵"));
+    sEntities.insert(QLatin1String("cup"), QLatin1String("∪"));
+    sEntities.insert(QLatin1String("curren"), QLatin1String("¤"));
+    sEntities.insert(QLatin1String("dArr"), QLatin1String("⇓"));
+    sEntities.insert(QLatin1String("dagger"), QLatin1String("†"));
+    sEntities.insert(QLatin1String("darr"), QLatin1String("↓"));
+    sEntities.insert(QLatin1String("deg"), QLatin1String("°"));
+    sEntities.insert(QLatin1String("delta"), QLatin1String("δ"));
+    sEntities.insert(QLatin1String("diams"), QLatin1String("♦"));
+    sEntities.insert(QLatin1String("divide"), QLatin1String("÷"));
+    sEntities.insert(QLatin1String("eacute"), QLatin1String("é"));
+    sEntities.insert(QLatin1String("ecirc"), QLatin1String("ê"));
+    sEntities.insert(QLatin1String("egrave"), QLatin1String("è"));
+    sEntities.insert(QLatin1String("empty"), QLatin1String("∅"));
+    sEntities.insert(QLatin1String("emsp"), QLatin1String(" "));
+    sEntities.insert(QLatin1String("ensp"), QLatin1String(" "));
+    sEntities.insert(QLatin1String("epsilon"), QLatin1String("ε"));
+    sEntities.insert(QLatin1String("equiv"), QLatin1String("≡"));
+    sEntities.insert(QLatin1String("eta"), QLatin1String("η"));
+    sEntities.insert(QLatin1String("eth"), QLatin1String("ð"));
+    sEntities.insert(QLatin1String("euml"), QLatin1String("ë"));
+    sEntities.insert(QLatin1String("euro"), QLatin1String("€"));
+    sEntities.insert(QLatin1String("exist"), QLatin1String("∃"));
+    sEntities.insert(QLatin1String("fnof"), QLatin1String("ƒ"));
+    sEntities.insert(QLatin1String("forall"), QLatin1String("∀"));
+    sEntities.insert(QLatin1String("frac12"), QLatin1String("½"));
+    sEntities.insert(QLatin1String("frac14"), QLatin1String("¼"));
+    sEntities.insert(QLatin1String("frac34"), QLatin1String("¾"));
+    sEntities.insert(QLatin1String("frasl"), QLatin1String("⁄"));
+    sEntities.insert(QLatin1String("gamma"), QLatin1String("γ"));
+    sEntities.insert(QLatin1String("ge"), QLatin1String("≥"));
+    sEntities.insert(QLatin1String("gt"), QLatin1String(">"));
+    sEntities.insert(QLatin1String("hArr"), QLatin1String("⇔"));
+    sEntities.insert(QLatin1String("harr"), QLatin1String("↔"));
+    sEntities.insert(QLatin1String("hearts"), QLatin1String("♥"));
+    sEntities.insert(QLatin1String("hellip"), QLatin1String("…"));
+    sEntities.insert(QLatin1String("iacute"), QLatin1String("í"));
+    sEntities.insert(QLatin1String("icirc"), QLatin1String("î"));
+    sEntities.insert(QLatin1String("iexcl"), QLatin1String("¡"));
+    sEntities.insert(QLatin1String("igrave"), QLatin1String("ì"));
+    sEntities.insert(QLatin1String("image"), QLatin1String("ℑ"));
+    sEntities.insert(QLatin1String("infin"), QLatin1String("∞"));
+    sEntities.insert(QLatin1String("int"), QLatin1String("∫"));
+    sEntities.insert(QLatin1String("iota"), QLatin1String("ι"));
+    sEntities.insert(QLatin1String("iquest"), QLatin1String("¿"));
+    sEntities.insert(QLatin1String("isin"), QLatin1String("∈"));
+    sEntities.insert(QLatin1String("iuml"), QLatin1String("ï"));
+    sEntities.insert(QLatin1String("kappa"), QLatin1String("κ"));
+    sEntities.insert(QLatin1String("lArr"), QLatin1String("⇐"));
+    sEntities.insert(QLatin1String("lambda"), QLatin1String("λ"));
+    sEntities.insert(QLatin1String("lang"), QLatin1String("〈"));
+    sEntities.insert(QLatin1String("laquo"), QLatin1String("«"));
+    sEntities.insert(QLatin1String("larr"), QLatin1String("←"));
+    sEntities.insert(QLatin1String("lceil"), QLatin1String("⌈"));
+    sEntities.insert(QLatin1String("ldquo"), QLatin1String("“"));
+    sEntities.insert(QLatin1String("le"), QLatin1String("≤"));
+    sEntities.insert(QLatin1String("lfloor"), QLatin1String("⌊"));
+    sEntities.insert(QLatin1String("lowast"), QLatin1String("∗"));
+    sEntities.insert(QLatin1String("loz"), QLatin1String("◊"));
+    sEntities.insert(QLatin1String("lrm"), QLatin1String("\xE2\x80\x8E"));
+    sEntities.insert(QLatin1String("lsaquo"), QLatin1String("‹"));
+    sEntities.insert(QLatin1String("lsquo"), QLatin1String("‘"));
+    sEntities.insert(QLatin1String("lt"), QLatin1String("<"));
+    sEntities.insert(QLatin1String("macr"), QLatin1String("¯"));
+    sEntities.insert(QLatin1String("mdash"), QLatin1String("—"));
+    sEntities.insert(QLatin1String("micro"), QLatin1String("µ"));
+    sEntities.insert(QLatin1String("middot"), QLatin1String("·"));
+    sEntities.insert(QLatin1String("minus"), QLatin1String("−"));
+    sEntities.insert(QLatin1String("mu"), QLatin1String("μ"));
+    sEntities.insert(QLatin1String("nabla"), QLatin1String("∇"));
+    sEntities.insert(QLatin1String("nbsp"), QLatin1String(" "));
+    sEntities.insert(QLatin1String("ndash"), QLatin1String("–"));
+    sEntities.insert(QLatin1String("ne"), QLatin1String("≠"));
+    sEntities.insert(QLatin1String("ni"), QLatin1String("∋"));
+    sEntities.insert(QLatin1String("not"), QLatin1String("¬"));
+    sEntities.insert(QLatin1String("notin"), QLatin1String("∉"));
+    sEntities.insert(QLatin1String("nsub"), QLatin1String("⊄"));
+    sEntities.insert(QLatin1String("ntilde"), QLatin1String("ñ"));
+    sEntities.insert(QLatin1String("nu"), QLatin1String("ν"));
+    sEntities.insert(QLatin1String("oacute"), QLatin1String("ó"));
+    sEntities.insert(QLatin1String("ocirc"), QLatin1String("ô"));
+    sEntities.insert(QLatin1String("oelig"), QLatin1String("œ"));
+    sEntities.insert(QLatin1String("ograve"), QLatin1String("ò"));
+    sEntities.insert(QLatin1String("oline"), QLatin1String("‾"));
+    sEntities.insert(QLatin1String("omega"), QLatin1String("ω"));
+    sEntities.insert(QLatin1String("omicron"), QLatin1String("ο"));
+    sEntities.insert(QLatin1String("oplus"), QLatin1String("⊕"));
+    sEntities.insert(QLatin1String("or"), QLatin1String("∨"));
+    sEntities.insert(QLatin1String("ordf"), QLatin1String("ª"));
+    sEntities.insert(QLatin1String("ordm"), QLatin1String("º"));
+    sEntities.insert(QLatin1String("oslash"), QLatin1String("ø"));
+    sEntities.insert(QLatin1String("otilde"), QLatin1String("õ"));
+    sEntities.insert(QLatin1String("otimes"), QLatin1String("⊗"));
+    sEntities.insert(QLatin1String("ouml"), QLatin1String("ö"));
+    sEntities.insert(QLatin1String("para"), QLatin1String("¶"));
+    sEntities.insert(QLatin1String("part"), QLatin1String("∂"));
+    sEntities.insert(QLatin1String("permil"), QLatin1String("‰"));
+    sEntities.insert(QLatin1String("perp"), QLatin1String("⊥"));
+    sEntities.insert(QLatin1String("phi"), QLatin1String("φ"));
+    sEntities.insert(QLatin1String("pi"), QLatin1String("π"));
+    sEntities.insert(QLatin1String("piv"), QLatin1String("ϖ"));
+    sEntities.insert(QLatin1String("plusmn"), QLatin1String("±"));
+    sEntities.insert(QLatin1String("pound"), QLatin1String("£"));
+    sEntities.insert(QLatin1String("prime"), QLatin1String("′"));
+    sEntities.insert(QLatin1String("prod"), QLatin1String("∏"));
+    sEntities.insert(QLatin1String("prop"), QLatin1String("∝"));
+    sEntities.insert(QLatin1String("psi"), QLatin1String("ψ"));
+    sEntities.insert(QLatin1String("quot"), QLatin1String("\""));
+    sEntities.insert(QLatin1String("rArr"), QLatin1String("⇒"));
+    sEntities.insert(QLatin1String("radic"), QLatin1String("√"));
+    sEntities.insert(QLatin1String("rang"), QLatin1String("〉"));
+    sEntities.insert(QLatin1String("raquo"), QLatin1String("»"));
+    sEntities.insert(QLatin1String("rarr"), QLatin1String("→"));
+    sEntities.insert(QLatin1String("rceil"), QLatin1String("⌉"));
+    sEntities.insert(QLatin1String("rdquo"), QLatin1String("”"));
+    sEntities.insert(QLatin1String("real"), QLatin1String("ℜ"));
+    sEntities.insert(QLatin1String("reg"), QLatin1String("®"));
+    sEntities.insert(QLatin1String("rfloor"), QLatin1String("⌋"));
+    sEntities.insert(QLatin1String("rho"), QLatin1String("ρ"));
+    sEntities.insert(QLatin1String("rlm"), QLatin1String("\xE2\x80\x8F"));
+    sEntities.insert(QLatin1String("rsaquo"), QLatin1String("›"));
+    sEntities.insert(QLatin1String("rsquo"), QLatin1String("’"));
+    sEntities.insert(QLatin1String("sbquo"), QLatin1String("‚"));
+    sEntities.insert(QLatin1String("scaron"), QLatin1String("š"));
+    sEntities.insert(QLatin1String("sdot"), QLatin1String("⋅"));
+    sEntities.insert(QLatin1String("sect"), QLatin1String("§"));
+    sEntities.insert(QLatin1String("shy"), QLatin1String("\xC2\xAD"));
+    sEntities.insert(QLatin1String("sigma"), QLatin1String("σ"));
+    sEntities.insert(QLatin1String("sigmaf"), QLatin1String("ς"));
+    sEntities.insert(QLatin1String("sim"), QLatin1String("∼"));
+    sEntities.insert(QLatin1String("spades"), QLatin1String("♠"));
+    sEntities.insert(QLatin1String("sub"), QLatin1String("⊂"));
+    sEntities.insert(QLatin1String("sube"), QLatin1String("⊆"));
+    sEntities.insert(QLatin1String("sum"), QLatin1String("∑"));
+    sEntities.insert(QLatin1String("sup1"), QLatin1String("¹"));
+    sEntities.insert(QLatin1String("sup2"), QLatin1String("²"));
+    sEntities.insert(QLatin1String("sup3"), QLatin1String("³"));
+    sEntities.insert(QLatin1String("sup"), QLatin1String("⊃"));
+    sEntities.insert(QLatin1String("supe"), QLatin1String("⊇"));
+    sEntities.insert(QLatin1String("szlig"), QLatin1String("ß"));
+    sEntities.insert(QLatin1String("tau"), QLatin1String("τ"));
+    sEntities.insert(QLatin1String("there4"), QLatin1String("∴"));
+    sEntities.insert(QLatin1String("theta"), QLatin1String("θ"));
+    sEntities.insert(QLatin1String("thetasym"), QLatin1String("ϑ"));
+    sEntities.insert(QLatin1String("thinsp"), QLatin1String(" "));
+    sEntities.insert(QLatin1String("thorn"), QLatin1String("þ"));
+    sEntities.insert(QLatin1String("tilde"), QLatin1String("˜"));
+    sEntities.insert(QLatin1String("times"), QLatin1String("×"));
+    sEntities.insert(QLatin1String("trade"), QLatin1String("™"));
+    sEntities.insert(QLatin1String("uArr"), QLatin1String("⇑"));
+    sEntities.insert(QLatin1String("uacute"), QLatin1String("ú"));
+    sEntities.insert(QLatin1String("uarr"), QLatin1String("↑"));
+    sEntities.insert(QLatin1String("ucirc"), QLatin1String("û"));
+    sEntities.insert(QLatin1String("ugrave"), QLatin1String("ù"));
+    sEntities.insert(QLatin1String("uml"), QLatin1String("¨"));
+    sEntities.insert(QLatin1String("upsih"), QLatin1String("ϒ"));
+    sEntities.insert(QLatin1String("upsilon"), QLatin1String("υ"));
+    sEntities.insert(QLatin1String("uuml"), QLatin1String("ü"));
+    sEntities.insert(QLatin1String("weierp"), QLatin1String("℘"));
+    sEntities.insert(QLatin1String("xi"), QLatin1String("ξ"));
+    sEntities.insert(QLatin1String("yacute"), QLatin1String("ý"));
+    sEntities.insert(QLatin1String("yen"), QLatin1String("¥"));
+    sEntities.insert(QLatin1String("yuml"), QLatin1String("ÿ"));
+    sEntities.insert(QLatin1String("zeta"), QLatin1String("ζ"));
+    sEntities.insert(QLatin1String("zwj"), QLatin1String("\xE2\x80\x8D"));
+    sEntities.insert(QLatin1String("zwnj"), QLatin1String("\xE2\x80\x8C"));
+}
+
+QString XUnitXMLQTestLibParser::decodeXMLEntities(const QString& encoded)
+{
+    QString decoded;
+    decoded.reserve(encoded.length());
+
+    if (sEntities.isEmpty())
+        initXMLEntities();
+
+    int d = 0;
+    for (int c = 0; c < encoded.length(); c++) {
+        if ((encoded[c] != QLatin1Char('&')) || (c == encoded.length() - 1)) {
+            decoded.replace(d++, 1, encoded[c]);
+            continue;
+        }
+
+        int b = c + 1;
+        c = encoded.indexOf(QLatin1Char(';'), c);
+        if (c == -1) {
+            decoded.replace(d++, 1, QLatin1Char('&'));
+            c = b - 1;
+            continue;
+        }
+
+        QString entity = encoded.mid(b, c - b);
+
+        if (entity.startsWith(QLatin1String("#x"), Qt::CaseInsensitive)) {
+            entity.remove(0, 2);
+            decoded.replace(d++, 1, QChar(entity.toShort(NULL, 16)));
+        } else if (entity.startsWith(QLatin1Char('#'))) {
+            Q_ASSERT_X(false, __func__, "Unsupported XML entity");
+        } else {
+            if (sEntities.contains(entity))
+                decoded.replace(d++, 1, sEntities.value(entity));
+            else
+                Q_ASSERT_X(false, __func__, qPrintable(QString(QLatin1String("Unknown XML entity: %1")).arg(entity)));
+        }
+    }
+
+    decoded.squeeze();
+
+    qDebug() << __func__ << encoded << decoded;
+    return decoded;
 }
 
 } // namespace Internal
