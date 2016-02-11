@@ -384,10 +384,12 @@ void QTestLibModelTester::parseRow(const QModelIndex& index, const QDomElement& 
     BEGIN_SUB_TEST_FUNCTION
 
     QVERIFY2(mModel->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for row index should be a string");
-    /*qDebug() << mModel->data(index, Qt::DisplayRole).toString()
-             << element.attribute("title", QString::null);*/
+    qDebug() << mModel->data(index, Qt::DisplayRole).toString()
+             << element.attribute("title", QString::null);
     QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.attribute("title", QString::null) , Qt::CaseSensitive) == 0, "Row title do not match");
     QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for row index should be a string");
+    qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString()
+             << element.attribute("type", QString::null);
     QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null) , Qt::CaseInsensitive) == 0, "Result string for row do not match");
 
     QDomElement messageElement = element.firstChildElement("message");
@@ -421,14 +423,16 @@ void QTestLibModelTester::parseMessage(const QModelIndex& index, const QDomEleme
     if (QString::compare(element.attribute("strict", "false"), "true", Qt::CaseInsensitive) == 0)
         QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.firstChild().toText().data().trimmed() , Qt::CaseSensitive) == 0, "Message text do not match");
     QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for message index should be a string");
-    /*qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString()
-             << element.attribute("type", QString::null);*/
+    qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString()
+             << element.attribute("type", QString::null);
     QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null) , Qt::CaseInsensitive) == 0, "Result string for message do not match");
 
     QVERIFY2(mModel->rowCount(index) == 0, "The model index should have 0 rows");
     QVERIFY2(mModel->columnCount(index) == 0, "The model index should have 0 columns.");
 
-    SUB_TEST_FUNCTION(checkLocation(index, element));
+    if (QString::compare(mParserFormat, "xunitxml") != 0) {
+        SUB_TEST_FUNCTION(checkLocation(index, element));
+    }
 
     END_SUB_TEST_FUNCTION
 }
