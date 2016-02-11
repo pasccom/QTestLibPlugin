@@ -20,6 +20,8 @@
 
 #include "../../plaintextqtestlibparserfactory.h"
 #include "../../xmlqtestlibparserfactory.h"
+#include "../../lightxmlqtestlibparserfactory.h"
+#include "../../xunitxmlqtestlibparserfactory.h"
 
 #include "../common/qtestlibmodeltester.h"
 
@@ -65,6 +67,28 @@ private Q_SLOTS:
     void signalsTestXML(void);
     inline void limitsXML_data(void) {data();}
     void limitsXML(void);
+
+    inline void oneClassLightXML_data(void) {data();}
+    void oneClassLightXML(void);
+    inline void allMessagesLightXML_data(void) {data();}
+    void allMessagesLightXML(void);
+    inline void multipleClassesLightXML_data(void) {data();}
+    void multipleClassesLightXML(void);
+    inline void signalsTestLightXML_data(void) {data();}
+    void signalsTestLightXML(void);
+    inline void limitsLightXML_data(void) {data();}
+    void limitsLightXML(void);
+
+    inline void oneClassXUnitXML_data(void) {data();}
+    void oneClassXUnitXML(void);
+    inline void allMessagesXUnitXML_data(void) {data();}
+    void allMessagesXUnitXML(void);
+    inline void multipleClassesXUnitXML_data(void) {data();}
+    void multipleClassesXUnitXML(void);
+    inline void signalsTestXUnitXML_data(void) {data();}
+    void signalsTestXUnitXML(void);
+    inline void limitsXUnitXML_data(void) {data();}
+    void limitsXUnitXML(void);
 private slots:
     inline void saveModel(QAbstractItemModel* model) {mModel = model;}
 private:
@@ -94,6 +118,10 @@ TestModelFactoryTest::TestModelFactoryTest(void) :
     ExtensionSystem::PluginManager::addObject(plainTextFactory);
     QTestLibPlugin::Internal::AbstractTestParserFactory *xmlFactory = new QTestLibPlugin::Internal::XMLQTestLibParserFactory(this);
     ExtensionSystem::PluginManager::addObject(xmlFactory);
+    QTestLibPlugin::Internal::AbstractTestParserFactory *lightXmlFactory = new QTestLibPlugin::Internal::LightXMLQTestLibParserFactory(this);
+    ExtensionSystem::PluginManager::addObject(lightXmlFactory);
+    QTestLibPlugin::Internal::AbstractTestParserFactory *xUnitXmlFactory = new QTestLibPlugin::Internal::XUnitXMLQTestLibParserFactory(this);
+    ExtensionSystem::PluginManager::addObject(xUnitXmlFactory);
 }
 
 void TestModelFactoryTest::data(void)
@@ -218,6 +246,96 @@ void TestModelFactoryTest::limitsXML(void)
     runTest("LimitsTest", "xml", verbosity, outputFormat, errorFormat);
 }
 
+void TestModelFactoryTest::oneClassLightXML(void)
+{
+    QFETCH(QTestLibModelTester::Verbosity, verbosity);
+    QFETCH(Utils::OutputFormat, outputFormat);
+    QFETCH(Utils::OutputFormat, errorFormat);
+
+    runTest("OneClassTest", "lightxml", verbosity, outputFormat, errorFormat);
+}
+
+void TestModelFactoryTest::allMessagesLightXML(void)
+{
+    QFETCH(QTestLibModelTester::Verbosity, verbosity);
+    QFETCH(Utils::OutputFormat, outputFormat);
+    QFETCH(Utils::OutputFormat, errorFormat);
+
+    runTest("AllMessagesTest", "lightxml", verbosity, outputFormat, errorFormat);
+}
+
+void TestModelFactoryTest::multipleClassesLightXML(void)
+{
+    QFETCH(QTestLibModelTester::Verbosity, verbosity);
+    QFETCH(Utils::OutputFormat, outputFormat);
+    QFETCH(Utils::OutputFormat, errorFormat);
+
+    runTest("MultipleClassesTest", "lightxml", verbosity, outputFormat, errorFormat);
+}
+
+void TestModelFactoryTest::signalsTestLightXML(void)
+{
+    QFETCH(QTestLibModelTester::Verbosity, verbosity);
+    QFETCH(Utils::OutputFormat, outputFormat);
+    QFETCH(Utils::OutputFormat, errorFormat);
+
+    runTest("SignalsTest", "lightxml", verbosity, outputFormat, errorFormat);
+}
+
+void TestModelFactoryTest::limitsLightXML(void)
+{
+    QFETCH(QTestLibModelTester::Verbosity, verbosity);
+    QFETCH(Utils::OutputFormat, outputFormat);
+    QFETCH(Utils::OutputFormat, errorFormat);
+
+    runTest("LimitsTest", "lightxml", verbosity, outputFormat, errorFormat);
+}
+
+void TestModelFactoryTest::oneClassXUnitXML(void)
+{
+    QFETCH(QTestLibModelTester::Verbosity, verbosity);
+    QFETCH(Utils::OutputFormat, outputFormat);
+    QFETCH(Utils::OutputFormat, errorFormat);
+
+    runTest("OneClassTest", "xunitxml", verbosity, outputFormat, errorFormat);
+}
+
+void TestModelFactoryTest::allMessagesXUnitXML(void)
+{
+    QFETCH(QTestLibModelTester::Verbosity, verbosity);
+    QFETCH(Utils::OutputFormat, outputFormat);
+    QFETCH(Utils::OutputFormat, errorFormat);
+
+    runTest("AllMessagesTest", "xunitxml", verbosity, outputFormat, errorFormat);
+}
+
+void TestModelFactoryTest::multipleClassesXUnitXML(void)
+{
+    QFETCH(QTestLibModelTester::Verbosity, verbosity);
+    QFETCH(Utils::OutputFormat, outputFormat);
+    QFETCH(Utils::OutputFormat, errorFormat);
+
+    runTest("MultipleClassesTest", "xunitxml", verbosity, outputFormat, errorFormat);
+}
+
+void TestModelFactoryTest::signalsTestXUnitXML(void)
+{
+    QFETCH(QTestLibModelTester::Verbosity, verbosity);
+    QFETCH(Utils::OutputFormat, outputFormat);
+    QFETCH(Utils::OutputFormat, errorFormat);
+
+    runTest("SignalsTest", "xunitxml", verbosity, outputFormat, errorFormat);
+}
+
+void TestModelFactoryTest::limitsXUnitXML(void)
+{
+    QFETCH(QTestLibModelTester::Verbosity, verbosity);
+    QFETCH(Utils::OutputFormat, outputFormat);
+    QFETCH(Utils::OutputFormat, errorFormat);
+
+    runTest("LimitsTest", "xunitxml", verbosity, outputFormat, errorFormat);
+}
+
 void TestModelFactoryTest::cleanup(void)
 {
     if (mModel)
@@ -289,10 +407,14 @@ void TestModelFactoryTest::executeTest(const QString& test, Utils::OutputFormat 
     ProjectExplorer::Target target(&project, &kit);
     ProjectExplorer::LocalApplicationRunConfiguration runConfig(&target);
     runConfig.setCommandLineArguments(cmdArgs);
-    runConfig.setExecutable(TESTS_DIR "/" + test + "/debug/" + test.toLower());
+    runConfig.setExecutable(TESTS_DIR "/" + test + "/debug/" + test);
     runConfig.setWorkingDirectory(TESTS_DIR "/" + test);
 
     ProjectExplorer::RunControl *runControl = new ProjectExplorer::LocalApplicationRunControl(&runConfig, this);
+    qDebug() << "Run config display name:" << runConfig.displayName();
+    qDebug() << "Run config exe:" << runConfig.executable();
+    qDebug() << "Run config dir:" << runConfig.workingDirectory();
+    qDebug() << "Run control display name:" << runControl->displayName();
     runControl->setFormats(outputFormat, errorFormat);
     QTestLibPlugin::Internal::TestModelFactory* factory = new QTestLibPlugin::Internal::TestModelFactory(runControl, this);
     connect(factory, SIGNAL(modelPopulated(QAbstractItemModel*)), this, SLOT(saveModel(QAbstractItemModel*)));

@@ -36,6 +36,10 @@ SOURCES += ../../plaintextqtestlibparser.cpp \
            ../../plaintextqtestlibparserfactory.cpp \
            ../../xmlqtestlibparser.cpp \
            ../../xmlqtestlibparserfactory.cpp \
+           ../../lightxmlqtestlibparser.cpp \
+           ../../lightxmlqtestlibparserfactory.cpp \
+           ../../xunitxmlqtestlibparser.cpp \
+           ../../xunitxmlqtestlibparserfactory.cpp \
            ../../qtestlibargsparser.cpp \
            ../../qtestlibmodel.cpp \
            ../../testmodelfactory.cpp
@@ -43,6 +47,10 @@ HEADERS += ../../plaintextqtestlibparser.h \
            ../../plaintextqtestlibparserfactory.h \
            ../../xmlqtestlibparser.h \
            ../../xmlqtestlibparserfactory.h \
+           ../../lightxmlqtestlibparser.h \
+           ../../lightxmlqtestlibparserfactory.h \
+           ../../xunitxmlqtestlibparser.h \
+           ../../xunitxmlqtestlibparserfactory.h \
            ../../qtestlibargsparser.h \
            ../../qtestlibmodel.h \
            ../../testmodelfactory.h
