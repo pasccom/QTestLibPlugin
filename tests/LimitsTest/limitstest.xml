@@ -3,7 +3,6 @@
 <qtestliboutput>
 	<results format="xunitxml">
         <unsure level="silent" />
-	    <unsure level="silent" />
         <unsure />
         <unsure />
         <unsure />
@@ -25,29 +24,28 @@
         <unsure />
         <unsure />
 		<unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+		<unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+		<unsure />
+        <unsure />
+		<unsure level="verbose2" />
         <unsure level="verbose2" />
-        <unsure level="verbose2" />
-        <unsure />
-        <unsure />
-        <unsure />
-        <unsure />
-        <unsure />
-		<unsure />
-        <unsure />
-        <unsure />
-        <unsure />
         <unsure />
         <unsure />
         <unsure />
         <unsure />
 		<unsure />
-        <unsure />
-        <unsure />
-        <unsure />
-        <unsure />
-        <unsure />
-		<unsure />
-        <unsure />
         <unsure />
         <unsure />
         <unsure />
@@ -59,6 +57,7 @@
         <unsure />
         <unsure />
         <unsure level="silent" />
+	    <unsure level="silent" />
 	    <unsure level="silent" />
 	</results>
 	<results format="lightxml">
