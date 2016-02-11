@@ -1,6 +1,79 @@
 <?xml version="1.0" ?>
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
+	<results format="xunitxml">
+		<unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+		<unsure level="verbose2" />
+		<unsure level="verbose2" />
+        <unsure/>
+		<unsure level="verbose2" />
+		<unsure level="verbose2" />
+        <unsure/>
+		<unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+		<unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+		<unsure level="verbose2" />
+		<unsure level="verbose2" />
+        <unsure/>
+		<unsure level="verbose2" />
+        <unsure/>
+		<unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+		<unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+		<unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+		<unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+		<unsure level="verbose2" />
+		<unsure level="verbose2" />
+		<unsure level="verbose2" />
+		<unsure level="verbose2" />
+		<unsure level="verbose2" />
+		<unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+		<unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+    </results>
 	<results format="lightxml">
         <unsure/>
         <unsure/>
@@ -327,7 +400,7 @@
             <message type="Pass" strict="true">
                 Test passed
             </message>
-            <message type="Result" strict="false">
+            <message type="Result" strict="false" format="!xunitxml">
                 0.00050 msecs per iteration (total: 66, iterations: 131072)
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
@@ -397,8 +470,11 @@
             <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="76">
                 QVERIFY(false)
             </message>
-            <message type="BFail" strict="true" level="silent" file="allmessagestest.cpp" line="76">
+            <message type="BFail" strict="true" level="silent" file="allmessagestest.cpp" line="76" format="!xunitxml">
                 'false' returned FALSE. (This test is blacklisted but it should fail)
+            </message>
+			<message type="BFail" strict="true" level="silent" file="allmessagestest.cpp" line="76" format="xunitxml">
+                Blacklisted test failed
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
@@ -411,11 +487,17 @@
             <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="82">
                 QVERIFY(false)
             </message>
-            <message type="XFail" strict="true" file="allmessagestest.cpp" line="82">
+            <message type="XFail" strict="true" file="allmessagestest.cpp" line="82" format="!xunitxml">
                 This test should fail as it is marked as expecting failure.
             </message>
-            <message type="Pass" strict="true">
+			<message type="Info" strict="true" file="allmessagestest.cpp" line="82" format="xunitxml">
+                This test should fail as it is marked as expecting failure.
+            </message>
+            <message type="Pass" strict="true" format="!xunitxml">
                 Test passed
+            </message>
+			<message type="XFail" strict="true" format="xunitxml">
+                Test failed unexpectedly
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms

@@ -1,6 +1,124 @@
 <?xml version="1.0" ?>
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
+	<results format="xunitxml">
+        <unsure/>
+        <unsure/>
+		<unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+		<unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure/>
+		<unsure/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure/>
+		<unsure/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+		<unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+		<unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+		<unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+        <unsure level="verboses"/>
+		<unsure/>
+        <unsure/>
+        <unsure/>
+	</results>
 	<results format="lightxml">
         <unsure/>
         <unsure/>

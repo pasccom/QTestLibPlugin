@@ -1,6 +1,39 @@
 <?xml version="1.0" ?>
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
+	<results format="xunitxml">
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+		<unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure level="verbose2" />
+		<unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+	</results>
 	<results format="lightxml">
         <unsure />
         <unsure />
@@ -187,7 +220,7 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
-            <row title="firstData" type="Pass">
+            <row title="firstData" type="Pass" format="!xunitxml">
                 <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="48">
                     QVERIFY(data.endsWith("Data of firstFunction"))
                 </message>
@@ -195,7 +228,12 @@
                     Test passed
                 </message>
             </row>
-            <row title="secondData" type="Pass">
+			<row title="firstData" type="Unknown" level="verbose2" format="xunitxml" >
+                <message type="Info" strict="true" file="oneclasstest.cpp" line="48">
+                    QVERIFY(data.endsWith("Data of firstFunction"))
+                </message>
+			</row>
+            <row title="secondData" type="Pass" format="!xunitxml">
                 <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="48">
                     QVERIFY(data.endsWith("Data of firstFunction"))
                 </message>
@@ -203,7 +241,12 @@
                     Test passed
                 </message>
             </row>
-            <row title="thirdData" type="Pass">
+			<row title="secondData" type="Unknown" level="verbose2" format="xunitxml">
+                <message type="Info" strict="true" file="oneclasstest.cpp" line="48">
+                    QVERIFY(data.endsWith("Data of firstFunction"))
+                </message>
+			</row>
+            <row title="thirdData" type="Pass" format="!xunitxml">
                 <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="48">
                     QVERIFY(data.endsWith("Data of firstFunction"))
                 </message>
@@ -211,6 +254,14 @@
                     Test passed
                 </message>
             </row>
+			<row title="thirdData" type="Unknown" level="verbose2" format="xunitxml">
+                <message type="Info" strict="true" file="oneclasstest.cpp" line="48">
+                    QVERIFY(data.endsWith("Data of firstFunction"))
+                </message>
+			</row>
+			<message type="Pass" strict="true" format="xunitxml">
+				Test passed
+			</message>
             <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>

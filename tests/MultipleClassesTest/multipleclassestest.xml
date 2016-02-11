@@ -1,6 +1,75 @@
 <?xml version="1.0" ?>
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
+	<results format="xunitxml">
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+		<unsure level="verbose2"/>
+		<unsure level="verbose2"/>
+        <unsure/>
+		<unsure level="verbose2"/>
+		<unsure level="verbose2"/>
+        <unsure/>
+        <unsure/>
+		<unsure level="verbose2"/>
+		<unsure level="verbose2"/>
+		<unsure level="verbose2"/>
+        <unsure/>
+		<unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+		<unsure level="verbose2"/>
+		<unsure level="verbose2"/>
+        <unsure/>
+        <unsure/>
+		<unsure level="verbose2"/>
+        <unsure/>
+		<unsure level="verbose2"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+		<unsure level="verbose2"/>
+        <unsure/>
+		<unsure level="verbose2"/>
+        <unsure/>
+		<unsure level="verbose2"/>
+        <unsure/>
+        <unsure/>
+		<unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure/>
+		<unsure level="verbose2"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+		<unsure level="verbose2"/>
+		<unsure level="verbose2"/>
+        <unsure/>
+        <unsure/>
+		<unsure level="verbose2"/>
+		<unsure level="verbose2"/>
+		<unsure level="verbose2"/>
+        <unsure/>
+	</results>
 	<results format="lightxml">
         <unsure/>
         <unsure/>
@@ -407,7 +476,7 @@
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
-                <row title="firstData" type="Pass">
+                <row title="firstData" type="Pass" format="!xunitxml">
                     <message type="QDebug" strict="true">
                         "firstData"
                     </message>
@@ -418,7 +487,15 @@
                         Test passed
                     </message>
                 </row>
-                <row title="secondData" type="Pass">
+				<row title="firstData" type="Unknown" format="xunitxml">
+                    <message type="QDebug" strict="true">
+                        "firstData"
+                    </message>
+                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="85">
+                        QVERIFY(data.endsWith("Data"))
+                    </message>
+                </row>
+                <row title="secondData" type="Pass" format="!xunitxml">
                     <message type="QDebug" strict="true">
                         "secondData"
                     </message>
@@ -429,6 +506,17 @@
                         Test passed
                     </message>
                 </row>
+				<row title="secondData" type="Unknown" format="xunitxml">
+                    <message type="QDebug" strict="true">
+                        "secondData"
+                    </message>
+                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="85">
+                        QVERIFY(data.endsWith("Data"))
+                    </message>
+                </row>
+				<message type="Pass" strict="true" format="xunitxml">
+					Test passed
+				</message>
                 <message type="Duration" strict="false" format="xml">
                     0ms
                 </message>
