@@ -256,7 +256,7 @@ void QTestLibModelTester::checkResults(QLinkedList<QTestLibPlugin::Internal::Tes
 
     while (!currentExpected.isNull()) {
         bool isPrinted = false;
-        SUB_TEST_FUNCTION(isOutput(currentExpected, &isPrinted));
+        SUB_TEST_FUNCTION(isOutput(currentExpected, &isPrinted, false));
         QVERIFY2(!isPrinted, "Number of printed results mismatch");
         currentExpected = currentExpected.nextSiblingElement();
     }
