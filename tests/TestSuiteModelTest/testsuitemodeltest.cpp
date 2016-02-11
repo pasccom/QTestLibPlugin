@@ -20,6 +20,8 @@
 
 #include "../../plaintextqtestlibparserfactory.h"
 #include "../../xmlqtestlibparserfactory.h"
+#include "../../lightxmlqtestlibparserfactory.h"
+#include "../../xunitxmlqtestlibparserfactory.h"
 
 #include "../common/qtestlibmodeltester.h"
 
@@ -109,6 +111,10 @@ TestSuiteModelTest::TestSuiteModelTest(void)
     ExtensionSystem::PluginManager::addObject(plainTextFactory);
     QTestLibPlugin::Internal::AbstractTestParserFactory *xmlFactory = new QTestLibPlugin::Internal::XMLQTestLibParserFactory(this);
     ExtensionSystem::PluginManager::addObject(xmlFactory);
+    QTestLibPlugin::Internal::AbstractTestParserFactory *lightXmlFactory = new QTestLibPlugin::Internal::LightXMLQTestLibParserFactory(this);
+    ExtensionSystem::PluginManager::addObject(lightXmlFactory);
+    QTestLibPlugin::Internal::AbstractTestParserFactory *xUnitXmlFactory = new QTestLibPlugin::Internal::XUnitXMLQTestLibParserFactory(this);
+    ExtensionSystem::PluginManager::addObject(xUnitXmlFactory);
 
     mTests.clear();
     mTests << "OneClassTest";
@@ -120,6 +126,8 @@ TestSuiteModelTest::TestSuiteModelTest(void)
     mParserFormats.clear();
     mParserFormats << "txt";
     mParserFormats << "xml";
+    mParserFormats << "lightxml";
+    mParserFormats << "xunitxml";
 }
 
 void TestSuiteModelTest::data(void)
@@ -473,6 +481,10 @@ void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const Q
             tester.setVerbosity((*it)->testVerbosity);
         else if (QString::compare((*it)->parserFormat, "xml", Qt::CaseSensitive) == 0)
             tester.setVerbosity(qMax(QTestLibModelTester::Normal, (*it)->testVerbosity));
+        else if (QString::compare((*it)->parserFormat, "lightxml", Qt::CaseSensitive) == 0)
+            tester.setVerbosity(qMax(QTestLibModelTester::Normal, (*it)->testVerbosity));
+        else if (QString::compare((*it)->parserFormat, "xunitxml", Qt::CaseSensitive) == 0)
+            tester.setVerbosity(qMax(QTestLibModelTester::Normal, (*it)->testVerbosity));
         else
             QVERIFY2(false, qPrintable(QString("Unknown parser format %1").arg((*it)->parserFormat)));
 
@@ -524,7 +536,7 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     ProjectExplorer::Target target(&project, &kit);
     ProjectExplorer::LocalApplicationRunConfiguration runConfig(&target);
     runConfig.setCommandLineArguments(cmdArgs);
-    runConfig.setExecutable(TESTS_DIR "/" + test + "/debug/" + test.toLower());
+    runConfig.setExecutable(TESTS_DIR "/" + test + "/debug/" + test);
     runConfig.setWorkingDirectory(TESTS_DIR "/" + test);
 
     ProjectExplorer::RunControl *runControl = new ProjectExplorer::LocalApplicationRunControl(&runConfig, this);
