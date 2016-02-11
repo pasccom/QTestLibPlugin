@@ -16,8 +16,8 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef XMLQTESTLIBPARSER_H
-#define XMLQTESTLIBPARSER_H
+#ifndef LIGHTXMLQTESTLIBPARSER_H
+#define LIGHTXMLQTESTLIBPARSER_H
 
 #include "testmodelfactory.h"
 #include "qtestlibmodel.h"
@@ -180,4 +180,4 @@ private:
 } // namespace Internal
 } // namespace QTestLibPlugin
 
-#endif // XMLQTESTLIBPARSER_H
+#endif // LIGHTXMLQTESTLIBPARSER_H
