@@ -167,7 +167,7 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQT
 
     QProcess testProc(this);
     testProc.setWorkingDirectory(TESTS_DIR "/" + runConfig->displayName() + "/");
-    testProc.start(TESTS_DIR "/" + runConfig->displayName() + "/debug/" + runConfig->displayName().toLower(), cmdArgs, QIODevice::ReadOnly);
+    testProc.start(TESTS_DIR "/" + runConfig->displayName() + "/debug/" + runConfig->displayName(), cmdArgs, QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
         qCritical() << "Test timed out";

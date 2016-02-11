@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 
-TARGET   = oneclasstest
+TARGET   = OneClassTest
 TEMPLATE = app
 
 QT       += testlib
