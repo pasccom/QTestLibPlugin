@@ -37,7 +37,7 @@ public:
     inline QString commandLineArguments() const {return mArgs;}
     inline void setCommandLineArguments(const QString& args) {mArgs = args;}
 
-    inline QString displayName(void) const {return mExe.section('.', 0, 0, QString::SectionSkipEmpty);}
+    inline QString displayName(void) const {return mExe.section('/', -1, -1, QString::SectionSkipEmpty).section('.', 0, 0, QString::SectionSkipEmpty);}
 private:
     QString mExe;
     QString mArgs;
