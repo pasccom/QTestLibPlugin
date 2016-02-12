@@ -37,6 +37,7 @@ HEADERS += ../common/qtestlibmodeltester.h
 # Files to be tested
 SOURCES += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.cpp \
            $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparserfactory.cpp \
+           $$QTESTLIBPLUGIN_SRC/basexmlqtestlibparser.cpp \
            $$QTESTLIBPLUGIN_SRC/xmlqtestlibparser.cpp \
            $$QTESTLIBPLUGIN_SRC/xmlqtestlibparserfactory.cpp \
            $$QTESTLIBPLUGIN_SRC/lightxmlqtestlibparser.cpp \
@@ -49,6 +50,7 @@ SOURCES += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.cpp \
            $$QTESTLIBPLUGIN_SRC/testsuitemodel.cpp
 HEADERS += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.h \
            $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparserfactory.h \
+           $$QTESTLIBPLUGIN_SRC/basexmlqtestlibparser.h \
            $$QTESTLIBPLUGIN_SRC/xmlqtestlibparser.h \
            $$QTESTLIBPLUGIN_SRC/xmlqtestlibparserfactory.h \
            $$QTESTLIBPLUGIN_SRC/lightxmlqtestlibparser.h \

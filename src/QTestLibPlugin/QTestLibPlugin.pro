@@ -27,8 +27,13 @@ SOURCES += \
     testmodelfactory.cpp \
     plaintextqtestlibparser.cpp \
     plaintextqtestlibparserfactory.cpp \
+    basexmlqtestlibparser.cpp \
     xmlqtestlibparser.cpp \
     xmlqtestlibparserfactory.cpp \
+    lightxmlqtestlibparser.cpp \
+    lightxmlqtestlibparserfactory.cpp \
+    xunitxmlqtestlibparser.cpp \
+    xunitxmlqtestlibparserfactory.cpp \
     qtestlibargsparser.cpp \
     testproxymodel.cpp
 
@@ -42,8 +47,13 @@ HEADERS += \
     testmodelfactory.h \
     plaintextqtestlibparser.h \
     plaintextqtestlibparserfactory.h \
+    basexmlqtestlibparser.h \
     xmlqtestlibparser.h \
     xmlqtestlibparserfactory.h \
+    lightxmlqtestlibparser.h \
+    lightxmlqtestlibparserfactory.h \
+    xunitxmlqtestlibparser.h \
+    xunitxmlqtestlibparserfactory.h \
     qtestlibargsparser.h \
     testproxymodel.h
 

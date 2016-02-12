@@ -27,95 +27,12 @@ namespace QTestLibPlugin {
 namespace Internal {
 
 LightXMLQTestLibParser::LightXMLQTestLibParser(QObject *parent) :
-    AbstractTestParser(parent), mModel(NULL), mParserActive(false), mClassStartCount(0)
+    BaseXMLQTestLibParser(parent), mClassStartCount(0)
 {
-   mReader = new QXmlStreamReader();
-}
-
-TestModelFactory::ParseResult LightXMLQTestLibParser::parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line)
-{
-    TestModelFactory::ParseResult result = TestModelFactory::Unsure;
-
-    QString cleanedLine = line.trimmed() + QLatin1Char('\n');
-    if (!mParserActive && !cleanedLine.contains(QLatin1String("<Environment>"))
-                       && !cleanedLine.contains(QLatin1String("<TestFunction"))
-                       && !cleanedLine.contains(QLatin1String("<Duration")))
-        return result;
-    if (cleanedLine.contains(QLatin1String("<Environment>")))
-        cleanedLine = cleanedLine.mid(cleanedLine.indexOf(QLatin1String("<Environment>"), 0));
-    if (cleanedLine.contains(QLatin1String("<TestFunction")))
-        cleanedLine = cleanedLine.mid(cleanedLine.indexOf(QLatin1String("<TestFunction"), 0));
-    if (cleanedLine.contains(QLatin1String("<Duration")))
-        cleanedLine = cleanedLine.mid(cleanedLine.indexOf(QLatin1String("<Duration"), 0));
-    mParserActive = true;
-
-    mReader->addData(cleanedLine);
-
-    while(!mReader->atEnd()) {
-        QXmlStreamReader::TokenType currentToken = mReader->readNext();
-
-        if (currentToken == QXmlStreamReader::Invalid) {
-            if (mReader->error() == QXmlStreamReader::PrematureEndOfDocumentError)
-                return result;
-            else
-                return TestModelFactory::MagicNotFound;
-        }
-
-        if (mCurrentElement.isEmpty()) {
-            if ((currentToken != QXmlStreamReader::StartDocument)
-             && (currentToken != QXmlStreamReader::EndDocument)
-             && (currentToken != QXmlStreamReader::StartElement))
-                return TestModelFactory::MagicNotFound;
-        }
-
-        switch(currentToken) {
-        case QXmlStreamReader::NoToken:
-            break;
-        case QXmlStreamReader::Invalid:
-            Q_ASSERT_X(false, "Unreachable place", "The program cannot reach this point");
-        case QXmlStreamReader::StartDocument:
-            break;
-        case QXmlStreamReader::EndDocument:
-            mReader->clear();
-            mParserActive = false;
-            qDebug() << "End of document";
-            break;
-        case QXmlStreamReader::StartElement:
-            mCurrentElement.push(mReader->name().toString());
-            result = qMax(result, startElementParsed(runControl, mReader->name()));
-            break;
-        case QXmlStreamReader::EndElement:
-            if (QStringRef::compare(mReader->name(), mCurrentElement.pop(), Qt::CaseSensitive) != 0)
-                return TestModelFactory::MagicNotFound;
-            result = qMax(result, endElementParsed(runControl, mReader->name()));
-            break;
-        case QXmlStreamReader::Characters:
-            result = qMax(result, textParsed(runControl));
-            break;
-        case QXmlStreamReader::Comment:
-            qDebug() << "Comment";
-            break;
-        case QXmlStreamReader::DTD:
-            qDebug() << "Seen DTD";
-            break;
-        case QXmlStreamReader::EntityReference:
-            qDebug() << "Entity reference";
-            break;
-        case QXmlStreamReader::ProcessingInstruction:
-            qDebug() << "processing instruction";
-            break;
-        }
-    }
-
-    return result;
-}
-
-TestModelFactory::ParseResult LightXMLQTestLibParser::parseStderrLine(ProjectExplorer::RunControl* runControl, const QString& line)
-{
-    Q_UNUSED(runControl);
-    Q_UNUSED(line);
-
-    return TestModelFactory::Unsure;
+    mXmlStarts.clear();
+    mXmlStarts << QLatin1String("<Environment>");
+    mXmlStarts << QLatin1String("<TestFunction");
+    mXmlStarts << QLatin1String("<Duration");
 }
 
 TestModelFactory::ParseResult LightXMLQTestLibParser::startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag)
@@ -142,7 +59,7 @@ TestModelFactory::ParseResult LightXMLQTestLibParser::endElementParsed(ProjectEx
 {
     if (QStringRef::compare(tag, QLatin1String("Environment"), Qt::CaseSensitive) == 0) {
         if (!mQtVersion.isNull() && !mQtBuild.isNull() && !mQTestLibVersion.isNull()) {
-            if (mModel ==  NULL) {
+            if (mModel == NULL) {
                 mClassStartCount++;
                 mCurrentClass = runControl->displayName();
                 mModel = new QTestLibModel(runControl);
@@ -223,49 +140,6 @@ TestModelFactory::ParseResult LightXMLQTestLibParser::textParsed(ProjectExplorer
         mCurrentDescription = mReader->text().toString();
 
     return TestModelFactory::Unsure;
-}
-
-void LightXMLQTestLibParser::saveAttributes(const QXmlStreamAttributes& attrs)
-{
-    Q_ASSERT(mCurrentAttributes.isEmpty());
-
-    foreach (QXmlStreamAttribute attr, attrs) {
-        Q_ASSERT(!mCurrentAttributes.contains(attr.name().toString()));
-        mCurrentAttributes.insert(attr.name().toString(), attr.value().toString());
-    }
-}
-
-QTestLibModel::MessageType LightXMLQTestLibParser::currentMessageType(void)
-{
-    int type = -1;
-    const QString messageType = mCurrentAttributes.value(QLatin1String("type"));
-    const QString messages(QLatin1String("result  "
-                                         "qdebug  "
-                                         "info    "
-                                         "warn    "
-                                         "qwarn   "
-                                         "system  "
-                                         "qfatal  "
-                                         "??????  "
-                                         "skip    "
-                                         "pass    "
-                                         "bpass   "
-                                         "xpass   "
-                                         "xfail   "
-                                         "bfail   "
-                                         "fail    "));
-
-    Q_ASSERT(messageType.length() <= 8);
-
-    // Find the type of the message
-    if (!messageType.isEmpty())
-        type = messages.indexOf(messageType.leftJustified(8, QLatin1Char(' '), false), 0, Qt::CaseSensitive);
-    if (type == -1)
-        type = (int) QTestLibModel::Unknown;
-    else
-        type = (type >> 3) + 3;
-
-    return (QTestLibModel::MessageType) type;
 }
 
 } // namespace Internal

@@ -35,12 +35,14 @@ SOURCES += ../common/qtestlibmodeltester.cpp
 HEADERS += ../common/qtestlibmodeltester.h
 
 # Files to be tested
-SOURCES += $$QTESTLIBPLUGIN_SRC/lightxmlqtestlibparser.cpp \
+SOURCES += $$QTESTLIBPLUGIN_SRC/basexmlqtestlibparser.cpp \
+           $$QTESTLIBPLUGIN_SRC/lightxmlqtestlibparser.cpp \
            $$QTESTLIBPLUGIN_SRC/lightxmlqtestlibparserfactory.cpp \
            $$QTESTLIBPLUGIN_SRC/qtestlibargsparser.cpp \
            $$QTESTLIBPLUGIN_SRC/qtestlibmodel.cpp \
            $$QTESTLIBPLUGIN_SRC/testmodelfactory.cpp
-HEADERS += $$QTESTLIBPLUGIN_SRC/lightxmlqtestlibparser.h \
+HEADERS += $$QTESTLIBPLUGIN_SRC/basexmlqtestlibparser.h \
+           $$QTESTLIBPLUGIN_SRC/lightxmlqtestlibparser.h \
            $$QTESTLIBPLUGIN_SRC/lightxmlqtestlibparserfactory.h \
            $$QTESTLIBPLUGIN_SRC/qtestlibargsparser.h \
            $$QTESTLIBPLUGIN_SRC/qtestlibmodel.h \
