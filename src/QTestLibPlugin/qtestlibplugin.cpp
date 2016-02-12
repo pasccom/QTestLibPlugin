@@ -21,6 +21,8 @@
 
 #include "plaintextqtestlibparserfactory.h"
 #include "xmlqtestlibparserfactory.h"
+#include "lightxmlqtestlibparserfactory.h"
+#include "xunitxmlqtestlibparserfactory.h"
 
 #include "testoutputpane.h"
 #include "testsuitemodel.h"
@@ -81,6 +83,10 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
     addAutoReleasedObject(plainTextFactory);
     XMLQTestLibParserFactory *xmlFactory = new XMLQTestLibParserFactory(this);
     addAutoReleasedObject(xmlFactory);
+    LightXMLQTestLibParserFactory *lightXmlFactory = new LightXMLQTestLibParserFactory(this);
+    addAutoReleasedObject(lightXmlFactory);
+    XUnitXMLQTestLibParserFactory *xUnitXmlFactory = new XUnitXMLQTestLibParserFactory(this);
+    addAutoReleasedObject(xUnitXmlFactory);
 
     mOutputPane = new TestOutputPane(mModel);
     addAutoReleasedObject(mOutputPane);

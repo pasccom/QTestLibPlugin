@@ -17,5 +17,4 @@
 
 TEMPLATE = subdirs
 
-SRC = $$PWD/src
 SUBDIRS = tests src/QTestLibPlugin
