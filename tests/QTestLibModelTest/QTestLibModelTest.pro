@@ -20,10 +20,13 @@ TEMPLATE = app
 
 CONFIG  += console
 CONFIG  -= app_bundle
+CONFIG  += testcase
 QT      += testlib
 QT      += xml
 
-DEFINES += TESTS_DIR=\\\"$$PWD/tests\\\"
+include(../../QTestLibPlugin.pri)
+
+DEFINES += TESTS_DIR=\\\"$$QTESTLIBMODEL_TESTS\\\"
 
 SOURCES += qtestlibmodeltest.cpp
 
@@ -32,8 +35,9 @@ SOURCES += ../common/qtestlibmodeltester.cpp
 HEADERS += ../common/qtestlibmodeltester.h
 
 # Files to be tested
-SOURCES += ../../qtestlibmodel.cpp
-HEADERS += ../../qtestlibmodel.h
+SOURCES += $$QTESTLIBPLUGIN_SRC/qtestlibmodel.cpp
+HEADERS += $$QTESTLIBPLUGIN_SRC/qtestlibmodel.h
+INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
 # Dependencies on Qt Creator libs
 QTC_LIB_DEPENDS += utils
@@ -62,22 +66,22 @@ DISTFILES += \
     testlist.sh
 
 # Include test file if found:
-exists(tests/tests.pri) {
-    include(tests/tests.pri)
+exists($$QTESTLIBMODEL_TESTS/tests.pri) {
+    include($$QTESTLIBMODEL_TESTS/tests.pri)
 } else {
-    message("Test list file not found. Run \"tests/testlist.sh\"")
+    message("Test list file not found. Run \"$$QTESTLIBMODEL_TESTS/testlist.sh\"")
 }
 # Include test result file if found:
-exists(tests/results.pri) {
-    include(tests/results.pri)
+exists($$QTESTLIBMODEL_TESTS/results.pri) {
+    include($$QTESTLIBMODEL_TESTS/results.pri)
 } else {
-    message("Test result list file not found. Run \"tests/testlist.sh\"")
+    message("Test result list file not found. Run \"$$QTESTLIBMODEL_TESTS/testlist.sh\"")
 }
 # Test if test data file exists:
-exists(tests/tests.lst) {
+exists($$QTESTLIBMODEL_TESTS/tests.lst) {
     DEFINES += TESTS_LST_EXISTS
 } else {
-    message("Test data file not found. Run \"tests/testlist.sh\"")
+    message("Test data file not found. Run \"$$QTESTLIBMODEL_TESTS/testlist.sh\"")
 }
 
 # Test case files

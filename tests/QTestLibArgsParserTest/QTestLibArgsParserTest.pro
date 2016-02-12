@@ -20,16 +20,18 @@ TEMPLATE = app
 
 CONFIG  += console
 CONFIG  -= app_bundle
+CONFIG  += testcase
 QT      += testlib
 QT      += xml
 
-DEFINES += TESTS_DIR=\\\"$$PWD/..\\\"
+include(../../QTestLibPlugin.pri)
 
 SOURCES += qtestlibargsparsertest.cpp
 
 # Files to be tested
-SOURCES += ../../qtestlibargsparser.cpp
-HEADERS += ../../qtestlibargsparser.h
+SOURCES += $$QTESTLIBPLUGIN_SRC/qtestlibargsparser.cpp
+HEADERS += $$QTESTLIBPLUGIN_SRC/qtestlibargsparser.h
+INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
 # QtCreator dependencies
 QTC_LIB_DEPENDS += utils

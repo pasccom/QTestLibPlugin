@@ -16,12 +16,12 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "../../testsuitemodel.h"
+#include <testsuitemodel.h>
 
-#include "../../plaintextqtestlibparserfactory.h"
-#include "../../xmlqtestlibparserfactory.h"
-#include "../../lightxmlqtestlibparserfactory.h"
-#include "../../xunitxmlqtestlibparserfactory.h"
+#include <plaintextqtestlibparserfactory.h>
+#include <xmlqtestlibparserfactory.h>
+#include <lightxmlqtestlibparserfactory.h>
+#include <xunitxmlqtestlibparserfactory.h>
 
 #include "../common/qtestlibmodeltester.h"
 

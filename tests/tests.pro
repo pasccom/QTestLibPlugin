@@ -17,5 +17,28 @@
 
 TEMPLATE = subdirs
 
-SRC = $$PWD/src
-SUBDIRS = tests src/QTestLibPlugin
+# Mock tests:
+SUBDIRS +=  AllMessagesTest     \
+            OneClassTest        \
+            MultipleClassesTest \
+            SignalsTest         \
+            LimitsTest          \
+
+# Parsers tests:
+SUBDIRS +=  PlainTextQTestLibParserTest \
+            XMLQTestLibParserTest       \
+            LightXMLQTestLibParserTest  \
+            XUnitXMLQTestLibParserTest  \
+
+# Factories test:
+SUBDIRS +=  TestModelFactoryTest
+
+# Test suite test:
+SUBDIRS += TestSuiteModelTest
+
+# Signals tests:
+SUBDIRS += QTestLibModelTest        \
+           TestSuiteModelSignalTest \
+
+# Argument parser test:
+SUBDIRS += QTestLibArgsParserTest

@@ -20,11 +20,14 @@ TEMPLATE = app
 
 CONFIG  += console
 CONFIG  -= app_bundle
+CONFIG  += testcase
 QT      += testlib
 QT      += xml
 QT      += widgets
 
-DEFINES += TESTS_DIR=\\\"$$PWD/..\\\"
+include(../../QTestLibPlugin.pri)
+
+DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 
 SOURCES += plaintextqtestlibparsertest.cpp
 
@@ -33,19 +36,20 @@ SOURCES += ../common/qtestlibmodeltester.cpp
 HEADERS += ../common/qtestlibmodeltester.h
 
 # Files to be tested
-SOURCES += ../../plaintextqtestlibparser.cpp \
-           ../../plaintextqtestlibparserfactory.cpp \
-           ../../qtestlibargsparser.cpp \
-           ../../qtestlibmodel.cpp \
-           ../../testmodelfactory.cpp
-HEADERS += ../../plaintextqtestlibparser.h \
-           ../../plaintextqtestlibparserfactory.h \
-           ../../qtestlibargsparser.h \
-           ../../qtestlibmodel.h \
-           ../../testmodelfactory.h
+SOURCES += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.cpp \
+           $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparserfactory.cpp \
+           $$QTESTLIBPLUGIN_SRC/qtestlibargsparser.cpp \
+           $$QTESTLIBPLUGIN_SRC/qtestlibmodel.cpp \
+           $$QTESTLIBPLUGIN_SRC/testmodelfactory.cpp
+HEADERS += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.h \
+           $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparserfactory.h \
+           $$QTESTLIBPLUGIN_SRC/qtestlibargsparser.h \
+           $$QTESTLIBPLUGIN_SRC/qtestlibmodel.h \
+           $$QTESTLIBPLUGIN_SRC/testmodelfactory.h
+INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
 # Fake QtCreator tree
-include(../../QTestLibPlugin_dependencies.pri)
+include($$QTESTLIBPLUGIN_SRC/QTestLibPlugin_dependencies.pri)
 include(../QtCreatorFake/QtCreatorFake.pri)
 
 # The directory where to put MOC-generated files :

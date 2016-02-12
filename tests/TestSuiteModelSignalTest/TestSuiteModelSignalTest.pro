@@ -20,11 +20,13 @@ TEMPLATE = app
 
 CONFIG  += console
 CONFIG  -= app_bundle
+CONFIG  += testcase
 QT      += testlib
 QT      += xml
 
-TESTS_DIR = "$$PWD/../QTestLibModelTest/tests"
-DEFINES += TESTS_DIR=\\\"$$TESTS_DIR\\\"
+include(../../QTestLibPlugin.pri)
+
+DEFINES += TESTS_DIR=\\\"$$QTESTLIBMODEL_TESTS\\\"
 
 SOURCES += testsuitemodelsignaltest.cpp
 
@@ -33,12 +35,13 @@ SOURCES += ../common/qtestlibmodeltester.cpp
 HEADERS += ../common/qtestlibmodeltester.h
 
 # Files to be tested
-SOURCES += ../../qtestlibmodel.cpp \
-           ../../testmodelfactory.cpp \
-           ../../testsuitemodel.cpp
-HEADERS += ../../qtestlibmodel.h \
-           ../../testmodelfactory.h \
-           ../../testsuitemodel.h
+SOURCES += $$QTESTLIBPLUGIN_SRC/qtestlibmodel.cpp \
+           $$QTESTLIBPLUGIN_SRC/testmodelfactory.cpp \
+           $$QTESTLIBPLUGIN_SRC/testsuitemodel.cpp
+HEADERS += $$QTESTLIBPLUGIN_SRC/qtestlibmodel.h \
+           $$QTESTLIBPLUGIN_SRC/testmodelfactory.h \
+           $$QTESTLIBPLUGIN_SRC/testsuitemodel.h
+INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
 # Dependencies on Qt Creator libs
 QTC_LIB_DEPENDS += utils \
@@ -68,22 +71,22 @@ DISTFILES += \
     ../QTestLibModelTest/testlist.sh
 
 # Include test file if found:
-exists($$TESTS_DIR/tests.pri) {
-    include($$TESTS_DIR/tests.pri)
+exists($$QTESTLIBMODEL_TESTS/tests.pri) {
+    include($$QTESTLIBMODEL_TESTS/tests.pri)
 } else {
-    message("Test list file not found. Run \"tests/testlist.sh\"")
+    message("Test list file not found. Run \"$$QTESTLIBMODEL_TESTS/testlist.sh\"")
 }
 # Include test result file if found:
-exists($$TESTS_DIR/results.pri) {
-    include($$TESTS_DIR/results.pri)
+exists($$QTESTLIBMODEL_TESTS/results.pri) {
+    include($$QTESTLIBMODEL_TESTS/results.pri)
 } else {
-    message("Test result list file not found. Run \"tests/testlist.sh\"")
+    message("Test result list file not found. Run \"$$QTESTLIBMODEL_TESTS/testlist.sh\"")
 }
 # Test if test data file exists:
-exists($$TESTS_DIR/tests.lst) {
+exists($$QTESTLIBMODEL_TESTS/tests.lst) {
     DEFINES += TESTS_LST_EXISTS
 } else {
-    message("Test data file not found. Run \"tests/testlist.sh\"")
+    message("Test data file not found. Run \"$$QTESTLIBMODEL_TESTS/testlist.sh\"")
 }
 
 # Test case files

@@ -20,10 +20,13 @@ TEMPLATE = app
 
 CONFIG  += console
 CONFIG  -= app_bundle
+CONFIG  += testcase
 QT      += testlib
 QT      += xml
 
-DEFINES += TESTS_DIR=\\\"$$PWD/..\\\"
+include(../../QTestLibPlugin.pri)
+
+DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 
 SOURCES += testsuitemodeltest.cpp
 
@@ -32,33 +35,34 @@ SOURCES += ../common/qtestlibmodeltester.cpp
 HEADERS += ../common/qtestlibmodeltester.h
 
 # Files to be tested
-SOURCES += ../../plaintextqtestlibparser.cpp \
-           ../../plaintextqtestlibparserfactory.cpp \
-           ../../xmlqtestlibparser.cpp \
-           ../../xmlqtestlibparserfactory.cpp \
-           ../../lightxmlqtestlibparser.cpp \
-           ../../lightxmlqtestlibparserfactory.cpp \
-           ../../xunitxmlqtestlibparser.cpp \
-           ../../xunitxmlqtestlibparserfactory.cpp \
-           ../../qtestlibargsparser.cpp \
-           ../../qtestlibmodel.cpp \
-           ../../testmodelfactory.cpp \
-           ../../testsuitemodel.cpp
-HEADERS += ../../plaintextqtestlibparser.h \
-           ../../plaintextqtestlibparserfactory.h \
-           ../../xmlqtestlibparser.h \
-           ../../xmlqtestlibparserfactory.h \
-           ../../lightxmlqtestlibparser.h \
-           ../../lightxmlqtestlibparserfactory.h \
-           ../../xunitxmlqtestlibparser.h \
-           ../../xunitxmlqtestlibparserfactory.h \
-           ../../qtestlibargsparser.h \
-           ../../qtestlibmodel.h \
-           ../../testmodelfactory.h \
-           ../../testsuitemodel.h
+SOURCES += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.cpp \
+           $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparserfactory.cpp \
+           $$QTESTLIBPLUGIN_SRC/xmlqtestlibparser.cpp \
+           $$QTESTLIBPLUGIN_SRC/xmlqtestlibparserfactory.cpp \
+           $$QTESTLIBPLUGIN_SRC/lightxmlqtestlibparser.cpp \
+           $$QTESTLIBPLUGIN_SRC/lightxmlqtestlibparserfactory.cpp \
+           $$QTESTLIBPLUGIN_SRC/xunitxmlqtestlibparser.cpp \
+           $$QTESTLIBPLUGIN_SRC/xunitxmlqtestlibparserfactory.cpp \
+           $$QTESTLIBPLUGIN_SRC/qtestlibargsparser.cpp \
+           $$QTESTLIBPLUGIN_SRC/qtestlibmodel.cpp \
+           $$QTESTLIBPLUGIN_SRC/testmodelfactory.cpp \
+           $$QTESTLIBPLUGIN_SRC/testsuitemodel.cpp
+HEADERS += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.h \
+           $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparserfactory.h \
+           $$QTESTLIBPLUGIN_SRC/xmlqtestlibparser.h \
+           $$QTESTLIBPLUGIN_SRC/xmlqtestlibparserfactory.h \
+           $$QTESTLIBPLUGIN_SRC/lightxmlqtestlibparser.h \
+           $$QTESTLIBPLUGIN_SRC/lightxmlqtestlibparserfactory.h \
+           $$QTESTLIBPLUGIN_SRC/xunitxmlqtestlibparser.h \
+           $$QTESTLIBPLUGIN_SRC/xunitxmlqtestlibparserfactory.h \
+           $$QTESTLIBPLUGIN_SRC/qtestlibargsparser.h \
+           $$QTESTLIBPLUGIN_SRC/qtestlibmodel.h \
+           $$QTESTLIBPLUGIN_SRC/testmodelfactory.h \
+           $$QTESTLIBPLUGIN_SRC/testsuitemodel.h
+INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
 # Fake QtCreator tree
-include(../../QTestLibPlugin_dependencies.pri)
+include($$QTESTLIBPLUGIN_SRC/QTestLibPlugin_dependencies.pri)
 include(../QtCreatorFake/QtCreatorFake.pri)
 
 # The directory where to put MOC-generated files :

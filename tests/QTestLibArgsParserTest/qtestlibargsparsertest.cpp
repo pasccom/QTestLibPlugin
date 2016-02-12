@@ -16,7 +16,7 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "../../qtestlibargsparser.h"
+#include <qtestlibargsparser.h>
 using namespace QTestLibPlugin::Internal;
 
 #include "../common/qttestsubfunction.h"

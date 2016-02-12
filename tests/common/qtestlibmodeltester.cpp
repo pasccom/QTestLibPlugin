@@ -18,8 +18,6 @@
 
 #include "qtestlibmodeltester.h"
 
-#include "../../qtestlibmodel.h"
-
 #include <QtXml>
 
 #define QVERIFY(_expr_) \

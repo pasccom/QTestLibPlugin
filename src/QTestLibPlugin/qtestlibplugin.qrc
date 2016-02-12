@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/messages">
+        <file alias="debug.png">../../icons/debug.png</file>
+        <file alias="info.png">../../icons/info.png</file>
+        <file alias="fatal.png">../../icons/fatal.png</file>
+        <file alias="system.png">../../icons/system.png</file>
+        <file alias="warning.png">../../icons/warning.png</file>
+        <file alias="unknown.png">../../icons/unknown.png</file>
+        <file alias="duration.png">../../icons/duration.png</file>
+        <file alias="signal.png">../../icons/signal.png</file>
+        <file alias="qwarning.png">../../icons/qwarning.png</file>
+        <file alias="slot.png">../../icons/slot.png</file>
+    </qresource>
+    <qresource prefix="/events">
+        <file alias="pass.png">../../icons/pass.png</file>
+        <file alias="result.png">../../icons/result.png</file>
+        <file alias="xpass.png">../../icons/xpass.png</file>
+        <file alias="skip.png">../../icons/skip.png</file>
+        <file alias="fail.png">../../icons/fail.png</file>
+        <file alias="bfail.png">../../icons/bfail.png</file>
+        <file alias="bpass.png">../../icons/bpass.png</file>
+        <file alias="xfail.png">../../icons/xfail.png</file>
+    </qresource>
+</RCC>

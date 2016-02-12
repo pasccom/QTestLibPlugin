@@ -16,7 +16,7 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "../../qtestlibmodel.h"
+#include <qtestlibmodel.h>
 using namespace QTestLibPlugin::Internal;
 
 #include "../common/qtestlibmodeltester.h"

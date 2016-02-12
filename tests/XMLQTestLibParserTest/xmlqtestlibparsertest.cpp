@@ -16,7 +16,7 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "../../xmlqtestlibparserfactory.h"
+#include <xmlqtestlibparserfactory.h>
 
 #include <projectexplorer/localapplicationrunconfiguration.h>
 #include <projectexplorer/localapplicationruncontrol.h>

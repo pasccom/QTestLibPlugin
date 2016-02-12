@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 
-TEMPLATE = subdirs
-
-SRC = $$PWD/src
-SUBDIRS = tests src/QTestLibPlugin
+QTESTLIBPLUGIN_SRC = $$PWD/src/QTestLibPlugin
+QTESTLIBPLUGIN_TESTS = $$PWD/tests
+QTESTLIBMODEL_TESTS = $$PWD/tests/QTestLibModelTest/tests

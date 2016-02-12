@@ -20,8 +20,8 @@
 #define MODELTESTER_H
 
 #include <QObject>
-#include "../../qtestlibmodel.h"
-#include "../../testmodelfactory.h"
+#include <qtestlibmodel.h>
+#include <testmodelfactory.h>
 #include "qttestsubfunction.h"
 
 class QAbstractItemModel;
