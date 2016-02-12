@@ -45,6 +45,9 @@ QTestLibModel::~QTestLibModel(void)
 void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, MessageType type, const QString& className,
                                 const QString& functionName, const QString& rowTitle, const QString& message)
 {
+#ifndef QT_DEBUG
+    Q_UNUSED(runControl)
+#endif
     Q_ASSERT(runControl == mTestRun);
 
     TestItem *testItem;
@@ -168,6 +171,9 @@ void QTestLibModel::createTestMessageItem(MessageType type, const QString& messa
 
 void QTestLibModel::appendTestItemMessage(ProjectExplorer::RunControl* runControl, const QString& message)
 {
+#ifndef QT_DEBUG
+    Q_UNUSED(runControl);
+#endif
     Q_ASSERT(runControl == mTestRun);
 
     if (mCurrentMessageItem != NULL) {
@@ -178,6 +184,9 @@ void QTestLibModel::appendTestItemMessage(ProjectExplorer::RunControl* runContro
 
 void QTestLibModel::appendTestLocation(ProjectExplorer::RunControl* runControl, const QString& file, unsigned int line)
 {
+#ifndef QT_DEBUG
+    Q_UNUSED(runControl);
+#endif
     Q_ASSERT(runControl == mTestRun);
 
     if (mCurrentMessageItem != NULL) {
