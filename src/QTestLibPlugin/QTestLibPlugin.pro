@@ -64,6 +64,8 @@ TRANSLATIONS += \
     qtestlibplugin_en.ts \
     qtestlibplugin_fr.ts
 
+include(../../QTestLibPlugin.pri)
+
 # Qt Creator from environment
 # Set the QTC_SOURCE environment variable to override the setting here
 QTCREATOR_SOURCES = $$(QTC_SOURCE)
@@ -93,8 +95,8 @@ isEmpty(QMAKE_LRELEASE) {
 }
 
 updateqm.input = TRANSLATIONS
-updateqm.output = ./bin/${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
-updateqm.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ./bin/${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
+updateqm.output = $$QTESTLIBPLUGIN_BIN/${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
+updateqm.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm $$QTESTLIBPLUGIN_BIN/${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
 updateqm.CONFIG += no_link
 
 QMAKE_EXTRA_COMPILERS += updateqm
@@ -103,7 +105,7 @@ PRE_TARGETDEPS += compiler_updateqm_make_all
 ###### Translation files installation (not handled yet by Qt Creator)
 COMPILED_TRANSLATIONS =
 for (TRANSLATION, TRANSLATIONS) {
-    COMPILED_TRANSLATIONS += "./bin/$$replace(TRANSLATION, ".ts", ".qm")"
+    COMPILED_TRANSLATIONS += "$$QTESTLIBPLUGIN_BIN/$$replace(TRANSLATION, ".ts", ".qm")"
 }
 isEmpty(USE_USER_DESTDIR) {
     translations.path = "$$IDE_DATA_PATH/translations"
@@ -143,7 +145,7 @@ win32 {
 ###### Added stuff to bypass IDE_BUILD_TREE
 target.path = $$DESTDIR
 INSTALLS += target
-DESTDIR = ./bin
+DESTDIR = $$QTESTLIBPLUGIN_BIN
 
 unix {
     LIBS+= -L$$IDE_BUILD_TREE
