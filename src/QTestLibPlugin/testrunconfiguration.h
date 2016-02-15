@@ -8,6 +8,12 @@
 #include <projectexplorer/localapplicationrunconfiguration.h>
 #include <projectexplorer/applicationlauncher.h>
 
+#include <QWidget>
+
+class QLabel;
+class QLineEdit;
+class QPushButton;
+
 namespace ProjectExplorer {
     class Kit;
 }
@@ -38,12 +44,36 @@ private:
     Utils::FileName mMakeExe;
 };
 
+class TestRunConfigurationWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    TestRunConfigurationWidget(TestRunConfigurationData* data, QWidget* parent = NULL);
+private:
+    TestRunConfigurationData* mData;
+
+    QLabel* mWorkingDirectoryLabel;
+    QLineEdit* mWorkingDirectoryEdit;
+    QPushButton* mWorkingDirectoryButton;
+    QLabel* mMakeExeLabel;
+    QLineEdit* mMakeExeEdit;
+    QPushButton* mMakeExeDetectButton;
+    QPushButton* mMakeExeBrowseButton;
+    QLabel* mTestRunnerLabel;
+    QLineEdit* mTestRunnerEdit;
+    QPushButton* mTestRunnerButton;
+    QLabel* mOutputFileLabel;
+    QLineEdit* mOutputFileEdit;
+    QPushButton* mOutputFileButton;
+
+};
+
 class TestRunConfiguration : public ProjectExplorer::LocalApplicationRunConfiguration
 {
     Q_OBJECT
 public:
     ~TestRunConfiguration();
-    inline QWidget* createConfigurationWidget(void) {return new QWidget();}
+    inline QWidget* createConfigurationWidget(void) {return new TestRunConfigurationWidget(mData);}
     virtual inline QString executable() const {return mData->makeExe();}
     virtual inline ProjectExplorer::ApplicationLauncher::Mode runMode(void) const {return ProjectExplorer::ApplicationLauncher::Gui;}
     inline QString workingDirectory(void) const {return mData->workingDirectory;}

@@ -6,6 +6,8 @@
 #include <projectexplorer/toolchain.h>
 #include <projectexplorer/target.h>
 
+#include <QtWidgets>
+
 namespace QTestLibPlugin {
 namespace Internal {
 
@@ -55,6 +57,47 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core
 TestRunConfiguration::~TestRunConfiguration()
 {
     delete mData;
+}
+
+TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData* data, QWidget* parent)
+    : QWidget(parent), mData(data)
+{
+    mWorkingDirectoryEdit = new QLineEdit(this);
+    mWorkingDirectoryLabel = new QLabel(tr("Working directory:"), this);
+    mWorkingDirectoryLabel->setBuddy(mWorkingDirectoryEdit);
+    mWorkingDirectoryButton = new QPushButton(tr("Browse..."), this);
+    mMakeExeEdit = new QLineEdit(this);
+    mMakeExeLabel = new QLabel(tr("Path to \"make\":"), this);
+    mMakeExeLabel->setBuddy(mMakeExeEdit);
+    mMakeExeDetectButton = new QPushButton(tr("Auto-detect"), this);
+    mMakeExeBrowseButton = new QPushButton(tr("Browse..."), this);
+    mTestRunnerEdit = new QLineEdit(this);
+    mTestRunnerLabel = new QLabel(tr("Test runner:"), this);
+    mTestRunnerLabel->setBuddy(mTestRunnerLabel);
+    mTestRunnerButton = new QPushButton(tr("Browse..."), this);
+    mOutputFileEdit = new QLineEdit(this);
+    mOutputFileLabel = new QLabel(tr("Test output file:"), this);
+    mOutputFileLabel->setBuddy(mOutputFileEdit);
+    mOutputFileButton = new QPushButton(tr("Browse..."), this);
+
+    QGridLayout *mainLayout = new QGridLayout;
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->addWidget(mWorkingDirectoryLabel, 0, 0, Qt::AlignLeft);
+    mainLayout->addWidget(mWorkingDirectoryEdit, 0, 1, 1, 2);
+    mainLayout->addWidget(mWorkingDirectoryButton, 0, 3, Qt::AlignCenter);
+    mainLayout->addWidget(mMakeExeLabel, 1, 0, Qt::AlignLeft);
+    mainLayout->addWidget(mMakeExeEdit, 1, 1);
+    mainLayout->addWidget(mMakeExeDetectButton, 1, 2, Qt::AlignCenter);
+    mainLayout->addWidget(mMakeExeBrowseButton, 1, 3, Qt::AlignCenter);
+    mainLayout->addWidget(mTestRunnerLabel, 2, 0, Qt::AlignLeft);
+    mainLayout->addWidget(mTestRunnerEdit, 2, 1, 1, 2);
+    mainLayout->addWidget(mTestRunnerButton, 2, 3, Qt::AlignCenter);
+    mainLayout->addWidget(mOutputFileLabel, 3, 0, Qt::AlignLeft);
+    mainLayout->addWidget(mOutputFileEdit, 3, 1, 1, 2);
+    mainLayout->addWidget(mOutputFileButton, 3, 3, Qt::AlignCenter);
+    mainLayout->setColumnStretch(1, 1);
+
+    setLayout(mainLayout);
 }
 
 } // Internal
