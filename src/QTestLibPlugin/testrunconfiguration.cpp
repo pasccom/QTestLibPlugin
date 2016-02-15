@@ -2,6 +2,7 @@
 
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/kitinformation.h>
+#include <projectexplorer/localenvironmentaspect.h>
 #include <projectexplorer/toolchain.h>
 #include <projectexplorer/target.h>
 
@@ -30,6 +31,8 @@ void TestRunConfigurationData::setMakeExe(const QString& path)
 TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id):
     ProjectExplorer::LocalApplicationRunConfiguration(parent, id)
 {
+    addExtraAspect(new ProjectExplorer::LocalEnvironmentAspect(this));
+
     mData = new TestRunConfigurationData(parent);
     setDefaultDisplayName(QLatin1String("make check"));
 }
