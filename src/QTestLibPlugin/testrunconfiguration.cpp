@@ -1,5 +1,10 @@
 #include "testrunconfiguration.h"
 
+#include <projectexplorer/buildconfiguration.h>
+#include <projectexplorer/kitinformation.h>
+#include <projectexplorer/toolchain.h>
+#include <projectexplorer/target.h>
+
 namespace QTestLibPlugin {
 namespace Internal {
 
@@ -8,12 +13,20 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core
 {
     setDefaultDisplayName(QLatin1String("make check"));
     mCmdArgs << QLatin1String("check");
-    mMakeExe = QLatin1String("C:\\Dev\\msys2-w64\\mingw64\\bin\\mingw32-make.exe");
+    qDebug() << "make Command:" << findMake(parent);
+    mMakeExe = findMake(parent);
 }
 
 TestRunConfiguration::~TestRunConfiguration()
 {
 
+}
+
+QString TestRunConfiguration::findMake(ProjectExplorer::Target* target)
+{
+    Utils::Environment env = target->activeBuildConfiguration()->environment();
+    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit());
+    return toolChain->makeCommand(env);
 }
 
 } // Internal

@@ -4,6 +4,10 @@
 #include <projectexplorer/localapplicationrunconfiguration.h>
 #include <projectexplorer/applicationlauncher.h>
 
+namespace ProjectExplorer {
+    class Kit;
+}
+
 namespace QTestLibPlugin {
 namespace Internal {
 
@@ -19,6 +23,8 @@ public:
     inline QString commandLineArguments(void) const {return mCmdArgs.join(QLatin1Char(' '));}
 private:
     TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id);
+
+    QString findMake(ProjectExplorer::Target *target);
 
     QString mMakeExe;
     QString mWorkingDirectory;
