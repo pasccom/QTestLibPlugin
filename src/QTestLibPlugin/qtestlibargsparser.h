@@ -148,7 +148,7 @@ public:
      * \param cmdArgs Command line arguments as a string (must not include the name of the program <tt>argv[0]</tt>)
      * \sa QTestLibArgsParser(const QStringList&)
      */
-    inline QTestLibArgsParser(const QString& cmdArgs) :
+    inline QTestLibArgsParser(const QString& cmdArgs = QString::null) :
         mArgs(cmdArgs.trimmed()) {parse();}
     /*!
      * \brief Constructor from a string list .
@@ -195,6 +195,18 @@ public:
      * This function updates the cached parse results by reparsing the current command line argument list.
      */
     inline void parse(void) {parse(false);}
+    /*!
+     * \brief Returns a QStringList representation of the arguments
+     *
+     * This function is the opposite of parse(): It converts the arguments in memory into a list of arguments.
+     */
+    QStringList toStringList(uint version = 2) const;
+    /*!
+     * \brief Returns a QString representation of the arguments
+     *
+     * This function is the opposite of parse(): It converts the arguments in memory into a string of arguments.
+     */
+    inline QString toString(uint version = 2) const {return toStringList(version).join(QLatin1Char(' '));}
 
     /*!
      * \brief Error code
@@ -221,26 +233,54 @@ public:
      * Returns the name of the file where the output is written.
      *
      * \return The name of the output file
+     * \sa setOutFileName()
      */
     inline Utils::FileName outFileName(void) const {return mOutFileName;}
+    /*!
+     * \brief Set the name of the output file.
+     *
+     * Sets the name of the file where the output is written.
+     *
+     * \param fileName The name of the output file
+     * \sa outFileName()
+     */
+    inline void setOutFileName(const Utils::FileName& fileName) {mOutFileName = fileName;}
     /*!
      * \brief The output format
      *
      * Returns the format of the output.
      *
      * \return The output format
-     * \sa TestOutputFormat
+     * \sa TestOutputFormat, setOutputFormat()
      */
     inline TestOutputFormat outputFormat(void) const {return mParser;}
     /*!
+     * \brief Set the output format
+     *
+     * Sets the format of the output.
+     *
+     * \param format The output format
+     * \sa TestOutputFormat, outputFormat()
+     */
+    inline void setOutputFormat(TestOutputFormat format) {mParser = format;}
+    /*!
      * \brief The verbosity
      *
-     * Returns the verbsity of the test output.
+     * Returns the verbosity of the test output.
      *
      * \return The verbosity of the test output.
-     * \sa TestVerbosity
+     * \sa TestVerbosity, setVerbosity()
      */
     inline TestVerbosity verbosity(void) const {return mVerbosity;}
+    /*!
+     * \brief Set the verbosity
+     *
+     * Sets the verbosity of the test output.
+     *
+     * \param verbosity The verbosity of the test output.
+     * \sa TestVerbosity, verbosity()
+     */
+    inline void setVerbosity(TestVerbosity verbosity) {mVerbosity = verbosity;}
 
     /*!
      * \brief Is the crash handler enabled?
@@ -248,44 +288,92 @@ public:
      * Tells whether the crash handler is enabled for this test.
      *
      * \return \c true when the crash handler is enabled
+     * \sa enableCrashHandler()
      */
     inline bool crashHandlerEnabled(void) const {return mCrashHandlerEnabled;}
     /*!
+     * \brief Enables the crash handler
+     *
+     * Enables or disables the crash handler for this test.
+     *
+     * \param enabled \c true to enable the crash handler
+     * \sa crashHandlerEnabled()
+     */
+    inline void enableCrashHandler(bool enabled) {mCrashHandlerEnabled = enabled;}
+    /*!
      * \brief Maximum number of warnings
      *
-     * Gives the maximum number of warnings which will be outout.
+     * Gives the maximum number of warnings which will be output.
      * \c 0 means that this limit is disabled.
      *
      * \return The maximum number of output messages or \c 0 if this limit is disabled.
+     * \sa setMaxWarnings()
      */
     inline unsigned int maxWarnings(void) const {return mMaxWarnings;}
+    /*!
+     * \brief Set the maximum number of warnings
+     *
+     * Sets the maximum number of warnings which will be output.
+     * \c 0 disables this limit.
+     *
+     * \param max The maximum number of output messages or \c 0 to disable this limit.
+     * \sa maxWarnings()
+     */
+    inline void setMaxWarnings(unsigned int max) {mMaxWarnings = max;}
     /*!
      * \brief Event delay
      *
      * Gives the event delay (in ms) for the simulation of the keyboard and the mouse.
      *
      * \return The event delay (in ms)
-     * \sa keyDelay(), mouseDelay()
+     * \sa keyDelay(), mouseDelay(), setEventDelay()
      */
     inline int eventDelay(void) const {return mEventDelay;}
+    /*!
+     * \brief Set event delay
+     *
+     * Sets the event delay (in ms) for the simulation of the keyboard and the mouse.
+     *
+     * \param delay The event delay (in ms)
+     * \sa setKeyDelay(), setMouseDelay(), eventDelay()
+     */
+    inline void setEventDelay(int delay) {mEventDelay = delay;}
     /*!
      * \brief Keyborad Event delay
      *
      * Gives the event delay (in ms) for the simulation of the keyboard.
      *
      * \return The keyboard event delay (in ms)
-     * \sa eventDelay()
+     * \sa eventDelay(), setKeyDelay()
      */
     inline int keyDelay(void) const {return mKeyDelay;}
+    /*!
+     * \brief Set keyborad Event delay
+     *
+     * Sets the event delay (in ms) for the simulation of the keyboard.
+     *
+     * \param delay The keyboard event delay (in ms)
+     * \sa setEventDelay(), keyDelay()
+     */
+    inline void setKeyDelay(int delay) {mKeyDelay =  delay;}
     /*!
      * \brief Mouse event delay
      *
      * Gives the event delay (in ms) for the simulation of the mouse.
      *
      * \return The mouse event delay (in ms)
-     * \sa eventDelay()
+     * \sa eventDelay(), setMouseDelay()
      */
     inline int mouseDelay(void) const {return mMouseDelay;}
+    /*!
+     * \brief Set mouse event delay
+     *
+     * Sets the event delay (in ms) for the simulation of the mouse.
+     *
+     * \param delay The mouse event delay (in ms)
+     * \sa setEventDelay(), mouseDelay()
+     */
+    inline void setMouseDelay(int delay) {mMouseDelay = delay;}
 
     /*!
      * \brief Is test output?
@@ -293,7 +381,7 @@ public:
      * Tells whether the test is really run and output.
      *
      * \return \c true when the test is run and output
-     * \sa isHelpOutput(), areFunctionsOutput(), areDatatagsOutput()
+     * \sa isHelpOutput(), areFunctionsOutput(), areDatatagsOutput(), setOutput()
      */
     inline bool isTestOutput(void) const {return (mOutput == NormalOutput);}
     /*!
@@ -302,7 +390,7 @@ public:
      * Tells whether the help of QTestLib is output instead of the test output.
      *
      * \return \c true when the help of QTestLib is output
-     * \sa isTestOutput()
+     * \sa isTestOutput(), setOutput()
      */
     inline bool isHelpOutput(void) const {return (mOutput == HelpOutput);}
     /*!
@@ -311,7 +399,7 @@ public:
      * Tells whether the list of test cases is output instead of the test output.
      *
      * \return \c true when the test case list is output
-     * \sa isTestOutput()
+     * \sa isTestOutput(), setOutput()
      */
     inline bool areFunctionsOutput(void) const {return (mOutput == FunctionsOutput);}
     /*!
@@ -320,9 +408,19 @@ public:
      * Tells whether data tag list is output instead of the test output.
      *
      * \return \c true when the data tag list is output
-     * \sa isTestOutput()
+     * \sa isTestOutput(), setOutput()
      */
     inline bool areDatatagsOutput(void) const {return (mOutput == DataTagsOutput);}
+    /*!
+     * \brief Set the type of output.
+     *
+     * Set the type of the output, i.e. what the test will output.
+     *
+     * \param output What will be output by the test.
+     * \sa Output, isTestOutput(), isHelpOutput(), areFunctionsOutput(), areDatatagsOutput()
+     */
+    inline void setOutput(Output output) {mOutput = output;}
+
 
     /*!
      * \brief List of selected test cases
@@ -333,6 +431,9 @@ public:
      * \sa TestCaseList
      */
     inline TestCaseList selectedTestCases(void) const {return mSelectedTestCases;}
+
+    inline void addTestCase(const QString& function, const QStringList& dataTags) {mSelectedTestCases << QPair<QString, QStringList>(function, dataTags);}
+    void removeTestCases(const QString& function, const QString& dataTag = QString::null);
 private:
     /*!
      * \brief Parses the current command line argument list
