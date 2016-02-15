@@ -28,6 +28,11 @@ void TestRunConfigurationData::setMakeExe(const QString& path)
     mMakeExe = (mAutoMakeExe == makeExe ? Utils::FileName() : makeExe);
 }
 
+QString TestRunConfigurationData::commandLineArguments(void) const
+{
+    return mCmdArgs.join(QLatin1Char(' '));
+}
+
 TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id):
     ProjectExplorer::LocalApplicationRunConfiguration(parent, id)
 {

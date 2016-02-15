@@ -23,11 +23,13 @@ public:
     inline void useDefaultMakeExe(void) {mMakeExe = Utils::FileName();}
     void setMakeExe(const QString& path);
 
+    QString commandLineArguments(void) const;
+
     QString mWorkingDirectory;
-    QStringList mCmdArgs;
 private:
     Utils::FileName mAutoMakeExe;
     Utils::FileName mMakeExe;
+    QStringList mCmdArgs;
 };
 
 class TestRunConfiguration : public ProjectExplorer::LocalApplicationRunConfiguration
@@ -39,7 +41,7 @@ public:
     virtual inline QString executable() const {return mData->makeExe();}
     virtual inline ProjectExplorer::ApplicationLauncher::Mode runMode(void) const {return ProjectExplorer::ApplicationLauncher::Gui;}
     inline QString workingDirectory(void) const {return mData->mWorkingDirectory;}
-    inline QString commandLineArguments(void) const {return mData->mCmdArgs.join(QLatin1Char(' '));}
+    inline QString commandLineArguments(void) const {return mData->commandLineArguments();}
 private:
     TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id);
 
