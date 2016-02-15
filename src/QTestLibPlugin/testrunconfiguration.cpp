@@ -8,25 +8,35 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id):
-    ProjectExplorer::LocalApplicationRunConfiguration(parent, id), mWorkingDirectory(QLatin1String("."))
+TestRunConfigurationData::TestRunConfigurationData(ProjectExplorer::Target *target)
+    :  mWorkingDirectory(QLatin1String(".")), mAutoMakeExe(), mMakeExe()
 {
-    setDefaultDisplayName(QLatin1String("make check"));
     mCmdArgs << QLatin1String("check");
-    qDebug() << "make Command:" << findMake(parent);
-    mMakeExe = findMake(parent);
+
+    if (target != NULL) {
+        Utils::Environment env = target->activeBuildConfiguration()->environment();
+        ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit());
+        mAutoMakeExe = Utils::FileName::fromString(toolChain->makeCommand(env));
+    }
+}
+
+void TestRunConfigurationData::setMakeExe(const QString& path)
+{
+    Utils::FileName makeExe = Utils::FileName::fromUserInput(path);
+
+    mMakeExe = (mAutoMakeExe == makeExe ? Utils::FileName() : makeExe);
+}
+
+TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id):
+    ProjectExplorer::LocalApplicationRunConfiguration(parent, id)
+{
+    mData = new TestRunConfigurationData(parent);
+    setDefaultDisplayName(QLatin1String("make check"));
 }
 
 TestRunConfiguration::~TestRunConfiguration()
 {
-
-}
-
-QString TestRunConfiguration::findMake(ProjectExplorer::Target* target)
-{
-    Utils::Environment env = target->activeBuildConfiguration()->environment();
-    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit());
-    return toolChain->makeCommand(env);
+    delete mData;
 }
 
 } // Internal
