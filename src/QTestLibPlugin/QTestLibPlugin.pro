@@ -35,7 +35,9 @@ SOURCES += \
     xunitxmlqtestlibparser.cpp \
     xunitxmlqtestlibparserfactory.cpp \
     qtestlibargsparser.cpp \
-    testproxymodel.cpp
+    testproxymodel.cpp \
+    testrunconfiguration.cpp \
+    qmaketestrunconfigurationfactory.cpp
 
 HEADERS += \
     qtestlibplugin_global.h \
@@ -55,7 +57,9 @@ HEADERS += \
     xunitxmlqtestlibparser.h \
     xunitxmlqtestlibparserfactory.h \
     qtestlibargsparser.h \
-    testproxymodel.h
+    testproxymodel.h \
+    testrunconfiguration.h \
+    qmaketestrunconfigurationfactory.h
 
 RESOURCES += \
     qtestlibplugin.qrc
