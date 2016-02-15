@@ -18,7 +18,7 @@ public:
     ~TestRunConfiguration();
     inline QWidget* createConfigurationWidget(void) {return new QWidget();}
     virtual inline QString executable() const {return mMakeExe;}
-    virtual inline ProjectExplorer::ApplicationLauncher::Mode runMode(void) const {return ProjectExplorer::ApplicationLauncher::Console;}
+    virtual inline ProjectExplorer::ApplicationLauncher::Mode runMode(void) const {return ProjectExplorer::ApplicationLauncher::Gui;}
     inline QString workingDirectory(void) const {return mWorkingDirectory;}
     inline QString commandLineArguments(void) const {return mCmdArgs.join(QLatin1Char(' '));}
 private:
