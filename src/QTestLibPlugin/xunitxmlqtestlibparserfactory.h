@@ -26,10 +26,10 @@ namespace QTestLibPlugin {
 namespace Internal {
 
 /*!
- * \brief The XMLQTestLibParserFactory class is a factory for XMLQTestLibParser
+ * \brief The XUnitXMLQTestLibParserFactory class is a factory for XUnitXMLQTestLibParser
  *
  * As an implementation of AbstractTestParserFactory,
- * this class is in charge of checking that the associated parser, XMLQTestLibParser,
+ * this class is in charge of checking that the associated parser, XUnitXMLQTestLibParser,
  * may parse the ProjectExplorer::RunConfiguration output and
  * allocate instances of the associated parser if needed.
  */
@@ -64,7 +64,7 @@ private:
      * \brief Check the command line arguments
      *
      * Once the \c testlib module is found, the arguments are checked
-     * to see whether the output may be XML.
+     * to see whether the output may be XUnit XML.
      *
      * \param runConfiguration The run configuration to check.
      * \return \c true, if the parser may parse the test.
