@@ -30,15 +30,19 @@ namespace Internal {
 
 class QTestLibModel;
 /*!
- * \brief The XMLQTestLibParser class implements an AbstractTestParser for XML QTestLib output.
+ * \brief The LightXMLQTestLibParser class implements an AbstractTestParser for Light XML QTestLib output.
  *
- * This class parses XML QTestLib output and populates a QTestLibModel.
+ * This class parses Light XML QTestLib output and populates a QTestLibModel.
  * The populated model can be retrieved thanks to getModel() method.
  *
  * The preferred (and mandatory) way to instanciate this parser
  * is to use an instance of the associated factory class XMLQTestLibParserFactory.
  *
- * See parseStdoutLine() and parseStderrLine() for details on line parsing.
+ * See startElementParsed(), endElementParsed() and textParsed() for details on line parsing.
+ *
+ * \note The name of the test suite (the class name) canno te extracted from Light XML QTestLib output.
+ * It is derived from the name of the executable by removing the extension.
+ * If several classes are tested successsively, then the names are suffixed with #n, for the nth test.
  */
 class LightXMLQTestLibParser : public BaseXMLQTestLibParser
 {
@@ -55,7 +59,7 @@ protected:
     LightXMLQTestLibParser(QObject *parent = NULL);
 
     /*!
-     * \brief Handles beginning of elements
+     * \brief \copybrief BaseXMLQTestLibParser::startElementParsed()
      *
      * Current token is the beginning of an element:
      * Store the element tag in the current element stack
@@ -67,7 +71,7 @@ protected:
      */
     TestModelFactory::ParseResult startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag);
     /*!
-     * \brief Handles end of elements
+     * \brief \copybrief BaseXMLQTestLibParser::endElementParsed()
      *
      * Current token is the end of an element:
      *     - If tag is \c Environment, check Qt version, Qt build and QTestLib version
@@ -81,15 +85,16 @@ protected:
      */
     TestModelFactory::ParseResult endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag);
     /*!
-     * \brief Handles CDATA sections
+     * \brief \copybrief BaseXMLQTestLibParser::textParsed()
      *
-     * Extracts the contents of CDATA sections.
+     * Extracts the contents of CDATA sections which contains the messages.
      *
      * \param runControl The run control from which the parsed line comes
      * \return TestModelFactory::Unsure in all cases
      */
     TestModelFactory::ParseResult textParsed(ProjectExplorer::RunControl* runControl);
 
+private:
     int mClassStartCount; /*!< The number of class start encountered until now */
     QString mCurrentClass; /*!< The name of the class currently parsed */
     QString mCurrentFunction; /*!< The name of the function currently parsed */
