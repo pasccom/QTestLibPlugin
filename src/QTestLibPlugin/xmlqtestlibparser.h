@@ -88,13 +88,6 @@ protected:
      * \return TestModelFactory::Unsure in all cases
      */
     TestModelFactory::ParseResult textParsed(ProjectExplorer::RunControl* runControl);
-    /*!
-     * \brief Saves the attributes
-     *
-     * Stores the given attributes in the attributes map
-     *
-     * \param attrs The attributes to save in the attributes map
-     */
 
 private:
     QString mCurrentClass; /*!< The name of the class currently parsed */
