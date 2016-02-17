@@ -75,10 +75,10 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mTestRunnerLabel = new QLabel(tr("Test runner:"), this);
     mTestRunnerLabel->setBuddy(mTestRunnerLabel);
     mTestRunnerButton = new QPushButton(tr("Browse..."), this);
-    mOutputFileEdit = new QLineEdit(this);
+    /*mOutputFileEdit = new QLineEdit(this);
     mOutputFileLabel = new QLabel(tr("Test output file:"), this);
     mOutputFileLabel->setBuddy(mOutputFileEdit);
-    mOutputFileButton = new QPushButton(tr("Browse..."), this);
+    mOutputFileButton = new QPushButton(tr("Browse..."), this);*/
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -92,9 +92,9 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mainLayout->addWidget(mTestRunnerLabel, 2, 0, Qt::AlignLeft);
     mainLayout->addWidget(mTestRunnerEdit, 2, 1, 1, 2);
     mainLayout->addWidget(mTestRunnerButton, 2, 3, Qt::AlignCenter);
-    mainLayout->addWidget(mOutputFileLabel, 3, 0, Qt::AlignLeft);
+    /*mainLayout->addWidget(mOutputFileLabel, 3, 0, Qt::AlignLeft);
     mainLayout->addWidget(mOutputFileEdit, 3, 1, 1, 2);
-    mainLayout->addWidget(mOutputFileButton, 3, 3, Qt::AlignCenter);
+    mainLayout->addWidget(mOutputFileButton, 3, 3, Qt::AlignCenter);*/
     mainLayout->setColumnStretch(1, 1);
 
     setLayout(mainLayout);

@@ -62,9 +62,9 @@ private:
     QLabel* mTestRunnerLabel;
     QLineEdit* mTestRunnerEdit;
     QPushButton* mTestRunnerButton;
-    QLabel* mOutputFileLabel;
+    /*QLabel* mOutputFileLabel;
     QLineEdit* mOutputFileEdit;
-    QPushButton* mOutputFileButton;
+    QPushButton* mOutputFileButton;*/
 
 };
 
