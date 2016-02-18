@@ -37,7 +37,8 @@ SOURCES += \
     qtestlibargsparser.cpp \
     testproxymodel.cpp \
     testrunconfiguration.cpp \
-    qmaketestrunconfigurationfactory.cpp
+    qmaketestrunconfigurationfactory.cpp \
+    testrunconfigurationextraaspect.cpp
 
 HEADERS += \
     qtestlibplugin_global.h \
@@ -59,7 +60,8 @@ HEADERS += \
     qtestlibargsparser.h \
     testproxymodel.h \
     testrunconfiguration.h \
-    qmaketestrunconfigurationfactory.h
+    qmaketestrunconfigurationfactory.h \
+    testrunconfigurationextraaspect.h
 
 RESOURCES += \
     qtestlibplugin.qrc
