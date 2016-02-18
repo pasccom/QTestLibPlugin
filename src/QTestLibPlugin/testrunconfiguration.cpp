@@ -1,5 +1,9 @@
 #include "testrunconfiguration.h"
 
+#include "testrunconfigurationextraaspect.h"
+
+#include <utils/filenamevalidatinglineedit.h>
+
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/kitinformation.h>
 #include <projectexplorer/localenvironmentaspect.h>
@@ -28,21 +32,20 @@ void TestRunConfigurationData::setMakeExe(const QString& path)
     mMakeExe = (mAutoMakeExe == makeExe ? Utils::FileName() : makeExe);
 }
 
-QString TestRunConfigurationData::commandLineArguments(void) const
+QStringList TestRunConfigurationData::commandLineArguments(void) const
 {
     QStringList cmdArgs;
-    QStringList testCmdArgs = testArgsParser.toStringList();
 
     if (jobNumber > 1)
         cmdArgs << QString(QLatin1String("-j%1")).arg(jobNumber);
     cmdArgs << QLatin1String("check");
     if (!testRunner.isEmpty())
         cmdArgs << QString(QLatin1String("TESTRUNNER=%1")).arg(testRunner);
-    if (!testCmdArgs.isEmpty())
-        cmdArgs << QString(QLatin1String("TESTARGS=\"%1\"")).arg(testCmdArgs.join(QLatin1Char(' ')));
+    /*if (!testCmdArgs.isEmpty())
+        cmdArgs << QString(QLatin1String("TESTARGS=\"%1\"")).arg(testCmdArgs.join(QLatin1Char(' ')));*/
     qDebug() << cmdArgs;
 
-    return cmdArgs.join(QLatin1Char(' '));
+    return cmdArgs;
 }
 
 TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id):
@@ -55,6 +58,7 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core
      * 2.Alternatively, ValgrindPlugin, should ensure the extra aspects are added to
      * sensible RunConfiguration and RunConfiguration::addExtraAspects() should be removed. */
     addExtraAspect(new ProjectExplorer::LocalEnvironmentAspect(this));
+    addExtraAspect(new TestRunConfigurationExtraAspect(this));
 
     mData = new TestRunConfigurationData(parent);
     setDefaultDisplayName(QLatin1String("make check"));
@@ -65,26 +69,42 @@ TestRunConfiguration::~TestRunConfiguration()
     delete mData;
 }
 
+QString TestRunConfiguration::commandLineArguments(void) const
+{
+    QStringList cmdArgs = mData->commandLineArguments();
+    Q_ASSERT(extraAspect<TestRunConfigurationExtraAspect>() != NULL);
+    QStringList testCmdArgs = extraAspect<TestRunConfigurationExtraAspect>()->commandLineArguments();
+    cmdArgs << QString(QLatin1String("TESTARGS=\"%1\"")).arg(testCmdArgs.join(QLatin1Char(' ')));
+
+    return cmdArgs.join(QLatin1Char(' '));
+}
+
 TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData* data, QWidget* parent)
     : QWidget(parent), mData(data)
 {
-    mWorkingDirectoryEdit = new QLineEdit(this);
+    mWorkingDirectoryEdit = new Utils::FileNameValidatingLineEdit(this);
+    mWorkingDirectoryEdit->setAllowDirectories(true);
     mWorkingDirectoryLabel = new QLabel(tr("Working directory:"), this);
     mWorkingDirectoryLabel->setBuddy(mWorkingDirectoryEdit);
     mWorkingDirectoryButton = new QPushButton(tr("Browse..."), this);
-    mMakeExeEdit = new QLineEdit(this);
+    mMakeExeEdit = new Utils::FileNameValidatingLineEdit(this);
+    mMakeExeEdit->setAllowDirectories(false);
+    if (Utils::HostOsInfo::isWindowsHost())
+        mMakeExeEdit->setRequiredExtensions(QStringList() << QLatin1String("exe"));
+    else
+        mMakeExeEdit->setRequiredExtensions(QStringList());
     mMakeExeLabel = new QLabel(tr("Path to \"make\":"), this);
     mMakeExeLabel->setBuddy(mMakeExeEdit);
     mMakeExeDetectButton = new QPushButton(tr("Auto-detect"), this);
     mMakeExeBrowseButton = new QPushButton(tr("Browse..."), this);
-    mTestRunnerEdit = new QLineEdit(this);
+    mTestRunnerEdit = new Utils::FileNameValidatingLineEdit(this);
+    mTestRunnerEdit->setAllowDirectories(false);
     mTestRunnerLabel = new QLabel(tr("Test runner:"), this);
     mTestRunnerLabel->setBuddy(mTestRunnerLabel);
     mTestRunnerButton = new QPushButton(tr("Browse..."), this);
-    /*mOutputFileEdit = new QLineEdit(this);
-    mOutputFileLabel = new QLabel(tr("Test output file:"), this);
-    mOutputFileLabel->setBuddy(mOutputFileEdit);
-    mOutputFileButton = new QPushButton(tr("Browse..."), this);*/
+    mJobsSpin = new QSpinBox(this);
+    mJobsLabel = new QLabel(tr("Number of jobs (for \"make\"):"), this);
+    mJobsLabel->setBuddy(mJobsSpin);
 
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -98,9 +118,8 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mainLayout->addWidget(mTestRunnerLabel, 2, 0, Qt::AlignLeft);
     mainLayout->addWidget(mTestRunnerEdit, 2, 1, 1, 2);
     mainLayout->addWidget(mTestRunnerButton, 2, 3, Qt::AlignCenter);
-    /*mainLayout->addWidget(mOutputFileLabel, 3, 0, Qt::AlignLeft);
-    mainLayout->addWidget(mOutputFileEdit, 3, 1, 1, 2);
-    mainLayout->addWidget(mOutputFileButton, 3, 3, Qt::AlignCenter);*/
+    mainLayout->addWidget(mJobsLabel, 3, 0, 1, 3, Qt::AlignLeft);
+    mainLayout->addWidget(mJobsSpin, 3, 3, Qt::AlignRight);
     mainLayout->setColumnStretch(1, 1);
 
     setLayout(mainLayout);

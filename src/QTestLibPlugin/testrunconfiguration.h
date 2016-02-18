@@ -11,8 +11,12 @@
 #include <QWidget>
 
 class QLabel;
-class QLineEdit;
 class QPushButton;
+class QSpinBox;
+
+namespace Utils {
+    class FileNameValidatingLineEdit;
+}
 
 namespace ProjectExplorer {
     class Kit;
@@ -20,8 +24,6 @@ namespace ProjectExplorer {
 
 namespace QTestLibPlugin {
 namespace Internal {
-
-class QTestLibArgsParser;
 
 class TestRunConfigurationData
 {
@@ -33,12 +35,11 @@ public:
     inline void useDefaultMakeExe(void) {mMakeExe = Utils::FileName();}
     void setMakeExe(const QString& path);
 
-    QString commandLineArguments(void) const;
+    QStringList commandLineArguments(void) const;
 
     int jobNumber;
     QString testRunner;
     QString workingDirectory;
-    QTestLibArgsParser testArgsParser;
 private:
     Utils::FileName mAutoMakeExe;
     Utils::FileName mMakeExe;
@@ -53,18 +54,17 @@ private:
     TestRunConfigurationData* mData;
 
     QLabel* mWorkingDirectoryLabel;
-    QLineEdit* mWorkingDirectoryEdit;
+    Utils::FileNameValidatingLineEdit* mWorkingDirectoryEdit;
     QPushButton* mWorkingDirectoryButton;
     QLabel* mMakeExeLabel;
-    QLineEdit* mMakeExeEdit;
+    Utils::FileNameValidatingLineEdit* mMakeExeEdit;
     QPushButton* mMakeExeDetectButton;
     QPushButton* mMakeExeBrowseButton;
     QLabel* mTestRunnerLabel;
-    QLineEdit* mTestRunnerEdit;
+    Utils::FileNameValidatingLineEdit* mTestRunnerEdit;
     QPushButton* mTestRunnerButton;
-    /*QLabel* mOutputFileLabel;
-    QLineEdit* mOutputFileEdit;
-    QPushButton* mOutputFileButton;*/
+    QLabel* mJobsLabel;
+    QSpinBox* mJobsSpin;
 
 };
 
@@ -77,7 +77,7 @@ public:
     virtual inline QString executable() const {return mData->makeExe();}
     virtual inline ProjectExplorer::ApplicationLauncher::Mode runMode(void) const {return ProjectExplorer::ApplicationLauncher::Gui;}
     inline QString workingDirectory(void) const {return mData->workingDirectory;}
-    inline QString commandLineArguments(void) const {return mData->commandLineArguments();}
+    QString commandLineArguments(void) const;
 private:
     TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id);
 
