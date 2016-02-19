@@ -38,7 +38,8 @@ SOURCES += \
     testproxymodel.cpp \
     testrunconfiguration.cpp \
     qmaketestrunconfigurationfactory.cpp \
-    testrunconfigurationextraaspect.cpp
+    testrunconfigurationextraaspect.cpp \
+    Utils/filetypevalidatinglineedit.cpp
 
 HEADERS += \
     qtestlibplugin_global.h \
@@ -61,7 +62,8 @@ HEADERS += \
     testproxymodel.h \
     testrunconfiguration.h \
     qmaketestrunconfigurationfactory.h \
-    testrunconfigurationextraaspect.h
+    testrunconfigurationextraaspect.h \
+    Utils/filetypevalidatinglineedit.h
 
 RESOURCES += \
     qtestlibplugin.qrc
