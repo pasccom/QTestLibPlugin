@@ -61,6 +61,7 @@ QTestLibPluginPlugin::~QTestLibPluginPlugin()
 {
     // Unregister objects from the plugin manager's object pool
     // Delete members
+    delete mRunConfigFactory;
 }
 
 bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *errorString)
@@ -95,6 +96,8 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
     addAutoReleasedObject(lightXmlFactory);
     XUnitXMLQTestLibParserFactory *xUnitXmlFactory = new XUnitXMLQTestLibParserFactory(this);
     addAutoReleasedObject(xUnitXmlFactory);
+
+    mRunConfigFactory = new QMakeTestRunConfigurationFactory;
 
     mOutputPane = new TestOutputPane(mModel);
     addAutoReleasedObject(mOutputPane);
@@ -147,9 +150,11 @@ void QTestLibPluginPlugin::testProject(ProjectExplorer::Project* project)
     QmakeProjectManager::QmakeProject *qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject *>(project);
     if (qMakeProject != NULL) {
         connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
-                [qMakeProject] () {
-            QMakeTestRunConfigurationFactory runConfigFactory(qMakeProject);
-            runConfigFactory.createForAllTargets();
+                [this, qMakeProject] () {
+            if (mRunConfigFactory->isUseful(qMakeProject))
+                mRunConfigFactory->createForAllTargets(qMakeProject);
+            else
+                mRunConfigFactory->removeForAllTargets(qMakeProject);
         });
     }
 }

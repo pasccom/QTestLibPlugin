@@ -32,6 +32,7 @@ namespace Internal {
 
 class TestSuiteModel;
 class TestOutputPane;
+class QMakeTestRunConfigurationFactory;
 
 class QTestLibPluginPlugin : public ExtensionSystem::IPlugin
 {
@@ -50,6 +51,7 @@ private slots:
 private:
     TestSuiteModel* mModel;
     TestOutputPane *mOutputPane;
+    QMakeTestRunConfigurationFactory* mRunConfigFactory;
 };
 
 } // namespace Internal

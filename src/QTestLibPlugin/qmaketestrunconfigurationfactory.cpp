@@ -14,20 +14,20 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-QMakeTestRunConfigurationFactory::QMakeTestRunConfigurationFactory(ProjectExplorer::Project *project) :
-    mQMakeProject(NULL)
+QMakeTestRunConfigurationFactory::QMakeTestRunConfigurationFactory(QObject *parent) :
+    QObject(parent)
 {
-    if (project != NULL)
-        mQMakeProject = qobject_cast<QmakeProjectManager::QmakeProject *>(project);
 }
 
-bool QMakeTestRunConfigurationFactory::canHandle(void) const
+bool QMakeTestRunConfigurationFactory::canHandle(ProjectExplorer::Project* project) const
 {
-    if (mQMakeProject == NULL)
+    QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(project);
+
+    if (qMakeProject == NULL)
         return false;
 
     bool hasDesktopTarget = false;
-    foreach (ProjectExplorer::Target* t, mQMakeProject->targets()) {
+    foreach (ProjectExplorer::Target* t, qMakeProject->targets()) {
         if (!canHandle(t))
             continue;
 
@@ -48,16 +48,20 @@ bool QMakeTestRunConfigurationFactory::canHandle(ProjectExplorer::Target* target
     return false;
 }
 
-bool QMakeTestRunConfigurationFactory::isUseful(void) const
+bool QMakeTestRunConfigurationFactory::isUseful(ProjectExplorer::Project* project) const
 {
     bool hasTests = false;
+    QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(project);
 
-    qDebug() << "QMake project:" << mQMakeProject->displayName();
-    qDebug() << "    Valid parse:" << mQMakeProject->rootQmakeProjectNode()->validParse();
-    qDebug() << "    Parse in progress:" << mQMakeProject->rootQmakeProjectNode()->parseInProgress();
+    if (qMakeProject == NULL)
+        return false;
 
-    if (mQMakeProject->rootQmakeProjectNode()->projectType() == QmakeProjectManager::SubDirsTemplate) {
-        foreach (QmakeProjectManager::QmakeProFileNode *pro, mQMakeProject->applicationProFiles()) {
+    qDebug() << "QMake project:" << qMakeProject->displayName();
+    qDebug() << "    Valid parse:" << qMakeProject->rootQmakeProjectNode()->validParse();
+    qDebug() << "    Parse in progress:" << qMakeProject->rootQmakeProjectNode()->parseInProgress();
+
+    if (qMakeProject->rootQmakeProjectNode()->projectType() == QmakeProjectManager::SubDirsTemplate) {
+        foreach (QmakeProjectManager::QmakeProFileNode *pro, qMakeProject->applicationProFiles()) {
             qDebug() << "    Pro file:" << pro->displayName();
             qDebug() << "        Config:" << pro->variableValue(QmakeProjectManager::ConfigVar);
             if (!pro->variableValue(QmakeProjectManager::ConfigVar).contains(QLatin1String("testcase"), Qt::CaseSensitive))
@@ -76,26 +80,47 @@ TestRunConfiguration* QMakeTestRunConfigurationFactory::create(ProjectExplorer::
     if (!canHandle(target))
         return NULL;
 
+    foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations()) {
+        TestRunConfiguration* testRunConfig = qobject_cast<TestRunConfiguration *>(runConfig);
+        if (testRunConfig != NULL)
+            return testRunConfig;
+    }
+
     TestRunConfiguration* runConfig = new TestRunConfiguration(target, Core::Id());
     target->addRunConfiguration(runConfig);
 
     return runConfig;
 }
 
-void QMakeTestRunConfigurationFactory::createForAllTargets(void)
+void QMakeTestRunConfigurationFactory::remove(ProjectExplorer::Target* target)
 {
-    if (!isUseful())
-        return;
+    QList<ProjectExplorer::RunConfiguration*> runConfigs = target->runConfigurations();
 
-    foreach (ProjectExplorer::Target* t, mQMakeProject->targets()) {
-        Q_ASSERT(t->kit() != NULL);
-        if (t->kit() == NULL)
-            continue;
-        if (!t->kit()->hasFeatures(Core::FeatureSet(QtSupport::Constants::FEATURE_DESKTOP)))
-            continue;
-
-        create(t);
+    foreach (ProjectExplorer::RunConfiguration *runConfig, runConfigs) {
+        if (qobject_cast<TestRunConfiguration*>(runConfig) != NULL)
+            target->removeRunConfiguration(runConfig);
     }
+}
+
+void QMakeTestRunConfigurationFactory::createForAllTargets(ProjectExplorer::Project* project)
+{
+    foreach (ProjectExplorer::Target* t, project->targets()) {
+        if (canHandle(t))
+            create(t);
+        connect(t, &ProjectExplorer::Target::kitChanged,
+                this, [this, t] () {
+            if (canHandle(t))
+                create(t);
+            else
+                remove(t);
+        });
+    }
+}
+
+void QMakeTestRunConfigurationFactory::removeForAllTargets(ProjectExplorer::Project* project)
+{
+    foreach (ProjectExplorer::Target* t, project->targets())
+        remove(t);
 }
 
 } // Internal
