@@ -17,6 +17,7 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mFormatCombo->addItem(tr("XML format"), QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>(QTestLibArgsParser::XmlFormat));
     mFormatCombo->addItem(tr("Light XML format"), QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>(QTestLibArgsParser::LightXmlFormat));
     mFormatCombo->addItem(tr("XUnit XML format"), QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>(QTestLibArgsParser::XUnitXmlFormat));
+    mFormatCombo->setCurrentIndex(mFormatCombo->findData(QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>(mAspect->mTestArgsParser->outputFormat())));
     mFormatLabel = new QLabel(tr("Test output format:"), this);
     mFormatLabel->setBuddy(mFormatCombo);
     mVerbosityCombo = new QComboBox(this);
@@ -26,11 +27,13 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mVerbosityCombo->addItem(tr("Very verbose"), QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(QTestLibArgsParser::Verbose2));
     mVerbosityCombo->addItem(tr("Signals"), QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(QTestLibArgsParser::VerboseSignal));
     //mVerbosityCombo->addItem(tr("Silent"), QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(QTestLibArgsParser::VerboseBenchmark));
+    mVerbosityCombo->setCurrentIndex(mVerbosityCombo->findData(QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(mAspect->mTestArgsParser->verbosity())));
     mVerbosityLabel = new QLabel(tr("Test output verbosity:"), this);
     mVerbosityLabel->setBuddy(mVerbosityCombo);
     mOutFileEdit = new Utils::FileTypeValidatingLineEdit(this);
     mOutFileEdit->setAcceptNew(true);
     mOutFileEdit->setRequireWritable(true);
+    mOutFileEdit->setText(mAspect->mTestArgsParser->outFileName().toString());
     mOutFileLabel = new QLabel(tr("Test output file:"), this);
     mOutFileLabel->setBuddy(mOutFileEdit);
     mOutFileButton =  new QPushButton(tr("Browse..."), this);
@@ -40,6 +43,7 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mWarningSpin->setMaximum(INT_MAX);
     mWarningSpin->setSingleStep(100);
     mWarningSpin->setEnabled(false);
+    mWarningSpin->setValue(mAspect->mTestArgsParser->maxWarnings());
     mEventDelayCheck = new QCheckBox(tr("Event simulation delay"), this);
     mEventDelaySpin = new QSpinBox(this);
     mEventDelaySpin->setMinimum(0);
@@ -47,6 +51,7 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mEventDelaySpin->setSingleStep(10);
     mEventDelaySpin->setSuffix(tr(" ms"));
     mEventDelaySpin->setEnabled(false);
+    mWarningSpin->setValue(mAspect->mTestArgsParser->eventDelay());
     mKeyDelayCheck = new QCheckBox(tr("Keyboard simulation delay"),this);
     mKeyDelaySpin = new QSpinBox(this);
     mKeyDelaySpin->setMinimum(0);
@@ -54,6 +59,7 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mKeyDelaySpin->setSingleStep(10);
     mKeyDelaySpin->setSuffix(tr(" ms"));
     mKeyDelaySpin->setEnabled(false);
+    mWarningSpin->setValue(mAspect->mTestArgsParser->keyDelay());
     mMouseDelayCheck = new QCheckBox(tr("Mouse simulation delay"),this);
     mMouseDelaySpin = new QSpinBox(this);
     mMouseDelaySpin->setMinimum(0);
@@ -61,6 +67,7 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mMouseDelaySpin->setSingleStep(10);
     mMouseDelaySpin->setSuffix(tr(" ms"));
     mMouseDelaySpin->setEnabled(false);
+    mWarningSpin->setValue(mAspect->mTestArgsParser->mouseDelay());
 
     QBoxLayout* outFileLayout = new QHBoxLayout;
     outFileLayout->setContentsMargins(0, 0, 0, 0);
