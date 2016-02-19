@@ -65,6 +65,8 @@ private slots:
     void updateTestRunner(bool valid);
     void updateTestRunner(void);
     void browseTestRunner(void);
+
+    void updateJubNumber(int jobNumber);
 private:
     TestRunConfigurationData* mData;
 

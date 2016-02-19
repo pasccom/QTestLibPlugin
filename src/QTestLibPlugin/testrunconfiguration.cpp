@@ -151,6 +151,9 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
             this, SLOT(updateTestRunner()));
     connect(mTestRunnerButton, SIGNAL(released()),
             this, SLOT(browseTestRunner()));
+
+    connect(mJobsSpin, SIGNAL(valueChanged(int)),
+            this, SLOT(updateJubNumber(int)));
 }
 
 void TestRunConfigurationWidget::updateWorkingDirectory(bool valid)
@@ -222,6 +225,12 @@ void TestRunConfigurationWidget::browseTestRunner(void)
     if (!runner.isNull())
         mData->testRunner = runner;
     mTestRunnerEdit->setText(mData->testRunner);
+}
+
+
+void TestRunConfigurationWidget::updateJubNumber(int jobNumber)
+{
+    mData->jobNumber = jobNumber;
 }
 
 } // Internal
