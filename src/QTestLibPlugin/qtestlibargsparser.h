@@ -122,7 +122,7 @@ public:
      * This may not include the test output which may not be run.
      */
     typedef enum {
-        NormalOutput, /*!< The test is being output */
+        NormalOutput = 0, /*!< The test is being output */
         HelpOutput, /*!< The help of QTestLIb is being output */
         FunctionsOutput, /*!< The list of test cases is being output */
         DataTagsOutput, /*!< The list of data row is being output */
@@ -556,5 +556,8 @@ private:
 
 } // namespace Internal
 } // namespace QTestLibPlugin
+
+Q_DECLARE_METATYPE(QTestLibPlugin::Internal::QTestLibArgsParser::TestOutputFormat)
+Q_DECLARE_METATYPE(QTestLibPlugin::Internal::QTestLibArgsParser::TestVerbosity)
 
 #endif // QTESTLIBARGSPARSER_H

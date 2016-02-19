@@ -70,8 +70,6 @@ private:
     void checkOutputMode(const QTestLibArgsParser& parser, QTestLibArgsParser::Output mode = QTestLibArgsParser::NormalOutput);
 };
 
-Q_DECLARE_METATYPE(QTestLibArgsParser::TestVerbosity)
-Q_DECLARE_METATYPE(QTestLibArgsParser::TestOutputFormat)
 Q_DECLARE_METATYPE(QTestLibArgsParser::Output)
 Q_DECLARE_METATYPE(QTestLibArgsParser::Error)
 
