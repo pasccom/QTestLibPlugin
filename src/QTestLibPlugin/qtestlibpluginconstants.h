@@ -32,6 +32,9 @@ const QString DescWidthKey = QLatin1String("DescWidth");
 const QString FileWidthKey = QLatin1String("FileWidth");
 const QString LineWidthKey = QLatin1String("LineWidth");
 
+const char TestRunConfigurationId [] = "QTestLibPlugin.TestRunConfiguration";
+const char TestRunConfigurationExtraAspectId [] = "QTestlibPlugin.TestRunConfigurationExtraAspect";
+
 } // namespace QTestLibPlugin
 } // namespace Constants
 
