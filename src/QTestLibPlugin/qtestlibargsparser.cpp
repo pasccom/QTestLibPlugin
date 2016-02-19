@@ -25,6 +25,54 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
+QStringList QTestLibArgsParser::toStringList(uint version) const
+{
+    Q_ASSERT((version == 1) || (version == 2));
+
+    QStringList ret;
+    QStringList formats;
+    QStringList verbosities;
+    QStringList outputs;
+
+    formats << QLatin1String("txt") << QLatin1String("csv") << QLatin1String("xunitxml") << QLatin1String("xml") << QLatin1String("lightxml");
+    verbosities << QLatin1String("-silent") << QLatin1String("") << QLatin1String("-v1") << QLatin1String("-v2") << QLatin1String("-vs") << QLatin1String("-vb");
+    outputs << QLatin1String("-help") << QLatin1String("-functions") << QLatin1String("-datatags")  << QLatin1String("-perfcounterlist");
+
+    if (mOutput != NormalOutput) {
+        ret << outputs.at((int) mOutput - 1);
+    } else {
+        if (version == 1) {
+            if (mParser != TxtFormat)
+                ret << QLatin1String("-") + formats.at((int) mParser - 1);
+            if (!mOutFileName.isEmpty())
+                ret << QLatin1String("-o") << mOutFileName.toString();
+        } else {
+            if ((mParser != TxtFormat) || (!mOutFileName.isEmpty())) {
+                ret << QLatin1String("-o");
+                if (mOutFileName.isEmpty())
+                    ret << QLatin1String("-,") + formats.at((int) mParser);
+                else
+                    ret << mOutFileName.toString() + QLatin1String(",") + formats.at((int) mParser);
+            }
+        }
+
+        if (mVerbosity != NormalVerbosity)
+            ret << verbosities.at((int) mVerbosity + 1);
+        if (!mCrashHandlerEnabled)
+            ret << QLatin1String("-noccrashhandler");
+        if (mMaxWarnings != 2000)
+            ret << QLatin1String("-maxwarnings") << QString::number(mMaxWarnings, 10);
+        if (mEventDelay > 0)
+            ret << QLatin1String("-eventdelay") << QString::number(mEventDelay, 10);
+        if (mKeyDelay > 0)
+            ret << QLatin1String("-keydelay") << QString::number(mKeyDelay, 10);
+        if (mMouseDelay > 0)
+            ret << QLatin1String("-mousedelay") << QString::number(mMouseDelay, 10);
+    }
+
+    return ret;
+}
+
 void QTestLibArgsParser::parse(bool incremental)
 {
     if (!incremental)
@@ -330,6 +378,34 @@ QString QTestLibArgsParser::nextToken(void)
     }
 
     return mArgs.mid(b, mPos - b);
+}
+
+void QTestLibArgsParser::removeTestCases(const QString& function, const QString& dataTag)
+{
+    TestCaseList::iterator fIt;
+
+    for (fIt = mSelectedTestCases.begin(); fIt != mSelectedTestCases.end();) {
+        if (!function.isNull() && (QString::compare((*fIt).first, function, Qt::CaseInsensitive) == 0)) {
+            fIt = mSelectedTestCases.erase(fIt);
+        } else {
+            if ((*fIt).second.contains(dataTag)) {
+                QStringList tags = (*fIt).second;
+                QStringList::iterator tIt;
+
+                for (tIt = tags.begin(); tIt != tags.end();) {
+                    if (!dataTag.isNull() && (QString::compare(*tIt, dataTag, Qt::CaseSensitive) == 0))
+                        tIt = tags.erase(tIt);
+                    else
+                        tIt++;
+                }
+
+                fIt = mSelectedTestCases.insert(fIt, QPair<QString, QStringList>((*fIt).first, tags));
+                fIt = mSelectedTestCases.erase(--fIt);
+            }
+
+            fIt++;
+        }
+    }
 }
 
 } // namespace Internal

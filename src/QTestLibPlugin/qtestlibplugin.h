@@ -23,6 +23,10 @@
 
 #include <extensionsystem/iplugin.h>
 
+namespace ProjectExplorer {
+    class Project;
+}
+
 namespace QTestLibPlugin {
 namespace Internal {
 
@@ -39,9 +43,10 @@ public:
     ~QTestLibPluginPlugin();
 
     bool initialize(const QStringList &arguments, QString *errorString);
-    void extensionsInitialized();
-    ShutdownFlag aboutToShutdown();
-
+    void extensionsInitialized(void);
+    ShutdownFlag aboutToShutdown(void);
+private slots:
+    void testProject(ProjectExplorer::Project* project);
 private:
     TestSuiteModel* mModel;
     TestOutputPane *mOutputPane;

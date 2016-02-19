@@ -30,6 +30,15 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
+/*!
+ * \brief The BaseXMLQTestLibParser class implements a basic XML parser.
+ *
+ * This class proposes a basic parser for XML output from QTestLib. To be
+ * functionnal it must be subclassed and the methods startElementParsed(),
+ * endElementParsed(), textParsed() and commentParsed() must defined consistently.
+ *
+ * See parseStdoutLine() and parseStderrLine() for details on line parsing.
+ */
 class BaseXMLQTestLibParser : public AbstractTestParser
 {
 public:
@@ -40,7 +49,7 @@ public:
      * \copybrief AbstractTestParser::parseStdoutLine()
      *
      * This function ignores the lines preceeding
-     * the <tt><?xml ... ?></tt> tag as well
+     * the elements of mXmlStarts as well
      * as lines after the end of document tag.
      *
      * Otherwise when a line of data is received,
@@ -48,7 +57,7 @@ public:
      * the function returns TestModelFactory::Unsure,
      * otherwise TestModelFactory::MagicNotFound is returned.
      *
-     * The magic is found after Environment tag has been parsed.
+     * The magic is found after Environment data has been obtained.
      *
      * \param runControl The run control from which the line comes.
      * \param line The line of \c stdout.
@@ -86,9 +95,7 @@ protected:
     /*!
      * \brief Handles beginning of elements
      *
-     * Current token is the beginning of an element:
-     * Store the element tag in the current element stack
-     * and its attributes in the attributes map.
+     * This implementation does nothing and should be subclassed.
      *
      * \param runControl The run control from which the parsed line comes.
      * \param tag The tag of the current element.
@@ -98,11 +105,7 @@ protected:
     /*!
      * \brief Handles end of elements
      *
-     * Current token is the end of an element:
-     *     - If tag is \c Environment, check Qt version, Qt build and QTestLib version
-     * and returns TestModelFactory::MagicFound or TestModelFactory::MagicNotFound in
-     * accordance.
-     *     - Otherwise add elements to the model.
+     * This implementation does nothing and should be subclassed.
      *
      * \param runControl The run control from which the parsed line comes.
      * \param tag The tag of the currently closed element.
@@ -112,7 +115,7 @@ protected:
     /*!
      * \brief Handles CDATA sections
      *
-     * Extracts the contents of CDATA sections.
+     * This implementation does nothing and should be subclassed.
      *
      * \param runControl The run control from which the parsed line comes
      * \return TestModelFactory::Unsure in all cases
@@ -121,7 +124,7 @@ protected:
     /*!
      * \brief Handles comments
      *
-     * Extracts the contents of comments.
+     * This implementation does nothing and should be subclassed.
      *
      * \param runControl The run control from which the parsed line comes
      * \return TestModelFactory::Unsure in all cases
@@ -144,6 +147,7 @@ protected:
      * into a QTestLibModel::MessageType.
      *
      * \return The type corresponding to the type attribute of the current tag
+     * \sa messageType()
      */
     QTestLibModel::MessageType currentMessageType(void);
     /*!
@@ -152,6 +156,7 @@ protected:
      * Converts the given QString into a QTestLibModel::MessageType.
      *
      * \return The type corresponding to the given QString
+     * \sa currentMessageType()
      */
     QTestLibModel::MessageType messageType(const QString& messageType);
 

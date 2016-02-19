@@ -27,6 +27,8 @@
 #include "testoutputpane.h"
 #include "testsuitemodel.h"
 
+#include "qmaketestrunconfigurationfactory.h"
+
 #include <coreplugin/icore.h>
 #include <coreplugin/icontext.h>
 #include <coreplugin/actionmanager/actionmanager.h>
@@ -35,6 +37,12 @@
 #include <coreplugin/coreconstants.h>
 
 #include <projectexplorer/projectexplorer.h>
+#include <projectexplorer/session.h>
+#include <projectexplorer/project.h>
+#include <projectexplorer/target.h>
+#include <projectexplorer/runconfiguration.h>
+
+#include <qmakeprojectmanager/qmakeproject.h>
 
 #include <QCoreApplication>
 #include <QTranslator>
@@ -98,18 +106,20 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
 
     connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl*)),
             mModel, SLOT(appendTestRun(ProjectExplorer::RunControl*)));
+    connect(ProjectExplorer::SessionManager::instance(), SIGNAL(projectAdded(ProjectExplorer::Project*)),
+            this, SLOT(testProject(ProjectExplorer::Project*)));
 
     return true;
 }
 
-void QTestLibPluginPlugin::extensionsInitialized()
+void QTestLibPluginPlugin::extensionsInitialized(void)
 {
     // Retrieve objects from the plugin manager's object pool
     // In the extensionsInitialized function, a plugin can be sure that all
     // plugins that depend on it are completely initialized.
 }
 
-ExtensionSystem::IPlugin::ShutdownFlag QTestLibPluginPlugin::aboutToShutdown()
+ExtensionSystem::IPlugin::ShutdownFlag QTestLibPluginPlugin::aboutToShutdown(void)
 {
     // Save settings
     // Disconnect from signals that are not needed during shutdown
@@ -120,4 +130,26 @@ ExtensionSystem::IPlugin::ShutdownFlag QTestLibPluginPlugin::aboutToShutdown()
     mOutputPane->saveSettings(settings);
     settings->endGroup();
     return SynchronousShutdown;
+}
+
+
+void QTestLibPluginPlugin::testProject(ProjectExplorer::Project* project)
+{
+    qDebug() << "Opened project:" << project->displayName();
+
+    foreach (ProjectExplorer::Target *t, project->targets()) {
+        qDebug() << "    Target:" << t->displayName();
+        foreach (ProjectExplorer::RunConfiguration* r, t->runConfigurations()) {
+            qDebug() << "        Run config:" << r->displayName();
+        }
+    }
+
+    QmakeProjectManager::QmakeProject *qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject *>(project);
+    if (qMakeProject != NULL) {
+        connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
+                [qMakeProject] () {
+            QMakeTestRunConfigurationFactory runConfigFactory(qMakeProject);
+            runConfigFactory.createForAllTargets();
+        });
+    }
 }

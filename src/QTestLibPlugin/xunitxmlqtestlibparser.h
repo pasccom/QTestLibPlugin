@@ -30,15 +30,15 @@ namespace Internal {
 
 class QTestLibModel;
 /*!
- * \brief The XMLQTestLibParser class implements an AbstractTestParser for XML QTestLib output.
+ * \brief The XUnitXMLQTestLibParser class implements an AbstractTestParser for XUnit XML QTestLib output.
  *
- * This class parses XML QTestLib output and populates a QTestLibModel.
+ * This class parses XUnit XML output from QTestLib and populates a QTestLibModel.
  * The populated model can be retrieved thanks to getModel() method.
  *
  * The preferred (and mandatory) way to instanciate this parser
- * is to use an instance of the associated factory class XMLQTestLibParserFactory.
+ * is to use an instance of the associated factory class XUnitXMLQTestLibParserFactory.
  *
- * See parseStdoutLine() and parseStderrLine() for details on line parsing.
+ * See startElementParsed(), endElementParsed() and commentParsed() for details on line parsing.
  */
 class XUnitXMLQTestLibParser : public BaseXMLQTestLibParser
 {
@@ -47,8 +47,7 @@ protected:
     /*!
      * \brief Constructor
      *
-     * Calls the parent constructor and
-     * allocates the XML stream reader.
+     * Calls the parent constructor.
      *
      * \param parent The parent object of the factory.
      */
@@ -56,11 +55,13 @@ protected:
         BaseXMLQTestLibParser(parent) {}
 private:
     /*!
-     * \brief Handles beginning of elements
+     * \brief \copybrief BaseXMLQTestLibParser::startElementParsed()
      *
-     * Current token is the beginning of an element:
-     * Store the element tag in the current element stack
-     * and its attributes in the attributes map.
+     * Current token is the end of an element:
+     *      - If the tag is \c property, then it stores the properties
+     * in the class members.
+     *      - If the tag is \c failure, then it adds the message to the model.
+     *      - Otherwise, it stores the data in the class for future usage.
      *
      * \param runControl The run control from which the parsed line comes.
      * \param tag The tag of the current element.
@@ -68,13 +69,15 @@ private:
      */
     TestModelFactory::ParseResult startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag);
     /*!
-     * \brief Handles end of elements
+     * \brief \copybrief BaseXMLQTestLibParser::endElementParsed()
      *
      * Current token is the end of an element:
-     *     - If tag is \c Environment, check Qt version, Qt build and QTestLib version
+     *     - If tag is \c properties, check Qt version, Qt build and QTestLib version
      * and returns TestModelFactory::MagicFound or TestModelFactory::MagicNotFound in
      * accordance.
-     *     - Otherwise add elements to the model.
+     *     - If this is the end of a \c testcase element and no result message has been output,
+     * add an element to the model.
+     *     - Otherwise, it clears the members of the class appropriately.
      *
      * \param runControl The run control from which the parsed line comes.
      * \param tag The tag of the currently closed element.
@@ -82,24 +85,16 @@ private:
      */
     TestModelFactory::ParseResult endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag);
     /*!
-     * \brief Handles CDATA sections
+     * \brief \copybrief BaseXMLQTestLibParser::textParsed()
      *
-     * Extracts the contents of CDATA sections.
-     *
-     * \param runControl The run control from which the parsed line comes
-     * \return TestModelFactory::Unsure in all cases
-     */
-    //TestModelFactory::ParseResult textParsed(ProjectExplorer::RunControl* runControl);
-    /*!
-     * \brief Handles comments
-     *
-     * Extracts the contents of comments.
+     * Extracts the contents of comments which contain messages and add them to the model.
      *
      * \param runControl The run control from which the parsed line comes
      * \return TestModelFactory::Unsure in all cases
      */
     TestModelFactory::ParseResult commentParsed(ProjectExplorer::RunControl* runControl);
 
+private:
     QString mCurrentClass; /*!< The name of the class currently parsed */
     QString mCurrentFunction; /*!< The name of the function currently parsed */
     QString mCurrentRow; /*!< The name of the data row currently parsed */

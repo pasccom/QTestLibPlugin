@@ -38,7 +38,7 @@ class QTestLibModel;
  * The preferred (and mandatory) way to instanciate this parser
  * is to use an instance of the associated factory class XMLQTestLibParserFactory.
  *
- * See parseStdoutLine() and parseStderrLine() for details on line parsing.
+ * See startElementParsed(), endElementParsed() and textParsed() for details on line parsing.
  */
 class XMLQTestLibParser : public BaseXMLQTestLibParser
 {
@@ -47,15 +47,14 @@ protected:
     /*!
      * \brief Constructor
      *
-     * Calls the parent constructor and
-     * allocates the XML stream reader.
+     * Calls the parent constructor.
      *
      * \param parent The parent object of the factory.
      */
     inline XMLQTestLibParser(QObject *parent = NULL) :
         BaseXMLQTestLibParser(parent) {}
     /*!
-     * \brief Handles beginning of elements
+     * \brief \copybrief BaseXMLQTestLibParser::startElementParsed()
      *
      * Current token is the beginning of an element:
      * Store the element tag in the current element stack
@@ -67,7 +66,7 @@ protected:
      */
     TestModelFactory::ParseResult startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag);
     /*!
-     * \brief Handles end of elements
+     * \brief \copybrief BaseXMLQTestLibParser::endElementParsed()
      *
      * Current token is the end of an element:
      *     - If tag is \c Environment, check Qt version, Qt build and QTestLib version
@@ -81,22 +80,16 @@ protected:
      */
     TestModelFactory::ParseResult endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag);
     /*!
-     * \brief Handles CDATA sections
+     * \brief \copybrief BaseXMLQTestLibParser::textParsed()
      *
-     * Extracts the contents of CDATA sections.
+     * Extracts the contents of CDATA sections which contains the messages.
      *
      * \param runControl The run control from which the parsed line comes
      * \return TestModelFactory::Unsure in all cases
      */
     TestModelFactory::ParseResult textParsed(ProjectExplorer::RunControl* runControl);
-    /*!
-     * \brief Saves the attributes
-     *
-     * Stores the given attributes in the attributes map
-     *
-     * \param attrs The attributes to save in the attributes map
-     */
 
+private:
     QString mCurrentClass; /*!< The name of the class currently parsed */
     QString mCurrentFunction; /*!< The name of the function currently parsed */
     QString mCurrentRow; /*!< The name of the data row currently parsed */
