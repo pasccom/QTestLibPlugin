@@ -33,6 +33,8 @@ QStringList QTestLibArgsParser::toStringList(uint version) const
     QStringList formats;
     QStringList verbosities;
     QStringList outputs;
+    QString outFile(mOutFileName.toString());
+    outFile.replace(QLatin1Char(' '), QLatin1String("\\ "));
 
     formats << QLatin1String("txt") << QLatin1String("csv") << QLatin1String("xunitxml") << QLatin1String("xml") << QLatin1String("lightxml");
     verbosities << QLatin1String("-silent") << QLatin1String("") << QLatin1String("-v1") << QLatin1String("-v2") << QLatin1String("-vs") << QLatin1String("-vb");
@@ -45,14 +47,14 @@ QStringList QTestLibArgsParser::toStringList(uint version) const
             if (mParser != TxtFormat)
                 ret << QLatin1String("-") + formats.at((int) mParser - 1);
             if (!mOutFileName.isEmpty())
-                ret << QLatin1String("-o") << mOutFileName.toString();
+                ret << QLatin1String("-o") << outFile;
         } else {
             if ((mParser != TxtFormat) || (!mOutFileName.isEmpty())) {
                 ret << QLatin1String("-o");
                 if (mOutFileName.isEmpty())
-                    ret << QLatin1String("-,") + formats.at((int) mParser);
+                    ret << QLatin1String("-,") + formats.at((int) mParser - 1);
                 else
-                    ret << mOutFileName.toString() + QLatin1String(",") + formats.at((int) mParser);
+                    ret << outFile + QLatin1String(",") + formats.at((int) mParser);
             }
         }
 
