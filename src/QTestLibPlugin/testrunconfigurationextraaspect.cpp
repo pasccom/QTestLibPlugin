@@ -1,4 +1,5 @@
 #include "testrunconfigurationextraaspect.h"
+#include "qtestlibpluginconstants.h"
 
 #include "Utils/filetypevalidatinglineedit.h"
 
@@ -175,7 +176,7 @@ TestRunConfigurationExtraAspect::TestRunConfigurationExtraAspect(ProjectExplorer
 {
     mTestArgsParser = new QTestLibArgsParser;
 
-    setId(Core::Id());
+    setId(Core::Id(Constants::TestRunConfigurationExtraAspectId));
     setDisplayName(tr("Test settings"));
 }
 

@@ -1,5 +1,6 @@
 #include "qmaketestrunconfigurationfactory.h"
 #include "testrunconfiguration.h"
+#include "qtestlibpluginconstants.h"
 
 #include <projectexplorer/target.h>
 #include <projectexplorer/kit.h>
@@ -86,7 +87,7 @@ TestRunConfiguration* QMakeTestRunConfigurationFactory::create(ProjectExplorer::
             return testRunConfig;
     }
 
-    TestRunConfiguration* runConfig = new TestRunConfiguration(target, Core::Id());
+    TestRunConfiguration* runConfig = new TestRunConfiguration(target, Core::Id(Constants::TestRunConfigurationId));
     target->addRunConfiguration(runConfig);
 
     return runConfig;
