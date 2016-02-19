@@ -2,7 +2,7 @@
 
 #include "testrunconfigurationextraaspect.h"
 
-#include <utils/filenamevalidatinglineedit.h>
+#include "Utils/filetypevalidatinglineedit.h"
 
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/kitinformation.h>
@@ -19,17 +19,17 @@ TestRunConfigurationData::TestRunConfigurationData(ProjectExplorer::Target *targ
     :  jobNumber(1), testRunner(), workingDirectory(QLatin1String(".")), mAutoMakeExe(), mMakeExe()
 {
     if (target != NULL) {
-        Utils::Environment env = target->activeBuildConfiguration()->environment();
+        QtcUtils::Environment env = target->activeBuildConfiguration()->environment();
         ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit());
-        mAutoMakeExe = Utils::FileName::fromString(toolChain->makeCommand(env));
+        mAutoMakeExe = QtcUtils::FileName::fromString(toolChain->makeCommand(env));
     }
 }
 
 void TestRunConfigurationData::setMakeExe(const QString& path)
 {
-    Utils::FileName makeExe = Utils::FileName::fromUserInput(path);
+    QtcUtils::FileName makeExe = QtcUtils::FileName::fromUserInput(path);
 
-    mMakeExe = (mAutoMakeExe == makeExe ? Utils::FileName() : makeExe);
+    mMakeExe = (mAutoMakeExe == makeExe ? QtcUtils::FileName() : makeExe);
 }
 
 QStringList TestRunConfigurationData::commandLineArguments(void) const
@@ -40,10 +40,7 @@ QStringList TestRunConfigurationData::commandLineArguments(void) const
         cmdArgs << QString(QLatin1String("-j%1")).arg(jobNumber);
     cmdArgs << QLatin1String("check");
     if (!testRunner.isEmpty())
-        cmdArgs << QString(QLatin1String("TESTRUNNER=%1")).arg(testRunner);
-    /*if (!testCmdArgs.isEmpty())
-        cmdArgs << QString(QLatin1String("TESTARGS=\"%1\"")).arg(testCmdArgs.join(QLatin1Char(' ')));*/
-    qDebug() << cmdArgs;
+        cmdArgs << QString(QLatin1String("TESTRUNNER=\"%1\"")).arg(testRunner);
 
     return cmdArgs;
 }
@@ -76,20 +73,24 @@ QString TestRunConfiguration::commandLineArguments(void) const
     QStringList testCmdArgs = extraAspect<TestRunConfigurationExtraAspect>()->commandLineArguments();
     cmdArgs << QString(QLatin1String("TESTARGS=\"%1\"")).arg(testCmdArgs.join(QLatin1Char(' ')));
 
+    qDebug() << "Command line arguments:" << cmdArgs;
+
     return cmdArgs.join(QLatin1Char(' '));
 }
 
 TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData* data, QWidget* parent)
     : QWidget(parent), mData(data)
 {
-    mWorkingDirectoryEdit = new Utils::FileNameValidatingLineEdit(this);
-    mWorkingDirectoryEdit->setAllowDirectories(true);
+    mWorkingDirectoryEdit = new Utils::FileTypeValidatingLineEdit(this);
+    mWorkingDirectoryEdit->setAcceptDirectories(true);
+    mWorkingDirectoryEdit->setText(mData->workingDirectory);
     mWorkingDirectoryLabel = new QLabel(tr("Working directory:"), this);
     mWorkingDirectoryLabel->setBuddy(mWorkingDirectoryEdit);
     mWorkingDirectoryButton = new QPushButton(tr("Browse..."), this);
-    mMakeExeEdit = new Utils::FileNameValidatingLineEdit(this);
-    mMakeExeEdit->setAllowDirectories(false);
-    if (Utils::HostOsInfo::isWindowsHost())
+    mMakeExeEdit = new Utils::FileTypeValidatingLineEdit(this);
+    mMakeExeEdit->setRequireExecutable(true);
+    mMakeExeEdit->setText(mData->makeExe());
+    if (QtcUtils::HostOsInfo::isWindowsHost())
         mMakeExeEdit->setRequiredExtensions(QStringList() << QLatin1String("exe"));
     else
         mMakeExeEdit->setRequiredExtensions(QStringList());
@@ -97,12 +98,16 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mMakeExeLabel->setBuddy(mMakeExeEdit);
     mMakeExeDetectButton = new QPushButton(tr("Auto-detect"), this);
     mMakeExeBrowseButton = new QPushButton(tr("Browse..."), this);
-    mTestRunnerEdit = new Utils::FileNameValidatingLineEdit(this);
-    mTestRunnerEdit->setAllowDirectories(false);
+    mTestRunnerEdit = new Utils::FileTypeValidatingLineEdit(this);
+    mTestRunnerEdit->setAcceptEmpty(true);
+    mTestRunnerEdit->setRequireExecutable(true);
+    mTestRunnerEdit->setText(mData->testRunner);
     mTestRunnerLabel = new QLabel(tr("Test runner:"), this);
     mTestRunnerLabel->setBuddy(mTestRunnerLabel);
     mTestRunnerButton = new QPushButton(tr("Browse..."), this);
     mJobsSpin = new QSpinBox(this);
+    mJobsSpin->setRange(1, QThread::idealThreadCount());
+    mJobsSpin->setValue(mData->jobNumber);
     mJobsLabel = new QLabel(tr("Number of jobs (for \"make\"):"), this);
     mJobsLabel->setBuddy(mJobsSpin);
 
@@ -123,6 +128,100 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mainLayout->setColumnStretch(1, 1);
 
     setLayout(mainLayout);
+
+    connect(mWorkingDirectoryEdit, SIGNAL(validChanged(bool)),
+            this, SLOT(updateWorkingDirectory(bool)));
+    connect(mWorkingDirectoryEdit, SIGNAL(editingFinished()),
+            this, SLOT(updateWorkingDirectory()));
+    connect(mWorkingDirectoryButton, SIGNAL(released()),
+            this, SLOT(browseWorkingDirectory()));
+
+    connect(mMakeExeEdit, SIGNAL(validChanged(bool)),
+            this, SLOT(updateMakeExe(bool)));
+    connect(mMakeExeEdit, SIGNAL(editingFinished()),
+            this, SLOT(updateMakeExe()));
+    connect(mMakeExeDetectButton, SIGNAL(released()),
+            this, SLOT(autoDetectMakeExe()));
+    connect(mMakeExeBrowseButton, SIGNAL(released()),
+            this, SLOT(browseMakeExe()));
+
+    connect(mTestRunnerEdit, SIGNAL(validChanged(bool)),
+            this, SLOT(updateTestRunner(bool)));
+    connect(mTestRunnerEdit, SIGNAL(editingFinished()),
+            this, SLOT(updateTestRunner()));
+    connect(mTestRunnerButton, SIGNAL(released()),
+            this, SLOT(browseTestRunner()));
+}
+
+void TestRunConfigurationWidget::updateWorkingDirectory(bool valid)
+{
+    if (valid)
+        mData->workingDirectory = mWorkingDirectoryEdit->text();
+}
+
+void TestRunConfigurationWidget::updateWorkingDirectory(void)
+{
+    if (!mWorkingDirectoryEdit->isValid())
+        mWorkingDirectoryEdit->setText(mData->workingDirectory);
+}
+
+void TestRunConfigurationWidget::browseWorkingDirectory(void)
+{
+    QString wd = QFileDialog::getExistingDirectory(this, tr("Choose working directory"), mData->workingDirectory);
+
+    if (!wd.isNull())
+        mData->workingDirectory = wd;
+    mWorkingDirectoryEdit->setText(mData->workingDirectory);
+}
+
+void TestRunConfigurationWidget::updateMakeExe(bool valid)
+{
+    if (valid)
+        mData->setMakeExe(mMakeExeEdit->text());
+}
+
+void TestRunConfigurationWidget::updateMakeExe(void)
+{
+    if (!mMakeExeEdit->isValid())
+        mMakeExeEdit->setText(mData->makeExe());
+}
+
+void TestRunConfigurationWidget::autoDetectMakeExe(void)
+{
+    mData->useDefaultMakeExe();
+    mMakeExeEdit->setText(mData->makeExe());
+}
+void TestRunConfigurationWidget::browseMakeExe(void)
+{
+    QString filter;
+    if (QtcUtils::HostOsInfo::isWindowsHost())
+        filter = tr("Exécutable files *.exe");
+
+    QString me = QFileDialog::getOpenFileName(this, tr("Choose \"make\""), mData->makeExe(), filter, &filter);
+
+    if (!me.isNull())
+        mData->setMakeExe(me);
+    mMakeExeEdit->setText(mData->makeExe());
+}
+
+void TestRunConfigurationWidget::updateTestRunner(bool valid)
+{
+    if (valid)
+        mData->testRunner = mTestRunnerEdit->text();
+}
+
+void TestRunConfigurationWidget::updateTestRunner(void)
+{
+    if (!mTestRunnerEdit->isValid())
+        mTestRunnerEdit->setText(mData->testRunner);
+}
+
+void TestRunConfigurationWidget::browseTestRunner(void)
+{
+    QString runner = QFileDialog::getOpenFileName(this, tr("Choose test runner"), mData->testRunner);
+    if (!runner.isNull())
+        mData->testRunner = runner;
+    mTestRunnerEdit->setText(mData->testRunner);
 }
 
 } // Internal

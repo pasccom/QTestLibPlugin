@@ -1,6 +1,6 @@
 #include "testrunconfigurationextraaspect.h"
 
-#include <utils/filenamevalidatinglineedit.h>
+#include "Utils/filetypevalidatinglineedit.h"
 
 #include <QtWidgets>
 
@@ -11,27 +11,54 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     ProjectExplorer::RunConfigWidget(), mAspect(aspect)
 {
     mFormatCombo = new QComboBox(this);
+    mFormatCombo->addItem(tr("Text format"), QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>(QTestLibArgsParser::TxtFormat));
+    //mFormatCombo->addItem(tr("CSV format"), QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>(QTestLibArgsParser::CsvFormat));
+    mFormatCombo->addItem(tr("XML format"), QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>(QTestLibArgsParser::XmlFormat));
+    mFormatCombo->addItem(tr("Light XML format"), QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>(QTestLibArgsParser::LightXmlFormat));
+    mFormatCombo->addItem(tr("XUnit XML format"), QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>(QTestLibArgsParser::XUnitXmlFormat));
     mFormatLabel = new QLabel(tr("Test output format:"), this);
     mFormatLabel->setBuddy(mFormatCombo);
     mVerbosityCombo = new QComboBox(this);
+    mVerbosityCombo->addItem(tr("Silent"), QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(QTestLibArgsParser::Silent));
+    mVerbosityCombo->addItem(tr("Normal"), QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(QTestLibArgsParser::NormalVerbosity));
+    mVerbosityCombo->addItem(tr("Verbose"), QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(QTestLibArgsParser::Verbose1));
+    mVerbosityCombo->addItem(tr("Very verbose"), QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(QTestLibArgsParser::Verbose2));
+    mVerbosityCombo->addItem(tr("Signals"), QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(QTestLibArgsParser::VerboseSignal));
+    //mVerbosityCombo->addItem(tr("Silent"), QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(QTestLibArgsParser::VerboseBenchmark));
     mVerbosityLabel = new QLabel(tr("Test output verbosity:"), this);
     mVerbosityLabel->setBuddy(mVerbosityCombo);
-    mOutFileEdit = new Utils::FileNameValidatingLineEdit(this);
-    mOutFileEdit->setAllowDirectories(false);
+    mOutFileEdit = new Utils::FileTypeValidatingLineEdit(this);
+    mOutFileEdit->setAcceptNew(true);
+    mOutFileEdit->setRequireWritable(true);
     mOutFileLabel = new QLabel(tr("Test output file:"), this);
     mOutFileLabel->setBuddy(mOutFileEdit);
     mOutFileButton =  new QPushButton(tr("Browse..."), this);
     mWarningCheck = new QCheckBox(tr("Maximum number of messages"), this);
     mWarningSpin = new QSpinBox(this);
+    mWarningSpin->setMinimum(0);
+    mWarningSpin->setMaximum(INT_MAX);
+    mWarningSpin->setSingleStep(100);
     mWarningSpin->setEnabled(false);
     mEventDelayCheck = new QCheckBox(tr("Event simulation delay"), this);
     mEventDelaySpin = new QSpinBox(this);
+    mEventDelaySpin->setMinimum(0);
+    mEventDelaySpin->setMaximum(10000);
+    mEventDelaySpin->setSingleStep(10);
+    mEventDelaySpin->setSuffix(tr(" ms"));
     mEventDelaySpin->setEnabled(false);
     mKeyDelayCheck = new QCheckBox(tr("Keyboard simulation delay"),this);
     mKeyDelaySpin = new QSpinBox(this);
+    mKeyDelaySpin->setMinimum(0);
+    mKeyDelaySpin->setMaximum(10000);
+    mKeyDelaySpin->setSingleStep(10);
+    mKeyDelaySpin->setSuffix(tr(" ms"));
     mKeyDelaySpin->setEnabled(false);
     mMouseDelayCheck = new QCheckBox(tr("Mouse simulation delay"),this);
     mMouseDelaySpin = new QSpinBox(this);
+    mMouseDelaySpin->setMinimum(0);
+    mMouseDelaySpin->setMaximum(10000);
+    mMouseDelaySpin->setSingleStep(10);
+    mMouseDelaySpin->setSuffix(tr(" ms"));
     mMouseDelaySpin->setEnabled(false);
 
     QBoxLayout* outFileLayout = new QHBoxLayout;
@@ -61,6 +88,18 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
 
     setLayout(mainLayout);
 
+    connect(mFormatCombo, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(updateFormat(int)));
+    connect(mVerbosityCombo, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(updateVerbosity(int)));
+
+    connect(mOutFileEdit, SIGNAL(validChanged(bool)),
+            this, SLOT(updateOutFile(bool)));
+    connect(mOutFileEdit, SIGNAL(editingFinished()),
+            this, SLOT(updateOutFile()));
+    connect(mOutFileButton, SIGNAL(released()),
+            this, SLOT(browseOutFile()));
+
     connect(mWarningCheck, SIGNAL(toggled(bool)),
             mWarningSpin, SLOT(setEnabled(bool)));
     connect(mEventDelayCheck, SIGNAL(toggled(bool)),
@@ -69,6 +108,66 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
             mKeyDelaySpin, SLOT(setEnabled(bool)));
     connect(mMouseDelayCheck, SIGNAL(toggled(bool)),
             mMouseDelaySpin, SLOT(setEnabled(bool)));
+    connect(mWarningSpin, SIGNAL(valueChanged(int)),
+            this, SLOT(updateMaxWarnings(int)));
+    connect(mEventDelaySpin, SIGNAL(valueChanged(int)),
+            this, SLOT(updateEventDelay(int)));
+    connect(mKeyDelaySpin, SIGNAL(valueChanged(int)),
+            this, SLOT(updateKeyDelay(int)));
+    connect(mMouseDelaySpin, SIGNAL(valueChanged(int)),
+            this, SLOT(updateMouseDelay(int)));
+}
+
+void TestRunConfigWidget::updateFormat(int index)
+{
+    QTC_ASSERT(mFormatCombo->itemData(index).canConvert<QTestLibArgsParser::TestOutputFormat>(), return);
+    mAspect->mTestArgsParser->setOutputFormat(mFormatCombo->itemData(index).value<QTestLibArgsParser::TestOutputFormat>());
+}
+
+void TestRunConfigWidget::updateVerbosity(int index)
+{
+    QTC_ASSERT(mVerbosityCombo->itemData(index).canConvert<QTestLibArgsParser::TestVerbosity>(), return);
+    mAspect->mTestArgsParser->setVerbosity(mVerbosityCombo->itemData(index).value<QTestLibArgsParser::TestVerbosity>());
+}
+
+void TestRunConfigWidget::updateOutFile(bool valid)
+{
+    if (valid)
+        mAspect->mTestArgsParser->setOutFileName(QtcUtils::FileName::fromString(mOutFileEdit->text()));
+}
+
+void TestRunConfigWidget::updateOutFile(void)
+{
+    if (!mOutFileEdit->isValid())
+        mOutFileEdit->setText(mAspect->mTestArgsParser->outFileName().toString());
+}
+
+void TestRunConfigWidget::browseOutFile(void)
+{
+    QString outFile = QFileDialog::getSaveFileName(this, tr("Choose test output file"), mAspect->mTestArgsParser->outFileName().toString());
+    if (!outFile.isNull())
+        mAspect->mTestArgsParser->setOutFileName(QtcUtils::FileName::fromString(outFile));
+    updateOutFile();
+}
+
+void TestRunConfigWidget::updateMaxWarnings(int value)
+{
+    mAspect->mTestArgsParser->setMaxWarnings(value);
+}
+
+void TestRunConfigWidget::updateEventDelay(int value)
+{
+    mAspect->mTestArgsParser->setEventDelay(value);
+}
+
+void TestRunConfigWidget::updateKeyDelay(int value)
+{
+    mAspect->mTestArgsParser->setKeyDelay(value);
+}
+
+void TestRunConfigWidget::updateMouseDelay(int value)
+{
+    mAspect->mTestArgsParser->setMouseDelay(value);
 }
 
 TestRunConfigurationExtraAspect::TestRunConfigurationExtraAspect(ProjectExplorer::RunConfiguration* parent) :

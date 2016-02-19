@@ -11,11 +11,11 @@ class QCheckBox;
 class QPushButton;
 class QSpinBox;
 
+namespace QTestLibPlugin {
 namespace Utils {
-    class FileNameValidatingLineEdit;
+    class FileTypeValidatingLineEdit;
 }
 
-namespace QTestLibPlugin {
 namespace Internal {
 
 class TestRunConfigurationExtraAspect;
@@ -26,6 +26,18 @@ class TestRunConfigWidget : public ProjectExplorer::RunConfigWidget
 public:
     TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect);
     inline QString displayName() const {return tr("Test arguments");}
+private slots:
+    void updateFormat(int index);
+    void updateVerbosity(int index);
+
+    void updateOutFile(bool valid);
+    void updateOutFile(void);
+    void browseOutFile(void);
+
+    void updateMaxWarnings(int value);
+    void updateEventDelay(int value);
+    void updateKeyDelay(int value);
+    void updateMouseDelay(int value);
 private:
     TestRunConfigurationExtraAspect* mAspect;
 
@@ -34,7 +46,7 @@ private:
     QLabel* mVerbosityLabel;
     QComboBox* mVerbosityCombo;
     QLabel* mOutFileLabel;
-    Utils::FileNameValidatingLineEdit* mOutFileEdit;
+    Utils::FileTypeValidatingLineEdit* mOutFileEdit;
     QPushButton* mOutFileButton;
     QCheckBox* mWarningCheck;
     QSpinBox* mWarningSpin;

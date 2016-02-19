@@ -4,6 +4,7 @@
 #include "qtestlibargsparser.h"
 
 #include <utils/fileutils.h>
+namespace QtcUtils = Utils;
 
 #include <projectexplorer/localapplicationrunconfiguration.h>
 #include <projectexplorer/applicationlauncher.h>
@@ -14,15 +15,16 @@ class QLabel;
 class QPushButton;
 class QSpinBox;
 
-namespace Utils {
-    class FileNameValidatingLineEdit;
-}
 
 namespace ProjectExplorer {
     class Kit;
 }
 
 namespace QTestLibPlugin {
+namespace Utils {
+    class FileTypeValidatingLineEdit;
+}
+
 namespace Internal {
 
 class TestRunConfigurationData
@@ -32,7 +34,7 @@ public:
 
     inline QString makeExe(void) const {return mMakeExe.isNull() ? mAutoMakeExe.toString() : mMakeExe.toString();}
     inline bool usesDefaultMakeExe(void) const {return mMakeExe.isNull();}
-    inline void useDefaultMakeExe(void) {mMakeExe = Utils::FileName();}
+    inline void useDefaultMakeExe(void) {mMakeExe = QtcUtils::FileName();}
     void setMakeExe(const QString& path);
 
     QStringList commandLineArguments(void) const;
@@ -41,8 +43,8 @@ public:
     QString testRunner;
     QString workingDirectory;
 private:
-    Utils::FileName mAutoMakeExe;
-    Utils::FileName mMakeExe;
+    QtcUtils::FileName mAutoMakeExe;
+    QtcUtils::FileName mMakeExe;
 };
 
 class TestRunConfigurationWidget : public QWidget
@@ -50,18 +52,31 @@ class TestRunConfigurationWidget : public QWidget
     Q_OBJECT
 public:
     TestRunConfigurationWidget(TestRunConfigurationData* data, QWidget* parent = NULL);
+private slots:
+    void updateWorkingDirectory(bool valid);
+    void updateWorkingDirectory(void);
+    void browseWorkingDirectory(void);
+
+    void updateMakeExe(bool valid);
+    void updateMakeExe(void);
+    void autoDetectMakeExe(void);
+    void browseMakeExe(void);
+
+    void updateTestRunner(bool valid);
+    void updateTestRunner(void);
+    void browseTestRunner(void);
 private:
     TestRunConfigurationData* mData;
 
     QLabel* mWorkingDirectoryLabel;
-    Utils::FileNameValidatingLineEdit* mWorkingDirectoryEdit;
+    Utils::FileTypeValidatingLineEdit* mWorkingDirectoryEdit;
     QPushButton* mWorkingDirectoryButton;
     QLabel* mMakeExeLabel;
-    Utils::FileNameValidatingLineEdit* mMakeExeEdit;
+    Utils::FileTypeValidatingLineEdit* mMakeExeEdit;
     QPushButton* mMakeExeDetectButton;
     QPushButton* mMakeExeBrowseButton;
     QLabel* mTestRunnerLabel;
-    Utils::FileNameValidatingLineEdit* mTestRunnerEdit;
+    Utils::FileTypeValidatingLineEdit* mTestRunnerEdit;
     QPushButton* mTestRunnerButton;
     QLabel* mJobsLabel;
     QSpinBox* mJobsSpin;
