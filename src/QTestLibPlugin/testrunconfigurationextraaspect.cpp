@@ -74,6 +74,8 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
 TestRunConfigurationExtraAspect::TestRunConfigurationExtraAspect(ProjectExplorer::RunConfiguration* parent) :
   ProjectExplorer::IRunConfigurationAspect(parent)
 {
+    mTestArgsParser = new QTestLibArgsParser;
+
     setId(Core::Id());
     setDisplayName(tr("Test settings"));
 }
