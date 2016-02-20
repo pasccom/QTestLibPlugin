@@ -37,6 +37,9 @@ public:
     inline void useDefaultMakeExe(void) {mMakeExe = QtcUtils::FileName();}
     void setMakeExe(const QString& path);
 
+    QVariantMap toMap(QVariantMap& map) const;
+    bool fromMap(const QVariantMap& map);
+
     QStringList commandLineArguments(void) const;
 
     int jobNumber;
@@ -90,11 +93,16 @@ class TestRunConfiguration : public ProjectExplorer::LocalApplicationRunConfigur
     Q_OBJECT
 public:
     ~TestRunConfiguration();
+
     inline QWidget* createConfigurationWidget(void) {return new TestRunConfigurationWidget(mData);}
+
     virtual inline QString executable() const {return mData->makeExe();}
     virtual inline ProjectExplorer::ApplicationLauncher::Mode runMode(void) const {return ProjectExplorer::ApplicationLauncher::Gui;}
     inline QString workingDirectory(void) const {return mData->workingDirectory;}
     QString commandLineArguments(void) const;
+
+    QVariantMap toMap(void) const;
+    bool fromMap(const QVariantMap& map);
 private:
     TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id);
 

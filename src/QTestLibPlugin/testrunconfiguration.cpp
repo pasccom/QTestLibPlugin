@@ -1,6 +1,7 @@
 #include "testrunconfiguration.h"
 
 #include "testrunconfigurationextraaspect.h"
+#include "qtestlibpluginconstants.h"
 
 #include "Utils/filetypevalidatinglineedit.h"
 
@@ -45,6 +46,29 @@ QStringList TestRunConfigurationData::commandLineArguments(void) const
     return cmdArgs;
 }
 
+QVariantMap TestRunConfigurationData::toMap(QVariantMap& map) const
+{
+    if (workingDirectory != QLatin1String("."))
+        map.insert(Constants::WorkingDirectoryKey, workingDirectory);
+    if (!mMakeExe.isNull())
+        map.insert(Constants::MakeExeKey, mMakeExe.toString());
+    if (!testRunner.isEmpty())
+        map.insert(Constants::TestRunnerKey, testRunner);
+    if (jobNumber != 1)
+        map.insert(Constants::MakeJobNumberKey, jobNumber);
+    return map;
+}
+
+bool TestRunConfigurationData::fromMap(const QVariantMap& map)
+{
+    workingDirectory = map.value(Constants::WorkingDirectoryKey, QLatin1String(".")).toString();
+    mMakeExe = QtcUtils::FileName::fromString(map.value(Constants::MakeExeKey, QString()).toString());
+    testRunner = map.value(Constants::TestRunnerKey, QString()).toString();
+    jobNumber = map.value(Constants::MakeJobNumberKey, 1).toInt();
+
+    return true;
+}
+
 TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id):
     ProjectExplorer::LocalApplicationRunConfiguration(parent, id)
 {
@@ -65,6 +89,23 @@ TestRunConfiguration::~TestRunConfiguration()
 {
     delete mData;
 }
+
+QVariantMap TestRunConfiguration::toMap(void) const
+{
+    QVariantMap map(ProjectExplorer::RunConfiguration::toMap());
+    map = mData->toMap(map);
+
+    qDebug() << __func__ << map;
+    return map;
+}
+
+bool TestRunConfiguration::fromMap(const QVariantMap& map)
+{
+    qDebug() << __func__ << map;
+
+    return mData->fromMap(map) && ProjectExplorer::RunConfiguration::fromMap(map);
+}
+
 
 QString TestRunConfiguration::commandLineArguments(void) const
 {
@@ -158,8 +199,10 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
 
 void TestRunConfigurationWidget::updateWorkingDirectory(bool valid)
 {
-    if (valid)
+    if (valid) {
+        qDebug() << "Saving WD:" << mWorkingDirectoryEdit->text();
         mData->workingDirectory = mWorkingDirectoryEdit->text();
+    }
 }
 
 void TestRunConfigurationWidget::updateWorkingDirectory(void)
@@ -230,6 +273,7 @@ void TestRunConfigurationWidget::browseTestRunner(void)
 
 void TestRunConfigurationWidget::updateJubNumber(int jobNumber)
 {
+    qDebug() << "Saving job number:" << jobNumber;
     mData->jobNumber = jobNumber;
 }
 

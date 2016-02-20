@@ -61,7 +61,6 @@ QTestLibPluginPlugin::~QTestLibPluginPlugin()
 {
     // Unregister objects from the plugin manager's object pool
     // Delete members
-    delete mRunConfigFactory;
 }
 
 bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *errorString)
@@ -98,6 +97,7 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
     addAutoReleasedObject(xUnitXmlFactory);
 
     mRunConfigFactory = new QMakeTestRunConfigurationFactory;
+    addAutoReleasedObject(mRunConfigFactory);
 
     mOutputPane = new TestOutputPane(mModel);
     addAutoReleasedObject(mOutputPane);
@@ -109,10 +109,11 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
 
     connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl*)),
             mModel, SLOT(appendTestRun(ProjectExplorer::RunControl*)));
-    connect(ProjectExplorer::SessionManager::instance(), SIGNAL(projectAdded(ProjectExplorer::Project*)),
+    // NOTE this is done automatically thanks to QMakeTestRunConfigFactory
+    /*connect(ProjectExplorer::SessionManager::instance(), SIGNAL(projectAdded(ProjectExplorer::Project*)),
             this, SLOT(handleProjectOpen(ProjectExplorer::Project*)));
     connect(ProjectExplorer::SessionManager::instance(), SIGNAL(aboutToRemoveProject(ProjectExplorer::Project*)),
-            this, SLOT(handleProjectClose(ProjectExplorer::Project*)));
+            this, SLOT(handleProjectClose(ProjectExplorer::Project*)));*/
 
     return true;
 }
@@ -138,15 +139,15 @@ ExtensionSystem::IPlugin::ShutdownFlag QTestLibPluginPlugin::aboutToShutdown(voi
 }
 
 
-void QTestLibPluginPlugin::handleProjectOpen(ProjectExplorer::Project* project)
+/*void QTestLibPluginPlugin::handleProjectOpen(ProjectExplorer::Project* project)
 {
     // TODO remove it!
     qDebug() << "Opened project:" << project->displayName();
 
     foreach (ProjectExplorer::Target *t, project->targets()) {
-        qDebug() << "    Target:" << t->displayName();
+        qDebug() << "    Target:" << t->displayName() << t->metaObject()->className() << t->id().toString();
         foreach (ProjectExplorer::RunConfiguration* r, t->runConfigurations()) {
-            qDebug() << "        Run config:" << r->displayName();
+            qDebug() << "        Run config:" << r->displayName() << r->metaObject()->className() << r->id().toString();
         }
     }
 
@@ -154,17 +155,17 @@ void QTestLibPluginPlugin::handleProjectOpen(ProjectExplorer::Project* project)
     if (qMakeProject != NULL)
         connect(qMakeProject, SIGNAL(proFilesEvaluated()),
                 this, SLOT(updateProjectTargets()));
-}
+}*/
 
-void QTestLibPluginPlugin::handleProjectClose(ProjectExplorer::Project* project)
+/*void QTestLibPluginPlugin::handleProjectClose(ProjectExplorer::Project* project)
 {
     // TODO remove it!
     qDebug() << "Opened project:" << project->displayName();
 
     foreach (ProjectExplorer::Target *t, project->targets()) {
-        qDebug() << "    Target:" << t->displayName();
+        qDebug() << "    Target:" << t->displayName() << t->metaObject()->className() << t->id().toString();
         foreach (ProjectExplorer::RunConfiguration* r, t->runConfigurations()) {
-            qDebug() << "        Run config:" << r->displayName();
+            qDebug() << "        Run config:" << r->displayName() << r->metaObject()->className() << r->id().toString();
         }
     }
 
@@ -172,9 +173,9 @@ void QTestLibPluginPlugin::handleProjectClose(ProjectExplorer::Project* project)
     if (qMakeProject != NULL)
         disconnect(qMakeProject, SIGNAL(proFilesEvaluated()),
                    this, SLOT(updateProjectTargets()));
-}
+}*/
 
-void QTestLibPluginPlugin::updateProjectTargets(void)
+/*void QTestLibPluginPlugin::updateProjectTargets(void)
 {
     ProjectExplorer::Project* project = qobject_cast<ProjectExplorer::Project*>(sender());
 
@@ -182,4 +183,4 @@ void QTestLibPluginPlugin::updateProjectTargets(void)
         mRunConfigFactory->createForAllTargets(project);
     else
         mRunConfigFactory->removeForAllTargets(project);
-}
+}*/
