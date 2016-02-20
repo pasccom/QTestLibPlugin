@@ -108,20 +108,28 @@ void QMakeTestRunConfigurationFactory::createForAllTargets(ProjectExplorer::Proj
     foreach (ProjectExplorer::Target* t, project->targets()) {
         if (canHandle(t))
             create(t);
-        connect(t, &ProjectExplorer::Target::kitChanged,
-                this, [this, t] () {
-            if (canHandle(t))
-                create(t);
-            else
-                remove(t);
-        });
+        connect(t, SIGNAL(kitChanged()),
+                this, SLOT(updateTargetKit()));
     }
+}
+
+void QMakeTestRunConfigurationFactory::updateTargetKit(void)
+{
+    ProjectExplorer::Target* target = qobject_cast<ProjectExplorer::Target*>(sender());
+    Q_ASSERT(target != NULL);
+
+    if (canHandle(target))
+        create(target);
+    else
+        remove(target);
 }
 
 void QMakeTestRunConfigurationFactory::removeForAllTargets(ProjectExplorer::Project* project)
 {
-    foreach (ProjectExplorer::Target* t, project->targets())
+    foreach (ProjectExplorer::Target* t, project->targets()) {
         remove(t);
+        disconnect(t, SIGNAL(kitChanged()), this, SLOT(updateTargetKit()));
+    }
 }
 
 } // Internal

@@ -29,6 +29,8 @@ public:
     void remove(ProjectExplorer::Target* target);
     void createForAllTargets(ProjectExplorer::Project* project);
     void removeForAllTargets(ProjectExplorer::Project* project);
+private slots:
+    void updateTargetKit(void);
 };
 
 } // Internal
