@@ -44,6 +44,8 @@ const QString MakeJobNumberKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".JobNu
 // IDs:
 const char TestRunConfigurationId [] = TEST_RUN_CONFIGURATION_ID;
 const char TestRunConfigurationExtraAspectId [] = "QTestlibPlugin.TestRunConfigurationExtraAspect";
+const char TestRunMenuId[] = "QTestLibPlugin.Menu.TestRun";
+const char TestRunActionId[] = "QTestLibPlugin.Action.TestRun";
 
 } // namespace QTestLibPlugin
 } // namespace Constants
