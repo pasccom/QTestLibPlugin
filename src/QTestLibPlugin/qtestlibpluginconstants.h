@@ -21,18 +21,28 @@
 
 #include <QString>
 
+#define TEST_RUN_CONFIGURATION_ID "QTestLibPlugin.TestRunConfiguration"
+
 namespace QTestLibPlugin {
 namespace Constants {
 
 const QString PluginName = QLatin1String("QTestLibPlugin");
 
+// Viewer settings:
 const QString FilterProxyGroup = QLatin1String("FilterProxy");
 const QString ViewGroup = QLatin1String("View");
 const QString DescWidthKey = QLatin1String("DescWidth");
 const QString FileWidthKey = QLatin1String("FileWidth");
 const QString LineWidthKey = QLatin1String("LineWidth");
 
-const char TestRunConfigurationId [] = "QTestLibPlugin.TestRunConfiguration";
+// Test run configuration settings:
+const QString WorkingDirectoryKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".WorkingDirectory");
+const QString MakeExeKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".MakeExe");
+const QString TestRunnerKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".TestRunner");
+const QString MakeJobNumberKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".JobNumber");
+
+// IDs:
+const char TestRunConfigurationId [] = TEST_RUN_CONFIGURATION_ID;
 const char TestRunConfigurationExtraAspectId [] = "QTestlibPlugin.TestRunConfigurationExtraAspect";
 
 } // namespace QTestLibPlugin
