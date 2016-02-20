@@ -23,8 +23,14 @@
 
 #include <extensionsystem/iplugin.h>
 
+namespace Core {
+    class ActionContainer;
+}
+
 namespace ProjectExplorer {
     class Project;
+    class Target;
+    class RunConfiguration;
 }
 
 namespace QTestLibPlugin {
@@ -47,13 +53,19 @@ public:
     void extensionsInitialized(void);
     ShutdownFlag aboutToShutdown(void);
 private slots:
-    /*void handleProjectOpen(ProjectExplorer::Project* project);
+    void handleProjectOpen(ProjectExplorer::Project* project);
     void handleProjectClose(ProjectExplorer::Project* project);
-    void updateProjectTargets(void);*/
+
+    void handleActiveTargetChange(ProjectExplorer::Target* target);
+
+    void handleNewRunConfiguration(ProjectExplorer::RunConfiguration* runConfig);
+    void handleDeleteRunConfiguration(ProjectExplorer::RunConfiguration* runConfig);
+    /*void updateProjectTargets(void);*/
 private:
     TestSuiteModel* mModel;
     TestOutputPane *mOutputPane;
     QMakeTestRunConfigurationFactory* mRunConfigFactory;
+    Core::ActionContainer* mRunTestsMenu;
 };
 
 } // namespace Internal
