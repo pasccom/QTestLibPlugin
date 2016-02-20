@@ -10,6 +10,10 @@ FileTypeValidatingLineEdit::FileTypeValidatingLineEdit(QWidget* parent) :
 {
     mAccepted |= AcceptsFiles;
     mAccepted |= RequireReadable;
+
+    setValidationFunction([this] (FancyLineEdit* edit, QString* errMsg) {
+        return validate(edit->text(), errMsg);
+    });
 }
 
 bool FileTypeValidatingLineEdit::validate(const QString& value, QString *errorMessage) const
