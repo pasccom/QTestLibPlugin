@@ -21,6 +21,7 @@ TEMPLATE = app
 CONFIG  += console
 CONFIG  -= app_bundle
 CONFIG  += testcase
+CONFIG  += no_testcase_installs
 QT      += testlib
 QT      += xml
 QT      += widgets
