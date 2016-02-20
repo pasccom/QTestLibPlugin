@@ -64,7 +64,6 @@ private slots:
 private:
     TestSuiteModel* mModel;
     TestOutputPane *mOutputPane;
-    QMakeTestRunConfigurationFactory* mRunConfigFactory;
     Core::ActionContainer* mRunTestsMenu;
 };
 

@@ -98,8 +98,8 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
     XUnitXMLQTestLibParserFactory *xUnitXmlFactory = new XUnitXMLQTestLibParserFactory(this);
     addAutoReleasedObject(xUnitXmlFactory);
 
-    mRunConfigFactory = new QMakeTestRunConfigurationFactory;
-    addAutoReleasedObject(mRunConfigFactory);
+    ProjectExplorer::IRunConfigurationFactory* runConfigFactory = new QMakeTestRunConfigurationFactory;
+    addAutoReleasedObject(runConfigFactory);
 
     mRunTestsMenu = Core::ActionManager::createMenu(Constants::TestRunMenuId);
     mRunTestsMenu->menu()->setTitle(tr("Run tests"));
