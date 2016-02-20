@@ -47,7 +47,9 @@ public:
     void extensionsInitialized(void);
     ShutdownFlag aboutToShutdown(void);
 private slots:
-    void testProject(ProjectExplorer::Project* project);
+    void handleProjectOpen(ProjectExplorer::Project* project);
+    void handleProjectClose(ProjectExplorer::Project* project);
+    void updateProjectTargets(void);
 private:
     TestSuiteModel* mModel;
     TestOutputPane *mOutputPane;

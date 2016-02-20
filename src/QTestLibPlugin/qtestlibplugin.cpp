@@ -110,7 +110,9 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
     connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl*)),
             mModel, SLOT(appendTestRun(ProjectExplorer::RunControl*)));
     connect(ProjectExplorer::SessionManager::instance(), SIGNAL(projectAdded(ProjectExplorer::Project*)),
-            this, SLOT(testProject(ProjectExplorer::Project*)));
+            this, SLOT(handleProjectOpen(ProjectExplorer::Project*)));
+    connect(ProjectExplorer::SessionManager::instance(), SIGNAL(aboutToRemoveProject(ProjectExplorer::Project*)),
+            this, SLOT(handleProjectClose(ProjectExplorer::Project*)));
 
     return true;
 }
@@ -136,8 +138,9 @@ ExtensionSystem::IPlugin::ShutdownFlag QTestLibPluginPlugin::aboutToShutdown(voi
 }
 
 
-void QTestLibPluginPlugin::testProject(ProjectExplorer::Project* project)
+void QTestLibPluginPlugin::handleProjectOpen(ProjectExplorer::Project* project)
 {
+    // TODO remove it!
     qDebug() << "Opened project:" << project->displayName();
 
     foreach (ProjectExplorer::Target *t, project->targets()) {
@@ -148,13 +151,35 @@ void QTestLibPluginPlugin::testProject(ProjectExplorer::Project* project)
     }
 
     QmakeProjectManager::QmakeProject *qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject *>(project);
-    if (qMakeProject != NULL) {
-        connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
-                [this, qMakeProject] () {
-            if (mRunConfigFactory->isUseful(qMakeProject))
-                mRunConfigFactory->createForAllTargets(qMakeProject);
-            else
-                mRunConfigFactory->removeForAllTargets(qMakeProject);
-        });
+    if (qMakeProject != NULL)
+        connect(qMakeProject, SIGNAL(proFilesEvaluated()),
+                this, SLOT(updateProjectTargets()));
+}
+
+void QTestLibPluginPlugin::handleProjectClose(ProjectExplorer::Project* project)
+{
+    // TODO remove it!
+    qDebug() << "Opened project:" << project->displayName();
+
+    foreach (ProjectExplorer::Target *t, project->targets()) {
+        qDebug() << "    Target:" << t->displayName();
+        foreach (ProjectExplorer::RunConfiguration* r, t->runConfigurations()) {
+            qDebug() << "        Run config:" << r->displayName();
+        }
     }
+
+    QmakeProjectManager::QmakeProject *qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject *>(project);
+    if (qMakeProject != NULL)
+        disconnect(qMakeProject, SIGNAL(proFilesEvaluated()),
+                   this, SLOT(updateProjectTargets()));
+}
+
+void QTestLibPluginPlugin::updateProjectTargets(void)
+{
+    ProjectExplorer::Project* project = qobject_cast<ProjectExplorer::Project*>(sender());
+
+    if (mRunConfigFactory->isUseful(project))
+        mRunConfigFactory->createForAllTargets(project);
+    else
+        mRunConfigFactory->removeForAllTargets(project);
 }
