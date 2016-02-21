@@ -79,6 +79,7 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
     Q_UNUSED(arguments)
     Q_UNUSED(errorString)
 
+    // Locate QML file for the current language and use it
     QString qmFile = Core::ICore::userInterfaceLanguage();
     if (qmFile.isEmpty())
         qmFile = QLatin1String("en");
@@ -91,6 +92,7 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
     else
         qWarning() << qPrintable(QString(QLatin1String("Translator file \"%1\" not found")).arg(qmFile));
 
+    // Parser factories
     PlainTextQTestLibParserFactory *plainTextFactory = new PlainTextQTestLibParserFactory(this);
     addAutoReleasedObject(plainTextFactory);
     XMLQTestLibParserFactory *xmlFactory = new XMLQTestLibParserFactory(this);
@@ -100,9 +102,11 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
     XUnitXMLQTestLibParserFactory *xUnitXmlFactory = new XUnitXMLQTestLibParserFactory(this);
     addAutoReleasedObject(xUnitXmlFactory);
 
+    // Run configuration factories
     ProjectExplorer::IRunConfigurationFactory* runConfigFactory = new QMakeTestRunConfigurationFactory;
     addAutoReleasedObject(runConfigFactory);
 
+    // New sub-menu in build menu and action in project tree context menu
     mRunTestsMenu = Core::ActionManager::createMenu(Constants::TestRunMenuId);
     mRunTestsMenu->menu()->setTitle(tr("Run tests"));
     Core::ActionContainer* buildMenu = Core::ActionManager::actionContainer(ProjectExplorer::Constants::M_BUILDPROJECT);
@@ -118,14 +122,17 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
     cmd->setAttribute(Core::Command::CA_NonConfigurable);
     projectContextMenu->addAction(cmd, ProjectExplorer::Constants::G_PROJECT_RUN);
 
+    // Output pane
     mOutputPane = new TestOutputPane(mModel);
     addAutoReleasedObject(mOutputPane);
 
+    // Load plugin settings
     QSettings *settings = Core::ICore::settings(QSettings::UserScope);
     settings->beginGroup(QTestLibPlugin::Constants::PluginName);
     mOutputPane->loadSettings(settings);
     settings->endGroup();
 
+    // Connections
     connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl*)),
             mModel, SLOT(appendTestRun(ProjectExplorer::RunControl*)));
     connect(ProjectExplorer::SessionManager::instance(), SIGNAL(projectAdded(ProjectExplorer::Project*)),
@@ -153,10 +160,12 @@ ExtensionSystem::IPlugin::ShutdownFlag QTestLibPluginPlugin::aboutToShutdown(voi
     // Disconnect from signals that are not needed during shutdown
     // Hide UI (if you add UI that is not in the main window directly)
 
+    // Save plugin settings
     QSettings *settings = Core::ICore::settings(QSettings::UserScope);
     settings->beginGroup(QTestLibPlugin::Constants::PluginName);
     mOutputPane->saveSettings(settings);
     settings->endGroup();
+
     return SynchronousShutdown;
 }
 
