@@ -35,9 +35,13 @@ private slots:
     void browseOutFile(void);
 
     void updateMaxWarnings(int value);
+    void updateMaxWarnings(bool enabled);
     void updateEventDelay(int value);
+    void updateEventDelay(bool enabled);
     void updateKeyDelay(int value);
+    void updateKeyDelay(bool enabled);
     void updateMouseDelay(int value);
+    void updateMouseDelay(bool enabled);
 private:
     TestRunConfigurationExtraAspect* mAspect;
 

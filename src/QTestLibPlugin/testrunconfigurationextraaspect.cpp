@@ -11,6 +11,9 @@ namespace Internal {
 TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect) :
     ProjectExplorer::RunConfigWidget(), mAspect(aspect)
 {
+    QVariantMap map;
+    mAspect->mTestArgsParser->toMap(map);
+
     mFormatCombo = new QComboBox(this);
     mFormatCombo->addItem(tr("Text format"), QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>(QTestLibArgsParser::TxtFormat));
     //mFormatCombo->addItem(tr("CSV format"), QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>(QTestLibArgsParser::CsvFormat));
@@ -20,6 +23,7 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mFormatCombo->setCurrentIndex(mFormatCombo->findData(QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>(mAspect->mTestArgsParser->outputFormat())));
     mFormatLabel = new QLabel(tr("Test output format:"), this);
     mFormatLabel->setBuddy(mFormatCombo);
+
     mVerbosityCombo = new QComboBox(this);
     mVerbosityCombo->addItem(tr("Silent"), QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(QTestLibArgsParser::Silent));
     mVerbosityCombo->addItem(tr("Normal"), QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(QTestLibArgsParser::NormalVerbosity));
@@ -30,20 +34,26 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mVerbosityCombo->setCurrentIndex(mVerbosityCombo->findData(QVariant::fromValue<QTestLibArgsParser::TestVerbosity>(mAspect->mTestArgsParser->verbosity())));
     mVerbosityLabel = new QLabel(tr("Test output verbosity:"), this);
     mVerbosityLabel->setBuddy(mVerbosityCombo);
+
     mOutFileEdit = new Utils::FileTypeValidatingLineEdit(this);
     mOutFileEdit->setAcceptNew(true);
     mOutFileEdit->setRequireWritable(true);
-    mOutFileEdit->setText(mAspect->mTestArgsParser->outFileName().toString());
+    mOutFileEdit->setText(map.value(Constants::OutputFileKey).toString());
     mOutFileLabel = new QLabel(tr("Test output file:"), this);
     mOutFileLabel->setBuddy(mOutFileEdit);
     mOutFileButton =  new QPushButton(tr("Browse..."), this);
+
     mWarningCheck = new QCheckBox(tr("Maximum number of messages"), this);
     mWarningSpin = new QSpinBox(this);
     mWarningSpin->setMinimum(0);
     mWarningSpin->setMaximum(INT_MAX);
     mWarningSpin->setSingleStep(100);
     mWarningSpin->setValue(mAspect->mTestArgsParser->maxWarnings());
-    mWarningSpin->setEnabled(false);
+    if (map.contains(Constants::MaxWarningKey))
+        mWarningCheck->setChecked(true);
+    else
+        mWarningSpin->setEnabled(false);
+
     mEventDelayCheck = new QCheckBox(tr("Event simulation delay"), this);
     mEventDelaySpin = new QSpinBox(this);
     mEventDelaySpin->setMinimum(0);
@@ -51,7 +61,11 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mEventDelaySpin->setSingleStep(10);
     mEventDelaySpin->setSuffix(tr(" ms"));
     mEventDelaySpin->setValue(mAspect->mTestArgsParser->eventDelay());
-    mEventDelaySpin->setEnabled(false);
+    if (map.contains(Constants::EventDelayKey))
+        mEventDelayCheck->setChecked(true);
+    else
+        mEventDelaySpin->setEnabled(false);
+
     mKeyDelayCheck = new QCheckBox(tr("Keyboard simulation delay"),this);
     mKeyDelaySpin = new QSpinBox(this);
     mKeyDelaySpin->setMinimum(0);
@@ -59,7 +73,11 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mKeyDelaySpin->setSingleStep(10);
     mKeyDelaySpin->setSuffix(tr(" ms"));
     mKeyDelaySpin->setValue(mAspect->mTestArgsParser->keyDelay());
-    mKeyDelaySpin->setEnabled(false);
+    if (map.contains(Constants::KeyDelayKey))
+        mKeyDelayCheck->setChecked(true);
+    else
+        mKeyDelaySpin->setEnabled(false);
+
     mMouseDelayCheck = new QCheckBox(tr("Mouse simulation delay"),this);
     mMouseDelaySpin = new QSpinBox(this);
     mMouseDelaySpin->setMinimum(0);
@@ -67,7 +85,10 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mMouseDelaySpin->setSingleStep(10);
     mMouseDelaySpin->setSuffix(tr(" ms"));
     mMouseDelaySpin->setValue(mAspect->mTestArgsParser->mouseDelay());
-    mMouseDelaySpin->setEnabled(false);
+    if (map.contains(Constants::MouseDelayKey))
+        mMouseDelayCheck->setChecked(true);
+    else
+        mMouseDelaySpin->setEnabled(false);
 
     QBoxLayout* outFileLayout = new QHBoxLayout;
     outFileLayout->setContentsMargins(0, 0, 0, 0);
@@ -109,13 +130,13 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
             this, SLOT(browseOutFile()));
 
     connect(mWarningCheck, SIGNAL(toggled(bool)),
-            mWarningSpin, SLOT(setEnabled(bool)));
+            this, SLOT(updateMaxWarnings(bool)));
     connect(mEventDelayCheck, SIGNAL(toggled(bool)),
-            mEventDelaySpin, SLOT(setEnabled(bool)));
+            this, SLOT(updateEventDelay(bool)));
     connect(mKeyDelayCheck, SIGNAL(toggled(bool)),
-            mKeyDelaySpin, SLOT(setEnabled(bool)));
+            this, SLOT(updateKeyDelay(bool)));
     connect(mMouseDelayCheck, SIGNAL(toggled(bool)),
-            mMouseDelaySpin, SLOT(setEnabled(bool)));
+            this, SLOT(updateMouseDelay(bool)));
     connect(mWarningSpin, SIGNAL(valueChanged(int)),
             this, SLOT(updateMaxWarnings(int)));
     connect(mEventDelaySpin, SIGNAL(valueChanged(int)),
@@ -165,9 +186,27 @@ void TestRunConfigWidget::updateMaxWarnings(int value)
     mAspect->mTestArgsParser->setMaxWarnings(value);
 }
 
+void TestRunConfigWidget::updateMaxWarnings(bool enabled)
+{
+    mWarningSpin->setEnabled(enabled);
+    if (enabled)
+        mAspect->mTestArgsParser->setMaxWarnings(mWarningSpin->value());
+    else
+        mAspect->mTestArgsParser->setMaxWarnings();
+}
+
 void TestRunConfigWidget::updateEventDelay(int value)
 {
     mAspect->mTestArgsParser->setEventDelay(value);
+}
+
+void TestRunConfigWidget::updateEventDelay(bool enabled)
+{
+    mEventDelaySpin->setEnabled(enabled);
+    if (enabled)
+        mAspect->mTestArgsParser->setEventDelay(mEventDelaySpin->value());
+    else
+        mAspect->mTestArgsParser->setEventDelay();
 }
 
 void TestRunConfigWidget::updateKeyDelay(int value)
@@ -175,9 +214,27 @@ void TestRunConfigWidget::updateKeyDelay(int value)
     mAspect->mTestArgsParser->setKeyDelay(value);
 }
 
+void TestRunConfigWidget::updateKeyDelay(bool enabled)
+{
+    mKeyDelaySpin->setEnabled(enabled);
+    if (enabled)
+        mAspect->mTestArgsParser->setKeyDelay(mKeyDelaySpin->value());
+    else
+        mAspect->mTestArgsParser->setKeyDelay();
+}
+
 void TestRunConfigWidget::updateMouseDelay(int value)
 {
     mAspect->mTestArgsParser->setMouseDelay(value);
+}
+
+void TestRunConfigWidget::updateMouseDelay(bool enabled)
+{
+    mMouseDelaySpin->setEnabled(enabled);
+    if (enabled)
+        mAspect->mTestArgsParser->setMouseDelay(mMouseDelaySpin->value());
+    else
+        mAspect->mTestArgsParser->setMouseDelay();
 }
 
 TestRunConfigurationExtraAspect::TestRunConfigurationExtraAspect(ProjectExplorer::RunConfiguration* parent) :
