@@ -336,7 +336,7 @@ public:
      * \param max The maximum number of output messages or \c 0 to disable this limit.
      * \sa maxWarnings()
      */
-    inline void setMaxWarnings(unsigned int max) {mMaxWarnings = max;}
+    inline void setMaxWarnings(unsigned int max = 2000) {mMaxWarnings = max;}
     /*!
      * \brief Event delay
      *
@@ -354,7 +354,7 @@ public:
      * \param delay The event delay (in ms)
      * \sa setKeyDelay(), setMouseDelay(), eventDelay()
      */
-    inline void setEventDelay(int delay) {mEventDelay = delay;}
+    inline void setEventDelay(int delay = -1) {mEventDelay = delay;}
     /*!
      * \brief Keyborad Event delay
      *
@@ -372,7 +372,7 @@ public:
      * \param delay The keyboard event delay (in ms)
      * \sa setEventDelay(), keyDelay()
      */
-    inline void setKeyDelay(int delay) {mKeyDelay =  delay;}
+    inline void setKeyDelay(int delay = -1) {mKeyDelay =  delay;}
     /*!
      * \brief Mouse event delay
      *
@@ -390,7 +390,7 @@ public:
      * \param delay The mouse event delay (in ms)
      * \sa setEventDelay(), mouseDelay()
      */
-    inline void setMouseDelay(int delay) {mMouseDelay = delay;}
+    inline void setMouseDelay(int delay = -1) {mMouseDelay = delay;}
 
     /*!
      * \brief Is test output?
