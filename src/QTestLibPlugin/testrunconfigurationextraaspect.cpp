@@ -42,32 +42,32 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mWarningSpin->setMinimum(0);
     mWarningSpin->setMaximum(INT_MAX);
     mWarningSpin->setSingleStep(100);
-    mWarningSpin->setEnabled(false);
     mWarningSpin->setValue(mAspect->mTestArgsParser->maxWarnings());
+    mWarningSpin->setEnabled(false);
     mEventDelayCheck = new QCheckBox(tr("Event simulation delay"), this);
     mEventDelaySpin = new QSpinBox(this);
     mEventDelaySpin->setMinimum(0);
     mEventDelaySpin->setMaximum(10000);
     mEventDelaySpin->setSingleStep(10);
     mEventDelaySpin->setSuffix(tr(" ms"));
+    mEventDelaySpin->setValue(mAspect->mTestArgsParser->eventDelay());
     mEventDelaySpin->setEnabled(false);
-    mWarningSpin->setValue(mAspect->mTestArgsParser->eventDelay());
     mKeyDelayCheck = new QCheckBox(tr("Keyboard simulation delay"),this);
     mKeyDelaySpin = new QSpinBox(this);
     mKeyDelaySpin->setMinimum(0);
     mKeyDelaySpin->setMaximum(10000);
     mKeyDelaySpin->setSingleStep(10);
     mKeyDelaySpin->setSuffix(tr(" ms"));
+    mKeyDelaySpin->setValue(mAspect->mTestArgsParser->keyDelay());
     mKeyDelaySpin->setEnabled(false);
-    mWarningSpin->setValue(mAspect->mTestArgsParser->keyDelay());
     mMouseDelayCheck = new QCheckBox(tr("Mouse simulation delay"),this);
     mMouseDelaySpin = new QSpinBox(this);
     mMouseDelaySpin->setMinimum(0);
     mMouseDelaySpin->setMaximum(10000);
     mMouseDelaySpin->setSingleStep(10);
     mMouseDelaySpin->setSuffix(tr(" ms"));
+    mMouseDelaySpin->setValue(mAspect->mTestArgsParser->mouseDelay());
     mMouseDelaySpin->setEnabled(false);
-    mWarningSpin->setValue(mAspect->mTestArgsParser->mouseDelay());
 
     QBoxLayout* outFileLayout = new QHBoxLayout;
     outFileLayout->setContentsMargins(0, 0, 0, 0);
@@ -146,7 +146,9 @@ void TestRunConfigWidget::updateOutFile(bool valid)
 
 void TestRunConfigWidget::updateOutFile(void)
 {
-    if (!mOutFileEdit->isValid())
+    if (mOutFileEdit->isValid())
+        mAspect->mTestArgsParser->setOutFileName(QtcUtils::FileName::fromString(mOutFileEdit->text()));
+    else
         mOutFileEdit->setText(mAspect->mTestArgsParser->outFileName().toString());
 }
 

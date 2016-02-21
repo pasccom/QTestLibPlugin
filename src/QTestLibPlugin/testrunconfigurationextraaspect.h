@@ -71,8 +71,8 @@ public:
 
     inline QStringList commandLineArguments(void) const {return mTestArgsParser->toStringList();}
 
-    inline void toMap(QVariantMap& map) const {Q_UNUSED(map);}
-    inline void fromMap(const QVariantMap& map) {Q_UNUSED(map);}
+    inline void toMap(QVariantMap& map) const {mTestArgsParser->toMap(map);}
+    inline void fromMap(const QVariantMap& map) {mTestArgsParser->fromMap(map);}
 private:
     QTestLibArgsParser *mTestArgsParser;
 
