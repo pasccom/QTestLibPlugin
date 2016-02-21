@@ -23,6 +23,8 @@
 
 #include <extensionsystem/iplugin.h>
 
+class QAction;
+
 namespace Core {
     class ActionContainer;
 }
@@ -55,6 +57,7 @@ public:
 private slots:
     void handleProjectOpen(ProjectExplorer::Project* project);
     void handleProjectClose(ProjectExplorer::Project* project);
+    void handleCurrentProjectTreeChange(ProjectExplorer::Project* project);
 
     void handleActiveTargetChange(ProjectExplorer::Target* target);
 
@@ -65,6 +68,8 @@ private:
     TestSuiteModel* mModel;
     TestOutputPane *mOutputPane;
     Core::ActionContainer* mRunTestsMenu;
+    QAction* mRunTestsAction;
+    ProjectExplorer::Project* mTreeCurrentProject;
 };
 
 } // namespace Internal
