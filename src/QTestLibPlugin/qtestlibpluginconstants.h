@@ -22,6 +22,7 @@
 #include <QString>
 
 #define TEST_RUN_CONFIGURATION_ID "QTestLibPlugin.TestRunConfiguration"
+#define TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID "QTestlibPlugin.TestRunConfigurationExtraAspect"
 
 namespace QTestLibPlugin {
 namespace Constants {
@@ -41,9 +42,18 @@ const QString MakeExeKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".MakeExe");
 const QString TestRunnerKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".TestRunner");
 const QString MakeJobNumberKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".JobNumber");
 
+// Test run configuration extra aspect settings:
+const QString FormatKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".Format");
+const QString VerbosityKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".Verbosity");
+const QString OutputFileKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".LogFile");
+const QString MaxWarningKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".MaxWarnings");
+const QString EventDelayKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".EventDelay");
+const QString KeyDelayKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".KeyDelay");
+const QString MouseDelayKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".MouseDelay");
+
 // IDs:
 const char TestRunConfigurationId [] = TEST_RUN_CONFIGURATION_ID;
-const char TestRunConfigurationExtraAspectId [] = "QTestlibPlugin.TestRunConfigurationExtraAspect";
+const char TestRunConfigurationExtraAspectId [] = TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID;
 const char TestRunMenuId[] = "QTestLibPlugin.Menu.TestRun";
 const char TestRunActionId[] = "QTestLibPlugin.Action.TestRun";
 
