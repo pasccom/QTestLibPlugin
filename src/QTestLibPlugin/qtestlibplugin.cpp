@@ -134,6 +134,8 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
             this, SLOT(handleProjectClose(ProjectExplorer::Project*)));
     connect(ProjectExplorer::ProjectTree::instance(), SIGNAL(currentProjectChanged(ProjectExplorer::Project*)),
             this, SLOT(handleCurrentProjectTreeChange(ProjectExplorer::Project*)));
+    connect(mRunTestsAction, SIGNAL(triggered()),
+            this, SLOT(runTest()));
 
     return true;
 }
@@ -237,6 +239,11 @@ void QTestLibPluginPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfigu
         cmd->action()->setEnabled(true);
     } else {
         QAction *action = new QAction(tr("Run tests for \"%1\" (%2)").arg(project->displayName()).arg(target->displayName()), this);
+        connect(action, &QAction::triggered,
+                this, [runConfig] () {
+            ProjectExplorer::ProjectExplorerPlugin::runRunConfiguration(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE, true);
+        });
+
         cmd = Core::ActionManager::registerAction(action, Core::Id(Constants::TestRunActionId).withSuffix(project->id().toString()).withSuffix(target->id().toString()));
         cmd->setAttribute(Core::Command::CA_Hide);
         cmd->setAttribute(Core::Command::CA_NonConfigurable);
@@ -294,6 +301,24 @@ void QTestLibPluginPlugin::handleCurrentProjectTreeChange(ProjectExplorer::Proje
         mRunTestsAction->setText(tr("Run tests for \"%1\"").arg(project->displayName()));
     else
         mRunTestsAction->setText(tr("Run tests for \"%1\" (%2)").arg(project->displayName()).arg(target->displayName()));
+}
+
+void QTestLibPluginPlugin::runTest(void)
+{
+    QTC_ASSERT(mTreeCurrentProject != NULL, return);
+    QTC_ASSERT(mTreeCurrentProject->activeTarget() != NULL, return);
+
+    ProjectExplorer::RunConfiguration* runConfig = NULL;
+    foreach (ProjectExplorer::RunConfiguration* rc, mTreeCurrentProject->activeTarget()->runConfigurations()) {
+        if (rc->id() == Core::Id(Constants::TestRunConfigurationId))
+            runConfig = rc;
+    }
+
+    qDebug() << runConfig;
+
+    QTC_ASSERT(runConfig != NULL, return);
+
+    ProjectExplorer::ProjectExplorerPlugin::runRunConfiguration(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE, true);
 }
 
 /*void QTestLibPluginPlugin::updateProjectTargets(void)

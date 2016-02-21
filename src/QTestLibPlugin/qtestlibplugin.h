@@ -64,6 +64,8 @@ private slots:
     void handleNewRunConfiguration(ProjectExplorer::RunConfiguration* runConfig);
     void handleDeleteRunConfiguration(ProjectExplorer::RunConfiguration* runConfig);
     /*void updateProjectTargets(void);*/
+
+    void runTest(void);
 private:
     TestSuiteModel* mModel;
     TestOutputPane *mOutputPane;
