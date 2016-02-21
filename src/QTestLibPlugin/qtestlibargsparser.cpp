@@ -17,6 +17,9 @@
  */
 
 #include "qtestlibargsparser.h"
+#include "qtestlibpluginconstants.h"
+
+#include <utils/qtcassert.h>
 
 #include <QCoreApplication>
 #include <QLinkedList>
@@ -24,6 +27,49 @@
 
 namespace QTestLibPlugin {
 namespace Internal {
+
+void QTestLibArgsParser::toMap(QVariantMap& map) const
+{
+    QTC_ASSERT(mOutput == NormalOutput, );
+
+    if (mParser != TxtFormat)
+        map.insert(Constants::FormatKey, (int) mParser);
+    if (mVerbosity != NormalVerbosity)
+        map.insert(Constants::VerbosityKey, (int) mVerbosity);
+    if (!mOutFileName.isEmpty())
+        map.insert(Constants::OutputFileKey, mOutFileName.toString());
+    if (mMaxWarnings != 2000)
+        map.insert(Constants::MaxWarningKey, mMaxWarnings);
+    if (mEventDelay > 0)
+        map.insert(Constants::EventDelayKey, mEventDelay);
+    if (mKeyDelay > 0)
+        map.insert(Constants::KeyDelayKey, mKeyDelay);
+    if (mMouseDelay > 0)
+        map.insert(Constants::MouseDelayKey, mMouseDelay);
+
+    qDebug() << __func__ << map;
+}
+
+void QTestLibArgsParser::fromMap(const QVariantMap& map)
+{
+    QTC_ASSERT(mOutput == NormalOutput, );
+
+    mParser = (TestOutputFormat) map.value(Constants::FormatKey, (int) TxtFormat).toInt();
+    mVerbosity = (TestVerbosity) map.value(Constants::VerbosityKey, (int) NormalVerbosity).toInt();
+    mOutFileName = Utils::FileName::fromString(map.value(Constants::OutputFileKey).toString());
+    mMaxWarnings = map.value(Constants::MaxWarningKey, 2000).toUInt();
+    mEventDelay = map.value(Constants::EventDelayKey, -1).toInt();
+    mKeyDelay = map.value(Constants::KeyDelayKey, -1).toInt();
+    mMouseDelay = map.value(Constants::MouseDelayKey, -1).toInt();
+
+    qDebug() << __func__ << map;
+
+    qDebug() << mMaxWarnings;
+    qDebug() << mEventDelay;
+    qDebug() << mKeyDelay;
+    qDebug() << mMouseDelay;
+}
+
 
 QStringList QTestLibArgsParser::toStringList(uint version) const
 {
@@ -193,7 +239,6 @@ void QTestLibArgsParser::parse(bool incremental)
         mError = PrematureEndError;
         mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "String of command line arguments ended prematurely");
     }
-
 }
 
 void QTestLibArgsParser::parseSelectedTest(const QString& token)

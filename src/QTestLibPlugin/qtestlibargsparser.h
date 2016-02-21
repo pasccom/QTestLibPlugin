@@ -209,6 +209,23 @@ public:
     inline QString toString(uint version = 2) const {return toStringList(version).join(QLatin1Char(' '));}
 
     /*!
+     * \brief Convert to map.
+     *
+     * Saves the contents of the QTestLib arg parser in a QVariant Map.
+     * \param map The QVariant map where to save the current object.
+     * \sa fromMap()
+     */
+    void toMap(QVariantMap& map) const;
+    /*!
+     * \brief Initialises from map.
+     *
+     * Initializes the contents of the QTestLib args parser from a QVariant map.
+     * \param map The map to use for initialisation.
+     * \sa toMap()
+     */
+    void fromMap(const QVariantMap& map);
+
+    /*!
      * \brief Error code
      *
      * Returns the parser error code.
