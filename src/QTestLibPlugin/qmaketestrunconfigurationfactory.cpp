@@ -36,7 +36,7 @@ QString QMakeTestRunConfigurationFactory::displayNameForId(Core::Id id) const
     return QLatin1String("make check");
 }
 
-bool QMakeTestRunConfigurationFactory::canHandle(ProjectExplorer::Target* target) const
+bool QMakeTestRunConfigurationFactory::canHandle(ProjectExplorer::Target* target)
 {
     QTC_ASSERT((target != NULL) && (target->kit() != NULL), return false);
 
@@ -50,7 +50,15 @@ bool QMakeTestRunConfigurationFactory::canHandle(ProjectExplorer::Target* target
     return false;
 }
 
-bool QMakeTestRunConfigurationFactory::isUseful(ProjectExplorer::Project* project) const
+bool QMakeTestRunConfigurationFactory::isReady(ProjectExplorer::Project* project)
+{
+    QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(project);
+    if (qMakeProject == NULL)
+        return false;
+    return qMakeProject->rootQmakeProjectNode()->validParse();
+}
+
+bool QMakeTestRunConfigurationFactory::isUseful(ProjectExplorer::Project* project)
 {
     bool hasTests = false;
     QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(project);

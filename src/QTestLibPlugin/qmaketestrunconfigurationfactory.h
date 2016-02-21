@@ -25,9 +25,9 @@ public:
     QList<Core::Id> availableCreationIds(ProjectExplorer::Target *target, CreationMode mode = UserCreate) const;
     QString displayNameForId(Core::Id id) const;
 
-    bool canHandle(ProjectExplorer::Target* target) const;
-    //bool canHandle(ProjectExplorer::Project* project) const;
-    bool isUseful(ProjectExplorer::Project* project) const;
+    static bool canHandle(ProjectExplorer::Target* target);
+    static bool isReady(ProjectExplorer::Project* project);
+    static bool isUseful(ProjectExplorer::Project* project);
 
     bool canCreate(ProjectExplorer::Target* parent, Core::Id id) const;
     bool canRestore(ProjectExplorer::Target* parent, const QVariantMap &map) const;
