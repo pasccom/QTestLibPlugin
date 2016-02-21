@@ -207,7 +207,9 @@ void TestRunConfigurationWidget::updateWorkingDirectory(bool valid)
 
 void TestRunConfigurationWidget::updateWorkingDirectory(void)
 {
-    if (!mWorkingDirectoryEdit->isValid())
+    if (mWorkingDirectoryEdit->isValid())
+        mData->workingDirectory = mWorkingDirectoryEdit->text();
+    else
         mWorkingDirectoryEdit->setText(mData->workingDirectory);
 }
 
@@ -228,7 +230,9 @@ void TestRunConfigurationWidget::updateMakeExe(bool valid)
 
 void TestRunConfigurationWidget::updateMakeExe(void)
 {
-    if (!mMakeExeEdit->isValid())
+    if (mMakeExeEdit->isValid())
+        mData->setMakeExe(mMakeExeEdit->text());
+    else
         mMakeExeEdit->setText(mData->makeExe());
 }
 
@@ -258,7 +262,9 @@ void TestRunConfigurationWidget::updateTestRunner(bool valid)
 
 void TestRunConfigurationWidget::updateTestRunner(void)
 {
-    if (!mTestRunnerEdit->isValid())
+    if (mTestRunnerEdit->isValid())
+        mData->testRunner = mTestRunnerEdit->text();
+    else
         mTestRunnerEdit->setText(mData->testRunner);
 }
 
