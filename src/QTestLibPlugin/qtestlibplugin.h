@@ -54,6 +54,9 @@ public:
     bool initialize(const QStringList &arguments, QString *errorString);
     void extensionsInitialized(void);
     ShutdownFlag aboutToShutdown(void);
+#ifdef BUILD_TESTS
+    virtual QList<QObject *> createTestObjects(void) const;
+#endif
 private slots:
     void handleProjectOpen(ProjectExplorer::Project* project);
     void handleProjectClose(ProjectExplorer::Project* project);

@@ -29,6 +29,10 @@
 
 #include "qmaketestrunconfigurationfactory.h"
 
+#ifdef BUILD_TESTS
+#   include "Test/qmakemakechecktest.h"
+#endif
+
 #include <coreplugin/icore.h>
 #include <coreplugin/icontext.h>
 #include <coreplugin/actionmanager/actionmanager.h>
@@ -339,3 +343,14 @@ void QTestLibPluginPlugin::runTest(void)
     else
         mRunConfigFactory->removeForAllTargets(project);
 }*/
+
+#ifdef BUILD_TESTS
+QList<QObject *> QTestLibPluginPlugin::createTestObjects(void) const
+{
+    QList<QObject *> testObjects;
+
+    testObjects << new Test::QMakeMakeCheckTest;
+
+    return testObjects;
+}
+#endif
