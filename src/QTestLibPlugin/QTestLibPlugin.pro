@@ -74,6 +74,13 @@ TRANSLATIONS += \
 
 include(../../QTestLibPlugin.pri)
 
+!isEmpty(BUILD_TESTS) {
+    DEFINES += BUILD_TESTS
+    DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
+    SOURCES += Test/qmakemakechecktest.cpp
+    HEADERS += Test/qmakemakechecktest.h
+}
+
 # Qt Creator from environment
 # Set the QTC_SOURCE environment variable to override the setting here
 QTCREATOR_SOURCES = $$(QTC_SOURCE)
