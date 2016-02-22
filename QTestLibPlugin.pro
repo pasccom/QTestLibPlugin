@@ -17,4 +17,10 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS = tests src/QTestLibPlugin
+include(QTestLibPlugin.pri)
+
+SUBDIRS = $$QTESTLIBPLUGIN_SRC
+
+!isEmpty(BUILD_TESTS) {
+    SUBDIRS += $$QTESTLIBPLUGIN_TESTS
+}
