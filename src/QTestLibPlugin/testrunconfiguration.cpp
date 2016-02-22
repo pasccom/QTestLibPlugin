@@ -95,14 +95,11 @@ QVariantMap TestRunConfiguration::toMap(void) const
     QVariantMap map(ProjectExplorer::RunConfiguration::toMap());
     map = mData->toMap(map);
 
-    qDebug() << __func__ << map;
     return map;
 }
 
 bool TestRunConfiguration::fromMap(const QVariantMap& map)
 {
-    qDebug() << __func__ << map;
-
     return mData->fromMap(map) && ProjectExplorer::RunConfiguration::fromMap(map);
 }
 

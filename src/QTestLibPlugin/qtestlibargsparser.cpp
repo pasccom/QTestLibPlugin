@@ -46,8 +46,6 @@ void QTestLibArgsParser::toMap(QVariantMap& map) const
         map.insert(Constants::KeyDelayKey, mKeyDelay);
     if (mMouseDelay > 0)
         map.insert(Constants::MouseDelayKey, mMouseDelay);
-
-    qDebug() << __func__ << map;
 }
 
 void QTestLibArgsParser::fromMap(const QVariantMap& map)
@@ -61,8 +59,6 @@ void QTestLibArgsParser::fromMap(const QVariantMap& map)
     mEventDelay = map.value(Constants::EventDelayKey, -1).toInt();
     mKeyDelay = map.value(Constants::KeyDelayKey, -1).toInt();
     mMouseDelay = map.value(Constants::MouseDelayKey, -1).toInt();
-
-    qDebug() << __func__ << map;
 
     qDebug() << mMaxWarnings;
     qDebug() << mEventDelay;
