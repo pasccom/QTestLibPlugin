@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 
+BUILD_TESTS=1
+
 QTESTLIBPLUGIN_BIN = $$PWD/bin
 QTESTLIBPLUGIN_SRC = $$PWD/src/QTestLibPlugin
 QTESTLIBPLUGIN_TESTS = $$PWD/tests
