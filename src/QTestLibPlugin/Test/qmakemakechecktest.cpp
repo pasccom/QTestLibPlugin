@@ -27,7 +27,7 @@ namespace QTestLibPlugin {
 namespace Test {
 
 QMakeMakeCheckTest::QMakeMakeCheckTest(void):
-    QObject(NULL), mProject(NULL)
+    QObject(NULL), mProject(NULL), mProject1(NULL), mProject2(NULL)
 {
 }
 
@@ -50,12 +50,18 @@ void QMakeMakeCheckTest::initTestCase(void)
 void QMakeMakeCheckTest::init(void)
 {
     mProject = NULL;
+    mProject1 = NULL;
+    mProject2 = NULL;
 }
 
 void QMakeMakeCheckTest::cleanup(void)
 {
     if (mProject != NULL)
         ProjectExplorer::SessionManager::removeProject(mProject);
+    if (mProject1 != NULL)
+        ProjectExplorer::SessionManager::removeProject(mProject1);
+    if (mProject2 != NULL)
+        ProjectExplorer::SessionManager::removeProject(mProject2);
 
     Core::Context projectTreeContext(ProjectExplorer::Constants::C_PROJECT_TREE);
     Core::ICore::removeAdditionalContext(projectTreeContext);
@@ -158,7 +164,7 @@ void QMakeMakeCheckTest::testOpenProjectWithoutTests(void)
     QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject->displayName()).arg(mProject->activeTarget()->displayName()));
     Core::ICore::removeAdditionalContext(projectTreeContext);
 
-    // Check submenuc action:
+    // Check submenu action:
     runProjectTestsCommand = Core::ActionManager::command(runProjectTestsCommandId);
     QVERIFY(runProjectTestsCommand == NULL);
 
@@ -253,7 +259,447 @@ void QMakeMakeCheckTest::testChangeTarget(void)
     QCOMPARE(runTestsMenu->menu()->actions().size(), 0);
 }
 
-void QMakeMakeCheckTest::openProject(const QString& projectFilePath)
+void QMakeMakeCheckTest::testTwoProjectsWithTests_data(void)
+{
+    QTest::addColumn<QString>("project1FilePath");
+    QTest::addColumn<QString>("project2FilePath");
+
+    QTest::newRow("OneTwo") << TESTS_DIR "/OneSubTest/OneSubTest.pro" << TESTS_DIR "/TwoSubTests/TwoSubTests.pro";
+    QTest::newRow("TwoOne") << TESTS_DIR "/TwoSubTests/TwoSubTests.pro" << TESTS_DIR "/OneSubTest/OneSubTest.pro";
+}
+
+void QMakeMakeCheckTest::testTwoProjectsWithTests(void)
+{
+    QFETCH(QString, project1FilePath);
+    QFETCH(QString, project2FilePath);
+
+    Core::Command* runTestsCommand;
+    Core::Command* runProject1TestsCommand;
+    Core::Command* runProject2TestsCommand;
+    Core::ActionContainer* runTestsMenu;
+    Core::Context projectTreeContext(ProjectExplorer::Constants::C_PROJECT_TREE);
+
+    // Open projects
+    SUB_TEST_FUNCTION(openProject(project1FilePath, 1));
+    SUB_TEST_FUNCTION(openProject(project2FilePath, 2));
+
+    // Sub menu action id:
+    Core::Id runProject1TestsCommandId(Constants::TestRunActionId);
+    runProject1TestsCommandId = runProject1TestsCommandId.withSuffix(mProject1->projectFilePath().toString());
+    Core::Id runProject2TestsCommandId(Constants::TestRunActionId);
+    runProject2TestsCommandId = runProject2TestsCommandId.withSuffix(mProject2->projectFilePath().toString());
+
+    // Check context menu action:
+    ProjectExplorer::ProjectTree::highlightProject(mProject1, QString::null);
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject1->displayName()).arg(mProject1->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    ProjectExplorer::ProjectTree::highlightProject(mProject2, QString::null);
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject2->displayName()).arg(mProject1->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Check submenu actions:
+    runProject1TestsCommand = Core::ActionManager::command(runProject1TestsCommandId);
+    QVERIFY(runProject1TestsCommand != NULL);
+    QVERIFY(runProject1TestsCommand->action()->isEnabled());
+    QCOMPARE(runProject1TestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject1->displayName()).arg(mProject1->activeTarget()->displayName()));
+    runProject2TestsCommand = Core::ActionManager::command(runProject2TestsCommandId);
+    QVERIFY(runProject2TestsCommand != NULL);
+    QVERIFY(runProject2TestsCommand->action()->isEnabled());
+    QCOMPARE(runProject2TestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject2->displayName()).arg(mProject2->activeTarget()->displayName()));
+
+    // Check menu is enabled
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 2);
+
+    // Close project2:
+    ProjectExplorer::SessionManager::removeProject(mProject2);
+    mProject2 = NULL;
+
+    // Check context menu action:
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject1->displayName()).arg(mProject1->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Re check submenu action:
+    runProject1TestsCommand = Core::ActionManager::command(runProject1TestsCommandId);
+    QVERIFY(runProject1TestsCommand != NULL);
+    QVERIFY(runProject1TestsCommand->action()->isEnabled());
+    QCOMPARE(runProject1TestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject1->displayName()).arg(mProject1->activeTarget()->displayName()));
+    runProject2TestsCommand = Core::ActionManager::command(runProject2TestsCommandId);
+    QVERIFY(runProject2TestsCommand == NULL);
+
+    // Re check menu
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 1);
+
+    // Close project1:
+    ProjectExplorer::SessionManager::removeProject(mProject1);
+    mProject1 = NULL;
+
+    // Check context menu action:
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(!runTestsCommand->action()->isEnabled());
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Re check submenu action:
+    runProject1TestsCommand = Core::ActionManager::command(runProject1TestsCommandId);
+    QVERIFY(runProject1TestsCommand == NULL);
+    runProject2TestsCommand = Core::ActionManager::command(runProject2TestsCommandId);
+    QVERIFY(runProject2TestsCommand == NULL);
+
+    // Re check menu
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 0);
+}
+
+void QMakeMakeCheckTest::testTwoProjectsWithAndWithoutTests_data(void)
+{
+    QTest::addColumn<QString>("project1FilePath");
+    QTest::addColumn<QString>("project2FilePath");
+
+    QTest::newRow("OneTwo") << TESTS_DIR "/OneSubTest/OneSubTest.pro" << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro";
+    QTest::newRow("TwoOne") << TESTS_DIR "/TwoSubTests/TwoSubTests.pro" << TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro";
+}
+
+void QMakeMakeCheckTest::testTwoProjectsWithAndWithoutTests(void)
+{
+    QFETCH(QString, project1FilePath);
+    QFETCH(QString, project2FilePath);
+
+    Core::Command* runTestsCommand;
+    Core::Command* runProject1TestsCommand;
+    Core::Command* runProject2TestsCommand;
+    Core::ActionContainer* runTestsMenu;
+    Core::Context projectTreeContext(ProjectExplorer::Constants::C_PROJECT_TREE);
+
+    // Open projects
+    SUB_TEST_FUNCTION(openProject(project1FilePath, 1));
+    SUB_TEST_FUNCTION(openProject(project2FilePath, 2));
+
+    // Sub menu action id:
+    Core::Id runProject1TestsCommandId(Constants::TestRunActionId);
+    runProject1TestsCommandId = runProject1TestsCommandId.withSuffix(mProject1->projectFilePath().toString());
+    Core::Id runProject2TestsCommandId(Constants::TestRunActionId);
+    runProject2TestsCommandId = runProject2TestsCommandId.withSuffix(mProject2->projectFilePath().toString());
+
+    // Check context menu action:
+    ProjectExplorer::ProjectTree::highlightProject(mProject1, QString::null);
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject1->displayName()).arg(mProject1->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    ProjectExplorer::ProjectTree::highlightProject(mProject2, QString::null);
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(!runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject2->displayName()).arg(mProject1->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Check submenu actions:
+    runProject1TestsCommand = Core::ActionManager::command(runProject1TestsCommandId);
+    QVERIFY(runProject1TestsCommand != NULL);
+    QVERIFY(runProject1TestsCommand->action()->isEnabled());
+    QCOMPARE(runProject1TestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject1->displayName()).arg(mProject1->activeTarget()->displayName()));
+    runProject2TestsCommand = Core::ActionManager::command(runProject2TestsCommandId);
+    QVERIFY(runProject2TestsCommand == NULL);
+
+    // Check menu is enabled
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 1);
+
+    // Close project2:
+    ProjectExplorer::SessionManager::removeProject(mProject2);
+    mProject2 = NULL;
+
+    // Check context menu action:
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject1->displayName()).arg(mProject1->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Re check submenu action:
+    runProject1TestsCommand = Core::ActionManager::command(runProject1TestsCommandId);
+    QVERIFY(runProject1TestsCommand != NULL);
+    QVERIFY(runProject1TestsCommand->action()->isEnabled());
+    QCOMPARE(runProject1TestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject1->displayName()).arg(mProject1->activeTarget()->displayName()));
+    runProject2TestsCommand = Core::ActionManager::command(runProject2TestsCommandId);
+    QVERIFY(runProject2TestsCommand == NULL);
+
+    // Re check menu
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 1);
+
+    // Close project1:
+    ProjectExplorer::SessionManager::removeProject(mProject1);
+    mProject1 = NULL;
+
+    // Check context menu action:
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(!runTestsCommand->action()->isEnabled());
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Re check submenu action:
+    runProject1TestsCommand = Core::ActionManager::command(runProject1TestsCommandId);
+    QVERIFY(runProject1TestsCommand == NULL);
+    runProject2TestsCommand = Core::ActionManager::command(runProject2TestsCommandId);
+    QVERIFY(runProject2TestsCommand == NULL);
+
+    // Re check menu
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 0);
+}
+
+void QMakeMakeCheckTest::testTwoProjectsWithoutAndWithTests_data(void)
+{
+    QTest::addColumn<QString>("project1FilePath");
+    QTest::addColumn<QString>("project2FilePath");
+
+    QTest::newRow("OneTwo") << TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro" << TESTS_DIR "/TwoSubTests/TwoSubTests.pro";
+    QTest::newRow("TwoOne") << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro" << TESTS_DIR "/OneSubTest/OneSubTest.pro";
+}
+
+void QMakeMakeCheckTest::testTwoProjectsWithoutAndWithTests(void)
+{
+    QFETCH(QString, project1FilePath);
+    QFETCH(QString, project2FilePath);
+
+    Core::Command* runTestsCommand;
+    Core::Command* runProject1TestsCommand;
+    Core::Command* runProject2TestsCommand;
+    Core::ActionContainer* runTestsMenu;
+    Core::Context projectTreeContext(ProjectExplorer::Constants::C_PROJECT_TREE);
+
+    // Open projects
+    SUB_TEST_FUNCTION(openProject(project1FilePath, 1));
+    SUB_TEST_FUNCTION(openProject(project2FilePath, 2));
+
+    // Sub menu action id:
+    Core::Id runProject1TestsCommandId(Constants::TestRunActionId);
+    runProject1TestsCommandId = runProject1TestsCommandId.withSuffix(mProject1->projectFilePath().toString());
+    Core::Id runProject2TestsCommandId(Constants::TestRunActionId);
+    runProject2TestsCommandId = runProject2TestsCommandId.withSuffix(mProject2->projectFilePath().toString());
+
+    // Check context menu action:
+    ProjectExplorer::ProjectTree::highlightProject(mProject1, QString::null);
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(!runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject1->displayName()).arg(mProject1->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    ProjectExplorer::ProjectTree::highlightProject(mProject2, QString::null);
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject2->displayName()).arg(mProject1->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Check submenu actions:
+    runProject1TestsCommand = Core::ActionManager::command(runProject1TestsCommandId);
+    QVERIFY(runProject1TestsCommand == NULL);
+    runProject2TestsCommand = Core::ActionManager::command(runProject2TestsCommandId);
+    QVERIFY(runProject2TestsCommand != NULL);
+    QVERIFY(runProject2TestsCommand->action()->isEnabled());
+    QCOMPARE(runProject2TestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject2->displayName()).arg(mProject2->activeTarget()->displayName()));
+
+    // Check menu is enabled
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 1);
+
+    // Close project2:
+    ProjectExplorer::SessionManager::removeProject(mProject2);
+    mProject2 = NULL;
+
+    // Check context menu action:
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(!runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject1->displayName()).arg(mProject1->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Re check submenu action:
+    runProject1TestsCommand = Core::ActionManager::command(runProject1TestsCommandId);
+    QVERIFY(runProject1TestsCommand == NULL);
+    runProject2TestsCommand = Core::ActionManager::command(runProject2TestsCommandId);
+    QVERIFY(runProject2TestsCommand == NULL);
+
+    // Re check menu
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 0);
+
+    // Close project1:
+    ProjectExplorer::SessionManager::removeProject(mProject1);
+    mProject1 = NULL;
+
+    // Check context menu action:
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(!runTestsCommand->action()->isEnabled());
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Re check submenu action:
+    runProject1TestsCommand = Core::ActionManager::command(runProject1TestsCommandId);
+    QVERIFY(runProject1TestsCommand == NULL);
+    runProject2TestsCommand = Core::ActionManager::command(runProject2TestsCommandId);
+    QVERIFY(runProject2TestsCommand == NULL);
+
+    // Re check menu
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 0);
+}
+
+void QMakeMakeCheckTest::testTwoProjectsWithoutTests_data(void)
+{
+    QTest::addColumn<QString>("project1FilePath");
+    QTest::addColumn<QString>("project2FilePath");
+
+    QTest::newRow("OneTwo") << TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro" << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro";
+    QTest::newRow("TwoOne") << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro" << TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro";
+}
+
+void QMakeMakeCheckTest::testTwoProjectsWithoutTests(void)
+{
+    QFETCH(QString, project1FilePath);
+    QFETCH(QString, project2FilePath);
+
+    Core::Command* runTestsCommand;
+    Core::Command* runProject1TestsCommand;
+    Core::Command* runProject2TestsCommand;
+    Core::ActionContainer* runTestsMenu;
+    Core::Context projectTreeContext(ProjectExplorer::Constants::C_PROJECT_TREE);
+
+    // Open projects
+    SUB_TEST_FUNCTION(openProject(project1FilePath, 1));
+    SUB_TEST_FUNCTION(openProject(project2FilePath, 2));
+
+    // Sub menu action id:
+    Core::Id runProject1TestsCommandId(Constants::TestRunActionId);
+    runProject1TestsCommandId = runProject1TestsCommandId.withSuffix(mProject1->projectFilePath().toString());
+    Core::Id runProject2TestsCommandId(Constants::TestRunActionId);
+    runProject2TestsCommandId = runProject2TestsCommandId.withSuffix(mProject2->projectFilePath().toString());
+
+    // Check context menu action:
+    ProjectExplorer::ProjectTree::highlightProject(mProject1, QString::null);
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(!runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject1->displayName()).arg(mProject1->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    ProjectExplorer::ProjectTree::highlightProject(mProject2, QString::null);
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(!runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject2->displayName()).arg(mProject1->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Check submenu actions:
+    runProject1TestsCommand = Core::ActionManager::command(runProject1TestsCommandId);
+    QVERIFY(runProject1TestsCommand == NULL);
+    runProject2TestsCommand = Core::ActionManager::command(runProject2TestsCommandId);
+    QVERIFY(runProject2TestsCommand == NULL);
+
+    // Check menu is enabled
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 0);
+
+    // Close project2:
+    ProjectExplorer::SessionManager::removeProject(mProject2);
+    mProject2 = NULL;
+
+    // Check context menu action:
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(!runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject1->displayName()).arg(mProject1->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Re check submenu action:
+    runProject1TestsCommand = Core::ActionManager::command(runProject1TestsCommandId);
+    QVERIFY(runProject1TestsCommand == NULL);
+    runProject2TestsCommand = Core::ActionManager::command(runProject2TestsCommandId);
+    QVERIFY(runProject2TestsCommand == NULL);
+
+    // Re check menu
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 0);
+
+    // Close project1:
+    ProjectExplorer::SessionManager::removeProject(mProject1);
+    mProject1 = NULL;
+
+    // Check context menu action:
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(!runTestsCommand->action()->isEnabled());
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Re check submenu action:
+    runProject1TestsCommand = Core::ActionManager::command(runProject1TestsCommandId);
+    QVERIFY(runProject1TestsCommand == NULL);
+    runProject2TestsCommand = Core::ActionManager::command(runProject2TestsCommandId);
+    QVERIFY(runProject2TestsCommand == NULL);
+
+    // Re check menu
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 0);
+}
+
+void QMakeMakeCheckTest::openProject(const QString& projectFilePath, int number)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -308,6 +754,19 @@ void QMakeMakeCheckTest::openProject(const QString& projectFilePath)
     // Update targets:
     foreach (ProjectExplorer::Target* target, mProject->targets())
         target->updateDefaultRunConfigurations();
+
+    switch (number) {
+    case 1:
+        mProject1 = mProject;
+        mProject = NULL;
+        break;
+    case 2:
+        mProject2 = mProject;
+        mProject = NULL;
+        break;
+    default:
+        break;
+    }
 
     END_SUB_TEST_FUNCTION
 }

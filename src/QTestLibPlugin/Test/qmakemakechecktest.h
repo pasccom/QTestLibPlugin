@@ -31,15 +31,25 @@ private Q_SLOTS:
     inline void testOpenProjectWithoutTestsRestore(void) {testOpenProjectWithoutTests();}
     inline void testChangeTarget_data(void) {testOpenProjectWithTests_data();}
     void testChangeTarget(void);
+    void testTwoProjectsWithTests_data(void);
+    void testTwoProjectsWithTests(void);
+    void testTwoProjectsWithAndWithoutTests_data(void);
+    void testTwoProjectsWithAndWithoutTests(void);
+    void testTwoProjectsWithoutAndWithTests_data(void);
+    void testTwoProjectsWithoutAndWithTests(void);
+    void testTwoProjectsWithoutTests_data(void);
+    void testTwoProjectsWithoutTests(void);
     void cleanup(void);
 private:
     ProjectExplorer::Project* mProject;
+    ProjectExplorer::Project* mProject1;
+    ProjectExplorer::Project* mProject2;
 
     void testOpenProjectWithTests_data(void);
     void testOpenProjectWithTests(void);
     void testOpenProjectWithoutTests_data(void);
     void testOpenProjectWithoutTests(void);
-    void openProject(const QString& projectFilePath);
+    void openProject(const QString& projectFilePath, int number = 0);
 };
 
 } // Test
