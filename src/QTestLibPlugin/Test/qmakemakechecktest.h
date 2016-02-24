@@ -29,6 +29,8 @@ private Q_SLOTS:
     inline void testOpenProjectWithTestsRestore(void) {testOpenProjectWithTests();}
     inline void testOpenProjectWithoutTestsRestore_data(void) {testOpenProjectWithoutTests_data();}
     inline void testOpenProjectWithoutTestsRestore(void) {testOpenProjectWithoutTests();}
+    inline void testChangeTarget_data(void) {testOpenProjectWithTests_data();}
+    void testChangeTarget(void);
     void cleanup(void);
 private:
     ProjectExplorer::Project* mProject;
