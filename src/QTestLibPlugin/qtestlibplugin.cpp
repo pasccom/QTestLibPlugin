@@ -49,6 +49,8 @@
 
 #include <qmakeprojectmanager/qmakeproject.h>
 
+#include <utils/proxyaction.h>
+
 #include <QCoreApplication>
 #include <QTranslator>
 #include <QDir>
@@ -112,12 +114,14 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
 
     // New sub-menu in build menu and action in project tree context menu
     mRunTestsMenu = Core::ActionManager::createMenu(Constants::TestRunMenuId);
+    qDebug() << "Run tests menu:" << mRunTestsMenu->menu();
     mRunTestsMenu->menu()->setTitle(tr("Run tests"));
     Core::ActionContainer* buildMenu = Core::ActionManager::actionContainer(ProjectExplorer::Constants::M_BUILDPROJECT);
     Q_ASSERT(buildMenu != NULL);
     buildMenu->addMenu(mRunTestsMenu, ProjectExplorer::Constants::G_BUILD_RUN);
 
     mRunTestsAction = new QAction(tr("Run tests"), this);
+    qDebug() << "Run tests action:" << mRunTestsAction;
     Core::Context projectTreeContext(ProjectExplorer::Constants::C_PROJECT_TREE);
     Core::ActionContainer* projectContextMenu = Core::ActionManager::actionContainer(ProjectExplorer::Constants::M_PROJECTCONTEXT);
     Q_ASSERT(projectContextMenu != NULL);
@@ -187,12 +191,13 @@ void QTestLibPluginPlugin::handleProjectOpen(ProjectExplorer::Project* project)
     }*/
 
     // Used to update the run test action before the project is ready (see detailed explanations below)
+    qDebug() << "Disabled RunTestsAction";
     mRunTestsAction->setEnabled(false);
     mTreeCurrentProject = project;
 
     connect(project, SIGNAL(activeTargetChanged(ProjectExplorer::Target*)),
             this, SLOT(handleActiveTargetChange(ProjectExplorer::Target*)));
-    handleActiveTargetChange(project->activeTarget());
+    handleActiveTargetChange(project->activeTarget(), false);
 }
 
 void QTestLibPluginPlugin::handleProjectClose(ProjectExplorer::Project* project)
@@ -207,23 +212,48 @@ void QTestLibPluginPlugin::handleProjectClose(ProjectExplorer::Project* project)
         }
     }*/
 
+    Core::Command* cmd = Core::ActionManager::command(Core::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+    if (cmd != NULL) {
+        QAction* action = cmd->action();
+        if (qobject_cast<Utils::ProxyAction*>(action) != NULL)
+            action = qobject_cast<Utils::ProxyAction*>(action)->action();
+
+        mRunTestsMenu->menu()->removeAction(cmd->action());
+        Core::ActionManager::unregisterAction(action, Core::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+        delete action;
+    }
+
+    if (mTreeCurrentProject == project) {
+        mTreeCurrentProject = NULL;
+        mRunTestsAction->setEnabled(false);
+    }
+
     disconnect(project, SIGNAL(activeTargetChanged(ProjectExplorer::Target*)),
                this, SLOT(handleActiveTargetChange(ProjectExplorer::Target*)));
 }
 
-void QTestLibPluginPlugin::handleActiveTargetChange(ProjectExplorer::Target* target)
+void QTestLibPluginPlugin::handleActiveTargetChange(ProjectExplorer::Target* target, bool clean)
 {
     if (target == NULL)
         return;
 
+    qDebug() << "Changed to target:" << target->displayName();
+
+    if (target->project() == mTreeCurrentProject) {
+        if (target == NULL)
+            mRunTestsAction->setText(tr("Run tests for \"%1\"").arg(target->project()->displayName()));
+        else
+            mRunTestsAction->setText(tr("Run tests for \"%1\" (%2)").arg(target->project()->displayName()).arg(target->displayName()));
+    }
+
     ProjectExplorer::Project* project = qobject_cast<ProjectExplorer::Project*>(sender());
-    if (project != NULL) {
+    if (clean && (project != NULL)) {
         foreach (ProjectExplorer::Target* t, project->targets()) {
             disconnect(t, SIGNAL(addedRunConfiguration(ProjectExplorer::RunConfiguration*)),
                        this, SLOT(handleNewRunConfiguration(ProjectExplorer::RunConfiguration*)));
             disconnect(t, SIGNAL(removedRunConfiguration(ProjectExplorer::RunConfiguration*)),
                        this, SLOT(handleNewRunConfiguration(ProjectExplorer::RunConfiguration*)));
-            foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations())
+            foreach (ProjectExplorer::RunConfiguration* runConfig, t->runConfigurations())
                 handleDeleteRunConfiguration(runConfig);
         }
     }
@@ -241,31 +271,35 @@ void QTestLibPluginPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfigu
     if (runConfig->id() != Core::Id(Constants::TestRunConfigurationId))
         return;
 
-    qDebug() << "Added a test run configuration!";
+    qDebug() << "Added a test run configuration:" << runConfig->target()->displayName();
     ProjectExplorer::Target* target = runConfig->target();
     Q_ASSERT(target != NULL);
     ProjectExplorer::Project* project = target->project();
     Q_ASSERT(project != NULL);
 
-    Core::Command* cmd = Core::ActionManager::command(Core::Id(Constants::TestRunActionId).withSuffix(project->id().toString()).withSuffix(target->id().toString()));
-    if (cmd != NULL) {
-        cmd->action()->setEnabled(true);
-    } else {
-        QAction *action = new QAction(tr("Run tests for \"%1\" (%2)").arg(project->displayName()).arg(target->displayName()), this);
+    Core::Command* cmd = Core::ActionManager::command(Core::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+    if (cmd == NULL) {
+        QAction *action = new QAction(tr("Run tests for \"%1\"").arg(project->displayName()), this);
         connect(action, &QAction::triggered,
                 this, [runConfig] () {
             ProjectExplorer::ProjectExplorerPlugin::runRunConfiguration(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE, true);
         });
 
-        cmd = Core::ActionManager::registerAction(action, Core::Id(Constants::TestRunActionId).withSuffix(project->id().toString()).withSuffix(target->id().toString()));
+        cmd = Core::ActionManager::registerAction(action, Core::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+        cmd->setAttribute(Core::Command::CA_UpdateText);
         cmd->setAttribute(Core::Command::CA_Hide);
         cmd->setAttribute(Core::Command::CA_NonConfigurable);
         mRunTestsMenu->addAction(cmd);
     }
 
+    cmd->action()->setText(tr("Run tests for \"%1\" (%2)").arg(project->displayName()).arg(target->displayName()));
+    cmd->action()->setEnabled(true);
+
     // Used to update the run test action before the project is ready (see detailed explanations below)
-    if (project == mTreeCurrentProject)
+    if (project == mTreeCurrentProject) {
+        qDebug() << "Enabled RunTestsAction";
         mRunTestsAction->setEnabled(true);
+    }
 }
 
 void QTestLibPluginPlugin::handleDeleteRunConfiguration(ProjectExplorer::RunConfiguration* runConfig)
@@ -273,19 +307,21 @@ void QTestLibPluginPlugin::handleDeleteRunConfiguration(ProjectExplorer::RunConf
     if (runConfig->id() != Core::Id(Constants::TestRunConfigurationId))
         return;
 
-    qDebug() << "Removed a test run configuration!";
+    qDebug() << "Removed a test run configuration:" << runConfig->target()->displayName();
     ProjectExplorer::Target* target = runConfig->target();
     Q_ASSERT(target != NULL);
     ProjectExplorer::Project* project = target->project();
     Q_ASSERT(project != NULL);
 
-    Core::Command* cmd = Core::ActionManager::command(Core::Id(Constants::TestRunActionId).withSuffix(project->id().toString()).withSuffix(target->id().toString()));
-    Q_ASSERT(cmd != NULL);
-    cmd->action()->setEnabled(false);
+    Core::Command* cmd = Core::ActionManager::command(Core::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+    if (cmd != NULL)
+        cmd->action()->setEnabled(false);
 
     // Used to update the run test action before the project is ready (see detailed explanations below)
-    if (project == mTreeCurrentProject)
+    if (project == mTreeCurrentProject) {
+        qDebug() << "Disabled RunTestsAction";
         mRunTestsAction->setEnabled(false);
+    }
 }
 
 /*
@@ -306,8 +342,10 @@ void QTestLibPluginPlugin::handleCurrentProjectTreeChange(ProjectExplorer::Proje
     if (project == NULL)
         return;
 
-    if (QMakeTestRunConfigurationFactory::isReady(project))
+    if (QMakeTestRunConfigurationFactory::isReady(project)) {
         mRunTestsAction->setEnabled(QMakeTestRunConfigurationFactory::isUseful(project));
+        qDebug() << (mRunTestsAction->isEnabled() ? "Enabled RunTestsAction" : "Disabled RunTestsAction");
+    }
 
     ProjectExplorer::Target* target = project->activeTarget();
     if (target == NULL)
@@ -333,16 +371,6 @@ void QTestLibPluginPlugin::runTest(void)
 
     ProjectExplorer::ProjectExplorerPlugin::runRunConfiguration(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE, true);
 }
-
-/*void QTestLibPluginPlugin::updateProjectTargets(void)
-{
-    ProjectExplorer::Project* project = qobject_cast<ProjectExplorer::Project*>(sender());
-
-    if (mRunConfigFactory->isUseful(project))
-        mRunConfigFactory->createForAllTargets(project);
-    else
-        mRunConfigFactory->removeForAllTargets(project);
-}*/
 
 #ifdef BUILD_TESTS
 QList<QObject *> QTestLibPluginPlugin::createTestObjects(void) const

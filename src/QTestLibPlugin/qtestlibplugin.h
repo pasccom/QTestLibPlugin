@@ -62,11 +62,10 @@ private slots:
     void handleProjectClose(ProjectExplorer::Project* project);
     void handleCurrentProjectTreeChange(ProjectExplorer::Project* project);
 
-    void handleActiveTargetChange(ProjectExplorer::Target* target);
+    void handleActiveTargetChange(ProjectExplorer::Target* target, bool clean = true);
 
     void handleNewRunConfiguration(ProjectExplorer::RunConfiguration* runConfig);
     void handleDeleteRunConfiguration(ProjectExplorer::RunConfiguration* runConfig);
-    /*void updateProjectTargets(void);*/
 
     void runTest(void);
 private:
