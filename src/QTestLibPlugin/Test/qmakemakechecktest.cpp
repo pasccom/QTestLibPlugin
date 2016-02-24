@@ -14,11 +14,13 @@
 #include <qmakeprojectmanager/qmakeproject.h>
 
 #include <coreplugin/actionmanager/actionmanager.h>
+#include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/icore.h>
 
 #include <utils/proxyaction.h>
 
 #include <QAction>
+#include <QMenu>
 #include <QtTest>
 
 namespace QTestLibPlugin {
@@ -27,6 +29,22 @@ namespace Test {
 QMakeMakeCheckTest::QMakeMakeCheckTest(void):
     QObject(NULL), mProject(NULL)
 {
+}
+
+void QMakeMakeCheckTest::initTestCase(void)
+{
+    QStringList projectUserPathes;
+
+    // NOTE _data() function is not available for initTestCase()
+    projectUserPathes << QLatin1String(TESTS_DIR "/OneSubTest/OneSubTest.pro.user");
+    projectUserPathes << QLatin1String(TESTS_DIR "/TwoSubTests/TwoSubTests.pro.user");
+    projectUserPathes << QLatin1String(TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro.user");
+    projectUserPathes << QLatin1String(TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro.user");
+
+    foreach (QString projectUserPath, projectUserPathes) {
+        if (QFile::exists(projectUserPath))
+            QVERIFY(QFile::remove(projectUserPath));
+    }
 }
 
 void QMakeMakeCheckTest::init(void)
@@ -55,6 +73,11 @@ void QMakeMakeCheckTest::testOpenProjectWithTests(void)
 {
     QFETCH(QString, projectPath);
 
+    Core::Command* runTestsCommand;
+    Core::Command* runProjectTestsCommand;
+    Core::ActionContainer* runTestsMenu;
+    Core::Context projectTreeContext(ProjectExplorer::Constants::C_PROJECT_TREE);
+
     // Open project
     SUB_TEST_FUNCTION(openProject(projectPath));
 
@@ -64,23 +87,51 @@ void QMakeMakeCheckTest::testOpenProjectWithTests(void)
     QSignalSpy evaluateSpy(qMakeProject, SIGNAL(proFilesEvaluated()));
     evaluateSpy.wait();
 
-    // Retrieve commands
-    Core::Command* runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    // Sub menu action id:
+    Core::Id runProjectTestsCommandId(Constants::TestRunActionId);
+    runProjectTestsCommandId = runProjectTestsCommandId.withSuffix(mProject->projectFilePath().toString());
+    runProjectTestsCommandId = runProjectTestsCommandId.withSuffix(mProject->activeTarget()->id().toString());
+
+    // Check context menu action:
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
     QVERIFY(runTestsCommand != NULL);
-    Core::Command* runProjectTestsCommand = Core::ActionManager::command(Core::Id(Constants::TestRunActionId).withSuffix(mProject->projectFilePath().toString()).withSuffix(mProject->activeTarget()->id().toString()));
-    QVERIFY(runProjectTestsCommand != NULL);
-
-    // Enter the required context
-    Core::Context projectTreeContext(ProjectExplorer::Constants::C_PROJECT_TREE);
     Core::ICore::addAdditionalContext(projectTreeContext);
-
-    // Check actions are enabled
     QVERIFY(runTestsCommand->action()->isEnabled());
-    QVERIFY(runProjectTestsCommand->action()->isEnabled());
-
-    // Check action text is right
     QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject->displayName()).arg(mProject->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Check submenu action:
+    runProjectTestsCommand = Core::ActionManager::command(runProjectTestsCommandId);
+    QVERIFY(runProjectTestsCommand != NULL);
+    QVERIFY(runProjectTestsCommand->action()->isEnabled());
     QCOMPARE(runProjectTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject->displayName()).arg(mProject->activeTarget()->displayName()));
+
+    // Check menu
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 1);
+
+    ProjectExplorer::SessionManager::removeProject(mProject);
+    mProject = NULL;
+
+    // Check context menu action:
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(!runTestsCommand->action()->isEnabled());
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Re check submenu action:
+    runProjectTestsCommand = Core::ActionManager::command(runProjectTestsCommandId);
+    QVERIFY(runProjectTestsCommand == NULL);
+
+    // Re check menu
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 0);
+
 }
 
 void QMakeMakeCheckTest::testOpenProjectWithoutTests_data(void)
@@ -95,6 +146,11 @@ void QMakeMakeCheckTest::testOpenProjectWithoutTests(void)
 {
     QFETCH(QString, projectPath);
 
+    Core::Command* runTestsCommand;
+    Core::Command* runProjectTestsCommand;
+    Core::ActionContainer* runTestsMenu;
+    Core::Context projectTreeContext(ProjectExplorer::Constants::C_PROJECT_TREE);
+
     // Open project
     SUB_TEST_FUNCTION(openProject(projectPath));
 
@@ -104,21 +160,49 @@ void QMakeMakeCheckTest::testOpenProjectWithoutTests(void)
     QSignalSpy evaluateSpy(qMakeProject, SIGNAL(proFilesEvaluated()));
     evaluateSpy.wait();
 
-    // Retrieve commands
-    Core::Command* runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    // Sub menu action id:
+    Core::Id runProjectTestsCommandId(Constants::TestRunActionId);
+    runProjectTestsCommandId = runProjectTestsCommandId.withSuffix(mProject->projectFilePath().toString());
+    runProjectTestsCommandId = runProjectTestsCommandId.withSuffix(mProject->activeTarget()->id().toString());
+
+    // Check context menu action:
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
     QVERIFY(runTestsCommand != NULL);
-    Core::Command* runProjectTestsCommand = Core::ActionManager::command(Core::Id(Constants::TestRunActionId).withSuffix(mProject->projectFilePath().toString()).withSuffix(mProject->activeTarget()->id().toString()));
+    Core::ICore::addAdditionalContext(projectTreeContext);
+    QVERIFY(!runTestsCommand->action()->isEnabled());
+    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject->displayName()).arg(mProject->activeTarget()->displayName()));
+    Core::ICore::removeAdditionalContext(projectTreeContext);
+
+    // Check submenuc action:
+    runProjectTestsCommand = Core::ActionManager::command(runProjectTestsCommandId);
     QVERIFY(runProjectTestsCommand == NULL);
 
-    // Enter the required context
-    Core::Context projectTreeContext(ProjectExplorer::Constants::C_PROJECT_TREE);
+    // Check menu is disabled
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 0);
+
+    // Close project:
+    ProjectExplorer::SessionManager::removeProject(mProject);
+    mProject = NULL;
+
+    // Check context menu action:
+    runTestsCommand = Core::ActionManager::command(Constants::TestRunActionId);
+    QVERIFY(runTestsCommand != NULL);
     Core::ICore::addAdditionalContext(projectTreeContext);
-
-    // Check actions are enabled
     QVERIFY(!runTestsCommand->action()->isEnabled());
+    Core::ICore::removeAdditionalContext(projectTreeContext);
 
-    // Check action text is right
-    QCOMPARE(runTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(mProject->displayName()).arg(mProject->activeTarget()->displayName()));
+    // Re check submenu action:
+    runProjectTestsCommand = Core::ActionManager::command(runProjectTestsCommandId);
+    QVERIFY(runProjectTestsCommand == NULL);
+
+    // Re check menu
+    runTestsMenu = Core::ActionManager::actionContainer(Constants::TestRunMenuId);
+    QVERIFY(runTestsMenu != NULL);
+    QVERIFY(runTestsMenu->menu() != NULL);
+    QCOMPARE(runTestsMenu->menu()->actions().size(), 0);
 }
 
 void QMakeMakeCheckTest::openProject(const QString& projectFilePath)
@@ -131,10 +215,10 @@ void QMakeMakeCheckTest::openProject(const QString& projectFilePath)
     if (mProject->activeTarget() == NULL) {
         foreach (ProjectExplorer::Kit* kit, ProjectExplorer::KitManager::kits())
             mProject->addTarget(new ProjectExplorer::Target(mProject, kit));
-        foreach (ProjectExplorer::Target* target, mProject->targets()) {
+        /*foreach (ProjectExplorer::Target* target, mProject->targets()) {
             if (target->kit() == ProjectExplorer::KitManager::defaultKit())
                 ProjectExplorer::SessionManager::setActiveTarget(mProject, target, ProjectExplorer::SetActive::Cascade);
-        }
+        }*/
     }
     QVERIFY(mProject->activeTarget() != NULL);
     if (mProject->activeTarget()->activeBuildConfiguration() == NULL) {
