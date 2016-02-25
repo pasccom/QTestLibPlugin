@@ -1,5 +1,5 @@
-#ifndef QMAKEMAKECHECKTEST_H
-#define QMAKEMAKECHECKTEST_H
+#ifndef TESTACTIONSTEST_H
+#define TESTACTIONSTEST_H
 
 #include <QObject>
 #include "../../tests/common/qttestsubfunction.h"
@@ -13,12 +13,12 @@ namespace ProjectExplorer {
 namespace QTestLibPlugin {
 namespace Test {
 
-class QMakeMakeCheckTest : public QObject
+class TestActionsTest : public QObject
 {
     Q_OBJECT
     HAS_SUB_TEST_FUNCTIONS
 public:
-    QMakeMakeCheckTest(void);
+    TestActionsTest(void);
 
 private Q_SLOTS:
     void init(void);
@@ -65,4 +65,4 @@ private:
 } // Test
 } // QTestLibPlugin
 
-#endif // QMAKEMAKECHECKTEST_H
+#endif // TESTACTIONSTEST_H

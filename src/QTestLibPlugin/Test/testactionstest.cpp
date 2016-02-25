@@ -1,4 +1,4 @@
-#include "qmakemakechecktest.h"
+#include "testactionstest.h"
 
 #include "../qtestlibpluginconstants.h"
 
@@ -29,12 +29,12 @@
 namespace QTestLibPlugin {
 namespace Test {
 
-QMakeMakeCheckTest::QMakeMakeCheckTest(void):
+TestActionsTest::TestActionsTest(void):
     QObject(NULL), mProject(NULL), mProject1(NULL), mProject2(NULL)
 {
 }
 
-void QMakeMakeCheckTest::initTestCase(void)
+void TestActionsTest::initTestCase(void)
 {
     QStringList projectUserPathes;
 
@@ -50,14 +50,14 @@ void QMakeMakeCheckTest::initTestCase(void)
     }
 }
 
-void QMakeMakeCheckTest::init(void)
+void TestActionsTest::init(void)
 {
     mProject = NULL;
     mProject1 = NULL;
     mProject2 = NULL;
 }
 
-void QMakeMakeCheckTest::cleanup(void)
+void TestActionsTest::cleanup(void)
 {
     if (mProject != NULL)
         ProjectExplorer::SessionManager::removeProject(mProject);
@@ -70,7 +70,7 @@ void QMakeMakeCheckTest::cleanup(void)
     Core::ICore::removeAdditionalContext(projectTreeContext);
 }
 
-void QMakeMakeCheckTest::testOpenProjectWithTests_data(void)
+void TestActionsTest::testOpenProjectWithTests_data(void)
 {
     QTest::addColumn<QString>("projectPath");
 
@@ -78,7 +78,7 @@ void QMakeMakeCheckTest::testOpenProjectWithTests_data(void)
     QTest::newRow("TwoSubTests") << TESTS_DIR "/TwoSubTests/TwoSubTests.pro";
 }
 
-void QMakeMakeCheckTest::testOpenProjectWithTests(void)
+void TestActionsTest::testOpenProjectWithTests(void)
 {
     QFETCH(QString, projectPath);
 
@@ -94,7 +94,7 @@ void QMakeMakeCheckTest::testOpenProjectWithTests(void)
     SUB_TEST_FUNCTION(checkSubMenu(0));
 }
 
-void QMakeMakeCheckTest::testOpenProjectWithoutTests_data(void)
+void TestActionsTest::testOpenProjectWithoutTests_data(void)
 {
     QTest::addColumn<QString>("projectPath");
 
@@ -102,7 +102,7 @@ void QMakeMakeCheckTest::testOpenProjectWithoutTests_data(void)
     QTest::newRow("NoSubTestTwo") << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro";
 }
 
-void QMakeMakeCheckTest::testOpenProjectWithoutTests(void)
+void TestActionsTest::testOpenProjectWithoutTests(void)
 {
     QFETCH(QString, projectPath);
 
@@ -118,7 +118,7 @@ void QMakeMakeCheckTest::testOpenProjectWithoutTests(void)
     SUB_TEST_FUNCTION(checkSubMenu(0));
 }
 
-void QMakeMakeCheckTest::testChangeTarget(void)
+void TestActionsTest::testChangeTarget(void)
 {
     QFETCH(QString, projectPath);
 
@@ -140,7 +140,7 @@ void QMakeMakeCheckTest::testChangeTarget(void)
     SUB_TEST_FUNCTION(checkSubMenu(0));
 }
 
-void QMakeMakeCheckTest::testTwoProjectsWithTests_data(void)
+void TestActionsTest::testTwoProjectsWithTests_data(void)
 {
     QTest::addColumn<QString>("project1FilePath");
     QTest::addColumn<QString>("project2FilePath");
@@ -149,7 +149,7 @@ void QMakeMakeCheckTest::testTwoProjectsWithTests_data(void)
     QTest::newRow("TwoOne") << TESTS_DIR "/TwoSubTests/TwoSubTests.pro" << TESTS_DIR "/OneSubTest/OneSubTest.pro";
 }
 
-void QMakeMakeCheckTest::testTwoProjectsWithTests(void)
+void TestActionsTest::testTwoProjectsWithTests(void)
 {
     QFETCH(QString, project1FilePath);
     QFETCH(QString, project2FilePath);
@@ -179,7 +179,7 @@ void QMakeMakeCheckTest::testTwoProjectsWithTests(void)
     SUB_TEST_FUNCTION(checkSubMenu(0));
 }
 
-void QMakeMakeCheckTest::testTwoProjectsWithAndWithoutTests_data(void)
+void TestActionsTest::testTwoProjectsWithAndWithoutTests_data(void)
 {
     QTest::addColumn<QString>("project1FilePath");
     QTest::addColumn<QString>("project2FilePath");
@@ -188,7 +188,7 @@ void QMakeMakeCheckTest::testTwoProjectsWithAndWithoutTests_data(void)
     QTest::newRow("TwoOne") << TESTS_DIR "/TwoSubTests/TwoSubTests.pro" << TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro";
 }
 
-void QMakeMakeCheckTest::testTwoProjectsWithAndWithoutTests(void)
+void TestActionsTest::testTwoProjectsWithAndWithoutTests(void)
 {
     QFETCH(QString, project1FilePath);
     QFETCH(QString, project2FilePath);
@@ -218,7 +218,7 @@ void QMakeMakeCheckTest::testTwoProjectsWithAndWithoutTests(void)
     SUB_TEST_FUNCTION(checkSubMenu(0));
 }
 
-void QMakeMakeCheckTest::testTwoProjectsWithoutAndWithTests_data(void)
+void TestActionsTest::testTwoProjectsWithoutAndWithTests_data(void)
 {
     QTest::addColumn<QString>("project1FilePath");
     QTest::addColumn<QString>("project2FilePath");
@@ -227,7 +227,7 @@ void QMakeMakeCheckTest::testTwoProjectsWithoutAndWithTests_data(void)
     QTest::newRow("TwoOne") << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro" << TESTS_DIR "/OneSubTest/OneSubTest.pro";
 }
 
-void QMakeMakeCheckTest::testTwoProjectsWithoutAndWithTests(void)
+void TestActionsTest::testTwoProjectsWithoutAndWithTests(void)
 {
     QFETCH(QString, project1FilePath);
     QFETCH(QString, project2FilePath);
@@ -257,7 +257,7 @@ void QMakeMakeCheckTest::testTwoProjectsWithoutAndWithTests(void)
     SUB_TEST_FUNCTION(checkSubMenu(0));
 }
 
-void QMakeMakeCheckTest::testTwoProjectsWithoutTests_data(void)
+void TestActionsTest::testTwoProjectsWithoutTests_data(void)
 {
     QTest::addColumn<QString>("project1FilePath");
     QTest::addColumn<QString>("project2FilePath");
@@ -266,7 +266,7 @@ void QMakeMakeCheckTest::testTwoProjectsWithoutTests_data(void)
     QTest::newRow("TwoOne") << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro" << TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro";
 }
 
-void QMakeMakeCheckTest::testTwoProjectsWithoutTests(void)
+void TestActionsTest::testTwoProjectsWithoutTests(void)
 {
     QFETCH(QString, project1FilePath);
     QFETCH(QString, project2FilePath);
@@ -296,7 +296,7 @@ void QMakeMakeCheckTest::testTwoProjectsWithoutTests(void)
     SUB_TEST_FUNCTION(checkSubMenu(0));
 }
 
-void QMakeMakeCheckTest::openProject(const QString& projectFilePath, int number)
+void TestActionsTest::openProject(const QString& projectFilePath, int number)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -368,7 +368,7 @@ void QMakeMakeCheckTest::openProject(const QString& projectFilePath, int number)
     END_SUB_TEST_FUNCTION
 }
 
-void QMakeMakeCheckTest::closeProject(int number)
+void TestActionsTest::closeProject(int number)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -393,7 +393,7 @@ void QMakeMakeCheckTest::closeProject(int number)
     END_SUB_TEST_FUNCTION
 }
 
-void QMakeMakeCheckTest::checkSubMenuAction(const QString& projectPath)
+void TestActionsTest::checkSubMenuAction(const QString& projectPath)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -406,7 +406,7 @@ void QMakeMakeCheckTest::checkSubMenuAction(const QString& projectPath)
     END_SUB_TEST_FUNCTION
 }
 
-void QMakeMakeCheckTest::checkSubMenuAction(ProjectExplorer::Project* project, bool present, bool enabled)
+void TestActionsTest::checkSubMenuAction(ProjectExplorer::Project* project, bool present, bool enabled)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -426,7 +426,7 @@ void QMakeMakeCheckTest::checkSubMenuAction(ProjectExplorer::Project* project, b
     END_SUB_TEST_FUNCTION
 }
 
-void QMakeMakeCheckTest::checkContextMenuAction(ProjectExplorer::Project* project, bool enabled)
+void TestActionsTest::checkContextMenuAction(ProjectExplorer::Project* project, bool enabled)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -449,7 +449,7 @@ void QMakeMakeCheckTest::checkContextMenuAction(ProjectExplorer::Project* projec
     END_SUB_TEST_FUNCTION
 }
 
-void QMakeMakeCheckTest::checkSubMenu(int actionCount)
+void TestActionsTest::checkSubMenu(int actionCount)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -461,7 +461,7 @@ void QMakeMakeCheckTest::checkSubMenu(int actionCount)
     END_SUB_TEST_FUNCTION
 }
 
-void QMakeMakeCheckTest::setCurrentProjectTree(ProjectExplorer::Project* project)
+void TestActionsTest::setCurrentProjectTree(ProjectExplorer::Project* project)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -476,7 +476,7 @@ void QMakeMakeCheckTest::setCurrentProjectTree(ProjectExplorer::Project* project
     END_SUB_TEST_FUNCTION
 }
 
-void QMakeMakeCheckTest::runMakeCheck(ProjectExplorer::Project* project, QAction* runControlAction)
+void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* runControlAction)
 {
     BEGIN_SUB_TEST_FUNCTION
 

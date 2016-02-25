@@ -39,7 +39,8 @@ SOURCES += \
     testrunconfiguration.cpp \
     qmaketestrunconfigurationfactory.cpp \
     testrunconfigurationextraaspect.cpp \
-    Utils/filetypevalidatinglineedit.cpp
+    Utils/filetypevalidatinglineedit.cpp \
+    Test/testactionstest.cpp
 
 HEADERS += \
     qtestlibplugin_global.h \
@@ -63,7 +64,8 @@ HEADERS += \
     testrunconfiguration.h \
     qmaketestrunconfigurationfactory.h \
     testrunconfigurationextraaspect.h \
-    Utils/filetypevalidatinglineedit.h
+    Utils/filetypevalidatinglineedit.h \
+    Test/testactionstest.h
 
 RESOURCES += \
     qtestlibplugin.qrc
@@ -77,8 +79,8 @@ include(../../QTestLibPlugin.pri)
 !isEmpty(BUILD_TESTS) {
     DEFINES += BUILD_TESTS
     DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
-    SOURCES += Test/qmakemakechecktest.cpp
-    HEADERS += Test/qmakemakechecktest.h
+    SOURCES +=
+    HEADERS +=
 }
 
 # Qt Creator from environment

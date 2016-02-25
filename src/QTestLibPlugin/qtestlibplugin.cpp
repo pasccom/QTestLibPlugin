@@ -30,7 +30,7 @@
 #include "qmaketestrunconfigurationfactory.h"
 
 #ifdef BUILD_TESTS
-#   include "Test/qmakemakechecktest.h"
+#   include "Test/testactionstest.h"
 #endif
 
 #include <coreplugin/icore.h>
@@ -380,7 +380,7 @@ QList<QObject *> QTestLibPluginPlugin::createTestObjects(void) const
 {
     QList<QObject *> testObjects;
 
-    testObjects << new Test::QMakeMakeCheckTest;
+    testObjects << new Test::TestActionsTest;
 
     return testObjects;
 }
