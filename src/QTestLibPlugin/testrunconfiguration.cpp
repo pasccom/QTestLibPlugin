@@ -109,7 +109,8 @@ QString TestRunConfiguration::commandLineArguments(void) const
     QStringList cmdArgs = mData->commandLineArguments();
     Q_ASSERT(extraAspect<TestRunConfigurationExtraAspect>() != NULL);
     QStringList testCmdArgs = extraAspect<TestRunConfigurationExtraAspect>()->commandLineArguments();
-    cmdArgs << QString(QLatin1String("TESTARGS=\"%1\"")).arg(testCmdArgs.join(QLatin1Char(' ')));
+    if (!testCmdArgs.isEmpty())
+        cmdArgs << QString(QLatin1String("TESTARGS=\"%1\"")).arg(testCmdArgs.join(QLatin1Char(' ')));
 
     qDebug() << "Command line arguments:" << cmdArgs;
 
