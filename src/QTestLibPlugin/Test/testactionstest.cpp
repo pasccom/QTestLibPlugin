@@ -491,7 +491,7 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
     ProjectExplorer::LocalApplicationRunConfiguration* runConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(runControl->runConfiguration());
     QVERIFY(runConfig != NULL);
     QCOMPARE(runConfig->executable(), toolChain->makeCommand(env));
-    QVERIFY(runConfig->commandLineArguments().startsWith(QLatin1String("check")));
+    QCOMPARE(runConfig->commandLineArguments(), QLatin1String("check"));
 
     QSignalSpy runControlStoppedSpy(runControl, SIGNAL(finished()));
     runControl->stop();
