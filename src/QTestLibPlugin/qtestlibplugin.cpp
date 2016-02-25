@@ -226,6 +226,7 @@ void QTestLibPluginPlugin::handleProjectClose(ProjectExplorer::Project* project)
     if (mTreeCurrentProject == project) {
         mTreeCurrentProject = NULL;
         mRunTestsAction->setEnabled(false);
+        mRunTestsAction->setText(tr("Run tests"));
     }
 
     disconnect(project, SIGNAL(activeTargetChanged(ProjectExplorer::Target*)),
@@ -338,6 +339,8 @@ void QTestLibPluginPlugin::handleDeleteRunConfiguration(ProjectExplorer::RunConf
  */
 void QTestLibPluginPlugin::handleCurrentProjectTreeChange(ProjectExplorer::Project* project)
 {
+    qDebug() << __func__ << (project != NULL ? project->displayName() : QString::null);
+
     mTreeCurrentProject = project;
     if (project == NULL)
         return;
