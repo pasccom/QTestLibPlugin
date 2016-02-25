@@ -31,6 +31,7 @@
 
 #ifdef BUILD_TESTS
 #   include "Test/testactionstest.h"
+#   include "Test/testrunconfigurationfactorytest.h"
 #endif
 
 #include <coreplugin/icore.h>
@@ -381,6 +382,7 @@ QList<QObject *> QTestLibPluginPlugin::createTestObjects(void) const
     QList<QObject *> testObjects;
 
     testObjects << new Test::TestActionsTest;
+    testObjects << new Test::TestRunConfigurationFactoryTest;
 
     return testObjects;
 }
