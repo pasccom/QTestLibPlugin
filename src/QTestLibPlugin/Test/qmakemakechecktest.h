@@ -4,6 +4,8 @@
 #include <QObject>
 #include "../../tests/common/qttestsubfunction.h"
 
+class QAction;
+
 namespace ProjectExplorer {
     class Project;
 }
@@ -57,6 +59,7 @@ private:
     void checkContextMenuAction(ProjectExplorer::Project* project, bool enabled);
     void checkSubMenu(int actionCount);
     void setCurrentProjectTree(ProjectExplorer::Project* project);
+    void runMakeCheck(ProjectExplorer::Project* project, QAction* runControlAction);
 };
 
 } // Test

@@ -8,8 +8,10 @@
 #include <projectexplorer/target.h>
 #include <projectexplorer/kit.h>
 #include <projectexplorer/kitmanager.h>
+#include <projectexplorer/kitinformation.h>
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/buildinfo.h>
+#include <projectexplorer/toolchain.h>
 #include <projectexplorer/localapplicationrunconfiguration.h>
 
 #include <qmakeprojectmanager/qmakeproject.h>
@@ -418,22 +420,8 @@ void QMakeMakeCheckTest::checkSubMenuAction(ProjectExplorer::Project* project, b
     QCOMPARE(runProjectTestsCommand->action()->isEnabled(), enabled);
     QCOMPARE(runProjectTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(project->displayName()).arg(project->activeTarget()->displayName()));
 
-    if (enabled) {
-        QSignalSpy runControlStartedSpy(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl*)));
-        runProjectTestsCommand->action()->trigger();
-
-        QCOMPARE(runControlStartedSpy.size(), 1);
-        qDebug() << runControlStartedSpy.at(0);
-        ProjectExplorer::RunControl* runControl = runControlStartedSpy.at(0).at(0).value<ProjectExplorer::RunControl*>();
-        ProjectExplorer::LocalApplicationRunConfiguration* runConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(runControl->runConfiguration());
-        QVERIFY(runConfig != NULL);
-        // TODO test make?
-        QVERIFY(runConfig->commandLineArguments().startsWith(QLatin1String("check")));
-
-        QSignalSpy runControlStoppedSpy(runControl, SIGNAL(finished()));
-        runControl->stop();
-        QCOMPARE(runControlStoppedSpy.size(), 1);
-    }
+    if (enabled)
+        SUB_TEST_FUNCTION(runMakeCheck(project, runProjectTestsCommand->action()));
 
     END_SUB_TEST_FUNCTION
 }
@@ -453,22 +441,9 @@ void QMakeMakeCheckTest::checkContextMenuAction(ProjectExplorer::Project* projec
     else
         QCOMPARE(runTestsCommand->action()->text(), tr("Run tests"));
 
-    if (enabled) {
-        QSignalSpy runControlStartedSpy(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl*)));
-        runTestsCommand->action()->trigger();
+    if (enabled)
+        runMakeCheck(project, runTestsCommand->action());
 
-        QCOMPARE(runControlStartedSpy.size(), 1);
-        qDebug() << runControlStartedSpy.at(0);
-        ProjectExplorer::RunControl* runControl = runControlStartedSpy.at(0).at(0).value<ProjectExplorer::RunControl*>();
-        ProjectExplorer::LocalApplicationRunConfiguration* runConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(runControl->runConfiguration());
-        QVERIFY(runConfig != NULL);
-        // TODO test make?
-        QVERIFY(runConfig->commandLineArguments().startsWith(QLatin1String("check")));
-
-        QSignalSpy runControlStoppedSpy(runControl, SIGNAL(finished()));
-        runControl->stop();
-        QCOMPARE(runControlStoppedSpy.size(), 1);
-    }
 
     Core::ICore::removeAdditionalContext(projectTreeContext);
     END_SUB_TEST_FUNCTION
@@ -497,6 +472,30 @@ void QMakeMakeCheckTest::setCurrentProjectTree(ProjectExplorer::Project* project
     QVERIFY(currentProjectChangedSpy.size() > 0);
     ProjectExplorer::Project* currentProject = currentProjectChangedSpy.last().at(0).value<ProjectExplorer::Project*>();
     QVERIFY(currentProject == project);
+
+    END_SUB_TEST_FUNCTION
+}
+
+void QMakeMakeCheckTest::runMakeCheck(ProjectExplorer::Project* project, QAction* runControlAction)
+{
+    BEGIN_SUB_TEST_FUNCTION
+
+    QSignalSpy runControlStartedSpy(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl*)));
+    runControlAction->trigger();
+
+    QCOMPARE(runControlStartedSpy.size(), 1);
+    qDebug() << runControlStartedSpy.at(0);
+    Utils::Environment env = project->activeTarget()->activeBuildConfiguration()->environment();
+    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(project->activeTarget()->kit());
+    ProjectExplorer::RunControl* runControl = runControlStartedSpy.at(0).at(0).value<ProjectExplorer::RunControl*>();
+    ProjectExplorer::LocalApplicationRunConfiguration* runConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(runControl->runConfiguration());
+    QVERIFY(runConfig != NULL);
+    QCOMPARE(runConfig->executable(), toolChain->makeCommand(env));
+    QVERIFY(runConfig->commandLineArguments().startsWith(QLatin1String("check")));
+
+    QSignalSpy runControlStoppedSpy(runControl, SIGNAL(finished()));
+    runControl->stop();
+    QCOMPARE(runControlStoppedSpy.size(), 1);
 
     END_SUB_TEST_FUNCTION
 }
