@@ -21,14 +21,16 @@
 
 #include "runconfiguration.h"
 
+#include <coreplugin/id.h>
+
 namespace ProjectExplorer {
 
 class LocalApplicationRunConfiguration : public RunConfiguration
 {
     Q_OBJECT
 public:
-    inline LocalApplicationRunConfiguration(ProjectExplorer::Target *target) :
-        RunConfiguration(target) {}
+    inline LocalApplicationRunConfiguration(ProjectExplorer::Target *target, Core::Id id = Core::Id()) :
+        RunConfiguration(target) {Q_UNUSED(id);}
 
     inline QString executable() const {return mExe;}
     inline void setExecutable(const QString& exe) {mExe = exe;}

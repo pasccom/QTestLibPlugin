@@ -28,14 +28,23 @@ SOURCES += \
     $$PWD/runconfiguration.cpp \
     $$PWD/localapplicationrunconfiguration.cpp \
     $$PWD/localapplicationruncontrol.cpp \
+    $$PWD/project.cpp \
     $$PWD/target.cpp \
     $$PWD/kit.cpp \
-    $$PWD/project.cpp
+    $$PWD/kitinformation.cpp \
+    $$PWD/buildconfiguration.cpp \
+    $$PWD/localenvironmentaspect.cpp \
+    $$PWD/toolchain.cpp
 
 HEADERS += \
     $$PWD/runconfiguration.h \
     $$PWD/localapplicationrunconfiguration.h \
     $$PWD/localapplicationruncontrol.h \
+    $$PWD/applicationlauncher.h \
+    $$PWD/project.h \
     $$PWD/target.h \
     $$PWD/kit.h \
-    $$PWD/project.h
+    $$PWD/kitinformation.h \
+    $$PWD/buildconfiguration.h \
+    $$PWD/localenvironmentaspect.h \
+    $$PWD/toolchain.h

@@ -19,12 +19,20 @@
 #ifndef RUNCONFIGURATION_H
 #define RUNCONFIGURATION_H
 
+#include <qtcreatorfake_global.h>
+
+#include <QWidget>
+#include <QVariant>
+#include <QLinkedList>
 #include <QProcess>
+
 #include <utils/outputformat.h>
 #include "target.h"
 
 namespace ProjectExplorer {
 
+class IRunConfigurationAspect;
+    
 class RunConfiguration : public QObject
 {
     Q_OBJECT
@@ -33,8 +41,43 @@ public:
         QObject(target), mTarget(target) {}
     inline virtual QString displayName(void) const {return QString::null;}
     inline Target *target(void) const {return mTarget;}
+    
+    inline void addExtraAspect(IRunConfigurationAspect *aspect) {mAspects.append(aspect);}
+    template <typename T> T *extraAspect() const
+    {
+        foreach (IRunConfigurationAspect *aspect, mAspects)
+            if (T *result = qobject_cast<T *>(aspect))
+                return result;
+        return NULL;
+    }
+    
+    inline void setDefaultDisplayName(const QString& name) {mDefaultDisplayName = name;}
+    inline QString defaultDisplayName(void) const {return mDefaultDisplayName;}
+    
+    inline bool fromMap(const QVariantMap& map) {Q_UNUSED(map); return true;}
+    inline QVariantMap toMap(void) const {return QVariantMap();}
+    
 private:
+    QString mDefaultDisplayName;
     Target *mTarget;
+    QLinkedList<IRunConfigurationAspect*> mAspects;
+};
+
+class IRunConfigurationAspect : public QObject
+{
+    Q_OBJECT
+public:
+    inline IRunConfigurationAspect(RunConfiguration* parent) :
+        QObject(parent) {}
+
+    inline void setId(const Core::Id& id) {mId = id;}
+    inline Core::Id id(void) const {return mId;}
+
+    inline void setDisplayName(const QString& name) {mDisplayName = name;}
+    inline QString displayName(void) const {return mDisplayName;}
+private:
+    Core::Id mId;
+    QString mDisplayName;
 };
 
 class RunControl : public QObject
@@ -63,6 +106,21 @@ private:
     RunConfiguration* mConfig;
     QString mName;
 };
+
+class RunConfigWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    RunConfigWidget()
+        : QWidget(0)
+    {}
+
+    virtual QString displayName() const = 0;
+
+signals:
+    void displayNameChanged(const QString &);
+};
+
 
 } // ProjectExplorer
 

@@ -16,36 +16,21 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef TARGET_H
-#define TARGET_H
+#ifndef KITINFORMATION_H
+#define KITINFORMATION_H
 
-#include <QObject>
-#include <coreplugin/id.h>
-#include "project.h"
+#include "toolchain.h"
 
 namespace ProjectExplorer {
 
 class Kit;
-class BuildConfiguration;
-
-class Target : public QObject
+    
+class ToolChainKitInformation
 {
-    Q_OBJECT
 public:
-    inline Target(Project *project, Kit *kit) :
-        QObject(project), mProject(project), mKit(kit), mActiveBuildConfiguration(NULL) {}
-
-    inline Kit *kit(void) const {return mKit;}
-    inline Project *project(void) const {return mProject;}
-
-    inline void setActiveBuildConfiguration(BuildConfiguration* buildConfig) {mActiveBuildConfiguration = buildConfig;}
-    inline BuildConfiguration* activeBuildConfiguration(void) const {return mActiveBuildConfiguration;}
-private:
-    Project *mProject;
-    Kit *mKit;
-    BuildConfiguration* mActiveBuildConfiguration;
+    static ToolChain* toolChain(Kit* kit) {Q_UNUSED(kit); return new ToolChain();}
 };
 
 } // ProjectExplorer
 
-#endif // TARGET_H
+#endif // KITINFORMATION_H

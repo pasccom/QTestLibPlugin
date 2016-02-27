@@ -24,3 +24,9 @@ QTC_PLUGIN_DEPENDS += \
 
 QTC_PLUGIN_RECOMMENDS += \
     # Nothing
+
+SOURCES += \
+    $$PWD/id.cpp
+
+HEADERS +=
+    $$PWD/id.h
