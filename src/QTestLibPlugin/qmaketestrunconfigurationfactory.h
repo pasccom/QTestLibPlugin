@@ -33,14 +33,6 @@ public:
     bool canRestore(ProjectExplorer::Target* parent, const QVariantMap &map) const;
     bool canClone(ProjectExplorer::Target* parent, ProjectExplorer::RunConfiguration *product) const;
     ProjectExplorer::RunConfiguration* clone(ProjectExplorer::Target *parent, ProjectExplorer::RunConfiguration *product);
-
-    //TestRunConfiguration* create(ProjectExplorer::Target* target);
-    //void remove(ProjectExplorer::Target* target);
-
-    //void createForAllTargets(ProjectExplorer::Project* project);
-    //void removeForAllTargets(ProjectExplorer::Project* project);
-//private slots:
-    //void updateTargetKit(void);
 private:
     ProjectExplorer::RunConfiguration* doCreate(ProjectExplorer::Target* target, Core::Id id);
     ProjectExplorer::RunConfiguration* doRestore(ProjectExplorer::Target* target, const QVariantMap& map);

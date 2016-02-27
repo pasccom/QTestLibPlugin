@@ -19,6 +19,7 @@
 #include "plaintextqtestlibparserfactory.h"
 
 #include "qtestlibargsparser.h"
+#include "testrunconfiguration.h"
 
 #include <projectexplorer/runconfiguration.h>
 #include <projectexplorer/localapplicationrunconfiguration.h>
@@ -41,6 +42,19 @@ AbstractTestParser* PlainTextQTestLibParserFactory::getParserInstance(ProjectExp
     return new PlainTextQTestLibParser(runConfiguration);
 }
 
+bool PlainTextQTestLibParserFactory::canParseRunConfiguration(ProjectExplorer::RunConfiguration* runConfiguration) const
+{
+    Q_ASSERT(runConfiguration != NULL);
+
+    TestRunConfiguration* testRunConfiguration = qobject_cast<TestRunConfiguration*>(runConfiguration);
+    if (testRunConfiguration == NULL)
+        return false;
+
+    QRegExp extraTestArgsRegExp(QLatin1String("TESTARGS=\"[^\"]*\""));
+    if (extraTestArgsRegExp.indexIn(testRunConfiguration->commandLineArguments()) == -1)
+        return true;
+    return canParseArguments(runConfiguration);
+}
 
 bool PlainTextQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfiguration *runConfiguration) const
 {

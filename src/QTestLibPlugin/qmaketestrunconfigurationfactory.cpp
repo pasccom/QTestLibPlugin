@@ -88,8 +88,6 @@ bool QMakeTestRunConfigurationFactory::isUseful(ProjectExplorer::Project* projec
 
 bool QMakeTestRunConfigurationFactory::canCreate(ProjectExplorer::Target *target, Core::Id id) const
 {
-    qDebug() << __func__ << target->displayName() << id.toString();
-
     QTC_ASSERT(canHandle(target) && isUseful(target->project()), return false);
     QTC_ASSERT(id == Core::Id(Constants::TestRunConfigurationId), return false);
 
@@ -98,15 +96,11 @@ bool QMakeTestRunConfigurationFactory::canCreate(ProjectExplorer::Target *target
 
 bool QMakeTestRunConfigurationFactory::canRestore(ProjectExplorer::Target *target, const QVariantMap &map) const
 {
-    qDebug() << __func__ << target->displayName() << map;
-
     return canHandle(target) && (ProjectExplorer::idFromMap(map) == Core::Id(Constants::TestRunConfigurationId));
 }
 
 bool QMakeTestRunConfigurationFactory::canClone(ProjectExplorer::Target *target, ProjectExplorer::RunConfiguration *product) const
 {
-    qDebug() << __func__ << product->metaObject()->className();
-
     return canHandle(target) && (qobject_cast<TestRunConfiguration *>(product) != NULL);
 }
 
@@ -137,62 +131,6 @@ ProjectExplorer::RunConfiguration* QMakeTestRunConfigurationFactory::doRestore(P
 
     return runConfig;
 }
-
-/*TestRunConfiguration* QMakeTestRunConfigurationFactory::create(ProjectExplorer::Target* target)
-{
-    if (!canHandle(target))
-        return NULL;
-
-    foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations()) {
-        TestRunConfiguration* testRunConfig = qobject_cast<TestRunConfiguration *>(runConfig);
-        if (testRunConfig != NULL)
-            return testRunConfig;
-    }
-
-    TestRunConfiguration* runConfig = new TestRunConfiguration(target, Core::Id(Constants::TestRunConfigurationId));
-    target->addRunConfiguration(runConfig);
-
-    return runConfig;
-}*/
-
-/*void QMakeTestRunConfigurationFactory::remove(ProjectExplorer::Target* target)
-{
-    QList<ProjectExplorer::RunConfiguration*> runConfigs = target->runConfigurations();
-
-    foreach (ProjectExplorer::RunConfiguration *runConfig, runConfigs) {
-        if (qobject_cast<TestRunConfiguration*>(runConfig) != NULL)
-            target->removeRunConfiguration(runConfig);
-    }
-}*/
-
-/*void QMakeTestRunConfigurationFactory::createForAllTargets(ProjectExplorer::Project* project)
-{
-    foreach (ProjectExplorer::Target* t, project->targets()) {
-        if (canHandle(t))
-            t->addRunConfiguration(create(t, Core::Id(Constants::TestRunConfigurationId)));
-        connect(t, SIGNAL(kitChanged()),
-                this, SLOT(updateTargetKit()));
-    }
-}*/
-
-/*void QMakeTestRunConfigurationFactory::updateTargetKit(void)
-{
-    ProjectExplorer::Target* target = qobject_cast<ProjectExplorer::Target*>(sender());
-    Q_ASSERT(target != NULL);
-
-    if (canHandle(target))
-        create(target, Core::Id(Constants::TestRunConfigurationId));
-    else
-        remove(target);
-}*/
-
-/*void QMakeTestRunConfigurationFactory::removeForAllTargets(ProjectExplorer::Project* project)
-{
-    foreach (ProjectExplorer::Target* t, project->targets()) {
-        remove(t);
-        disconnect(t, SIGNAL(kitChanged()), this, SLOT(updateTargetKit()));
-    }
-}*/
 
 } // Internal
 } // QTestLibPlugin

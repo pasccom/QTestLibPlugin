@@ -46,9 +46,21 @@ public:
      */
     inline LightXMLQTestLibParserFactory(QObject *parent = NULL):
         AbstractTestParserFactory(parent) {}
-    inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {return canParseModule(runConfiguration);}
+    inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {return canParseRunConfiguration(runConfiguration) || canParseModule(runConfiguration);}
     AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const;
 private:
+    /*!
+     * \brief Check if the run configuration is a TestRunConfiguration.
+     *
+     * If the run configuration is a TestRunConfiguration,
+     * then the associated parser may parse the output
+     * if the arguments do not change the outut format.
+     *
+     * \param runConfiguration The run configuration to check.
+     * \return \c true, if the parser may parse the test
+     * \sa canParseModule(), canParseArguments()
+     */
+    bool canParseRunConfiguration(ProjectExplorer::RunConfiguration* runConfiguration) const;
     /*!
      * \brief Check if the project uses \c testlib Qt module.
      *
