@@ -18,5 +18,5 @@
 TEMPLATE = subdirs
 
 # Parsers tests:
-SUBDIRS +=  ../PlainTextQTestLibParserTest \
-            ../XMLQTestLibParserTest       \
+SUBDIRS +=  ../OnePassTest \
+            ../OneFailTest \
