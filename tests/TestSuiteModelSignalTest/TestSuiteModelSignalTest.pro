@@ -24,6 +24,7 @@ CONFIG  += testcase
 CONFIG  += no_testcase_installs
 QT      += testlib
 QT      += xml
+QT      += widgets
 
 include(../../QTestLibPlugin.pri)
 
