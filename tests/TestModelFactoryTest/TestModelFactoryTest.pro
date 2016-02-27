@@ -51,7 +51,7 @@ SOURCES += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.cpp \
            $$QTESTLIBPLUGIN_SRC/testmodelfactory.cpp \
            $$QTESTLIBPLUGIN_SRC/testrunconfiguration.cpp \
            $$QTESTLIBPLUGIN_SRC/testrunconfigurationextraaspect.cpp \
-           $$QTESTLIBPLUGIN_SRC/Utils/filetypevalidatinglineedit.cpp
+           $$QTESTLIBPLUGIN_SRC/Widgets/filetypevalidatinglineedit.cpp
 HEADERS += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.h \
            $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparserfactory.h \
            $$QTESTLIBPLUGIN_SRC/basexmlqtestlibparser.h \
@@ -66,7 +66,7 @@ HEADERS += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.h \
            $$QTESTLIBPLUGIN_SRC/testmodelfactory.h \
            $$QTESTLIBPLUGIN_SRC/testrunconfiguration.h \
            $$QTESTLIBPLUGIN_SRC/testrunconfigurationextraaspect.h \
-           $$QTESTLIBPLUGIN_SRC/Utils/filetypevalidatinglineedit.h
+           $$QTESTLIBPLUGIN_SRC/Widgets/filetypevalidatinglineedit.h
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
 # Fake QtCreator tree

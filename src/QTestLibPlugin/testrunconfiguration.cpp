@@ -3,7 +3,7 @@
 #include "testrunconfigurationextraaspect.h"
 #include "qtestlibpluginconstants.h"
 
-#include "Utils/filetypevalidatinglineedit.h"
+#include "Widgets/filetypevalidatinglineedit.h"
 
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/kitinformation.h>
@@ -20,17 +20,17 @@ TestRunConfigurationData::TestRunConfigurationData(ProjectExplorer::Target *targ
     :  jobNumber(1), testRunner(), workingDirectory(QLatin1String(".")), mAutoMakeExe(), mMakeExe()
 {
     if (target != NULL) {
-        QtcUtils::Environment env = target->activeBuildConfiguration()->environment();
+        Utils::Environment env = target->activeBuildConfiguration()->environment();
         ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit());
-        mAutoMakeExe = QtcUtils::FileName::fromString(toolChain->makeCommand(env));
+        mAutoMakeExe = Utils::FileName::fromString(toolChain->makeCommand(env));
     }
 }
 
 void TestRunConfigurationData::setMakeExe(const QString& path)
 {
-    QtcUtils::FileName makeExe = QtcUtils::FileName::fromUserInput(path);
+    Utils::FileName makeExe = Utils::FileName::fromUserInput(path);
 
-    mMakeExe = (mAutoMakeExe == makeExe ? QtcUtils::FileName() : makeExe);
+    mMakeExe = (mAutoMakeExe == makeExe ? Utils::FileName() : makeExe);
 }
 
 QStringList TestRunConfigurationData::commandLineArguments(void) const
@@ -62,7 +62,7 @@ QVariantMap TestRunConfigurationData::toMap(QVariantMap& map) const
 bool TestRunConfigurationData::fromMap(const QVariantMap& map)
 {
     workingDirectory = map.value(Constants::WorkingDirectoryKey, QLatin1String(".")).toString();
-    mMakeExe = QtcUtils::FileName::fromString(map.value(Constants::MakeExeKey, QString()).toString());
+    mMakeExe = Utils::FileName::fromString(map.value(Constants::MakeExeKey, QString()).toString());
     testRunner = map.value(Constants::TestRunnerKey, QString()).toString();
     jobNumber = map.value(Constants::MakeJobNumberKey, 1).toInt();
 
@@ -120,16 +120,16 @@ QString TestRunConfiguration::commandLineArguments(void) const
 TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData* data, QWidget* parent)
     : QWidget(parent), mData(data)
 {
-    mWorkingDirectoryEdit = new Utils::FileTypeValidatingLineEdit(this);
+    mWorkingDirectoryEdit = new Widgets::FileTypeValidatingLineEdit(this);
     mWorkingDirectoryEdit->setAcceptDirectories(true);
     mWorkingDirectoryEdit->setText(mData->workingDirectory);
     mWorkingDirectoryLabel = new QLabel(tr("Working directory:"), this);
     mWorkingDirectoryLabel->setBuddy(mWorkingDirectoryEdit);
     mWorkingDirectoryButton = new QPushButton(tr("Browse..."), this);
-    mMakeExeEdit = new Utils::FileTypeValidatingLineEdit(this);
+    mMakeExeEdit = new Widgets::FileTypeValidatingLineEdit(this);
     mMakeExeEdit->setRequireExecutable(true);
     mMakeExeEdit->setText(mData->makeExe());
-    if (QtcUtils::HostOsInfo::isWindowsHost())
+    if (Utils::HostOsInfo::isWindowsHost())
         mMakeExeEdit->setRequiredExtensions(QStringList() << QLatin1String("exe"));
     else
         mMakeExeEdit->setRequiredExtensions(QStringList());
@@ -137,7 +137,7 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mMakeExeLabel->setBuddy(mMakeExeEdit);
     mMakeExeDetectButton = new QPushButton(tr("Auto-detect"), this);
     mMakeExeBrowseButton = new QPushButton(tr("Browse..."), this);
-    mTestRunnerEdit = new Utils::FileTypeValidatingLineEdit(this);
+    mTestRunnerEdit = new Widgets::FileTypeValidatingLineEdit(this);
     mTestRunnerEdit->setAcceptEmpty(true);
     mTestRunnerEdit->setRequireExecutable(true);
     mTestRunnerEdit->setText(mData->testRunner);
@@ -242,7 +242,7 @@ void TestRunConfigurationWidget::autoDetectMakeExe(void)
 void TestRunConfigurationWidget::browseMakeExe(void)
 {
     QString filter;
-    if (QtcUtils::HostOsInfo::isWindowsHost())
+    if (Utils::HostOsInfo::isWindowsHost())
         filter = tr("Exécutable files *.exe");
 
     QString me = QFileDialog::getOpenFileName(this, tr("Choose \"make\""), mData->makeExe(), filter, &filter);

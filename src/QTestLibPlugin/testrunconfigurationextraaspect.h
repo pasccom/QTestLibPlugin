@@ -12,7 +12,7 @@ class QPushButton;
 class QSpinBox;
 
 namespace QTestLibPlugin {
-namespace Utils {
+namespace Widgets {
     class FileTypeValidatingLineEdit;
 }
 
@@ -50,7 +50,7 @@ private:
     QLabel* mVerbosityLabel;
     QComboBox* mVerbosityCombo;
     QLabel* mOutFileLabel;
-    Utils::FileTypeValidatingLineEdit* mOutFileEdit;
+    Widgets::FileTypeValidatingLineEdit* mOutFileEdit;
     QPushButton* mOutFileButton;
     QCheckBox* mWarningCheck;
     QSpinBox* mWarningSpin;

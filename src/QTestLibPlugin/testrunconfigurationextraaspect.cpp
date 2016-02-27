@@ -1,7 +1,7 @@
 #include "testrunconfigurationextraaspect.h"
 #include "qtestlibpluginconstants.h"
 
-#include "Utils/filetypevalidatinglineedit.h"
+#include "Widgets/filetypevalidatinglineedit.h"
 
 #include <QtWidgets>
 
@@ -35,7 +35,7 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     mVerbosityLabel = new QLabel(tr("Test output verbosity:"), this);
     mVerbosityLabel->setBuddy(mVerbosityCombo);
 
-    mOutFileEdit = new Utils::FileTypeValidatingLineEdit(this);
+    mOutFileEdit = new Widgets::FileTypeValidatingLineEdit(this);
     mOutFileEdit->setAcceptNew(true);
     mOutFileEdit->setRequireWritable(true);
     mOutFileEdit->setText(map.value(Constants::OutputFileKey).toString());
@@ -162,13 +162,13 @@ void TestRunConfigWidget::updateVerbosity(int index)
 void TestRunConfigWidget::updateOutFile(bool valid)
 {
     if (valid)
-        mAspect->mTestArgsParser->setOutFileName(QtcUtils::FileName::fromString(mOutFileEdit->text()));
+        mAspect->mTestArgsParser->setOutFileName(Utils::FileName::fromString(mOutFileEdit->text()));
 }
 
 void TestRunConfigWidget::updateOutFile(void)
 {
     if (mOutFileEdit->isValid())
-        mAspect->mTestArgsParser->setOutFileName(QtcUtils::FileName::fromString(mOutFileEdit->text()));
+        mAspect->mTestArgsParser->setOutFileName(Utils::FileName::fromString(mOutFileEdit->text()));
     else
         mOutFileEdit->setText(mAspect->mTestArgsParser->outFileName().toString());
 }
@@ -177,7 +177,7 @@ void TestRunConfigWidget::browseOutFile(void)
 {
     QString outFile = QFileDialog::getSaveFileName(this, tr("Choose test output file"), mAspect->mTestArgsParser->outFileName().toString());
     if (!outFile.isNull())
-        mAspect->mTestArgsParser->setOutFileName(QtcUtils::FileName::fromString(outFile));
+        mAspect->mTestArgsParser->setOutFileName(Utils::FileName::fromString(outFile));
     updateOutFile();
 }
 

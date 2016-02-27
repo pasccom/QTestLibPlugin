@@ -4,7 +4,6 @@
 #include "qtestlibargsparser.h"
 
 #include <utils/fileutils.h>
-namespace QtcUtils = Utils;
 
 #include <projectexplorer/localapplicationrunconfiguration.h>
 #include <projectexplorer/applicationlauncher.h>
@@ -21,7 +20,7 @@ namespace ProjectExplorer {
 }
 
 namespace QTestLibPlugin {
-namespace Utils {
+namespace Widgets {
     class FileTypeValidatingLineEdit;
 }
 
@@ -34,7 +33,7 @@ public:
 
     inline QString makeExe(void) const {return mMakeExe.isNull() ? mAutoMakeExe.toString() : mMakeExe.toString();}
     inline bool usesDefaultMakeExe(void) const {return mMakeExe.isNull();}
-    inline void useDefaultMakeExe(void) {mMakeExe = QtcUtils::FileName();}
+    inline void useDefaultMakeExe(void) {mMakeExe = Utils::FileName();}
     void setMakeExe(const QString& path);
 
     QVariantMap toMap(QVariantMap& map) const;
@@ -46,8 +45,8 @@ public:
     QString testRunner;
     QString workingDirectory;
 private:
-    QtcUtils::FileName mAutoMakeExe;
-    QtcUtils::FileName mMakeExe;
+    Utils::FileName mAutoMakeExe;
+    Utils::FileName mMakeExe;
 };
 
 class TestRunConfigurationWidget : public QWidget
@@ -74,14 +73,14 @@ private:
     TestRunConfigurationData* mData;
 
     QLabel* mWorkingDirectoryLabel;
-    Utils::FileTypeValidatingLineEdit* mWorkingDirectoryEdit;
+    Widgets::FileTypeValidatingLineEdit* mWorkingDirectoryEdit;
     QPushButton* mWorkingDirectoryButton;
     QLabel* mMakeExeLabel;
-    Utils::FileTypeValidatingLineEdit* mMakeExeEdit;
+    Widgets::FileTypeValidatingLineEdit* mMakeExeEdit;
     QPushButton* mMakeExeDetectButton;
     QPushButton* mMakeExeBrowseButton;
     QLabel* mTestRunnerLabel;
-    Utils::FileTypeValidatingLineEdit* mTestRunnerEdit;
+    Widgets::FileTypeValidatingLineEdit* mTestRunnerEdit;
     QPushButton* mTestRunnerButton;
     QLabel* mJobsLabel;
     QSpinBox* mJobsSpin;

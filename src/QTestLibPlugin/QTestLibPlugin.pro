@@ -39,7 +39,7 @@ SOURCES += \
     testrunconfiguration.cpp \
     qmaketestrunconfigurationfactory.cpp \
     testrunconfigurationextraaspect.cpp \
-    Utils/filetypevalidatinglineedit.cpp \
+    Widgets/filetypevalidatinglineedit.cpp \
     Test/testactionstest.cpp \
     Test/testrunconfigurationfactorytest.cpp
 
@@ -65,7 +65,7 @@ HEADERS += \
     testrunconfiguration.h \
     qmaketestrunconfigurationfactory.h \
     testrunconfigurationextraaspect.h \
-    Utils/filetypevalidatinglineedit.h \
+    Widgets/filetypevalidatinglineedit.h \
     Test/testactionstest.h \
     Test/testrunconfigurationfactorytest.h
 

@@ -3,10 +3,10 @@
 #include <QtCore>
 
 namespace QTestLibPlugin {
-namespace Utils {
+namespace Widgets {
 
 FileTypeValidatingLineEdit::FileTypeValidatingLineEdit(QWidget* parent) :
-    QtcUtils::FancyLineEdit(parent), mAccepted(0)
+    Utils::FancyLineEdit(parent), mAccepted(0)
 {
     mAccepted |= AcceptsFiles;
     mAccepted |= RequireReadable;
@@ -100,5 +100,5 @@ bool FileTypeValidatingLineEdit::validatePermissions(const QString& value, QStri
     return true;
 }
 
-} // Utils
+} // Widgets
 } // QTestLibPlugin

@@ -2,14 +2,13 @@
 #define FILETYPEVALIDATINGLINEEDIT_H
 
 #include <utils/fancylineedit.h>
-namespace QtcUtils = Utils;
 
 #include <QStringList>
 
 namespace QTestLibPlugin {
-namespace Utils {
+namespace Widgets {
 
-class FileTypeValidatingLineEdit : public QtcUtils::FancyLineEdit
+class FileTypeValidatingLineEdit : public Utils::FancyLineEdit
 {
     Q_OBJECT
     Q_FLAGS(Accept Accepts)
@@ -60,7 +59,7 @@ private:
     Accepts mAccepted;
 };
 
-} // Utils
+} // Widgets
 } // QTestLibPlugin
 
 #endif // FILETYPEVALIDATINGLINEEDIT_H

@@ -77,7 +77,7 @@ void TestRunConfigurationFactoryTest::testOpenProjectWithTests(void)
         QVERIFY(testRunConfig != NULL);
         QVERIFY(testRunConfig->id() == Core::Id(Constants::TestRunConfigurationId));
 
-        QtcUtils::Environment env = target->activeBuildConfiguration()->environment();
+        Utils::Environment env = target->activeBuildConfiguration()->environment();
         ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit());
         QCOMPARE(testRunConfig->executable(), toolChain->makeCommand(env));
         QCOMPARE(testRunConfig->commandLineArguments(), QLatin1String("check"));
