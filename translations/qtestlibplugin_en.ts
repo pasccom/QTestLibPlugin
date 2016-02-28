@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>QTestLibPlugin::Internal::QTestLibArgsParser</name>
     <message>
@@ -156,21 +156,21 @@
         <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="124"/>
         <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="230"/>
         <source>Run tests</source>
-        <translation type="unfinished"></translation>
+        <translation>Run tests</translation>
     </message>
     <message>
         <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="246"/>
         <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="284"/>
         <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="356"/>
         <source>Run tests for &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Run tests for &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="248"/>
         <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="297"/>
         <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="358"/>
         <source>Run tests for &quot;%1&quot; (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Run tests for &quot;%1&quot; (%2)</translation>
     </message>
 </context>
 <context>
