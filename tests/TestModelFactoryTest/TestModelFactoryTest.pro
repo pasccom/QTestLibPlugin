@@ -70,7 +70,7 @@ HEADERS += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.h \
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
 # Fake QtCreator tree
-include($$QTESTLIBPLUGIN_SRC/QTestLibPlugin_dependencies.pri)
+include($$QTESTLIBPLUGIN_LIB/QTestLibPlugin_dependencies.pri)
 include(../QtCreatorFake/QtCreatorFake.pri)
 
 # The directory where to put MOC-generated files :

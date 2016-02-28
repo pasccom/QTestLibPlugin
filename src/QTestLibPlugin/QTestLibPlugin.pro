@@ -15,15 +15,21 @@
 # You should have received a copy of the GNU General Public License
 # along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 
-DEFINES += QTESTLIBPLUGIN_LIBRARY
+TEMPLATE = lib
+TARGET   = qtestlibplugin
 
-# QTestLibPlugin files
+CONFIG  += c++11
+CONFIG  += static
+QT      += network
+QT      += widgets
+QT      += testlib
+
+DEFINES += QTESTLIBPLUGIN_LIBRARY
 
 SOURCES += \
     testoutputpane.cpp \
     testsuitemodel.cpp \
     qtestlibmodel.cpp \
-    qtestlibplugin.cpp \
     testmodelfactory.cpp \
     plaintextqtestlibparser.cpp \
     plaintextqtestlibparserfactory.cpp \
@@ -39,9 +45,7 @@ SOURCES += \
     testrunconfiguration.cpp \
     qmaketestrunconfigurationfactory.cpp \
     testrunconfigurationextraaspect.cpp \
-    Widgets/filetypevalidatinglineedit.cpp \
-    Test/testactionstest.cpp \
-    Test/testrunconfigurationfactorytest.cpp
+    Widgets/filetypevalidatinglineedit.cpp
 
 HEADERS += \
     qtestlibplugin_global.h \
@@ -49,7 +53,6 @@ HEADERS += \
     testoutputpane.h \
     testsuitemodel.h \
     qtestlibmodel.h \
-    qtestlibplugin.h \
     testmodelfactory.h \
     plaintextqtestlibparser.h \
     plaintextqtestlibparserfactory.h \
@@ -65,24 +68,22 @@ HEADERS += \
     testrunconfiguration.h \
     qmaketestrunconfigurationfactory.h \
     testrunconfigurationextraaspect.h \
-    Widgets/filetypevalidatinglineedit.h \
-    Test/testactionstest.h \
-    Test/testrunconfigurationfactorytest.h
-
-RESOURCES += \
-    qtestlibplugin.qrc
-
-TRANSLATIONS += \
-    qtestlibplugin_en.ts \
-    qtestlibplugin_fr.ts
+    Widgets/filetypevalidatinglineedit.h
 
 include(../../QTestLibPlugin.pri)
+
+CONFIG(debug, debug|release):DESTDIR = $$QTESTLIBPLUGIN_LIB/debug
+else:DESTDIR = $$QTESTLIBPLUGIN_LIB/release
 
 !isEmpty(BUILD_TESTS) {
     DEFINES += BUILD_TESTS
     DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
-    SOURCES +=
-    HEADERS +=
+    SOURCES +=  \
+        Test/testactionstest.cpp \
+        Test/testrunconfigurationfactorytest.cpp
+    HEADERS += \
+        Test/testactionstest.h \
+        Test/testrunconfigurationfactorytest.h
 }
 
 # Qt Creator from environment
@@ -96,79 +97,17 @@ exists(../../QtCreator.local.pri) {
     include(../../QtCreator.local.pri)
 }
 
-## uncomment to build plugin into user config directory
-## <localappdata>/plugins/<ideversion>
-##    where <localappdata> is e.g.
-##    "%LOCALAPPDATA%\QtProject\qtcreator" on Windows Vista and later
-##    "$XDG_DATA_HOME/data/QtProject/qtcreator" or "~/.local/share/data/QtProject/qtcreator" on Linux
-##    "~/Library/Application Support/QtProject/Qt Creator" on Mac
-USE_USER_DESTDIR = yes
+INCLUDEPATH += $$QTCREATOR_SOURCES/src/libs
+INCLUDEPATH += $$QTCREATOR_SOURCES/src/plugins
+INCLUDEPATH += $$QTCREATOR_SOURCES/src/shared
 
-include($$QTCREATOR_SOURCES/src/qtcreatorplugin.pri)
-INSTALLS =
+# The directory where to put MOC-generated files :
+MOC_DIR = ./.moc
 
-###### Translation files generation (not handled by Qt)
-isEmpty(QMAKE_LRELEASE) {
-    win32:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\lrelease.exe
-    else:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
-}
-
-updateqm.input = TRANSLATIONS
-updateqm.output = $$QTESTLIBPLUGIN_BIN/${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
-updateqm.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm $$QTESTLIBPLUGIN_BIN/${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
-updateqm.CONFIG += no_link
-
-QMAKE_EXTRA_COMPILERS += updateqm
-PRE_TARGETDEPS += compiler_updateqm_make_all
-
-###### Translation files installation (not handled yet by Qt Creator)
-COMPILED_TRANSLATIONS =
-for (TRANSLATION, TRANSLATIONS) {
-    COMPILED_TRANSLATIONS += "$$QTESTLIBPLUGIN_BIN/$$replace(TRANSLATION, ".ts", ".qm")"
-}
-isEmpty(USE_USER_DESTDIR) {
-    translations.path = "$$IDE_DATA_PATH/translations"
-} else {
-    win32 {
-        USERDATAAPPNAME = "qtcreator"
-        USERDATABASE = "$$(APPDATA)"
-        isEmpty(USERDATABASE):USERDATABASE="$$(USERPROFILE)\Local Settings\Application Data"
-    } else:macx {
-        USERDATAAPPNAME = "Qt Creator"
-        USERDATABASE = "$$(HOME)/Library/Application Support"
-    } else:unix {
-        USERDATAAPPNAME = "qtcreator"
-        USERDATABASE = "$$(XDG_DATA_HOME)"
-        isEmpty(USERDATABASE):USERDATABASE = "$$(HOME)/.config"
-        else:USERDATABASE = "$$USERDATABASE/data"
-    }
-    translations.path = "$$USERDATABASE/QtProject/$$USERDATAAPPNAME/translations"
-}
-translations.files = $$COMPILED_TRANSLATIONS
-INSTALLS += translations
-
-###### Special tuning for output dir on Win32
+# Changing output directories :
 win32 {
-    MOC_DIR = ./.moc
     OBJECTS_DIR = ./.obj_win
 }
-
-###### Special tunings for DESTDIR on Win32
-win32 {
-    DESTDIRAPPNAME = "qtcreator"
-    DESTDIRBASE = "$$(LOCALAPPDATA)"
-    isEmpty(DESTDIRBASE):DESTDIRBASE="$$(USERPROFILE)\Local Settings\Application Data"
-    DESTDIR = "$$DESTDIRBASE/data/QtProject/$$DESTDIRAPPNAME/plugins/$$QTCREATOR_VERSION"
-}
-
-###### Added stuff to bypass IDE_BUILD_TREE
-target.path = $$DESTDIR
-INSTALLS += target
-DESTDIR = $$QTESTLIBPLUGIN_BIN
-
 unix {
-    LIBS+= -L$$IDE_BUILD_TREE
-    LIBS+= -L$$IDE_BUILD_TREE/plugins
-} else:win32  {
-    LIBS+= -L$$IDE_BUILD_TREE/bin
+    OBJECTS_DIR = ./.obj_unix
 }

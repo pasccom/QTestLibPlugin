@@ -55,7 +55,7 @@ public:
     int priorityInStatusBar(void) const {return 10;}
     void setFocus(void) {}
     QList<QWidget *> toolBarWidgets(void) const;
-    void visibilityChanged(bool visible) {}
+    void visibilityChanged(bool visible) {Q_UNUSED(visible);}
 
     void loadSettings(QSettings* settings);
     void saveSettings(QSettings* settings);

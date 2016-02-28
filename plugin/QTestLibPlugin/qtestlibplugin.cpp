@@ -17,21 +17,21 @@
  */
 
 #include "qtestlibplugin.h"
-#include "qtestlibpluginconstants.h"
+#include <qtestlibpluginconstants.h>
 
-#include "plaintextqtestlibparserfactory.h"
-#include "xmlqtestlibparserfactory.h"
-#include "lightxmlqtestlibparserfactory.h"
-#include "xunitxmlqtestlibparserfactory.h"
+#include <plaintextqtestlibparserfactory.h>
+#include <xmlqtestlibparserfactory.h>
+#include <lightxmlqtestlibparserfactory.h>
+#include <xunitxmlqtestlibparserfactory.h>
 
-#include "testoutputpane.h"
-#include "testsuitemodel.h"
+#include <testoutputpane.h>
+#include <testsuitemodel.h>
 
-#include "qmaketestrunconfigurationfactory.h"
+#include <qmaketestrunconfigurationfactory.h>
 
 #ifdef BUILD_TESTS
-#   include "Test/testactionstest.h"
-#   include "Test/testrunconfigurationfactorytest.h"
+#   include <Test/testactionstest.h>
+#   include <Test/testrunconfigurationfactorytest.h>
 #endif
 
 #include <coreplugin/icore.h>

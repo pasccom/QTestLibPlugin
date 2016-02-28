@@ -19,7 +19,7 @@
 #ifndef QTESTLIBPLUGIN_H
 #define QTESTLIBPLUGIN_H
 
-#include "qtestlibplugin_global.h"
+#include <qtestlibplugin_global.h>
 
 #include <extensionsystem/iplugin.h>
 
