@@ -1,8 +1,6 @@
 # The specials folders for compilation and output :
 .moc/
-.obj/
-.obj_win/
-.obj_unix/
+.obj*/
 bin/
 debug/
 release/
