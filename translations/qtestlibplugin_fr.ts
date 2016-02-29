@@ -2,166 +2,168 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fr_FR">
 <context>
+    <name>QTestLibPlugin::Internal::LightXMLQTestLibParser</name>
+    <message>
+        <source>%1ms</source>
+        <translation>%1ms</translation>
+    </message>
+    <message>
+        <source>%1 msecs per iteration (iterations: %2)</source>
+        <translation>%1ms par itération (itérations: %2)</translation>
+    </message>
+</context>
+<context>
     <name>QTestLibPlugin::Internal::QTestLibArgsParser</name>
     <message>
         <source>Unknown flag &quot;%1&quot;</source>
-        <translation type="obsolete">Flag inconnu &quot;%1&quot;</translation>
+        <translation>Flag inconnu &quot;%1&quot;</translation>
     </message>
     <message>
         <source>String of command line arguments ended prematurely</source>
-        <translation type="obsolete">Fin prématurée des arguments de la ligne de commande</translation>
+        <translation>Fin prématurée des arguments de la ligne de commande</translation>
     </message>
     <message>
         <source>Got &quot;%1&quot; where output format was expected.</source>
-        <translation type="obsolete">A trouvé &quot;%1&quot; au lieu d&apos;un format de sortie.</translation>
+        <translation>A trouvé &quot;%1&quot; au lieu d&apos;un format de sortie.</translation>
     </message>
     <message>
         <source>Got &quot;%1&quot; where unsigned integer was expected.</source>
-        <translation type="obsolete">A trouvé &quot;%1&quot; au lieu d&apos;un entier non signé.</translation>
+        <translation>A trouvé &quot;%1&quot; au lieu d&apos;un entier non signé.</translation>
     </message>
     <message>
         <source>Got &quot;%1&quot; where integer was expected.</source>
-        <translation type="obsolete">A trouvé &quot;%1&quot; au lieu d&apos;un entier signé.</translation>
+        <translation>A trouvé &quot;%1&quot; au lieu d&apos;un entier signé.</translation>
     </message>
 </context>
 <context>
     <name>QTestLibPlugin::Internal::QTestLibModel</name>
     <message>
         <source>Test skipped</source>
-        <translation type="obsolete">Test sauté</translation>
+        <translation>Test sauté</translation>
     </message>
     <message>
         <source>Test passed</source>
-        <translation type="obsolete">Réussite du test</translation>
+        <translation>Réussite du test</translation>
     </message>
     <message>
         <source>Test passed unexpectedly</source>
-        <translation type="obsolete">Réussite inattendue du test</translation>
+        <translation>Réussite inattendue du test</translation>
     </message>
     <message>
         <source>Blacklisted test passed</source>
-        <translation type="obsolete">Réussite du test sur liste noire</translation>
+        <translation>Réussite du test sur liste noire</translation>
     </message>
     <message>
         <source>Test failed</source>
-        <translation type="obsolete">Échec du test</translation>
+        <translation>Échec du test</translation>
     </message>
     <message>
         <source>Test failed unexpectedly</source>
-        <translation type="obsolete">Échec attendu du test</translation>
+        <translation>Échec attendu du test</translation>
     </message>
     <message>
         <source>Blacklisted test failed</source>
-        <translation type="obsolete">Échec d&apos;un test sur liste noire</translation>
+        <translation>Échec d&apos;un test sur liste noire</translation>
     </message>
     <message>
         <source>Slot</source>
-        <translation type="obsolete">Slot</translation>
+        <translation>Slot</translation>
     </message>
     <message>
         <source>Signal</source>
         <oldsource>Signal  </oldsource>
-        <translation type="obsolete">Signal</translation>
+        <translation>Signal</translation>
     </message>
     <message>
         <source>Duration</source>
-        <translation type="obsolete">Durée</translation>
+        <translation>Durée</translation>
     </message>
     <message>
         <source>Result</source>
         <oldsource>Result  </oldsource>
-        <translation type="obsolete">Résultat</translation>
+        <translation>Résultat</translation>
     </message>
     <message>
         <source>QDebug</source>
         <oldsource>QDebug  </oldsource>
-        <translation type="obsolete">Message QDebug</translation>
+        <translation>Message QDebug</translation>
     </message>
     <message>
         <source>Info</source>
         <oldsource>Info    </oldsource>
-        <translation type="obsolete">Message d&apos;info</translation>
+        <translation>Message d&apos;info</translation>
     </message>
     <message>
         <source>Warning</source>
         <oldsource>Warning </oldsource>
-        <translation type="obsolete">Message important</translation>
+        <translation>Message important</translation>
     </message>
     <message>
         <source>QWarning</source>
-        <translation type="obsolete">Message QWarning</translation>
+        <translation>Message QWarning</translation>
     </message>
     <message>
         <source>QSystem</source>
         <oldsource>QSystem </oldsource>
-        <translation type="obsolete">Message QSystem</translation>
+        <translation>Message QSystem</translation>
     </message>
     <message>
         <source>QFatal</source>
         <oldsource>QFatal  </oldsource>
-        <translation type="obsolete">Message QFatal</translation>
+        <translation>Message QFatal</translation>
     </message>
     <message>
         <source>Unknown</source>
         <oldsource>Unknown </oldsource>
-        <translation type="obsolete">Item inconnu</translation>
+        <translation>Item inconnu</translation>
     </message>
     <message>
         <source>Skip</source>
         <oldsource>Skip    </oldsource>
-        <translation type="obsolete">Test sauté</translation>
+        <translation>Test sauté</translation>
     </message>
     <message>
         <source>Pass</source>
         <oldsource>Pass    </oldsource>
-        <translation type="obsolete">Test réussi</translation>
+        <translation>Test réussi</translation>
     </message>
     <message>
         <source>BPass</source>
         <oldsource>BPass   </oldsource>
-        <translation type="obsolete">Test sur liste noire réussi</translation>
+        <translation>Test sur liste noire réussi</translation>
     </message>
     <message>
         <source>XPass</source>
         <oldsource>XPass   </oldsource>
-        <translation type="obsolete">Test réussi (inattendu)</translation>
+        <translation>Test réussi (inattendu)</translation>
     </message>
     <message>
         <source>XFail</source>
         <oldsource>XFail   </oldsource>
-        <translation type="obsolete">Test échoué (attendu)</translation>
+        <translation>Test échoué (attendu)</translation>
     </message>
     <message>
         <source>BFail</source>
         <oldsource>BFail   </oldsource>
-        <translation type="obsolete">Test sur liste noire échoué</translation>
+        <translation>Test sur liste noire échoué</translation>
     </message>
     <message>
         <source>Fail</source>
         <oldsource>Fail    </oldsource>
-        <translation type="obsolete">Test échoué</translation>
+        <translation>Test échoué</translation>
     </message>
 </context>
 <context>
     <name>QTestLibPlugin::Internal::QTestLibPluginPlugin</name>
     <message>
-        <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="119"/>
-        <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="124"/>
-        <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="230"/>
         <source>Run tests</source>
         <translation>Exécuter les tests</translation>
     </message>
     <message>
-        <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="246"/>
-        <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="284"/>
-        <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="356"/>
         <source>Run tests for &quot;%1&quot;</source>
         <translation>Exécuter les tests pour &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="248"/>
-        <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="297"/>
-        <location filename="../plugin/QTestLibPlugin/qtestlibplugin.cpp" line="358"/>
         <source>Run tests for &quot;%1&quot; (%2)</source>
         <translation>Exécuter les tests pour &quot;%1&quot; (%2)</translation>
     </message>
@@ -170,18 +172,193 @@
     <name>QTestLibPlugin::Internal::TestOutputPane</name>
     <message>
         <source>Test output</source>
-        <translation type="obsolete">Sortie de test</translation>
+        <translation>Sortie de test</translation>
+    </message>
+</context>
+<context>
+    <name>QTestLibPlugin::Internal::TestRunConfigWidget</name>
+    <message>
+        <source>Text format</source>
+        <translation>Format texte</translation>
+    </message>
+    <message>
+        <source>XML format</source>
+        <translation>Format XML</translation>
+    </message>
+    <message>
+        <source>Light XML format</source>
+        <translation>Format Light XML</translation>
+    </message>
+    <message>
+        <source>XUnit XML format</source>
+        <translation>Format XUnit XML</translation>
+    </message>
+    <message>
+        <source>Test output format:</source>
+        <translation>Format de sotie de test:</translation>
+    </message>
+    <message>
+        <source>Silent</source>
+        <translation>Silencieuse</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation>Normale</translation>
+    </message>
+    <message>
+        <source>Verbose</source>
+        <translation>Verbeuse</translation>
+    </message>
+    <message>
+        <source>Very verbose</source>
+        <translation>Très verbeuse</translation>
+    </message>
+    <message>
+        <source>Signals</source>
+        <translation>Signals</translation>
+    </message>
+    <message>
+        <source>Test output verbosity:</source>
+        <translation>Verbosité de la sortie:</translation>
+    </message>
+    <message>
+        <source>Test output file:</source>
+        <translation>Ficher de sortie:</translation>
+    </message>
+    <message>
+        <source>Browse...</source>
+        <translation>Parcourir...</translation>
+    </message>
+    <message>
+        <source>Maximum number of messages</source>
+        <translation>Nombre maximum de messages</translation>
+    </message>
+    <message>
+        <source>Event simulation delay</source>
+        <translation>Delay de simulation des événements</translation>
+    </message>
+    <message>
+        <source> ms</source>
+        <translation> ms</translation>
+    </message>
+    <message>
+        <source>Keyboard simulation delay</source>
+        <translation>Delay de simulation du clavier</translation>
+    </message>
+    <message>
+        <source>Mouse simulation delay</source>
+        <translation>Delay de simulation de la souris</translation>
+    </message>
+    <message>
+        <source>Choose test output file</source>
+        <translation>Choisissez le ficher de sortie</translation>
+    </message>
+    <message>
+        <source>Test arguments</source>
+        <translation>Arguments du test</translation>
+    </message>
+</context>
+<context>
+    <name>QTestLibPlugin::Internal::TestRunConfigurationExtraAspect</name>
+    <message>
+        <source>Test settings</source>
+        <translation>Paramètres des tests</translation>
+    </message>
+</context>
+<context>
+    <name>QTestLibPlugin::Internal::TestRunConfigurationWidget</name>
+    <message>
+        <source>Working directory:</source>
+        <translation>Répertoire de travail:</translation>
+    </message>
+    <message>
+        <source>Browse...</source>
+        <translation>Parcourir...</translation>
+    </message>
+    <message>
+        <source>Path to &quot;make&quot;:</source>
+        <translation>Chemin vers &quot;make&quot;:</translation>
+    </message>
+    <message>
+        <source>Auto-detect</source>
+        <translation>Auto</translation>
+    </message>
+    <message>
+        <source>Test runner:</source>
+        <translation>Test runner:</translation>
+    </message>
+    <message>
+        <source>Number of jobs (for &quot;make&quot;):</source>
+        <translation>Nombre de threads (de &quot;make&quot;):</translation>
+    </message>
+    <message>
+        <source>Choose working directory</source>
+        <translation>Choisissez le répertoire de travail</translation>
+    </message>
+    <message>
+        <source>Exécutable files *.exe</source>
+        <translation>Exécutables *.exe</translation>
+    </message>
+    <message>
+        <source>Choose &quot;make&quot;</source>
+        <translation>Choisissez &quot;make&quot;</translation>
+    </message>
+    <message>
+        <source>Choose test runner</source>
+        <translation>Choisissez le test runner</translation>
     </message>
 </context>
 <context>
     <name>QTestLibPlugin::Internal::XMLQTestLibParser</name>
     <message>
         <source>%1ms</source>
-        <translation type="obsolete">%1ms</translation>
+        <translation>%1ms</translation>
     </message>
     <message>
         <source>%1 msecs per iteration (iterations: %2)</source>
-        <translation type="obsolete">%1ms par itération (itération: %2)</translation>
+        <translation>%1ms par itération (itérations: %2)</translation>
+    </message>
+</context>
+<context>
+    <name>QTestLibPlugin::Test::TestActionsTest</name>
+    <message>
+        <source>Run tests for &quot;%1&quot; (%2)</source>
+        <translation type="unfinished">Exécuter les tests pour &quot;%1&quot; (%2)</translation>
+    </message>
+    <message>
+        <source>Run tests</source>
+        <translation type="unfinished">Exécuter les tests</translation>
+    </message>
+</context>
+<context>
+    <name>QTestLibPlugin::Widgets::FileTypeValidatingLineEdit</name>
+    <message>
+        <source>File &quot;%1&quot; does not exist</source>
+        <translation>Le fichier &quot;%1&quot; n&apos;existe pas</translation>
+    </message>
+    <message>
+        <source>File does not have one of the required extensions.</source>
+        <translation>Le ficher n&apos;a pas l&apos;une des extensions requises.</translation>
+    </message>
+    <message>
+        <source>Regular files are not accepted</source>
+        <translation>Les fichiers reguliers ne sont pas acceptés</translation>
+    </message>
+    <message>
+        <source>Directories are not accepted</source>
+        <translation>Les répertoires ne sont pas acceptés</translation>
+    </message>
+    <message>
+        <source>File must be readable</source>
+        <translation>Le fichier doit être lisible</translation>
+    </message>
+    <message>
+        <source>File must be writable</source>
+        <translation>Le fichier doit être modifiable</translation>
+    </message>
+    <message>
+        <source>File must be executable</source>
+        <translation>Le fichier doit être exécutable</translation>
     </message>
 </context>
 </TS>
