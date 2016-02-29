@@ -17,13 +17,21 @@
 
 TEMPLATE = subdirs
 
+CONFIG += ordered
+
 include(QTestLibPlugin.pri)
+
+exists($$QTESTLIBPLUGIN_I18N/translations.lst) {
+    system("rm \"$$QTESTLIBPLUGIN_I18N/translations.lst\"")
+}
+exists($$QTESTLIBPLUGIN_I18N/sources.lst) {
+    system("rm \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
+}
+
 
 SUBDIRS = \
     $$QTESTLIBPLUGIN_SRC \
     $$QTESTLIBPLUGIN_LIB
-
-system("test -e \"$$QTESTLIBPLUGIN_I18N/sources.lst\" && rm \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
 
 !isEmpty(BUILD_TESTS) {
     SUBDIRS += $$QTESTLIBPLUGIN_SRC/Test

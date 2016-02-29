@@ -74,10 +74,15 @@ for (SOURCE, SOURCES) {
 for (HEADER, HEADERS) {
     system("echo -e \"$$PWD/$$HEADER\" >> \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
 }
-system("test -e \"$$QTESTLIBPLUGIN_I18N/translations.lst\" && rm \"$$QTESTLIBPLUGIN_I18N/translations.lst\"")
 for (TRANSLATION, TRANSLATIONS) {
     system("echo -e \"$$TRANSLATION\" >> \"$$QTESTLIBPLUGIN_I18N/translations.lst\"")
 }
+
+#system("sort \"$$QTESTLIBPLUGIN_I18N/sources.lst\" | uniq > \"$$QTESTLIBPLUGIN_I18N/sources.lst.tmp\"")
+#system("mv \"$$QTESTLIBPLUGIN_I18N/sources.lst.tmp\" \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
+
+#system("sort \"$$QTESTLIBPLUGIN_I18N/translations.lst\" | uniq > \"$$QTESTLIBPLUGIN_I18N/translations.lst.tmp\"")
+#system("mv \"$$QTESTLIBPLUGIN_I18N/translations.lst.tmp\" \"$$QTESTLIBPLUGIN_I18N/translations.lst\"")
 
 lupdate.depends += QTestLibPlugin.pro
 lupdate.depends += $$SOURCES
