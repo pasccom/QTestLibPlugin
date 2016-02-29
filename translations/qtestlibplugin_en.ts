@@ -330,11 +330,11 @@
     <name>QTestLibPlugin::Test::TestActionsTest</name>
     <message>
         <source>Run tests for &quot;%1&quot; (%2)</source>
-        <translation type="unfinished">Run tests for &quot;%1&quot; (%2)</translation>
+        <translation type="obsolete">Run tests for &quot;%1&quot; (%2)</translation>
     </message>
     <message>
         <source>Run tests</source>
-        <translation type="unfinished">Run tests</translation>
+        <translation type="obsolete">Run tests</translation>
     </message>
 </context>
 <context>
