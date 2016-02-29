@@ -71,7 +71,7 @@ win32 {
     else:DESTDIR = ./release
 }
 unix {
-    OBJECTS_DIR = ./.obj_win
+    OBJECTS_DIR = ./.obj_unix
     CONFIG(debug, debug|release):DESTDIR = ./debug
     else:DESTDIR = ./release
 }
