@@ -23,6 +23,28 @@ SUBDIRS = \
     $$QTESTLIBPLUGIN_SRC \
     $$QTESTLIBPLUGIN_LIB
 
+system("test -e \"$$QTESTLIBPLUGIN_I18N/sources.lst\" && rm \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
+
 !isEmpty(BUILD_TESTS) {
     SUBDIRS += $$QTESTLIBPLUGIN_TESTS
 }
+
+
+###### Translation files update (not handled by Qt)
+
+lupdate.commands = ( test -d $$QTESTLIBPLUGIN_LIB || mkdir -p $$QTESTLIBPLUGIN_LIB ) && \
+                   cd $$QTESTLIBPLUGIN_LIB &&  \
+                   ( test -e Makefile || $$QMAKE $$QTESTLIBPLUGIN_LIB/QTestLibPlugin.pro -o Makefile ) && \
+                   make -f Makefile lupdate
+
+QMAKE_EXTRA_TARGETS += lupdate
+
+###### Translation files generation (not handled by Qt)
+
+
+lrelease.commands = ( test -d $$QTESTLIBPLUGIN_LIB || mkdir -p $$QTESTLIBPLUGIN_LIB ) && \
+                    cd $$QTESTLIBPLUGIN_LIB &&  \
+                    ( test -e Makefile || $$QMAKE $$QTESTLIBPLUGIN_LIB/QTestLibPlugin.pro -o Makefile ) && \
+                    make -f Makefile compiler_lrelease_make_all
+
+QMAKE_EXTRA_TARGETS += lrelease

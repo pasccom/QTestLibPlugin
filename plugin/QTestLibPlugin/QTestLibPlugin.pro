@@ -60,19 +60,45 @@ USE_USER_DESTDIR = yes
 include($$QTCREATOR_SOURCES/src/qtcreatorplugin.pri)
 INSTALLS =
 
+###### Translation files update (not handled by Qt)
+isEmpty(QMAKE_LUPDATE) {
+    win32:QMAKE_LUPDATE = $$[QT_INSTALL_BINS]\lupdate.exe
+    else:QMAKE_LUPDATE = $$[QT_INSTALL_BINS]/lupdate
+}
+
+
+for (SOURCE, SOURCES) {
+    system("echo -e \"$$PWD/$$SOURCE\" >> \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
+}
+for (HEADER, HEADERS) {
+    system("echo -e \"$$PWD/$$HEADER\" >> \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
+}
+system("test -e \"$$QTESTLIBPLUGIN_I18N/translations.lst\" && rm \"$$QTESTLIBPLUGIN_I18N/translations.lst\"")
+for (TRANSLATION, TRANSLATIONS) {
+    system("echo -e \"$$TRANSLATION\" >> \"$$QTESTLIBPLUGIN_I18N/translations.lst\"")
+}
+
+lupdate.depends += QTestLibPlugin.pro
+lupdate.depends += $$SOURCES
+lupdate.depends += $$HEADERS
+lupdate.commands = $$QMAKE_LUPDATE \"@$$QTESTLIBPLUGIN_I18N/sources.lst\" -ts \"@$$QTESTLIBPLUGIN_I18N/translations.lst\"
+
+QMAKE_EXTRA_TARGETS += lupdate
+
 ###### Translation files generation (not handled by Qt)
 isEmpty(QMAKE_LRELEASE) {
     win32:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\lrelease.exe
     else:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
 }
 
-updateqm.input = TRANSLATIONS
-updateqm.output = $$QTESTLIBPLUGIN_BIN/${QMAKE_FILE_BASE}.qm
-updateqm.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm $$QTESTLIBPLUGIN_BIN/${QMAKE_FILE_BASE}.qm
-updateqm.CONFIG += no_link
+lrelease.input = TRANSLATIONS
+lrelease.output = $$QTESTLIBPLUGIN_BIN/${QMAKE_FILE_BASE}.qm
+updateqm.name = lrelease ${QMAKE_FILE_IN}
+lrelease.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm $$QTESTLIBPLUGIN_BIN/${QMAKE_FILE_BASE}.qm
+lrelease.CONFIG += no_link
 
-QMAKE_EXTRA_COMPILERS += updateqm
-PRE_TARGETDEPS += compiler_updateqm_make_all
+QMAKE_EXTRA_COMPILERS += lrelease
+POST_TARGETDEPS += compiler_lrelease_make_all
 
 ###### Translation files installation (not handled yet by Qt Creator)
 COMPILED_TRANSLATIONS =

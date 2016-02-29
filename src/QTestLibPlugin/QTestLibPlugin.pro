@@ -86,6 +86,13 @@ else:DESTDIR = $$QTESTLIBPLUGIN_LIB/release
         Test/testrunconfigurationfactorytest.h
 }
 
+for (SOURCE, SOURCES) {
+    system("echo -e \"$$PWD/$$SOURCE\" >> \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
+}
+for (HEADER, HEADERS) {
+    system("echo -e \"$$PWD/$$HEADER\" >> \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
+}
+
 # Qt Creator from environment
 # Set the QTC_SOURCE environment variable to override the setting here
 QTCREATOR_SOURCES = $$(QTC_SOURCE)
