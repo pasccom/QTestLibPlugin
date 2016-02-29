@@ -34,7 +34,8 @@ TRANSLATIONS += \
 
 !isEmpty(BUILD_TESTS) {
     DEFINES += BUILD_TESTS
-    DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
+    CONFIG(debug, debug|release):LIBS += debug/libqtestlibplugintest.a
+    else:LIBS += release/libqtestlibplugintest.a
 }
 
 

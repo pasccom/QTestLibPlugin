@@ -26,6 +26,7 @@ SUBDIRS = \
 system("test -e \"$$QTESTLIBPLUGIN_I18N/sources.lst\" && rm \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
 
 !isEmpty(BUILD_TESTS) {
+    SUBDIRS += $$QTESTLIBPLUGIN_SRC/Test
     SUBDIRS += $$QTESTLIBPLUGIN_TESTS
 }
 

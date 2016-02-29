@@ -2,7 +2,7 @@
 #define TESTACTIONSTEST_H
 
 #include <QObject>
-#include "../../tests/common/qttestsubfunction.h"
+#include "../../../tests/common/qttestsubfunction.h"
 
 class QAction;
 

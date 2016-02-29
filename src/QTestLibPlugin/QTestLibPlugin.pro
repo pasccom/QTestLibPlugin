@@ -22,7 +22,6 @@ CONFIG  += c++11
 CONFIG  += static
 QT      += network
 QT      += widgets
-QT      += testlib
 
 DEFINES += QTESTLIBPLUGIN_LIBRARY
 
@@ -74,17 +73,6 @@ include(../../QTestLibPlugin.pri)
 
 CONFIG(debug, debug|release):DESTDIR = $$QTESTLIBPLUGIN_LIB/debug
 else:DESTDIR = $$QTESTLIBPLUGIN_LIB/release
-
-!isEmpty(BUILD_TESTS) {
-    DEFINES += BUILD_TESTS
-    DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
-    SOURCES +=  \
-        Test/testactionstest.cpp \
-        Test/testrunconfigurationfactorytest.cpp
-    HEADERS += \
-        Test/testactionstest.h \
-        Test/testrunconfigurationfactorytest.h
-}
 
 for (SOURCE, SOURCES) {
     system("echo -e \"$$PWD/$$SOURCE\" >> \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
