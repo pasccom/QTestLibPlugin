@@ -5,6 +5,7 @@ bin/
 debug/
 release/
 doc/
+gcov/
 
 # The output and makefiles :
 Makefile*
