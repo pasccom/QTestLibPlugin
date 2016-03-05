@@ -39,6 +39,9 @@
 # populates a folder called "gcov/" containing the annotated source files
 # and even the header files if available.
 #
+# When included in subdirs project, this file also creates a recursive "gcov"
+# target which allows to run the "gcov" targets in subdirs recursively.
+#
 # This is only a hack. I hope it works more properly than Qt original option.
 
 CONFIG(gcov) {
@@ -109,3 +112,38 @@ CONFIG(gcov) {
     QMAKE_EXTRA_TARGETS += gcov
     QMAKE_CLEAN += gcov/*.gcov
 }
+
+equals(TEMPLATE, subdirs) {
+    gcov.depends=
+    for (SUBDIR, SUBDIRS) {
+        SUBDIR_PRO_NAME=$$basename(SUBDIR)
+        exists("$$SUBDIR/$${SUBDIR_PRO_NAME}.pro") {
+            TEST_CONFIG=$$system("grep -P \"^CONFIG[\\t ]+\\+=[\\t ]+gcov\$\" \"$$SUBDIR/$${SUBDIR_PRO_NAME}.pro\"")
+            TEST_TEMPLATE=$$system("grep -P \"^TEMPLATE[\\t ]+=[\\t ]+subdirs\$\" \"$$SUBDIR/$${SUBDIR_PRO_NAME}.pro\"")
+            TEST_INCLUDE=$$system("grep -P \"^include\\(.*gcov.pri\\)\$\" \"$$SUBDIR/$${SUBDIR_PRO_NAME}.pro\"")
+        } else {
+            exists("$$_PRO_FILE_PWD_/$$SUBDIR/$${SUBDIR_PRO_NAME}.pro") {
+                TEST_CONFIG=$$system("grep -P \"^CONFIG[\\t ]+\\+=[\\t ]+gcov\$\" \"$$_PRO_FILE_PWD_/$$SUBDIR/$${SUBDIR_PRO_NAME}.pro\"")
+                TEST_TEMPLATE=$$system("grep -P \"^TEMPLATE[\\t ]+=[\\t ]+subdirs\$\" \"$$_PRO_FILE_PWD_/$$SUBDIR/$${SUBDIR_PRO_NAME}.pro\"")
+                TEST_INCLUDE=$$system("grep -P \"^include\\(.*gcov.pri\\)\$\" \"$$_PRO_FILE_PWD_/$$SUBDIR/$${SUBDIR_PRO_NAME}.pro\"")
+            } else {
+                warning("Subdir \"$$SUBDIR\" project file does not exist")
+            }
+        }
+        isEmpty(TEST_INCLUDE) {
+            TEST_TEMPLATE=
+        }
+        !isEmpty(TEST_CONFIG) | !isEmpty(TEST_TEMPLATE) {
+            message(Subdir with gcov or subdirs: $$SUBDIR -> $$SUBDIR_PRO_NAME)
+            SUB_TARGET_NAME=sub-$$replace(SUBDIR, /, -)-gcov
+            $${SUB_TARGET_NAME}.depends = FORCE
+            $${SUB_TARGET_NAME}.commands =
+            $${SUB_TARGET_NAME}.commands += "test -d \"$$SUBDIR\" | mkdir -p \"$$SUBDIR\";"
+            $${SUB_TARGET_NAME}.commands += "cd \"$$SUBDIR\" && ( test -e Makefile || $(QMAKE) $${SUBDIR_PRO_NAME}.pro -o Makefile ) && $(MAKE) -f Makefile gcov;"
+            QMAKE_EXTRA_TARGETS += $$SUB_TARGET_NAME
+            gcov.depends += $$SUB_TARGET_NAME
+        }
+    }
+    QMAKE_EXTRA_TARGETS += gcov
+}
+
