@@ -2,9 +2,6 @@
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
     <results format="xunitxml">
-        <unsure level="silent" />
-        <unsure level="silent" />
-        <unsure level="silent" />
         <unsure />
         <unsure />
         <unsure />
@@ -21,12 +18,8 @@
         <unsure level="verbose2" />
         <unsure level="verbose2" />
         <unsure />
-        <unsure level="silent" />
     </results>
     <results format="lightxml">
-        <unsure level="silent" />
-        <unsure level="silent" />
-        <unsure level="silent" />
         <unsure />
         <unsure />
         <unsure />
@@ -48,12 +41,8 @@
         <unsure />
         <unsure />
         <unsure />
-        <unsure level="silent" />
     </results>
     <results format="xml">
-        <unsure level="silent" />
-        <unsure level="silent" />
-        <unsure level="silent" />
         <unsure />
         <unsure />
         <unsure />
@@ -78,12 +67,8 @@
         <unsure />
         <unsure />
         <unsure />
-        <unsure level="silent" />
     </results>
     <results format="txt">
-        <unsure level="silent" />
-        <unsure level="silent" />
-        <unsure level="silent" />
         <unsure/>
         <magicfound level="silent" />
         <unsure level="verbose1" />
@@ -96,7 +81,6 @@
         <unsure/>
         <unsure level="silent" />
         <unsure/>
-        <unsure level="silent" />
     </results>
     <class name="OnePassTest" type="Pass" format="!lightxml" level="normal">
         <function name="initTestCase" type="Pass">
