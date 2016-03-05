@@ -46,3 +46,5 @@ SUBDIRS += QTestLibModelTest        \
 
 # Argument parser test:
 SUBDIRS += QTestLibArgsParserTest
+
+include(../gcov.pri)

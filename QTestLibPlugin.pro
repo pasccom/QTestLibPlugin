@@ -38,6 +38,7 @@ SUBDIRS = \
     SUBDIRS += $$QTESTLIBPLUGIN_TESTS
 }
 
+include(gcov.pri)
 
 ###### Translation files update (not handled by Qt)
 
