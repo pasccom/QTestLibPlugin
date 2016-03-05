@@ -22,6 +22,7 @@ CONFIG  += console
 CONFIG  -= app_bundle
 CONFIG  += testcase
 CONFIG  += no_testcase_installs
+CONFIG  += gcov
 QT      += testlib
 QT      += xml
 QT      += widgets
@@ -46,6 +47,10 @@ CONFIG(debug, debug|release) {
 }
 
 # The libraries to test
+CONFIG(gcov) {
+    SOURCES += $$QTESTLIBPLUGIN_SRC/xunitxmlqtestlibparser.cpp
+    HEADERS += $$QTESTLIBPLUGIN_SRC/xunitxmlqtestlibparser.h
+}
 CONFIG(debug, debug|release) {
     LIBS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
     PRE_TARGETDEPS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
@@ -75,6 +80,8 @@ unix {
     CONFIG(debug, debug|release):DESTDIR = ./debug
     else:DESTDIR = ./release
 }
+
+include(../../gcov.pri)
 
 DISTFILES += ../../qtestliboutput.dtd
 

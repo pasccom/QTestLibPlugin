@@ -25,6 +25,8 @@ CONFIG  += no_testcase_installs
 QT      += testlib
 QT      += xml
 
+CONFIG += gcov
+
 include(../../QTestLibPlugin.pri)
 
 SOURCES += qtestlibargsparsertest.cpp
@@ -55,3 +57,4 @@ unix {
     else:DESTDIR = ./release
 }
 
+include(../../gcov.pri)
