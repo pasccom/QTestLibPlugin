@@ -16,6 +16,10 @@
 # along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 
 TEMPLATE = subdirs
+CONFIG  += ordered
+
+# Common testing library:
+SUBDIRS +=  common
 
 # Mock tests:
 SUBDIRS +=  AllMessagesTest     \
@@ -31,10 +35,10 @@ SUBDIRS +=  PlainTextQTestLibParserTest \
             XUnitXMLQTestLibParserTest  \
 
 # Factories test:
-SUBDIRS +=  TestModelFactoryTest
+#SUBDIRS +=  TestModelFactoryTest
 
 # Test suite test:
-SUBDIRS += TestSuiteModelTest
+#SUBDIRS += TestSuiteModelTest
 
 # Signals tests:
 SUBDIRS += QTestLibModelTest        \
