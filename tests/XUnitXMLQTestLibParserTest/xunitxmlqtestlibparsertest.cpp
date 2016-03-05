@@ -44,13 +44,17 @@ private Q_SLOTS:
     void signalsTest(void);
     inline void limits_data(void) {data();}
     void limits(void);
+    inline void oneSubTest_data(void) {data();}
+    void oneSubTest(void);
+    inline void twoSubTests_data(void) {data();}
+    void twoSubTests(void);
 private:
     void data(void);
+    QStringList commandLineArguments(QTestLibModelTester::Verbosity verbosity);
     void runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
-    void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName);
+    void runMakeCheck(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
+    void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, QTestLibModelTester::Verbosity verbosity);
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::LocalApplicationRunConfiguration *runConfig);
-
-    QTestLibModelTester::Verbosity mVerbosity;
 };
 
 void XUnitXMLQTestLibParserTest::data(void)
@@ -99,56 +103,24 @@ void XUnitXMLQTestLibParserTest::limits(void)
     runTest("LimitsTest", verbosity);
 }
 
-
-void XUnitXMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity)
+void XUnitXMLQTestLibParserTest::oneSubTest(void)
 {
-    // Creation of RunConfiguration
-    //QmakeProjectManager::QmakeProject project(TESTS_DIR "/" + testName + "/" + testName + ".pro", this);
-    //ProjectExplorer::Project project;
-    //ProjectExplorer::Kit kit;
-    ProjectExplorer::Target target(NULL, NULL);
-    ProjectExplorer::LocalApplicationRunConfigurationFake runConfig(&target);
-    runConfig.setDisplayName(testName);
-    runConfig.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
-    runConfig.setExecutable(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName));
-    if (qrand() % 2 == 1)
-        runConfig.setCommandLineArguments("-xunitxml");
-    else
-        runConfig.setCommandLineArguments("-o -,xunitxml");
+    QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    // Creation of parser
-    QTestLibPlugin::Internal::XUnitXMLQTestLibParserFactory factory(this);
-    QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
-    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(&runConfig);
-    QVERIFY2(parser, "Factory should return a valid parser");
-
-    mVerbosity = verbosity;
-
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, &runConfig);
-    QAbstractItemModel *model = parser->getModel();
-
-    mVerbosity = qMax(QTestLibModelTester::Normal, verbosity); // NOTE When running in XML silent is equal to normal
-    checkTest(model, results, testName);
-
-    mVerbosity = QTestLibModelTester::Normal;
-
-    delete model;
-    delete parser;
+    runMakeCheck("OneSubTest", verbosity);
 }
 
-void XUnitXMLQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName)
+void XUnitXMLQTestLibParserTest::twoSubTests(void)
 {
-    QTestLibModelTester tester(model, (QTestLibModelTester::Verbosity) mVerbosity, "xunitxml");
-    QVERIFY2(tester.checkResults(results, testName), qPrintable(tester.error()));
-    QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
+    QFETCH(QTestLibModelTester::Verbosity, verbosity);
+
+    runMakeCheck("TwoSubTests", verbosity);
 }
 
-QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XUnitXMLQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::LocalApplicationRunConfiguration *runConfig)
+QStringList XUnitXMLQTestLibParserTest::commandLineArguments(QTestLibModelTester::Verbosity verbosity)
 {
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results;
     QStringList cmdArgs;
-    cmdArgs << "-o" << QString("-,xunitxml");
-    switch(mVerbosity) {
+    switch(verbosity) {
     case QTestLibModelTester::Silent:
         cmdArgs << "-silent";
         break;
@@ -167,10 +139,77 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XUnitXMLQTe
         qWarning() << "Sentinel value VerbosityCountMinusOne must not be used as verbosity.";
         break;
     }
+    if (qrand() % 2 == 1)
+        cmdArgs << "-xunitxml";
+    else
+        cmdArgs << "-o -,xunitxml";
 
+    return cmdArgs;
+}
+
+void XUnitXMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity)
+{
+    // Creation of RunConfiguration
+    ProjectExplorer::Target target(NULL, NULL);
+    ProjectExplorer::LocalApplicationRunConfigurationFake runConfig(&target);
+    runConfig.setDisplayName(testName);
+    runConfig.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
+    runConfig.setExecutable(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName));
+    runConfig.setCommandLineArguments(commandLineArguments(verbosity).join(' '));
+
+    // Creation of parser
+    QTestLibPlugin::Internal::XUnitXMLQTestLibParserFactory factory(this);
+    QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
+    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(&runConfig);
+    QVERIFY2(parser, "Factory should return a valid parser");
+
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, &runConfig);
+    QAbstractItemModel *model = parser->getModel();
+
+    checkTest(model, results, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in XUnitXML silent is equal to normal
+
+    delete model;
+    delete parser;
+}
+
+void XUnitXMLQTestLibParserTest::runMakeCheck(const QString& testName, QTestLibModelTester::Verbosity verbosity)
+{
+    // Creation of RunConfiguration
+    ProjectExplorer::Target target(NULL, NULL);
+    ProjectExplorer::LocalApplicationRunConfigurationFake runConfig(&target);
+    runConfig.setDisplayName(testName);
+    runConfig.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
+    runConfig.setExecutable(MAKE_EXECUATBLE);
+    runConfig.setCommandLineArguments(QString("-s check TESTARGS=\"%1\"").arg(commandLineArguments(verbosity).join(' ')));
+
+    // Creation of parser
+    QTestLibPlugin::Internal::XUnitXMLQTestLibParserFactory factory(this);
+    QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
+    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(&runConfig);
+    QVERIFY2(parser, "Factory should return a valid parser");
+
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, &runConfig);
+    QAbstractItemModel *model = parser->getModel();
+
+    checkTest(model, results, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in XUnitXML silent is equal to normal
+
+    delete model;
+    delete parser;
+}
+
+void XUnitXMLQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, QTestLibModelTester::Verbosity verbosity)
+{
+    QTestLibModelTester tester(model, verbosity, "xunitxml");
+    QVERIFY2(tester.checkResults(results, testName), qPrintable(tester.error()));
+    QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
+}
+
+QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XUnitXMLQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::LocalApplicationRunConfiguration *runConfig)
+{
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results;
     QProcess testProc(this);
     testProc.setWorkingDirectory(runConfig->workingDirectory());
-    testProc.start(runConfig->executable(), cmdArgs, QIODevice::ReadOnly);
+    testProc.start(runConfig->executable() + " " + runConfig->commandLineArguments(), QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
         qCritical() << "Test timed out";
@@ -184,7 +223,11 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XUnitXMLQTe
         QString line = testProc.readLine();
         while (line.endsWith('\n') || line.endsWith('\r'))
             line.chop(1);
-        //qDebug() << line;
+        if (line.startsWith("Makefile:"))
+            continue;
+        if (line.startsWith("make["))
+            continue;
+        //qDebug() << "stdout:" << line;
         results << parser->parseStdoutLine(runControl, line);
     }
 
@@ -193,7 +236,6 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XUnitXMLQTe
         QString line = testProc.readLine();
         while (line.endsWith('\n') || line.endsWith('\r'))
             line.chop(1);
-        //qDebug() << line;
         if (line.isEmpty())
             continue;
         // Lines added by windows
@@ -201,6 +243,11 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XUnitXMLQTe
             continue;
         if (QString::compare(line, "Please contact the application's support team for more information.") == 0)
             continue;
+        if (line.startsWith("make:"))
+            continue;
+        if (line.startsWith("make["))
+            continue;
+        //qDebug() << "stderr:" << line;
         results << parser->parseStderrLine(runControl, line);
     }
 

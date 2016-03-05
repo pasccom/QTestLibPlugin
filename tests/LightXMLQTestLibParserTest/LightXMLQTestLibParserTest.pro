@@ -30,6 +30,8 @@ include(../../QTestLibPlugin.pri)
 
 DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 
+include(../../make.pri)
+
 SOURCES += lightxmlqtestlibparsertest.cpp \
            lightxmlqtestlibparserfactoryfake.cpp
 HEADERS += lightxmlqtestlibparserfactoryfake.h
