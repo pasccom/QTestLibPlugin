@@ -48,7 +48,7 @@ INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 # Dependencies on Qt Creator libs
 QTC_LIB_DEPENDS += utils \
                    extensionsystem
-
+QTC_PLUGIN_DEPENDS += projectexplorer
 # Fake QtCreator tree
 include(../QtCreatorFake/QtCreatorFake.pri)
 

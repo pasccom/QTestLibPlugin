@@ -30,39 +30,30 @@ include(../../QTestLibPlugin.pri)
 
 DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 
-SOURCES += plaintextqtestlibparsertest.cpp
+# Test files
+SOURCES += plaintextqtestlibparsertest.cpp \
+           plaintextqtestlibparserfactoryfake.cpp
+HEADERS += plaintextqtestlibparserfactoryfake.h
 
 # Model tester class
 SOURCES += ../common/qtestlibmodeltester.cpp
 HEADERS += ../common/qtestlibmodeltester.h
 
-# Files to be tested
-SOURCES += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.cpp \
-           $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparserfactory.cpp \
-           $$QTESTLIBPLUGIN_SRC/qtestlibargsparser.cpp \
-           $$QTESTLIBPLUGIN_SRC/qtestlibmodel.cpp \
-           $$QTESTLIBPLUGIN_SRC/testmodelfactory.cpp \
-           $$QTESTLIBPLUGIN_SRC/testrunconfiguration.cpp \
-           $$QTESTLIBPLUGIN_SRC/testrunconfigurationextraaspect.cpp \
-           $$QTESTLIBPLUGIN_SRC/Widgets/filetypevalidatinglineedit.cpp
-HEADERS += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.h \
-           $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparserfactory.h \
-           $$QTESTLIBPLUGIN_SRC/qtestlibargsparser.h \
-           $$QTESTLIBPLUGIN_SRC/qtestlibmodel.h \
-           $$QTESTLIBPLUGIN_SRC/testmodelfactory.h \
-           $$QTESTLIBPLUGIN_SRC/testrunconfiguration.h \
-           $$QTESTLIBPLUGIN_SRC/testrunconfigurationextraaspect.h \
-           $$QTESTLIBPLUGIN_SRC/Widgets/filetypevalidatinglineedit.h
+# The libraries to test
+CONFIG(debug, debug|release):LIBS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
+else:LIBS += $$QTESTLIBPLUGIN_LIB/release/libqtestlibplugin.a
+
+# Files to be tested are in src folder
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
 # Fake QtCreator tree
 include($$QTESTLIBPLUGIN_LIB/QTestLibPlugin_dependencies.pri)
 include(../QtCreatorFake/QtCreatorFake.pri)
 
-# The directory where to put MOC-generated files :
+# The directory where to put MOC-generated files
 MOC_DIR = ./.moc
 
-# Changing output directories :
+# Changing output directories
 win32 {
     OBJECTS_DIR = ./.obj_win
     CONFIG(debug, debug|release):DESTDIR = ./debug

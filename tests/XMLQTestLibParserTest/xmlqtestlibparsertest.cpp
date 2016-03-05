@@ -16,16 +16,15 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include <xmlqtestlibparserfactory.h>
-
-#include <projectexplorer/localapplicationrunconfiguration.h>
-#include <projectexplorer/localapplicationruncontrol.h>
-#include <projectexplorer/kit.h>
-#include <projectexplorer/project.h>
-#include <qmakeprojectmanager/qmakeproject.h>
-#include <qmakeprojectmanager/qmakeprojectmanager.h>
+#include "xmlqtestlibparserfactoryfake.h"
 
 #include "../common/qtestlibmodeltester.h"
+
+#include <projectexplorer/localapplicationrunconfigurationfake.h>
+#include <projectexplorer/localapplicationruncontrolfake.h>
+#include <projectexplorer/target.h>
+
+#include <utils/hostosinfo.h>
 
 #include <QtTest>
 
@@ -33,7 +32,7 @@ class XMLQTestLibParserTest : public QObject
 {
     Q_OBJECT
 public:
-    inline XMLQTestLibParserTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch()); QmakeProjectManager::QmakeProjectManager::initialize();}
+    inline XMLQTestLibParserTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch());}
 private Q_SLOTS:
     inline void oneClass_data(void) {data();}
     void oneClass(void);
@@ -104,11 +103,13 @@ void XMLQTestLibParserTest::limits(void)
 void XMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
     // Creation of RunConfiguration
-    QmakeProjectManager::QmakeProject project(TESTS_DIR "/" + testName + "/" + testName + ".pro", this);
-    ProjectExplorer::Kit kit;
-    ProjectExplorer::Target target(&project, &kit);
-    ProjectExplorer::LocalApplicationRunConfiguration runConfig(&target);
-    runConfig.setExecutable(testName + ".exe");
+    //QmakeProjectManager::QmakeProject project(TESTS_DIR "/" + testName + "/" + testName + ".pro", this);
+    //ProjectExplorer::Kit kit;
+    ProjectExplorer::Target target(NULL, NULL);
+    ProjectExplorer::LocalApplicationRunConfigurationFake runConfig(&target);
+    runConfig.setDisplayName(testName);
+    runConfig.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
+    runConfig.setExecutable(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName));
     if (qrand() % 2 == 1)
         runConfig.setCommandLineArguments("-xml");
     else
@@ -167,15 +168,15 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLib
     }
 
     QProcess testProc(this);
-    testProc.setWorkingDirectory(TESTS_DIR "/" + runConfig->displayName() + "/");
-    testProc.start(TESTS_DIR "/" + runConfig->displayName() + "/debug/" + runConfig->displayName(), cmdArgs, QIODevice::ReadOnly);
+    testProc.setWorkingDirectory(runConfig->workingDirectory() + "/");
+    testProc.start(runConfig->executable(), cmdArgs, QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
         qCritical() << "Test timed out";
         return results;
     }
 
-    ProjectExplorer::RunControl *runControl = new ProjectExplorer::LocalApplicationRunControl(runConfig);
+    ProjectExplorer::RunControl *runControl = new ProjectExplorer::LocalApplicationRunControlFake(runConfig);
 
     testProc.setReadChannel(QProcess::StandardOutput);
     while (!testProc.atEnd()) {

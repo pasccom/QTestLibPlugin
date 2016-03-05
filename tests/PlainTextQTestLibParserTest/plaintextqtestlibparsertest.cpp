@@ -16,16 +16,15 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include <plaintextqtestlibparserfactory.h>
-
-#include <projectexplorer/localapplicationrunconfiguration.h>
-#include <projectexplorer/localapplicationruncontrol.h>
-#include <projectexplorer/kit.h>
-#include <projectexplorer/project.h>
-#include <qmakeprojectmanager/qmakeproject.h>
-#include <qmakeprojectmanager/qmakeprojectmanager.h>
+#include "plaintextqtestlibparserfactoryfake.h"
 
 #include "../common/qtestlibmodeltester.h"
+
+#include <projectexplorer/localapplicationrunconfigurationfake.h>
+#include <projectexplorer/localapplicationruncontrolfake.h>
+#include <projectexplorer/target.h>
+
+#include <utils/hostosinfo.h>
 
 #include <QtTest>
 
@@ -33,7 +32,7 @@ class PlainTextQTestLibParserTest : public QObject
 {
     Q_OBJECT
 public:
-    inline PlainTextQTestLibParserTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch()); QmakeProjectManager::QmakeProjectManager::initialize();}
+    inline PlainTextQTestLibParserTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch());}
 private Q_SLOTS:
     inline void oneClass_data(void) {data();}
     void oneClass(void);
@@ -103,11 +102,13 @@ void PlainTextQTestLibParserTest::limits(void)
 void PlainTextQTestLibParserTest::runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
     // Creation of RunConfiguration
-    QmakeProjectManager::QmakeProject project(TESTS_DIR "/" + testName + "/" + testName + ".pro", this);
-    ProjectExplorer::Kit kit;
-    ProjectExplorer::Target target(&project, &kit);
-    ProjectExplorer::LocalApplicationRunConfiguration runConfig(&target);
-    runConfig.setExecutable(testName + ".exe");
+    //QmakeProjectManager::QmakeProject project(TESTS_DIR "/" + testName + "/" + testName + ".pro", this);
+    //ProjectExplorer::Kit kit;
+    ProjectExplorer::Target target(NULL, NULL);
+    ProjectExplorer::LocalApplicationRunConfigurationFake runConfig(&target);
+    runConfig.setDisplayName(testName);
+    runConfig.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
+    runConfig.setExecutable(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName));
     int argsVersion = qrand() % 3;
     if (argsVersion == 1)
         runConfig.setCommandLineArguments("-txt");
@@ -166,15 +167,15 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQT
     }
 
     QProcess testProc(this);
-    testProc.setWorkingDirectory(TESTS_DIR "/" + runConfig->displayName() + "/");
-    testProc.start(TESTS_DIR "/" + runConfig->displayName() + "/debug/" + runConfig->displayName(), cmdArgs, QIODevice::ReadOnly);
+    testProc.setWorkingDirectory(runConfig->workingDirectory());
+    testProc.start(runConfig->executable(), cmdArgs, QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
         qCritical() << "Test timed out";
         return results;
     }
 
-    ProjectExplorer::RunControl *runControl = new ProjectExplorer::LocalApplicationRunControl(runConfig);
+    ProjectExplorer::RunControl *runControl = new ProjectExplorer::LocalApplicationRunControlFake(runConfig);
 
     testProc.setReadChannel(QProcess::StandardOutput);
     while (!testProc.atEnd()) {

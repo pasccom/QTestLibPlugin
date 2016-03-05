@@ -30,41 +30,29 @@ include(../../QTestLibPlugin.pri)
 
 DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 
-SOURCES += xunitxmlqtestlibparsertest.cpp
+SOURCES += xunitxmlqtestlibparsertest.cpp \
+           xunitxmlqtestlibparserfactoryfake.cpp
+HEADERS += xunitxmlqtestlibparserfactoryfake.h
 
 # Model tester class
 SOURCES += ../common/qtestlibmodeltester.cpp
 HEADERS += ../common/qtestlibmodeltester.h
 
-# Files to be tested
-SOURCES += $$QTESTLIBPLUGIN_SRC/basexmlqtestlibparser.cpp \
-           $$QTESTLIBPLUGIN_SRC/xunitxmlqtestlibparser.cpp \
-           $$QTESTLIBPLUGIN_SRC/xunitxmlqtestlibparserfactory.cpp \
-           $$QTESTLIBPLUGIN_SRC/qtestlibargsparser.cpp \
-           $$QTESTLIBPLUGIN_SRC/qtestlibmodel.cpp \
-           $$QTESTLIBPLUGIN_SRC/testmodelfactory.cpp \
-           $$QTESTLIBPLUGIN_SRC/testrunconfiguration.cpp \
-           $$QTESTLIBPLUGIN_SRC/testrunconfigurationextraaspect.cpp \
-           $$QTESTLIBPLUGIN_SRC/Widgets/filetypevalidatinglineedit.cpp
-HEADERS += $$QTESTLIBPLUGIN_SRC/basexmlqtestlibparser.h \
-           $$QTESTLIBPLUGIN_SRC/xunitxmlqtestlibparser.h \
-           $$QTESTLIBPLUGIN_SRC/xunitxmlqtestlibparserfactory.h \
-           $$QTESTLIBPLUGIN_SRC/qtestlibargsparser.h \
-           $$QTESTLIBPLUGIN_SRC/qtestlibmodel.h \
-           $$QTESTLIBPLUGIN_SRC/testmodelfactory.h \
-           $$QTESTLIBPLUGIN_SRC/testrunconfiguration.h \
-           $$QTESTLIBPLUGIN_SRC/testrunconfigurationextraaspect.h \
-           $$QTESTLIBPLUGIN_SRC/Widgets/filetypevalidatinglineedit.h
+# The libraries to test
+CONFIG(debug, debug|release):LIBS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
+else:LIBS += $$QTESTLIBPLUGIN_LIB/release/libqtestlibplugin.a
+
+# Files to be tested are in src folder
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
 # Fake QtCreator tree
 include($$QTESTLIBPLUGIN_LIB/QTestLibPlugin_dependencies.pri)
 include(../QtCreatorFake/QtCreatorFake.pri)
 
-# The directory where to put MOC-generated files :
+# The directory where to put MOC-generated files
 MOC_DIR = ./.moc
 
-# Changing output directories :
+# Changing output directories
 win32 {
     OBJECTS_DIR = ./.obj_win
     CONFIG(debug, debug|release):DESTDIR = ./debug
