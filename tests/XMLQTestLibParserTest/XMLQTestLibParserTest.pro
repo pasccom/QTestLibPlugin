@@ -37,12 +37,22 @@ SOURCES += xmlqtestlibparsertest.cpp \
 HEADERS += xmlqtestlibparserfactoryfake.h
 
 # The tester libraries
-CONFIG(debug, debug|release):LIBS += ../common/debug/libtestcommon.a
-else:LIBS += ../common/release/libtestcommon.a
+CONFIG(debug, debug|release) {
+    LIBS += ../common/debug/libtestcommon.a
+    PRE_TARGETDEPS += ../common/debug/libtestcommon.a
+} else {
+    LIBS += ../common/release/libtestcommon.a
+    PRE_TARGETDEPS += ../common/release/libtestcommon.a
+}
 
 # The libraries to test
-CONFIG(debug, debug|release):LIBS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
-else:LIBS += $$QTESTLIBPLUGIN_LIB/release/libqtestlibplugin.a
+CONFIG(debug, debug|release) {
+    LIBS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
+    PRE_TARGETDEPS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
+} else {
+    LIBS += $$QTESTLIBPLUGIN_LIB/release/libqtestlibplugin.a
+    PRE_TARGETDEPS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
+}
 
 # Files to be tested are in src folder
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
