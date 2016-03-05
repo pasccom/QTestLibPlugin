@@ -19,8 +19,6 @@
 #ifndef QTCREATOR_FAKE_GLOBAL_H
 #define QTCREATOR_FAKE_GLOBAL_H
 
-//#define QTC_ASSERT(_cond_, _fail_) if (!(_cond_)) _fail_
-
 #if defined(QTCREATOR_FAKE_DEBUG_LEVEL) && (QTCREATOR_FAKE_DEBUG_LEVEL >= 1)
 #define debugMsg(_msg_) qDebug() << _msg_ << qPrintable(QString("(%1:%2)").arg(__FILE__).arg(__LINE__))
 #define USED_ONLY_FOR_DEBUG(_arg_)

@@ -103,11 +103,19 @@ void QTestLibModelTester::checkIndexInternal(const QModelIndex& index, const QSt
         }
     }
     else if (!rootClass.isNull()) {
-        SUB_TEST_FUNCTION(isOutput(rootClass, &isElementOutput));
-        if (isElementOutput) {
-            QVERIFY2(rootClass.nextSiblingElement("class").isNull(), "The document element should have only one class child");
-            SUB_TEST_FUNCTION(parseClass(index, rootClass));
+        QDomElement rootClassOutput;
+
+        while (!rootClass.isNull()) {
+            SUB_TEST_FUNCTION(isOutput(rootClass, &isElementOutput));
+            if (isElementOutput) {
+                QVERIFY2(rootClassOutput.isNull(), "The document element should have only one class child output");
+                rootClassOutput = rootClass;
+            }
+            rootClass = rootClass.nextSiblingElement("class");
         }
+
+        if (!rootClassOutput.isNull())
+            SUB_TEST_FUNCTION(parseClass(index, rootClassOutput));
     }
 
     END_SUB_TEST_FUNCTION
@@ -303,8 +311,8 @@ void QTestLibModelTester::parseClass(const QModelIndex& index, const QDomElement
 {
     BEGIN_SUB_TEST_FUNCTION
 
+    qDebug() << mModel->data(index, Qt::DisplayRole) << element.attribute("name", QString::null);
     QVERIFY2(mModel->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for class index should be a string");
-    qDebug() << mModel->data(index, Qt::DisplayRole).toString() << element.attribute("name", QString::null);
     QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.attribute("name", QString::null) , Qt::CaseSensitive) == 0, "Class name do not match");
     QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for class index should be a string");
     QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null) , Qt::CaseInsensitive) == 0, "Result string for class do not match");
