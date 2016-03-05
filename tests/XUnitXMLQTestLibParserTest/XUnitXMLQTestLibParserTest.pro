@@ -36,9 +36,9 @@ SOURCES += xunitxmlqtestlibparsertest.cpp \
            xunitxmlqtestlibparserfactoryfake.cpp
 HEADERS += xunitxmlqtestlibparserfactoryfake.h
 
-# Model tester class
-SOURCES += ../common/qtestlibmodeltester.cpp
-HEADERS += ../common/qtestlibmodeltester.h
+# The tester libraries
+CONFIG(debug, debug|release):LIBS += ../common/debug/libtestcommon.a
+else:LIBS += ../common/release/libtestcommon.a
 
 # The libraries to test
 CONFIG(debug, debug|release):LIBS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
