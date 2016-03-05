@@ -25,8 +25,13 @@ RESOURCES += \
     qtestlibplugin.qrc
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
-CONFIG(debug, debug|release):LIBS += debug/libqtestlibplugin.a
-else:LIBS += release/libqtestlibplugin.a
+CONFIG(debug, debug|release) {
+    LIBS += debug/libqtestlibplugin.a
+    PRE_TARGETDEPS += debug/libqtestlibplugin.a
+} else {
+    LIBS += release/libqtestlibplugin.a
+    PRE_TARGETDEPS += release/libqtestlibplugin.a
+}
 
 TRANSLATIONS += \
     $$QTESTLIBPLUGIN_I18N/qtestlibplugin_en.ts \
@@ -34,10 +39,14 @@ TRANSLATIONS += \
 
 !isEmpty(BUILD_TESTS) {
     DEFINES += BUILD_TESTS
-    CONFIG(debug, debug|release):LIBS += debug/libqtestlibplugintest.a
-    else:LIBS += release/libqtestlibplugintest.a
+    CONFIG(debug, debug|release) {
+        LIBS += debug/libqtestlibplugintest.a
+        PRE_TARGETDEPS += debug/libqtestlibplugintest.a
+    } else {
+        LIBS += release/libqtestlibplugintest.a
+        PRE_TARGETDEPS += release/libqtestlibplugintest.a
+    }
 }
-
 
 # Qt Creator from environment
 # Set the QTC_SOURCE environment variable to override the setting here
