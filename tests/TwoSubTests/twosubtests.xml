@@ -1,0 +1,360 @@
+<?xml version="1.0" ?>
+<!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
+<qtestliboutput>
+    <results format="xunitxml">
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+    </results>
+    <results format="lightxml">
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+    </results>
+    <results format="xml">
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+    </results>
+    <results format="txt">
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure/>
+        <magicfound level="silent" />
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="silent" />
+        <unsure/>
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure/>
+        <magicfound level="silent" />
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="silent" />
+        <unsure/>
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+        <unsure level="silent" />
+    </results>
+    <root type="Fail">
+        <class name="OnePassTest" type="Pass" format="!lightxml">
+            <function name="initTestCase" type="Pass">
+                <message type="Info" strict="true" level="verbose1" format="txt">
+                    entering
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false" format="xml">
+                    0ms
+                </message>
+            </function>
+            <function name="testPass" type="Pass">
+                <message type="Info" strict="true" level="verbose1" format="txt">
+                    entering
+                </message>
+                <message type="Info" strict="true" level="verbose2" file="onepasstest.cpp" line="34">
+                    QVERIFY(true)
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false" format="xml">
+                    0ms
+                </message>
+            </function>
+            <function name="cleanupTestCase" type="Pass">
+                <message type="Info" strict="true" level="verbose1" format="txt">
+                    entering
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false" format="xml">
+                    0ms
+                </message>
+            </function>
+            <message type="Duration" strict="false" format="xml">
+                0ms
+            </message>
+        </class>
+        <class name="TwoSubTests#1" type="Pass" format="lightxml">
+            <function name="initTestCase" type="Pass">
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="testPass" type="Pass">
+                <message type="Info" strict="true" level="verbose2" file="onepasstest.cpp" line="34">
+                    QVERIFY(true)
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="cleanupTestCase" type="Pass">
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <message type="Duration" strict="false">
+                0ms
+            </message>
+        </class>
+        <class name="OneFailTest" type="Fail" format="!lightxml">
+            <function name="initTestCase" type="Pass">
+                <message type="Info" strict="true" level="verbose1" format="txt">
+                    entering
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false" format="xml">
+                    0ms
+                </message>
+            </function>
+            <function name="testFail" type="Fail">
+                <message type="Info" strict="true" level="verbose1" format="txt">
+                    entering
+                </message>
+                <message type="Info" strict="true" level="verbose2" file="onefailtest.cpp" line="34">
+                    QVERIFY(false)
+                </message>
+                <message type="Fail" strict="true" level="silent" file="onefailtest.cpp" line="34">
+                    'false' returned FALSE. ()
+                </message>
+                <message type="Duration" strict="false" format="xml">
+                    0ms
+                </message>
+            </function>
+            <function name="cleanupTestCase" type="Pass">
+                <message type="Info" strict="true" level="verbose1" format="txt">
+                    entering
+                </message>
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false" format="xml">
+                    0ms
+                </message>
+            </function>
+            <message type="Duration" strict="false" format="xml">
+                0ms
+            </message>
+        </class>
+        <class name="TwoSubTests#2" type="Fail" format="lightxml">
+            <function name="initTestCase" type="Pass">
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="testFail" type="Fail">
+                <message type="Info" strict="true" level="verbose2" file="onefailtest.cpp" line="34">
+                    QVERIFY(false)
+                </message>
+                <message type="Fail" strict="true" level="silent" file="onefailtest.cpp" line="34">
+                    'false' returned FALSE. ()
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <function name="cleanupTestCase" type="Pass">
+                <message type="Pass" strict="true">
+                    Test passed
+                </message>
+                <message type="Duration" strict="false">
+                    0ms
+                </message>
+            </function>
+            <message type="Duration" strict="false">
+                0ms
+            </message>
+        </class>
+    </root>
+</qtestliboutput>

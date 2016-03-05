@@ -20,3 +20,5 @@ TEMPLATE = subdirs
 # Parsers tests:
 SUBDIRS +=  ../OnePassTest \
             ../OneFailTest \
+
+DISTFILES += twosubtests.xml
