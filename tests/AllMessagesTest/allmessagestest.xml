@@ -381,7 +381,7 @@
         <unsure level="silent" />
         <unsure/>
     </results>
-    <class name="AllMessagesTest" type="Fail">
+    <class name="AllMessagesTest" type="Fail" level="silent">
         <function name="initTestCase" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
