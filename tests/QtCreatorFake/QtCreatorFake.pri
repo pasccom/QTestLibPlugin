@@ -30,14 +30,26 @@ IDE_BUILD_TREE = $$(QTC_BUILD)
 exists(../../QtCreator.local.pri) {
     include(../../QtCreator.local.pri)
 }
-QTC_PLUGIN_DIRS=$$PWD
+QTC_PLUGIN_DIRS=
+QTC_PLUGIN_DIRS += "$$PWD"
+QTC_PLUGIN_DIRS += "$$QTCREATOR_SOURCES/src/plugins"
 
-INCLUDEPATH += $$QTCREATOR_SOURCES/src/libs
+INCLUDEPATH += "$$QTCREATOR_SOURCES/src/libs"
+#INCLUDEPATH += "$$QTCREATOR_SOURCES/src/plugins"
 for(dir, QTC_PLUGIN_DIRS) {
-    INCLUDEPATH += $$dir
+    INCLUDEPATH += "$$dir"
 }
 
 # Parse plugins dependencies ##################################################
+# Link against real libraries
+unix {
+    !isEmpty(QTC_PLUGIN_DEPENDS):LIBS *= -L$$IDE_BUILD_TREE/plugins
+    !isEmpty(QTC_PLUGIN_DEPENDS):QMAKE_LFLAGS += -Wl,-rpath=$${IDE_BUILD_TREE}/plugins
+} else:win32 {
+    !isEmpty(QTC_PLUGIN_DEPENDS):LIBS *= -L$$IDE_BUILD_TREE/bin
+    !isEmpty(QTC_PLUGIN_DEPENDS):QMAKE_LFLAGS += -Wl,-rpath=$${IDE_BUILD_TREE}/bin
+}
+# Recursively resolve library deps
 done_plugins =
 for(ever) {
     isEmpty(QTC_PLUGIN_DEPENDS): \
@@ -54,6 +66,7 @@ for(ever) {
         isEmpty(dependencies_file): \
             error("Plugin dependency $$dep not found")
         include($$dependencies_file)
+        LIBS += -l$$qtLibraryName($$QTC_PLUGIN_NAME)
     }
     QTC_PLUGIN_DEPENDS = $$unique(QTC_PLUGIN_DEPENDS)
     QTC_PLUGIN_DEPENDS -= $$unique(done_plugins)

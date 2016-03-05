@@ -16,11 +16,11 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "localapplicationruncontrol.h"
+#include "localapplicationruncontrolfake.h"
 
 #include "../qtcreatorfake_global.h"
 
-#include "localapplicationrunconfiguration.h"
+#include <projectexplorer/localapplicationrunconfiguration.h>
 
 #include <QDir>
 #include <QFileInfo>
@@ -30,13 +30,13 @@
 
 namespace ProjectExplorer {
 
-LocalApplicationRunControl::LocalApplicationRunControl(LocalApplicationRunConfiguration *runConfig, QObject *parent) :
-    RunControl(runConfig, runConfig->displayName(), parent)
+LocalApplicationRunControlFake::LocalApplicationRunControlFake(RunConfiguration *runConfig) :
+    RunControl(runConfig, Core::Id()), mTestProc(NULL), mOutputFormat(Utils::StdOutFormat), mErrorFormat(Utils::StdErrFormat)
 {
-
+    qDebug() << runConfig->displayName() << displayName();
 }
 
-void LocalApplicationRunControl::start(void)
+void LocalApplicationRunControlFake::start(void)
 {
     LocalApplicationRunConfiguration *localConfig = qobject_cast<LocalApplicationRunConfiguration *>(runConfiguration());
     Q_ASSERT(localConfig != NULL);
@@ -53,8 +53,15 @@ void LocalApplicationRunControl::start(void)
     mTestProc->start(localConfig->executable() + " " + localConfig->commandLineArguments(), QIODevice::ReadOnly);
 }
 
+RunControl::StopResult LocalApplicationRunControlFake::stop(void)
+{
+    if (mTestProc != NULL)
+        mTestProc->terminate();
+    mTestProc = NULL;
+    return StoppedSynchronously;
+}
 
-void LocalApplicationRunControl::readStandardOutput(void)
+void LocalApplicationRunControlFake::readStandardOutput(void)
 {
     mTestProc->setReadChannel(QProcess::StandardOutput);
     while (!mTestProc->atEnd()) {
@@ -66,7 +73,7 @@ void LocalApplicationRunControl::readStandardOutput(void)
     }
 }
 
-void LocalApplicationRunControl::readStandardError(void)
+void LocalApplicationRunControlFake::readStandardError(void)
 {
     mTestProc->setReadChannel(QProcess::StandardError);
     while (!mTestProc->atEnd()) {
@@ -78,7 +85,7 @@ void LocalApplicationRunControl::readStandardError(void)
     }
 }
 
-void LocalApplicationRunControl::testProcessFinished(int exitCode, QProcess::ExitStatus status)
+void LocalApplicationRunControlFake::testProcessFinished(int exitCode, QProcess::ExitStatus status)
 {
     Q_UNUSED(exitCode);
     Q_UNUSED(status);

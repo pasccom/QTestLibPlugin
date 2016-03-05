@@ -15,9 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 
-QTC_PLUGIN_NAME = CorePlugin
+QTC_PLUGIN_NAME = Core
 QTC_LIB_DEPENDS += \
-    # Nothing
+    aggregation \
+    extensionsystem \
+    utils
 
 QTC_PLUGIN_DEPENDS += \
     # Nothing
@@ -25,8 +27,8 @@ QTC_PLUGIN_DEPENDS += \
 QTC_PLUGIN_RECOMMENDS += \
     # Nothing
 
-SOURCES += \
-    $$PWD/id.cpp
+#SOURCES += \
+#    $$PWD/id.cpp
 
-HEADERS +=
-    $$PWD/id.h
+#HEADERS +=
+#    $$PWD/id.h

@@ -17,34 +17,39 @@
 
 QTC_PLUGIN_NAME = ProjectExplorer
 QTC_LIB_DEPENDS += \
-    utils
+    ssh
 QTC_PLUGIN_DEPENDS += \
-    coreplugin 
+    coreplugin \
+    texteditor
 
 QTC_PLUGIN_RECOMMENDS += \
     # Nothing
     
 SOURCES += \
-    $$PWD/runconfiguration.cpp \
-    $$PWD/localapplicationrunconfiguration.cpp \
-    $$PWD/localapplicationruncontrol.cpp \
-    $$PWD/project.cpp \
-    $$PWD/target.cpp \
-    $$PWD/kit.cpp \
-    $$PWD/kitinformation.cpp \
-    $$PWD/buildconfiguration.cpp \
-    $$PWD/localenvironmentaspect.cpp \
-    $$PWD/toolchain.cpp
+    $$PWD/localapplicationrunconfigurationfake.cpp \
+    $$PWD/localapplicationruncontrolfake.cpp \
+#    $$PWD/runconfiguration.cpp \
+#    $$PWD/localapplicationrunconfiguration.cpp \
+#    $$PWD/localapplicationruncontrol.cpp \
+#    $$PWD/project.cpp \
+#    $$PWD/target.cpp \
+#    $$PWD/kit.cpp \
+#    $$PWD/kitinformation.cpp \
+#    $$PWD/buildconfiguration.cpp \
+#    $$PWD/localenvironmentaspect.cpp \
+#    $$PWD/toolchain.cpp
 
 HEADERS += \
-    $$PWD/runconfiguration.h \
-    $$PWD/localapplicationrunconfiguration.h \
-    $$PWD/localapplicationruncontrol.h \
-    $$PWD/applicationlauncher.h \
-    $$PWD/project.h \
-    $$PWD/target.h \
-    $$PWD/kit.h \
-    $$PWD/kitinformation.h \
-    $$PWD/buildconfiguration.h \
-    $$PWD/localenvironmentaspect.h \
-    $$PWD/toolchain.h
+    $$PWD/localapplicationrunconfigurationfake.h \
+    $$PWD/localapplicationruncontrolfake.h \
+#    $$PWD/runconfiguration.h \
+#    $$PWD/localapplicationrunconfiguration.h \
+#    $$PWD/localapplicationruncontrol.h \
+#    $$PWD/applicationlauncher.h \
+#    $$PWD/project.h \
+#    $$PWD/target.h \
+#    $$PWD/kit.h \
+#    $$PWD/kitinformation.h \
+#    $$PWD/buildconfiguration.h \
+#    $$PWD/localenvironmentaspect.h \
+#    $$PWD/toolchain.h

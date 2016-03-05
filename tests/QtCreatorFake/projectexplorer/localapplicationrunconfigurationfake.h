@@ -16,21 +16,27 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef LOCALAPPLICATIONRUNCONFIGURATION_H
-#define LOCALAPPLICATIONRUNCONFIGURATION_H
+#ifndef LOCALAPPLICATIONRUNCONFIGURATIONFAKE_H
+#define LOCALAPPLICATIONRUNCONFIGURATIONFAKE_H
 
-#include "runconfiguration.h"
+#include <projectexplorer/localapplicationrunconfiguration.h>
+#include <projectexplorer/applicationlauncher.h>
 
 #include <coreplugin/id.h>
 
+class QWidget;
+
 namespace ProjectExplorer {
 
-class LocalApplicationRunConfiguration : public RunConfiguration
+class LocalApplicationRunConfigurationFake : public LocalApplicationRunConfiguration
 {
     Q_OBJECT
 public:
-    inline LocalApplicationRunConfiguration(ProjectExplorer::Target *target, Core::Id id = Core::Id()) :
-        RunConfiguration(target) {Q_UNUSED(id);}
+    inline LocalApplicationRunConfigurationFake(ProjectExplorer::Target *target, Core::Id id = Core::Id()) :
+        LocalApplicationRunConfiguration(target, id) {};
+
+    inline QWidget* createConfigurationWidget(void) {return NULL;}
+    inline ApplicationLauncher::Mode runMode() const {return ApplicationLauncher::Gui;}
 
     inline QString executable() const {return mExe;}
     inline void setExecutable(const QString& exe) {mExe = exe;}
@@ -39,7 +45,7 @@ public:
     inline QString commandLineArguments() const {return mArgs;}
     inline void setCommandLineArguments(const QString& args) {mArgs = args;}
 
-    inline QString displayName(void) const {return mExe.section('/', -1, -1, QString::SectionSkipEmpty).section('.', 0, 0, QString::SectionSkipEmpty);}
+    //inline QString displayName(void) const {return mExe.section('/', -1, -1, QString::SectionSkipEmpty).section('.', 0, 0, QString::SectionSkipEmpty);}
 private:
     QString mExe;
     QString mArgs;
@@ -48,4 +54,4 @@ private:
 
 } // ProjectExplorer
 
-#endif // LOCALAPPLICATIONRUNCONFIGURATION_H
+#endif // LOCALAPPLICATIONRUNCONFIGURATIONFAKE_H

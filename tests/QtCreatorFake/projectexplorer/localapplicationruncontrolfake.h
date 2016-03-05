@@ -16,37 +16,46 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef LOCALAPPLICATIONRUNCONTROL_H
-#define LOCALAPPLICATIONRUNCONTROL_H
+#ifndef LOCALAPPLICATIONRUNCONTROLFAKE_H
+#define LOCALAPPLICATIONRUNCONTROLFAKE_H
 
 #include <QProcess>
-#include "runconfiguration.h"
+#include <projectexplorer/runconfiguration.h>
+
+#include <utils/outputformat.h>
 
 namespace ProjectExplorer {
 
-class LocalApplicationRunConfiguration;
-
-class LocalApplicationRunControl : public RunControl
+class LocalApplicationRunControlFake : public RunControl
 {
     Q_OBJECT
 public:
-    LocalApplicationRunControl(LocalApplicationRunConfiguration *runConfig, QObject *parent = NULL);
+    LocalApplicationRunControlFake(RunConfiguration *runConfig);
+
+    inline bool isRunning(void) const {return mTestProc != NULL;}
+    inline QString displayName() const {return runConfiguration()->displayName();}
+
+    inline void setOutputFormat(Utils::OutputFormat format) {mOutputFormat = format;}
+    inline Utils::OutputFormat outputFormat(void) const {return mOutputFormat;}
+    inline void setErrorFormat(Utils::OutputFormat format) {mErrorFormat = format;}
+    inline Utils::OutputFormat errorFormat(void) const {return mErrorFormat;}
 signals:
     void appendMessage(ProjectExplorer::RunControl *runControl, const QString& msg, Utils::OutputFormat format);
     void finished(void);
     void started(void);
 public slots:
     void start(void);
+    StopResult stop(void);
 private slots:
     void readStandardOutput(void);
     void readStandardError(void);
     void testProcessFinished(int exitCode, QProcess::ExitStatus status);
 private:
     QProcess* mTestProc;
-    RunConfiguration* mConfig;
-    QString mName;
+    Utils::OutputFormat mOutputFormat;
+    Utils::OutputFormat mErrorFormat;
 };
 
 } // ProjectExplorer
 
-#endif // LOCALAPPLICATIONRUNCONTROL_H
+#endif // LOCALAPPLICATIONRUNCONTROLFAKE_H
