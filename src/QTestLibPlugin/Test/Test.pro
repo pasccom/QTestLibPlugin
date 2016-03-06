@@ -25,9 +25,13 @@ QT      += widgets
 QT      += testlib
 
 SOURCES +=  \
+    testhelper.cpp \
+#    plaintextqtestlibparsertest.cpp \
     testactionstest.cpp \
     testrunconfigurationfactorytest.cpp
 HEADERS += \
+    testhelper.h \
+#    plaintextqtestlibparsertest.h \
     testactionstest.h \
     testrunconfigurationfactorytest.h
 
