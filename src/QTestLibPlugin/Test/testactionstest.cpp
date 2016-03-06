@@ -37,18 +37,16 @@ TestActionsTest::TestActionsTest(void):
 
 void TestActionsTest::initTestCase(void)
 {
-    QStringList projectUserPathes;
+    QStringList projectPathes;
 
     // NOTE _data() function is not available for initTestCase()
-    projectUserPathes << QLatin1String(TESTS_DIR "/OneSubTest/OneSubTest.pro.user");
-    projectUserPathes << QLatin1String(TESTS_DIR "/TwoSubTests/TwoSubTests.pro.user");
-    projectUserPathes << QLatin1String(TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro.user");
-    projectUserPathes << QLatin1String(TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro.user");
+    projectPathes << QLatin1String(TESTS_DIR "/OneSubTest");
+    projectPathes << QLatin1String(TESTS_DIR "/TwoSubTests");
+    projectPathes << QLatin1String(TESTS_DIR "/NoSubTestOne");
+    projectPathes << QLatin1String(TESTS_DIR "/NoSubTestTwo");
 
-    foreach (QString projectUserPath, projectUserPathes) {
-        if (QFile::exists(projectUserPath))
-            QVERIFY(QFile::remove(projectUserPath));
-    }
+    foreach (QString projectPath, projectPathes)
+        QVERIFY(removeProjectUserFiles(projectPath));
 }
 
 void TestActionsTest::init(void)

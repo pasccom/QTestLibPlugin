@@ -10,6 +10,7 @@ namespace ProjectExplorer {
 namespace QTestLibPlugin {
 namespace Test {
 
+bool removeProjectUserFiles(const QString& projectPath);
 bool openQMakeProject(const QString& projectFilePath, ProjectExplorer::Project** project);
 
 } // Test

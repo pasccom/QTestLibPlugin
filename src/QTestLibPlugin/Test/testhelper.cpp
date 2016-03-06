@@ -22,6 +22,18 @@
 namespace QTestLibPlugin {
 namespace Test {
 
+bool removeProjectUserFiles(const QString& projectPath)
+{
+    QDir projectDir(projectPath);
+    QVERIFY(projectDir.exists());
+    projectDir.setNameFilters(QStringList() << projectDir.dirName() + QLatin1String(".pro.user*"));
+    QStringList projectUserPathes = projectDir.entryList();
+    foreach (QString projectUserPath, projectUserPathes)
+        QVERIFY(QFile::remove(projectDir.absoluteFilePath(projectUserPath)));
+    return true;
+}
+
+
 bool openQMakeProject(const QString& projectFilePath, ProjectExplorer::Project** project)
 {
     ProjectExplorer::Project* proj;
