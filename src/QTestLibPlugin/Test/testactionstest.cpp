@@ -1,4 +1,5 @@
 #include "testactionstest.h"
+#include "testhelper.h"
 
 #include "../qtestlibpluginconstants.h"
 
@@ -82,7 +83,7 @@ void TestActionsTest::testOpenProjectWithTests(void)
 {
     QFETCH(QString, projectPath);
 
-    SUB_TEST_FUNCTION(openProject(projectPath));
+    QVERIFY(openQMakeProject(projectPath, &mProject));
     QCOMPARE(mProject->projectFilePath().toString(), projectPath);
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject, true, true));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject, true));
@@ -106,7 +107,7 @@ void TestActionsTest::testOpenProjectWithoutTests(void)
 {
     QFETCH(QString, projectPath);
 
-    SUB_TEST_FUNCTION(openProject(projectPath));
+    QVERIFY(openQMakeProject(projectPath, &mProject));
     QCOMPARE(mProject->projectFilePath().toString(), projectPath);
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject, false, false));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject, false));
@@ -122,7 +123,7 @@ void TestActionsTest::testChangeTarget(void)
 {
     QFETCH(QString, projectPath);
 
-    SUB_TEST_FUNCTION(openProject(projectPath));
+    QVERIFY(openQMakeProject(projectPath, &mProject));
     QCOMPARE(mProject->projectFilePath().toString(), projectPath);
     if (mProject->targets().size() < 2)
         QSKIP("This test requires the project to have 2 targets.");
@@ -154,9 +155,9 @@ void TestActionsTest::testTwoProjectsWithTests(void)
     QFETCH(QString, project1FilePath);
     QFETCH(QString, project2FilePath);
 
-    SUB_TEST_FUNCTION(openProject(project1FilePath, 1));
+    QVERIFY(openQMakeProject(project1FilePath, &mProject1));
     QCOMPARE(mProject1->projectFilePath().toString(), project1FilePath);
-    SUB_TEST_FUNCTION(openProject(project2FilePath, 2));
+    QVERIFY(openQMakeProject(project2FilePath, &mProject2));
     QCOMPARE(mProject2->projectFilePath().toString(), project2FilePath);
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, true, true));
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject2, true, true));
@@ -193,9 +194,9 @@ void TestActionsTest::testTwoProjectsWithAndWithoutTests(void)
     QFETCH(QString, project1FilePath);
     QFETCH(QString, project2FilePath);
 
-    SUB_TEST_FUNCTION(openProject(project1FilePath, 1));
+    QVERIFY(openQMakeProject(project1FilePath, &mProject1));
     QCOMPARE(mProject1->projectFilePath().toString(), project1FilePath);
-    SUB_TEST_FUNCTION(openProject(project2FilePath, 2));
+    QVERIFY(openQMakeProject(project2FilePath, &mProject2));
     QCOMPARE(mProject2->projectFilePath().toString(), project2FilePath);
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, true, true));
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject2, false, false));
@@ -232,9 +233,9 @@ void TestActionsTest::testTwoProjectsWithoutAndWithTests(void)
     QFETCH(QString, project1FilePath);
     QFETCH(QString, project2FilePath);
 
-    SUB_TEST_FUNCTION(openProject(project1FilePath, 1));
+    QVERIFY(openQMakeProject(project1FilePath, &mProject1));
     QCOMPARE(mProject1->projectFilePath().toString(), project1FilePath);
-    SUB_TEST_FUNCTION(openProject(project2FilePath, 2));
+    QVERIFY(openQMakeProject(project2FilePath, &mProject2));
     QCOMPARE(mProject2->projectFilePath().toString(), project2FilePath);
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, false, false));
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject2, true, true));
@@ -271,9 +272,9 @@ void TestActionsTest::testTwoProjectsWithoutTests(void)
     QFETCH(QString, project1FilePath);
     QFETCH(QString, project2FilePath);
 
-    SUB_TEST_FUNCTION(openProject(project1FilePath, 1));
+    QVERIFY(openQMakeProject(project1FilePath, &mProject1));
     QCOMPARE(mProject1->projectFilePath().toString(), project1FilePath);
-    SUB_TEST_FUNCTION(openProject(project2FilePath, 2));
+    QVERIFY(openQMakeProject(project2FilePath, &mProject2));
     QCOMPARE(mProject2->projectFilePath().toString(), project2FilePath);
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, false, false));
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject2, false, false));
@@ -294,78 +295,6 @@ void TestActionsTest::testTwoProjectsWithoutTests(void)
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(NULL, false));
     SUB_TEST_FUNCTION(checkSubMenu(0));
-}
-
-void TestActionsTest::openProject(const QString& projectFilePath, int number)
-{
-    BEGIN_SUB_TEST_FUNCTION
-
-    // Open project
-    ProjectExplorer::ProjectExplorerPlugin::OpenProjectResult result = ProjectExplorer::ProjectExplorerPlugin::openProject(projectFilePath);
-    QVERIFY((bool) result);
-    mProject = result.project();
-
-    // Initialize targets if required
-    if (mProject->activeTarget() == NULL) {
-        foreach (ProjectExplorer::Kit* kit, ProjectExplorer::KitManager::kits())
-            mProject->addTarget(new ProjectExplorer::Target(mProject, kit));
-        foreach (ProjectExplorer::Target* target, mProject->targets()) {
-            if (target->kit() == ProjectExplorer::KitManager::defaultKit())
-                ProjectExplorer::SessionManager::setActiveTarget(mProject, target, ProjectExplorer::SetActive::Cascade);
-        }
-    }
-    QVERIFY(mProject->activeTarget() != NULL);
-
-    // Initialize build confirgurations if required
-    foreach (ProjectExplorer::Target* target, mProject->targets()) {
-        if (target->activeBuildConfiguration() == NULL) {
-            ProjectExplorer::IBuildConfigurationFactory* factory = ProjectExplorer::IBuildConfigurationFactory::find(target);
-            QVERIFY(factory != NULL);
-            QList<ProjectExplorer::BuildInfo *> buildInfos = factory->availableBuilds(target);
-            ProjectExplorer::BuildInfo* releaseBuildInfo = NULL;
-            ProjectExplorer::BuildInfo* debugBuildInfo = NULL;
-            foreach (ProjectExplorer::BuildInfo* bi, buildInfos) {
-                if (QString::compare(bi->typeName, QLatin1String("Release"), Qt::CaseInsensitive) == 0) {
-                    releaseBuildInfo = bi;
-                    releaseBuildInfo->displayName = bi->typeName;
-                } else if (QString::compare(bi->typeName, QLatin1String("Release"), Qt::CaseInsensitive) == 0) {
-                    debugBuildInfo = bi;
-                    debugBuildInfo->displayName = bi->typeName;
-                }
-            }
-            QVERIFY((releaseBuildInfo != NULL) || (debugBuildInfo != NULL));
-            if (debugBuildInfo != NULL)
-                target->addBuildConfiguration(factory->create(target, debugBuildInfo));
-            else
-                target->addBuildConfiguration(factory->create(target, releaseBuildInfo));
-        }
-    }
-    QVERIFY(mProject->activeTarget()->activeBuildConfiguration() != NULL);
-
-    // Wait for project evaluated
-    QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(mProject);
-    QVERIFY(qMakeProject != NULL);
-    QSignalSpy evaluateSpy(qMakeProject, SIGNAL(proFilesEvaluated()));
-    evaluateSpy.wait();
-
-    // Update targets:
-    foreach (ProjectExplorer::Target* target, mProject->targets())
-        target->updateDefaultRunConfigurations();
-
-    switch (number) {
-    case 1:
-        mProject1 = mProject;
-        mProject = NULL;
-        break;
-    case 2:
-        mProject2 = mProject;
-        mProject = NULL;
-        break;
-    default:
-        break;
-    }
-
-    END_SUB_TEST_FUNCTION
 }
 
 void TestActionsTest::closeProject(int number)

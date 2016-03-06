@@ -36,8 +36,6 @@ private:
     void testOpenProjectWithTests(void);
     void testOpenProjectWithoutTests_data(void);
     void testOpenProjectWithoutTests(void);
-
-    void openProject(const QString& projectFilePath);
 };
 
 } // Test

@@ -52,7 +52,6 @@ private:
     void testOpenProjectWithoutTests_data(void);
     void testOpenProjectWithoutTests(void);
 
-    void openProject(const QString& projectFilePath, int number = 0);
     void closeProject(int number = 0);
     void checkSubMenuAction(const QString& projectPath);
     void checkSubMenuAction(ProjectExplorer::Project* project, bool present, bool enabled);
