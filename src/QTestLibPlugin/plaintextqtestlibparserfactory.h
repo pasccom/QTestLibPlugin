@@ -79,11 +79,11 @@ private:
      * Once the \c testlib module is found, the arguments are checked
      * to see whether the output may be plain text.
      *
-     * \param runConfiguration The run configuration to check.
+     * \param cmdArgs The command line arguments from the run configuration.
      * \return \c true, if the parser may parse the test.
      * \sa canParseRunConfiguration(), canParseModule()
      */
-    bool canParseArguments(ProjectExplorer::RunConfiguration *runConfiguration) const;
+    bool canParseArguments(const QString& cmdArgs) const;
 };
 
 } // namespace Internal

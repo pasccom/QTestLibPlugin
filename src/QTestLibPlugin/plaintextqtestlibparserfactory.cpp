@@ -46,46 +46,59 @@ bool PlainTextQTestLibParserFactory::canParseRunConfiguration(ProjectExplorer::R
 {
     Q_ASSERT(runConfiguration != NULL);
 
+    // Only accept test run configurations:
     TestRunConfiguration* testRunConfiguration = qobject_cast<TestRunConfiguration*>(runConfiguration);
     if (testRunConfiguration == NULL)
         return false;
 
-    QRegExp extraTestArgsRegExp(QLatin1String("TESTARGS=\"[^\"]*\""));
+    // Check test command line arguments:
+    QRegExp extraTestArgsRegExp(QLatin1String("TESTARGS=\"([^\"]*)\""));
     if (extraTestArgsRegExp.indexIn(testRunConfiguration->commandLineArguments()) == -1)
         return true;
-    return canParseArguments(runConfiguration);
+    return canParseArguments(extraTestArgsRegExp.capturedTexts().at(1));
 }
 
 bool PlainTextQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfiguration *runConfiguration) const
 {
     Q_ASSERT(runConfiguration != NULL);
 
+    // Only accept local run configurations:
+    ProjectExplorer::LocalApplicationRunConfiguration *localRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration *>(runConfiguration);
+    if (localRunConfig == NULL)
+        return false;
+
+    // Only accept qMake projects:
     QmakeProjectManager::QmakeProject *qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject *>(runConfiguration->target()->project());
-    if (qMakeProject != NULL) {
-        foreach(QmakeProjectManager::QmakeProFileNode *pro, qMakeProject->allProFiles()) {
-            qDebug() << "Project name:" << pro->displayName();
-            qDebug() << "QT variable:" << pro->variableValue(QmakeProjectManager::QtVar);
-            if (pro->variableValue(QmakeProjectManager::QtVar).contains(QLatin1String("testlib"), Qt::CaseSensitive))
-                return canParseArguments(runConfiguration);
-        }
+    if (qMakeProject == NULL)
+        return false;
+
+    foreach(QmakeProjectManager::QmakeProFileNode *pro, qMakeProject->allProFiles()) {
+        qDebug() << "Project name:" << pro->displayName();
+        // Check the executable matches the target:
+        QDir destDir(pro->targetInformation().destDir);
+        if (!destDir.isAbsolute())
+            destDir.setPath(pro->targetInformation().buildDir + QLatin1Char('/') + pro->targetInformation().destDir);
+        qDebug() << "TARGET:" << destDir.absoluteFilePath(pro->targetInformation().target);
+        qDebug() << "Executable:" << localRunConfig->executable();
+        if (QDir(destDir.absoluteFilePath(pro->targetInformation().target)) != QDir(localRunConfig->executable()))
+            continue;
+        // Check the testlib is included:
+        qDebug() << "QT variable:" << pro->variableValue(QmakeProjectManager::QtVar);
+        if (pro->variableValue(QmakeProjectManager::QtVar).contains(QLatin1String("testlib"), Qt::CaseSensitive))
+            return canParseArguments(localRunConfig->commandLineArguments());
     }
 
     return false;
 }
 
-bool PlainTextQTestLibParserFactory::canParseArguments(ProjectExplorer::RunConfiguration *runConfiguration) const
+bool PlainTextQTestLibParserFactory::canParseArguments(const QString& cmdArgs) const
 {
-    ProjectExplorer::LocalApplicationRunConfiguration *localRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration *>(runConfiguration);
-    if (localRunConfig != NULL) {
-        qDebug() << "Command line args:" << localRunConfig->commandLineArguments();
-        QTestLibArgsParser parser(localRunConfig->commandLineArguments());
-
-        return ((parser.error() == QTestLibArgsParser::NoError)
-             && (parser.outputFormat() == QTestLibArgsParser::TxtFormat)
-              && parser.outFileName().toString().isEmpty());
-    }
-
-    return false;
+    qDebug() << "Command line args:" << cmdArgs;
+    QTestLibArgsParser parser(cmdArgs);
+    qDebug() << parser.error() << parser.outputFormat() << parser.outFileName().toString();
+    return ((parser.error() == QTestLibArgsParser::NoError)
+         && (parser.outputFormat() == QTestLibArgsParser::TxtFormat)
+          && parser.outFileName().toString().isEmpty());
 }
 
 } // namespace Internal
