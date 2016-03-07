@@ -26,16 +26,17 @@ QT      += testlib
 
 SOURCES +=  \
     testhelper.cpp \
-#    plaintextqtestlibparsertest.cpp \
+    plaintextqtestlibparsertest.cpp \
     testactionstest.cpp \
     testrunconfigurationfactorytest.cpp
 HEADERS += \
     testhelper.h \
-#    plaintextqtestlibparsertest.h \
+    plaintextqtestlibparsertest.h \
     testactionstest.h \
     testrunconfigurationfactorytest.h
 
 include(../../../QTestLibPlugin.pri)
+INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
 DEFINES += BUILD_TESTS
 DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"

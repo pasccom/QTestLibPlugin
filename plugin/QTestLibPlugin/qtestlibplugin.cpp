@@ -30,6 +30,7 @@
 #include <qmaketestrunconfigurationfactory.h>
 
 #ifdef BUILD_TESTS
+#   include <Test/plaintextqtestlibparsertest.h>
 #   include <Test/testactionstest.h>
 #   include <Test/testrunconfigurationfactorytest.h>
 #endif
@@ -381,6 +382,7 @@ QList<QObject *> QTestLibPluginPlugin::createTestObjects(void) const
 {
     QList<QObject *> testObjects;
 
+    testObjects << new Test::PlainTextQTestLibParserTest;
     testObjects << new Test::TestActionsTest;
     testObjects << new Test::TestRunConfigurationFactoryTest;
 
