@@ -142,7 +142,6 @@ void QTestLibArgsParser::parse(bool incremental)
             qDebug() << currentFlag;
             switch (currentFlag) {
             case -1: // Unknown flag
-            case 7: // Impossible
                 if (!token.startsWith(QLatin1Char('-'))) {
                     parseSelectedTest(token);
                 } else {
@@ -150,6 +149,8 @@ void QTestLibArgsParser::parse(bool incremental)
                     mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Unknown flag \"%1\"").arg(token);
                 }
                 break;
+            case 7: // Impossible
+                Q_ASSERT(false);
             case 0: // -o
                 continue;
             case 1: // -txt
@@ -245,6 +246,13 @@ void QTestLibArgsParser::parseSelectedTest(const QString& token)
     } else {
         selectedTestCase = token.left(colon);
         selectedTestData = token.mid(colon + 1);
+    }
+
+    QRegExp selectedTestCaseRegexp(QLatin1String("[a-zA-Z_][a-zA-Z0-9_]*"));
+    if (!selectedTestCaseRegexp.exactMatch(selectedTestCase)) {
+        mError = InvalidTestCaseError;
+        mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "The given argument \"%1\"is neither a flag nor a test case").arg(selectedTestCase);
+        return;
     }
 
     TestCaseList::iterator it = mSelectedTestCases.begin();

@@ -138,6 +138,7 @@ public:
         PrematureEndError, /*!< The command line argument list ended prematurely */
         UnknownFlagError, /*!< A flag (an argument beginning with <tt>-</tt>) was unknown */
         InvalidArgumentError, /*!< The argument of a flag does not have the right format */
+        InvalidTestCaseError, /*!< The name of a test function does not fulfill the constraints on function names */
     } Error;
     /*!
      * \brief Constructor from a string.
