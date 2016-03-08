@@ -27,11 +27,13 @@ QT      += testlib
 SOURCES +=  \
     testhelper.cpp \
     plaintextqtestlibparsertest.cpp \
+    xmlqtestlibparsertest.cpp \
     testactionstest.cpp \
     testrunconfigurationfactorytest.cpp
 HEADERS += \
     testhelper.h \
     plaintextqtestlibparsertest.h \
+    xmlqtestlibparsertest.h \
     testactionstest.h \
     testrunconfigurationfactorytest.h
 
