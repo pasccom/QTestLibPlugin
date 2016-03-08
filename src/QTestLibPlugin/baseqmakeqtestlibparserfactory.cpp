@@ -43,7 +43,7 @@ bool BaseQMakeQTestLibParserFactory::canParseRunConfiguration(ProjectExplorer::R
     // Check test command line arguments:
     QRegExp extraTestArgsRegExp(QLatin1String("TESTARGS=\"([^\"]*)\""));
     if (extraTestArgsRegExp.indexIn(testRunConfiguration->commandLineArguments()) == -1)
-        return true;
+        return (mFormat == QTestLibArgsParser::TxtFormat);
     return canParseArguments(extraTestArgsRegExp.capturedTexts().at(1));
 }
 
@@ -82,11 +82,13 @@ bool BaseQMakeQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfigur
 
 bool BaseQMakeQTestLibParserFactory::canParseArguments(const QString& cmdArgs) const
 {
+    QTC_ASSERT(mFormat != QTestLibArgsParser::NoneFormat, return false);
+
     qDebug() << "Command line args:" << cmdArgs;
     QTestLibArgsParser parser(cmdArgs);
     qDebug() << parser.error() << parser.outputFormat() << parser.outFileName().toString();
     return ((parser.error() == QTestLibArgsParser::NoError)
-         && (parser.outputFormat() == QTestLibArgsParser::TxtFormat)
+         && (parser.outputFormat() == mFormat)
           && parser.outFileName().toString().isEmpty());
 }
 
