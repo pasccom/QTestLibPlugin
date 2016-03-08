@@ -19,7 +19,7 @@
 #ifndef XUNITXMLQTESTLIBPARSERFACTORY_H
 #define XUNITXMLQTESTLIBPARSERFACTORY_H
 
-#include "testmodelfactory.h"
+#include "baseqmakeqtestlibparserfactory.h"
 #include "xunitxmlqtestlibparser.h"
 
 namespace QTestLibPlugin {
@@ -33,7 +33,7 @@ namespace Internal {
  * may parse the ProjectExplorer::RunConfiguration output and
  * allocate instances of the associated parser if needed.
  */
-class XUnitXMLQTestLibParserFactory : public AbstractTestParserFactory
+class XUnitXMLQTestLibParserFactory : public BaseQMakeQTestLibParserFactory
 {
     Q_OBJECT
 public:
@@ -45,43 +45,8 @@ public:
      * \param parent The parent object of the factory.
      */
     inline XUnitXMLQTestLibParserFactory(QObject *parent = NULL):
-        AbstractTestParserFactory(parent) {}
-    inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {return canParseRunConfiguration(runConfiguration) || canParseModule(runConfiguration);}
+        BaseQMakeQTestLibParserFactory(parent) {setAcceptedFormat(QTestLibArgsParser::XUnitXmlFormat);}
     AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const;
-private:
-    /*!
-     * \brief Check if the run configuration is a TestRunConfiguration.
-     *
-     * If the run configuration is a TestRunConfiguration,
-     * then the associated parser may parse the output
-     * if the arguments do not change the outut format.
-     *
-     * \param runConfiguration The run configuration to check.
-     * \return \c true, if the parser may parse the test
-     * \sa canParseModule(), canParseArguments()
-     */
-    bool canParseRunConfiguration(ProjectExplorer::RunConfiguration* runConfiguration) const;
-    /*!
-     * \brief Check if the project uses \c testlib Qt module.
-     *
-     * As the associated parser can only parse QTestLib output,
-     * this method check that the \c testlib module is used by the project.
-     * This check should avoid parsing almost all undesired projects.
-     *
-     * \param runConfiguration The run configuration to check.
-     * \return \c true, if the parser may parse the test.
-     */
-    bool canParseModule(ProjectExplorer::RunConfiguration *runConfiguration) const;
-    /*!
-     * \brief Check the command line arguments
-     *
-     * Once the \c testlib module is found, the arguments are checked
-     * to see whether the output may be XUnit XML.
-     *
-     * \param runConfiguration The run configuration to check.
-     * \return \c true, if the parser may parse the test.
-     */
-    bool canParseArguments(ProjectExplorer::RunConfiguration *runConfiguration) const;
 };
 
 } // namespace Internal
