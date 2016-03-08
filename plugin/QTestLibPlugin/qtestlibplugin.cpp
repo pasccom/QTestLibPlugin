@@ -385,10 +385,10 @@ QList<QObject *> QTestLibPluginPlugin::createTestObjects(void) const
 {
     QList<QObject *> testObjects;
 
-    testObjects << new Test::PlainTextQTestLibParserTest;
-    testObjects << new Test::XmlQTestLibParserTest;
-    testObjects << new Test::LightXmlQTestLibParserTest;
-    testObjects << new Test::XUnitXmlQTestLibParserTest;
+    testObjects << new Test::PlainTextQTestLibParserFactoryTest;
+    testObjects << new Test::XMLQTestLibParserFactoryTest;
+    testObjects << new Test::LightXMLQTestLibParserFactoryTest;
+    testObjects << new Test::XUnitXMLQTestLibParserFactoryTest;
     testObjects << new Test::TestActionsTest;
     testObjects << new Test::TestRunConfigurationFactoryTest;
 

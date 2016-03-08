@@ -46,7 +46,7 @@ namespace Test {
 #define QMAKE_RUNCONFIG_PREFIX "Qt4ProjectManager.Qt4RunConfiguration"
 const QString CommandLineArgumentsKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".CommandLineArguments");
 
-void XUnitXmlQTestLibParserTest::initTestCase(void)
+void XUnitXMLQTestLibParserFactoryTest::initTestCase(void)
 {
     QStringList projectPathes;
 
@@ -65,20 +65,20 @@ void XUnitXmlQTestLibParserTest::initTestCase(void)
         QVERIFY(removeProjectUserFiles(projectPath));
 }
 
-void XUnitXmlQTestLibParserTest::init(void)
+void XUnitXMLQTestLibParserFactoryTest::init(void)
 {
     mProject = NULL;
     mRunConfig = NULL;
 }
 
-void XUnitXmlQTestLibParserTest::cleanup(void)
+void XUnitXMLQTestLibParserFactoryTest::cleanup(void)
 {
     if (mProject != NULL)
         ProjectExplorer::SessionManager::removeProject(mProject);
 }
 
 
-void XUnitXmlQTestLibParserTest::dataTest(void)
+void XUnitXMLQTestLibParserFactoryTest::dataTest(void)
 {
     QList< QPair<QString, bool> > verbosities;
     verbosities << qMakePair(QString::null, true);
@@ -115,7 +115,7 @@ void XUnitXmlQTestLibParserTest::dataTest(void)
     }
 }
 
-void XUnitXmlQTestLibParserTest::dataMakeCheck(void)
+void XUnitXMLQTestLibParserFactoryTest::dataMakeCheck(void)
 {
     QList< QPair<Internal::QTestLibArgsParser::TestVerbosity, bool> > verbosities;
     verbosities << qMakePair(Internal::QTestLibArgsParser::NormalVerbosity, true);
@@ -147,7 +147,7 @@ void XUnitXmlQTestLibParserTest::dataMakeCheck(void)
     }
 }
 
-void XUnitXmlQTestLibParserTest::testOneClass(void)
+void XUnitXMLQTestLibParserFactoryTest::testOneClass(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -155,7 +155,7 @@ void XUnitXmlQTestLibParserTest::testOneClass(void)
     runTest("OneClassTest", cmdArgs, result);
 }
 
-void XUnitXmlQTestLibParserTest::testAllMessages(void)
+void XUnitXMLQTestLibParserFactoryTest::testAllMessages(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -163,7 +163,7 @@ void XUnitXmlQTestLibParserTest::testAllMessages(void)
     runTest("AllMessagesTest", cmdArgs, result);
 }
 
-void XUnitXmlQTestLibParserTest::testMultipleClasses(void)
+void XUnitXMLQTestLibParserFactoryTest::testMultipleClasses(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -171,7 +171,7 @@ void XUnitXmlQTestLibParserTest::testMultipleClasses(void)
     runTest("MultipleClassesTest", cmdArgs, result);
 }
 
-void XUnitXmlQTestLibParserTest::testSignalsTest(void)
+void XUnitXMLQTestLibParserFactoryTest::testSignalsTest(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -179,7 +179,7 @@ void XUnitXmlQTestLibParserTest::testSignalsTest(void)
     runTest("SignalsTest", cmdArgs, result);
 }
 
-void XUnitXmlQTestLibParserTest::testLimits(void)
+void XUnitXMLQTestLibParserFactoryTest::testLimits(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -187,7 +187,7 @@ void XUnitXmlQTestLibParserTest::testLimits(void)
     runTest("LimitsTest", cmdArgs, result);
 }
 
-void XUnitXmlQTestLibParserTest::testOneSubTest(void)
+void XUnitXMLQTestLibParserFactoryTest::testOneSubTest(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
@@ -196,7 +196,7 @@ void XUnitXmlQTestLibParserTest::testOneSubTest(void)
     runMakeCheck("OneSubTest", format, verbosity, result);
 }
 
-void XUnitXmlQTestLibParserTest::testTwoSubTests(void)
+void XUnitXMLQTestLibParserFactoryTest::testTwoSubTests(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
@@ -205,7 +205,7 @@ void XUnitXmlQTestLibParserTest::testTwoSubTests(void)
     runMakeCheck("TwoSubTests", format, verbosity, result);
 }
 
-void XUnitXmlQTestLibParserTest::runTest(const QString& testName, const QStringList& cmdArgs, bool result)
+void XUnitXMLQTestLibParserFactoryTest::runTest(const QString& testName, const QStringList& cmdArgs, bool result)
 {
     QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
 
@@ -248,7 +248,7 @@ void XUnitXmlQTestLibParserTest::runTest(const QString& testName, const QStringL
     delete parser;
 }
 
-void XUnitXmlQTestLibParserTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result)
+void XUnitXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result)
 {
     QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
 

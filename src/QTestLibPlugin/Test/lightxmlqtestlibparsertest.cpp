@@ -46,7 +46,7 @@ namespace Test {
 #define QMAKE_RUNCONFIG_PREFIX "Qt4ProjectManager.Qt4RunConfiguration"
 const QString CommandLineArgumentsKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".CommandLineArguments");
 
-void LightXmlQTestLibParserTest::initTestCase(void)
+void LightXMLQTestLibParserFactoryTest::initTestCase(void)
 {
     QStringList projectPathes;
 
@@ -65,20 +65,20 @@ void LightXmlQTestLibParserTest::initTestCase(void)
         QVERIFY(removeProjectUserFiles(projectPath));
 }
 
-void LightXmlQTestLibParserTest::init(void)
+void LightXMLQTestLibParserFactoryTest::init(void)
 {
     mProject = NULL;
     mRunConfig = NULL;
 }
 
-void LightXmlQTestLibParserTest::cleanup(void)
+void LightXMLQTestLibParserFactoryTest::cleanup(void)
 {
     if (mProject != NULL)
         ProjectExplorer::SessionManager::removeProject(mProject);
 }
 
 
-void LightXmlQTestLibParserTest::dataTest(void)
+void LightXMLQTestLibParserFactoryTest::dataTest(void)
 {
     QList< QPair<QString, bool> > verbosities;
     verbosities << qMakePair(QString::null, true);
@@ -115,7 +115,7 @@ void LightXmlQTestLibParserTest::dataTest(void)
     }
 }
 
-void LightXmlQTestLibParserTest::dataMakeCheck(void)
+void LightXMLQTestLibParserFactoryTest::dataMakeCheck(void)
 {
     QList< QPair<Internal::QTestLibArgsParser::TestVerbosity, bool> > verbosities;
     verbosities << qMakePair(Internal::QTestLibArgsParser::NormalVerbosity, true);
@@ -147,7 +147,7 @@ void LightXmlQTestLibParserTest::dataMakeCheck(void)
     }
 }
 
-void LightXmlQTestLibParserTest::testOneClass(void)
+void LightXMLQTestLibParserFactoryTest::testOneClass(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -155,7 +155,7 @@ void LightXmlQTestLibParserTest::testOneClass(void)
     runTest("OneClassTest", cmdArgs, result);
 }
 
-void LightXmlQTestLibParserTest::testAllMessages(void)
+void LightXMLQTestLibParserFactoryTest::testAllMessages(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -163,7 +163,7 @@ void LightXmlQTestLibParserTest::testAllMessages(void)
     runTest("AllMessagesTest", cmdArgs, result);
 }
 
-void LightXmlQTestLibParserTest::testMultipleClasses(void)
+void LightXMLQTestLibParserFactoryTest::testMultipleClasses(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -171,7 +171,7 @@ void LightXmlQTestLibParserTest::testMultipleClasses(void)
     runTest("MultipleClassesTest", cmdArgs, result);
 }
 
-void LightXmlQTestLibParserTest::testSignalsTest(void)
+void LightXMLQTestLibParserFactoryTest::testSignalsTest(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -179,7 +179,7 @@ void LightXmlQTestLibParserTest::testSignalsTest(void)
     runTest("SignalsTest", cmdArgs, result);
 }
 
-void LightXmlQTestLibParserTest::testLimits(void)
+void LightXMLQTestLibParserFactoryTest::testLimits(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -187,7 +187,7 @@ void LightXmlQTestLibParserTest::testLimits(void)
     runTest("LimitsTest", cmdArgs, result);
 }
 
-void LightXmlQTestLibParserTest::testOneSubTest(void)
+void LightXMLQTestLibParserFactoryTest::testOneSubTest(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
@@ -196,7 +196,7 @@ void LightXmlQTestLibParserTest::testOneSubTest(void)
     runMakeCheck("OneSubTest", format, verbosity, result);
 }
 
-void LightXmlQTestLibParserTest::testTwoSubTests(void)
+void LightXMLQTestLibParserFactoryTest::testTwoSubTests(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
@@ -205,7 +205,7 @@ void LightXmlQTestLibParserTest::testTwoSubTests(void)
     runMakeCheck("TwoSubTests", format, verbosity, result);
 }
 
-void LightXmlQTestLibParserTest::runTest(const QString& testName, const QStringList& cmdArgs, bool result)
+void LightXMLQTestLibParserFactoryTest::runTest(const QString& testName, const QStringList& cmdArgs, bool result)
 {
     QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
 
@@ -248,7 +248,7 @@ void LightXmlQTestLibParserTest::runTest(const QString& testName, const QStringL
     delete parser;
 }
 
-void LightXmlQTestLibParserTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result)
+void LightXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result)
 {
     QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
 

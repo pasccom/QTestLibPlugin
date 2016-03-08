@@ -32,11 +32,11 @@ namespace ProjectExplorer {
 namespace QTestLibPlugin {
 namespace Test {
 
-class LightXmlQTestLibParserTest : public QObject
+class LightXMLQTestLibParserFactoryTest : public QObject
 {
     Q_OBJECT
 public:
-    inline LightXmlQTestLibParserTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch());}
+    inline LightXMLQTestLibParserFactoryTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch());}
 private Q_SLOTS:
     void initTestCase(void);
     void init(void);
