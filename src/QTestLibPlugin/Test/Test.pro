@@ -26,18 +26,18 @@ QT      += testlib
 
 SOURCES +=  \
     testhelper.cpp \
-    plaintextqtestlibparsertest.cpp \
-    xmlqtestlibparsertest.cpp \
-    lightxmlqtestlibparsertest.cpp \
-    xunitxmlqtestlibparsertest.cpp \
+    plaintextqtestlibparserfactorytest.cpp \
+    xmlqtestlibparserfactorytest.cpp \
+    lightxmlqtestlibparserfactorytest.cpp \
+    xunitxmlqtestlibparserfactorytest.cpp \
     testactionstest.cpp \
     testrunconfigurationfactorytest.cpp
 HEADERS += \
     testhelper.h \
-    plaintextqtestlibparsertest.h \
-    xmlqtestlibparsertest.h \
-    lightxmlqtestlibparsertest.h \
-    xunitxmlqtestlibparsertest.h \
+    plaintextqtestlibparserfactorytest.h \
+    xmlqtestlibparserfactorytest.h \
+    lightxmlqtestlibparserfactorytest.h \
+    xunitxmlqtestlibparserfactorytest.h \
     testactionstest.h \
     testrunconfigurationfactorytest.h
 

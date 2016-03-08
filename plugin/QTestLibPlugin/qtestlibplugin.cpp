@@ -30,10 +30,10 @@
 #include <qmaketestrunconfigurationfactory.h>
 
 #ifdef BUILD_TESTS
-#   include <Test/plaintextqtestlibparsertest.h>
-#   include <Test/xmlqtestlibparsertest.h>
-#   include <Test/lightxmlqtestlibparsertest.h>
-#   include <Test/xunitxmlqtestlibparsertest.h>
+#   include <Test/plaintextqtestlibparserfactorytest.h>
+#   include <Test/xmlqtestlibparserfactorytest.h>
+#   include <Test/lightxmlqtestlibparserfactorytest.h>
+#   include <Test/xunitxmlqtestlibparserfactorytest.h>
 #   include <Test/testactionstest.h>
 #   include <Test/testrunconfigurationfactorytest.h>
 #endif
