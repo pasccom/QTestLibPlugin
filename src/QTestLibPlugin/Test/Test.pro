@@ -29,6 +29,7 @@ SOURCES +=  \
     plaintextqtestlibparsertest.cpp \
     xmlqtestlibparsertest.cpp \
     lightxmlqtestlibparsertest.cpp \
+    xunitxmlqtestlibparsertest.cpp \
     testactionstest.cpp \
     testrunconfigurationfactorytest.cpp
 HEADERS += \
@@ -36,6 +37,7 @@ HEADERS += \
     plaintextqtestlibparsertest.h \
     xmlqtestlibparsertest.h \
     lightxmlqtestlibparsertest.h \
+    xunitxmlqtestlibparsertest.h \
     testactionstest.h \
     testrunconfigurationfactorytest.h
 
