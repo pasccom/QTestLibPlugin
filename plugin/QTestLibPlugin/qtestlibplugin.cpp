@@ -32,6 +32,7 @@
 #ifdef BUILD_TESTS
 #   include <Test/plaintextqtestlibparsertest.h>
 #   include <Test/xmlqtestlibparsertest.h>
+#   include <Test/lightxmlqtestlibparsertest.h>
 #   include <Test/testactionstest.h>
 #   include <Test/testrunconfigurationfactorytest.h>
 #endif
@@ -385,6 +386,7 @@ QList<QObject *> QTestLibPluginPlugin::createTestObjects(void) const
 
     testObjects << new Test::PlainTextQTestLibParserTest;
     testObjects << new Test::XmlQTestLibParserTest;
+    testObjects << new Test::LightXmlQTestLibParserTest;
     testObjects << new Test::TestActionsTest;
     testObjects << new Test::TestRunConfigurationFactoryTest;
 

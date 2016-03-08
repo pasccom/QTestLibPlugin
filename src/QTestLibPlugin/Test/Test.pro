@@ -28,12 +28,14 @@ SOURCES +=  \
     testhelper.cpp \
     plaintextqtestlibparsertest.cpp \
     xmlqtestlibparsertest.cpp \
+    lightxmlqtestlibparsertest.cpp \
     testactionstest.cpp \
     testrunconfigurationfactorytest.cpp
 HEADERS += \
     testhelper.h \
     plaintextqtestlibparsertest.h \
     xmlqtestlibparsertest.h \
+    lightxmlqtestlibparsertest.h \
     testactionstest.h \
     testrunconfigurationfactorytest.h
 
