@@ -68,7 +68,6 @@ void LightXMLQTestLibParserFactoryTest::initTestCase(void)
 void LightXMLQTestLibParserFactoryTest::init(void)
 {
     mProject = NULL;
-    mRunConfig = NULL;
 }
 
 void LightXMLQTestLibParserFactoryTest::cleanup(void)
@@ -233,9 +232,9 @@ void LightXMLQTestLibParserFactoryTest::runTest(const QString& testName, const Q
     ProjectExplorer::IRunConfigurationFactory* runConfigFactory = ProjectExplorer::IRunConfigurationFactory::find(mProject->activeTarget(), map);
     QVERIFY(runConfigFactory != NULL);
     QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
-    mRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
-    QVERIFY(mRunConfig != NULL);
-    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(mRunConfig);
+    ProjectExplorer::RunConfiguration *modifiedRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
+    QVERIFY(modifiedRunConfig != NULL);
+    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(modifiedRunConfig);
     QVERIFY(testRunConfig != NULL);
     QCOMPARE(testRunConfig->commandLineArguments(), cmdArgs.join(QLatin1Char(' ')));
 
@@ -273,9 +272,9 @@ void LightXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, In
     ProjectExplorer::IRunConfigurationFactory* runConfigFactory = ProjectExplorer::IRunConfigurationFactory::find(mProject->activeTarget(), map);
     QVERIFY(runConfigFactory != NULL);
     QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
-    mRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
-    QVERIFY(mRunConfig != NULL);
-    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(mRunConfig);
+    ProjectExplorer::RunConfiguration *modifiedRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
+    QVERIFY(modifiedRunConfig != NULL);
+    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(modifiedRunConfig);
     QVERIFY(testRunConfig != NULL);
 
     // Compare arguments to expected value:

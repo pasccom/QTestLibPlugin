@@ -68,7 +68,6 @@ void XMLQTestLibParserFactoryTest::initTestCase(void)
 void XMLQTestLibParserFactoryTest::init(void)
 {
     mProject = NULL;
-    mRunConfig = NULL;
 }
 
 void XMLQTestLibParserFactoryTest::cleanup(void)
@@ -233,9 +232,9 @@ void XMLQTestLibParserFactoryTest::runTest(const QString& testName, const QStrin
     ProjectExplorer::IRunConfigurationFactory* runConfigFactory = ProjectExplorer::IRunConfigurationFactory::find(mProject->activeTarget(), map);
     QVERIFY(runConfigFactory != NULL);
     QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
-    mRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
-    QVERIFY(mRunConfig != NULL);
-    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(mRunConfig);
+    ProjectExplorer::RunConfiguration *modifiedRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
+    QVERIFY(modifiedRunConfig != NULL);
+    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(modifiedRunConfig);
     QVERIFY(testRunConfig != NULL);
     QCOMPARE(testRunConfig->commandLineArguments(), cmdArgs.join(QLatin1Char(' ')));
 
@@ -273,9 +272,9 @@ void XMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, Interna
     ProjectExplorer::IRunConfigurationFactory* runConfigFactory = ProjectExplorer::IRunConfigurationFactory::find(mProject->activeTarget(), map);
     QVERIFY(runConfigFactory != NULL);
     QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
-    mRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
-    QVERIFY(mRunConfig != NULL);
-    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(mRunConfig);
+    ProjectExplorer::RunConfiguration *modifiedRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
+    QVERIFY(modifiedRunConfig != NULL);
+    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(modifiedRunConfig);
     QVERIFY(testRunConfig != NULL);
 
     // Compare arguments to expected value:

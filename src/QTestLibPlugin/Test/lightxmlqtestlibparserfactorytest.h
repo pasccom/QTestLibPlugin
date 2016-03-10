@@ -62,7 +62,6 @@ private:
     void runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result);
 
     ProjectExplorer::Project* mProject;
-    ProjectExplorer::RunConfiguration* mRunConfig;
 };
 
 } // Test
