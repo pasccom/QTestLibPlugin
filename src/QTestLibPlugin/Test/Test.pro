@@ -23,6 +23,7 @@ CONFIG  += static
 QT      += network
 QT      += widgets
 QT      += testlib
+QT      += xml
 
 SOURCES +=  \
     testhelper.cpp \
@@ -30,6 +31,7 @@ SOURCES +=  \
     xmlqtestlibparserfactorytest.cpp \
     lightxmlqtestlibparserfactorytest.cpp \
     xunitxmlqtestlibparserfactorytest.cpp \
+    testmodelfactorytest.cpp \
     testactionstest.cpp \
     testrunconfigurationfactorytest.cpp
 HEADERS += \
@@ -38,11 +40,16 @@ HEADERS += \
     xmlqtestlibparserfactorytest.h \
     lightxmlqtestlibparserfactorytest.h \
     xunitxmlqtestlibparserfactorytest.h \
+    testmodelfactorytest.h \
     testactionstest.h \
     testrunconfigurationfactorytest.h
 
 include(../../../QTestLibPlugin.pri)
+SOURCES += $$QTESTLIBPLUGIN_TESTS/common/qtestlibmodeltester.cpp
+HEADERS += $$QTESTLIBPLUGIN_TESTS/common/qtestlibmodeltester.h
+
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
+INCLUDEPATH += $$QTESTLIBPLUGIN_TESTS
 
 DEFINES += BUILD_TESTS
 DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
