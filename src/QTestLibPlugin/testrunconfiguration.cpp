@@ -17,9 +17,10 @@ namespace QTestLibPlugin {
 namespace Internal {
 
 TestRunConfigurationData::TestRunConfigurationData(ProjectExplorer::Target *target)
-    :  jobNumber(1), testRunner(), workingDirectory(QLatin1String(".")), mAutoMakeExe(), mMakeExe()
+    :  jobNumber(1), testRunner(), mAutoMakeExe(), mMakeExe()
 {
     if (target != NULL) {
+        workingDirectory = target->activeBuildConfiguration()->buildDirectory().toString();
         Utils::Environment env = target->activeBuildConfiguration()->environment();
         ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit());
         mAutoMakeExe = Utils::FileName::fromString(toolChain->makeCommand(env));
