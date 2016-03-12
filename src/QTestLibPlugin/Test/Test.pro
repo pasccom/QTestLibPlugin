@@ -32,6 +32,7 @@ SOURCES +=  \
     lightxmlqtestlibparserfactorytest.cpp \
     xunitxmlqtestlibparserfactorytest.cpp \
     testmodelfactorytest.cpp \
+    testsuitemodeltest.cpp \
     testactionstest.cpp \
     testrunconfigurationfactorytest.cpp
 HEADERS += \
@@ -41,6 +42,7 @@ HEADERS += \
     lightxmlqtestlibparserfactorytest.h \
     xunitxmlqtestlibparserfactorytest.h \
     testmodelfactorytest.h \
+    testsuitemodeltest.h \
     testactionstest.h \
     testrunconfigurationfactorytest.h
 

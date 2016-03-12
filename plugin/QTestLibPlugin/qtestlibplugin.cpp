@@ -35,6 +35,7 @@
 #   include <Test/lightxmlqtestlibparserfactorytest.h>
 #   include <Test/xunitxmlqtestlibparserfactorytest.h>
 #   include <Test/testmodelfactorytest.h>
+#   include <Test/testsuitemodeltest.h>
 #   include <Test/testactionstest.h>
 #   include <Test/testrunconfigurationfactorytest.h>
 #endif
@@ -391,6 +392,7 @@ QList<QObject *> QTestLibPluginPlugin::createTestObjects(void) const
     testObjects << new Test::LightXMLQTestLibParserFactoryTest;
     testObjects << new Test::XUnitXMLQTestLibParserFactoryTest;
     testObjects << new Test::TestModelFactoryTest;
+    testObjects << new Test::TestSuiteModelTest;
     testObjects << new Test::TestActionsTest;
     testObjects << new Test::TestRunConfigurationFactoryTest;
 
