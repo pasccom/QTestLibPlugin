@@ -17,6 +17,8 @@
 
 include(../../QTestLibPlugin.pri)
 
+QT += xml
+
 DEFINES += QTESTLIBPLUGIN_LIBRARY
 
 SOURCES += qtestlibplugin.cpp
