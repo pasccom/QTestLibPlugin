@@ -42,7 +42,7 @@ public:
         VerboseSignal,
         VerbosityCountMinusOne // WARNING must be the last one!
     } Verbosity;
-    QTestLibModelTester(const QAbstractItemModel *model, Verbosity verbosity = Normal, const QString& format = "txt");
+    QTestLibModelTester(const QAbstractItemModel *model, Verbosity verbosity = Normal, const QString& format = QLatin1String("txt"));
 
     inline void setVerbosity(Verbosity verbosity) {mVerbosity = verbosity;}
     inline Verbosity verbosity(void) const {return mVerbosity;}

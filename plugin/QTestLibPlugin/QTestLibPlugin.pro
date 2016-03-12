@@ -41,6 +41,7 @@ TRANSLATIONS += \
 
 !isEmpty(BUILD_TESTS) {
     DEFINES += BUILD_TESTS
+    INCLUDEPATH += $$QTESTLIBPLUGIN_TESTS
     CONFIG(debug, debug|release) {
         LIBS += debug/libqtestlibplugintest.a
         PRE_TARGETDEPS += debug/libqtestlibplugintest.a
