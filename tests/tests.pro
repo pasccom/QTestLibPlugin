@@ -34,15 +34,12 @@ SUBDIRS +=  PlainTextQTestLibParserTest \
             LightXMLQTestLibParserTest  \
             XUnitXMLQTestLibParserTest  \
 
-# Factories test:
-#SUBDIRS +=  TestModelFactoryTest
-
-# Test suite test:
-#SUBDIRS += TestSuiteModelTest
-
 # Signals tests:
 SUBDIRS += QTestLibModelTest        \
            TestSuiteModelSignalTest \
+
+# Test proxy test:
+SUBDIRS += TestProxyModelTest
 
 # Argument parser test:
 SUBDIRS += QTestLibArgsParserTest

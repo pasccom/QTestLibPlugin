@@ -20,42 +20,49 @@ TEMPLATE = app
 
 CONFIG  += console
 CONFIG  -= app_bundle
+CONFIG  += testcase
+CONFIG  += no_testcase_installs
+#CONFIG  += gcov
 QT      += testlib
 QT      += xml
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT  += widgets
+QT      += widgets
+
+include(../../QTestLibPlugin.pri)
+
+DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
+
+# Test files
+SOURCES += testproxymodeltest.cpp                 \
+           plaintextqtestlibparserfactoryfake.cpp
+HEADERS += plaintextqtestlibparserfactoryfake.h
+
+# The tester libraries
+CONFIG(debug, debug|release) {
+    LIBS += ../common/debug/libtestcommon.a
+    PRE_TARGETDEPS += ../common/debug/libtestcommon.a
 } else {
-    QT  += gui
+    LIBS += ../common/release/libtestcommon.a
+    PRE_TARGETDEPS += ../common/release/libtestcommon.a
 }
 
-DEFINES += TESTS_DIR=\\\"$$PWD/..\\\"
+# The libraries to test
+CONFIG(gcov) {
+    SOURCES += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.cpp
+    HEADERS += $$QTESTLIBPLUGIN_SRC/plaintextqtestlibparser.h
+}
+CONFIG(debug, debug|release) {
+    LIBS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
+    PRE_TARGETDEPS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
+} else {
+    LIBS += $$QTESTLIBPLUGIN_LIB/release/libqtestlibplugin.a
+    PRE_TARGETDEPS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
+}
 
-SOURCES += testproxymodeltest.cpp
-
-# Model tester class
-SOURCES += ../common/qtestlibmodeltester.cpp
-HEADERS += ../common/qtestlibmodeltester.h
-
-# Files to be tested
-SOURCES += ../../plaintextqtestlibparser.cpp \
-           ../../plaintextqtestlibparserfactory.cpp \
-           ../../xmlqtestlibparser.cpp \
-           ../../xmlqtestlibparserfactory.cpp \
-           ../../qtestlibargsparser.cpp \
-           ../../qtestlibmodel.cpp \
-           ../../testmodelfactory.cpp \
-           ../../testproxymodel.cpp
-HEADERS += ../../plaintextqtestlibparser.h \
-           ../../plaintextqtestlibparserfactory.h \
-           ../../xmlqtestlibparser.h \
-           ../../xmlqtestlibparserfactory.h \
-           ../../qtestlibargsparser.h \
-           ../../qtestlibmodel.h \
-           ../../testmodelfactory.h \
-           ../../testproxymodel.h
+# Files to be tested are in src folder
+INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
 # Fake QtCreator tree
-include(../../QTestLibPlugin_dependencies.pri)
+include($$QTESTLIBPLUGIN_LIB/QTestLibPlugin_dependencies.pri)
 include(../QtCreatorFake/QtCreatorFake.pri)
 
 # The directory where to put MOC-generated files :
