@@ -59,6 +59,8 @@ private Q_SLOTS:
 
     void flagError_data(void);
     void flagError(void);
+    void invalidTestError_data(void);
+    void invalidTestError(void);
     void prematureEndError_data(void);
     void prematureEndError(void);
 
@@ -737,8 +739,51 @@ void QTestLibArgsParserTest::flagError(void)
 
     QTestLibArgsParser parser(args);
 
-    QVERIFY(parser.error() == err);
-    QVERIFY(QString::compare(parser.errorString(), errStr, Qt::CaseSensitive) == 0);
+    QCOMPARE(parser.error(), err);
+    QCOMPARE(parser.errorString(), errStr);
+}
+
+void QTestLibArgsParserTest::invalidTestError_data(void)
+{
+    QTest::addColumn<QString>("args");
+    QTest::addColumn<QTestLibArgsParser::Error>("err");
+    QTest::addColumn<QString>("errStr");
+
+    QTest::newRow("TESTARGS=\"-silent\"") << "TESTARGS=\"-silent\"" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"TESTARGS=\"-silent\"\" is neither a flag nor a test case";
+    QTest::newRow("o-") << "o-" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"o-\" is neither a flag nor a test case";
+    QTest::newRow("o-,txt") << "o-,txt" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"o-,txt\" is neither a flag nor a test case";
+    QTest::newRow("0") << "0" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0\" is neither a flag nor a test case";
+    QTest::newRow("0test") << "0test" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0test\" is neither a flag nor a test case";
+    QTest::newRow("0:test") << "0:test" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0:test\" is neither a flag nor a test case";
+    QTest::newRow("0test:data") << "0test:data" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0test:data\" is neither a flag nor a test case";
+
+    QTest::newRow("-silent TESTARGS=\"-silent\"") << "-silent TESTARGS=\"-silent\"" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"TESTARGS=\"-silent\"\" is neither a flag nor a test case";
+    QTest::newRow("-silent o-") << "-silent o-" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"o-\" is neither a flag nor a test case";
+    QTest::newRow("-silent o-,txt") << "-silent o-,txt" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"o-,txt\" is neither a flag nor a test case";
+    QTest::newRow("-silent 0") << "-silent 0" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0\" is neither a flag nor a test case";
+    QTest::newRow("-silent 0test") << "-silent 0test" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0test\" is neither a flag nor a test case";
+    QTest::newRow("-silent 0:test") << "-silent 0:test" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0:test\" is neither a flag nor a test case";
+    QTest::newRow("-silent 0test:data") << "-silent 0test:data" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0test:data\" is neither a flag nor a test case";
+
+    QTest::newRow("-maxwarnings 2000 TESTARGS=\"-silent\"") << "-maxwarnings 2000 TESTARGS=\"-silent\"" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"TESTARGS=\"-silent\"\" is neither a flag nor a test case";
+    QTest::newRow("-maxwarnings 2000 o-") << "-maxwarnings 2000 o-" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"o-\" is neither a flag nor a test case";
+    QTest::newRow("-maxwarnings 2000 o-,txt") << "-maxwarnings 2000 o-,txt" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"o-,txt\" is neither a flag nor a test case";
+    QTest::newRow("-maxwarnings 2000 0") << "-maxwarnings 2000 0" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0\" is neither a flag nor a test case";
+    QTest::newRow("-maxwarnings 2000 0test") << "-maxwarnings 2000 0test" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0test\" is neither a flag nor a test case";
+    QTest::newRow("-maxwarnings 2000 0:test") << "-maxwarnings 2000 0:test" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0:test\" is neither a flag nor a test case";
+    QTest::newRow("-maxwarnings 2000 0test:data") << "-maxwarnings 2000 0test:data" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0test:data\" is neither a flag nor a test case";
+}
+
+void QTestLibArgsParserTest::invalidTestError(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QTestLibArgsParser::Error, err);
+    QFETCH(QString, errStr);
+
+    QTestLibArgsParser parser(args);
+
+    QCOMPARE(parser.error(), err);
+    QCOMPARE(parser.errorString(), errStr);
 }
 
 void QTestLibArgsParserTest::prematureEndError_data(void)
@@ -767,8 +812,8 @@ void QTestLibArgsParserTest::prematureEndError(void)
 
     QTestLibArgsParser parser(args);
 
-    QVERIFY(parser.error() == err);
-    QVERIFY(QString::compare(parser.errorString(), errStr, Qt::CaseSensitive) == 0);
+    QCOMPARE(parser.error(), err);
+    QCOMPARE(parser.errorString(), errStr);
 }
 
 QTEST_APPLESS_MAIN(QTestLibArgsParserTest)
