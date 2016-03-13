@@ -175,7 +175,7 @@ public:
      * \param cmdArgs The command line arguments as a string to be appended to the existing ones.
      * \sa appendArgs(const QStringList&)
      */
-    inline void appendArgs(const QString& cmdArgs) {mArgs + QLatin1Char(' ') + cmdArgs.trimmed(); incrementalParse();}
+    inline void appendArgs(const QString& cmdArgs) {mArgs.append(QLatin1Char(' ') + cmdArgs.trimmed()); incrementalParse();}
     /*!
      * \brief Append arguments to the current arguement list
      *
