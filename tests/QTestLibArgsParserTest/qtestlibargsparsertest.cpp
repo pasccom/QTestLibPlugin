@@ -59,6 +59,8 @@ private Q_SLOTS:
 
     void flagError_data(void);
     void flagError(void);
+    void invalidArgumentError_data(void);
+    void invalidArgumentError(void);
     void invalidTestError_data(void);
     void invalidTestError(void);
     void prematureEndError_data(void);
@@ -732,6 +734,50 @@ void QTestLibArgsParserTest::flagError_data(void)
 }
 
 void QTestLibArgsParserTest::flagError(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QTestLibArgsParser::Error, err);
+    QFETCH(QString, errStr);
+
+    QTestLibArgsParser parser(args);
+
+    QCOMPARE(parser.error(), err);
+    QCOMPARE(parser.errorString(), errStr);
+}
+
+void QTestLibArgsParserTest::invalidArgumentError_data(void)
+{
+    QTest::addColumn<QString>("args");
+    QTest::addColumn<QTestLibArgsParser::Error>("err");
+    QTest::addColumn<QString>("errStr");
+
+    QTest::newRow("-maxwarnings xxx") << "-maxwarnings xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where unsigned integer was expected.";
+    QTest::newRow("-maxwarnings 10s") << "-maxwarnings 10s" << QTestLibArgsParser::InvalidArgumentError << "Got \"10s\" where unsigned integer was expected.";
+    QTest::newRow("-maxwarnings x10") << "-maxwarnings x10" << QTestLibArgsParser::InvalidArgumentError << "Got \"x10\" where unsigned integer was expected.";
+    QTest::newRow("-maxwarnings -10") << "-maxwarnings -10" << QTestLibArgsParser::InvalidArgumentError << "Got \"-10\" where unsigned integer was expected.";
+    QTest::newRow("-maxwarnings 10.") << "-maxwarnings 10." << QTestLibArgsParser::InvalidArgumentError << "Got \"10.\" where unsigned integer was expected.";
+    QTest::newRow("-maxwarnings 1.0") << "-maxwarnings 1.0" << QTestLibArgsParser::InvalidArgumentError << "Got \"1.0\" where unsigned integer was expected.";
+
+    QTest::newRow("-eventdelay xxx") << "-eventdelay xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where integer was expected.";
+    QTest::newRow("-eventdelay 10s") << "-eventdelay 10s" << QTestLibArgsParser::InvalidArgumentError << "Got \"10s\" where integer was expected.";
+    QTest::newRow("-eventdelay x10") << "-eventdelay x10" << QTestLibArgsParser::InvalidArgumentError << "Got \"x10\" where integer was expected.";
+    QTest::newRow("-eventdelay 10.") << "-eventdelay 10." << QTestLibArgsParser::InvalidArgumentError << "Got \"10.\" where integer was expected.";
+    QTest::newRow("-eventdelay 1.0") << "-eventdelay 1.0" << QTestLibArgsParser::InvalidArgumentError << "Got \"1.0\" where integer was expected.";
+
+    QTest::newRow("-keydelay xxx") << "-keydelay xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where integer was expected.";
+    QTest::newRow("-keydelay 10s") << "-keydelay 10s" << QTestLibArgsParser::InvalidArgumentError << "Got \"10s\" where integer was expected.";
+    QTest::newRow("-keydelay x10") << "-keydelay x10" << QTestLibArgsParser::InvalidArgumentError << "Got \"x10\" where integer was expected.";
+    QTest::newRow("-keydelay 10.") << "-keydelay 10." << QTestLibArgsParser::InvalidArgumentError << "Got \"10.\" where integer was expected.";
+    QTest::newRow("-keydelay 1.0") << "-keydelay 1.0" << QTestLibArgsParser::InvalidArgumentError << "Got \"1.0\" where integer was expected.";
+
+    QTest::newRow("-mousedelay xxx") << "-mousedelay xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where integer was expected.";
+    QTest::newRow("-mousedelay 10s") << "-mousedelay 10s" << QTestLibArgsParser::InvalidArgumentError << "Got \"10s\" where integer was expected.";
+    QTest::newRow("-mousedelay x10") << "-mousedelay x10" << QTestLibArgsParser::InvalidArgumentError << "Got \"x10\" where integer was expected.";
+    QTest::newRow("-mousedelay 10.") << "-mousedelay 10." << QTestLibArgsParser::InvalidArgumentError << "Got \"10.\" where integer was expected.";
+    QTest::newRow("-mousedelay 1.0") << "-mousedelay 1.0" << QTestLibArgsParser::InvalidArgumentError << "Got \"1.0\" where integer was expected.";
+}
+
+void QTestLibArgsParserTest::invalidArgumentError(void)
 {
     QFETCH(QString, args);
     QFETCH(QTestLibArgsParser::Error, err);
