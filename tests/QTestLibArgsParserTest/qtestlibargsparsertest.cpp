@@ -28,7 +28,7 @@ class QTestLibArgsParserTest : public QObject
     Q_OBJECT
     HAS_SUB_TEST_FUNCTIONS
 public:
-    inline QTestLibArgsParserTest(void) {}
+    inline QTestLibArgsParserTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch());}
 private Q_SLOTS:
     void verbosity_data(void);
     void verbosity(void);
@@ -66,12 +66,17 @@ private Q_SLOTS:
     void prematureEndError_data(void);
     void prematureEndError(void);
 
-
+    void parse_data(void);
+    void parse(void);
+    void incrementalParse_data(void);
+    void incrementalParse(void);
 private:
     void checkError(const QTestLibArgsParser& parser, QTestLibArgsParser::Error error = QTestLibArgsParser::NoError, const QString& errorString = QString::null);
     void checkOutput(const QTestLibArgsParser& parser, QTestLibArgsParser::TestVerbosity verb, QTestLibArgsParser::TestOutputFormat format, const QString& filename = QString::null);
     void checkDelays(const QTestLibArgsParser& parser, int event = -1, int key = -1, int mouse = -1);
     void checkOutputMode(const QTestLibArgsParser& parser, QTestLibArgsParser::Output mode = QTestLibArgsParser::NormalOutput);
+
+    QTestLibArgsParser mParser;
 };
 
 Q_DECLARE_METATYPE(QTestLibArgsParser::Output)
@@ -635,6 +640,336 @@ void QTestLibArgsParserTest::crashHandler(void)
 
     QVERIFY(!parser.crashHandlerEnabled());
     QVERIFY(parser.maxWarnings() == 2000);
+}
+
+void QTestLibArgsParserTest::parse_data(void)
+{
+    QStringList args;
+    int argsVersion;
+
+    QTest::addColumn<QString>("args");
+    QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
+    QTest::addColumn<QTestLibArgsParser::TestVerbosity>("verbosity");
+    QTest::addColumn<unsigned int>("maxWarings");
+    QTest::addColumn<int>("eventDelay");
+    QTest::addColumn<int>("keyDelay");
+    QTest::addColumn<int>("mouseDelay");
+    QTest::addColumn<bool>("crashHandler");
+
+    for(int v = (int) QTestLibArgsParser::Silent; v <= (int) QTestLibArgsParser::VerboseSignal; v++) {
+        for (int f = (int) QTestLibArgsParser::TxtFormat; f <= (int) QTestLibArgsParser::LightXmlFormat; f++) {
+            args.clear();
+
+            switch ((QTestLibArgsParser::TestVerbosity) v) {
+            case QTestLibArgsParser::Silent:
+                args << "-silent";
+                break;
+            case QTestLibArgsParser::NormalVerbosity:
+                break;
+            case QTestLibArgsParser::Verbose1:
+                args << "-v1";
+                break;
+            case QTestLibArgsParser::Verbose2:
+                args << "-v2";
+                break;
+            case QTestLibArgsParser::VerboseSignal:
+                args << "-vs";
+                break;
+            default:
+                qWarning() << "Unhandled verbosity value used:" << v;
+                break;
+            }
+
+            switch ((QTestLibArgsParser::TestOutputFormat) f) {
+            case QTestLibArgsParser::TxtFormat:
+                argsVersion = qrand() % 3;
+                if (argsVersion == 1)
+                    args << "-txt";
+                else if (argsVersion == 2)
+                    args << "-o" << "-,txt";
+                break;
+            case QTestLibArgsParser::CsvFormat:
+                argsVersion = qrand() % 2;
+                if (argsVersion == 1)
+                    args << "-csv";
+                else
+                    args << "-o" << "-,csv";
+                break;
+            case QTestLibArgsParser::XmlFormat:
+                argsVersion = qrand() % 2;
+                if (argsVersion == 1)
+                    args << "-xml";
+                else
+                    args << "-o" << "-,xml";
+                break;
+            case QTestLibArgsParser::XUnitXmlFormat:
+                argsVersion = qrand() % 2;
+                if (argsVersion == 1)
+                    args << "-xunitxml";
+                else
+                    args << "-o" << "-,xunitxml";
+                break;
+            case QTestLibArgsParser::LightXmlFormat:
+                argsVersion = qrand() % 2;
+                if (argsVersion == 1)
+                    args << "-lightxml";
+                else
+                    args << "-o" << "-,lightxml";
+                break;
+            default:
+                break;
+            }
+
+            unsigned int maxWarnings = 1000*(qrand() % 1000);
+            int eventDelay = 10*(qrand() % 1000);
+            int keyDelay = 10*(qrand() % 1000);
+            int mouseDelay = 10*(qrand() % 1000);
+            bool crashHandler = qrand() % 2;
+            args << "-maxwarnings" << QString::number(maxWarnings, 10);
+            args << "-eventdelay" << QString::number(eventDelay, 10);
+            args << "-keydelay" << QString::number(keyDelay, 10);
+            args << "-mousedelay" << QString::number(mouseDelay, 10);
+            if (!crashHandler)
+                args << "-nocrashhandler";
+
+            QTest::newRow(qPrintable(args.join(' '))) << args.join(' ') << (QTestLibArgsParser::TestOutputFormat) f << (QTestLibArgsParser::TestVerbosity) v << maxWarnings << eventDelay << keyDelay << mouseDelay << crashHandler;
+        }
+    }
+}
+
+void QTestLibArgsParserTest::parse(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(unsigned int, maxWarings);
+    QFETCH(int, eventDelay);
+    QFETCH(int, keyDelay);
+    QFETCH(int, mouseDelay);
+    QFETCH(bool, crashHandler);
+
+    QTestLibArgsParser parser(args);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkOutput(parser, verbosity, format));
+    SUB_TEST_FUNCTION(checkDelays(parser, eventDelay, keyDelay, mouseDelay));
+    SUB_TEST_FUNCTION(checkOutputMode(parser));
+
+    QVERIFY(parser.maxWarnings() == maxWarings);
+    QVERIFY(parser.crashHandlerEnabled() == crashHandler);
+}
+
+
+void QTestLibArgsParserTest::incrementalParse_data(void)
+{
+    int argsVersion;
+    QStringList args;
+    QLinkedList<QTestLibArgsParser::Error> errs;
+    QStringList::const_iterator argsIt;
+    QLinkedList<QTestLibArgsParser::Error>::const_iterator errsIt;
+
+    QTest::addColumn<QString>("args");
+    QTest::addColumn<QTestLibArgsParser::Error>("err");
+    QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
+    QTest::addColumn<QTestLibArgsParser::TestVerbosity>("verbosity");
+    QTest::addColumn<unsigned int>("maxWarings");
+    QTest::addColumn<int>("eventDelay");
+    QTest::addColumn<int>("keyDelay");
+    QTest::addColumn<int>("mouseDelay");
+    QTest::addColumn<bool>("crashHandler");
+
+    QTestLibArgsParser::TestVerbosity verbosity = (QTestLibArgsParser::TestVerbosity) ((int) QTestLibArgsParser::Silent + (qrand() % 5));
+    QTestLibArgsParser::TestOutputFormat format = (QTestLibArgsParser::TestOutputFormat) ((int) QTestLibArgsParser::TxtFormat + (qrand() % 5));
+    unsigned int maxWarnings = 1000*(qrand() % 1000);
+    int eventDelay = 10*(qrand() % 1000);
+    int keyDelay = 10*(qrand() % 1000);
+    int mouseDelay = 10*(qrand() % 1000);
+    bool crashHandler = qrand() % 2;
+
+    QTest::newRow("[none]") << "" << QTestLibArgsParser::NoError << QTestLibArgsParser::TxtFormat << QTestLibArgsParser::NormalVerbosity << 2000u << -1 << -1 << -1 << true;
+    args.clear();
+    errs.clear();
+
+    switch (verbosity) {
+    case QTestLibArgsParser::Silent:
+        args << "-silent";
+        errs << QTestLibArgsParser::NoError;
+        break;
+    case QTestLibArgsParser::NormalVerbosity:
+        break;
+    case QTestLibArgsParser::Verbose1:
+        args << "-v1";
+        errs << QTestLibArgsParser::NoError;
+        break;
+    case QTestLibArgsParser::Verbose2:
+        args << "-v2";
+        errs << QTestLibArgsParser::NoError;
+        break;
+    case QTestLibArgsParser::VerboseSignal:
+        args << "-vs";
+        errs << QTestLibArgsParser::NoError;
+        break;
+    default:
+        qWarning() << "Unhandled verbosity value used:" << verbosity;
+        break;
+    }
+
+    for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
+        if (*errsIt == QTestLibArgsParser::NoError)
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << QTestLibArgsParser::TxtFormat << verbosity << 2000u << -1 << -1 << -1 << true;
+        else
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::TxtFormat << QTestLibArgsParser::NormalVerbosity << 2000u << -1 << -1 << -1 << true;
+    }
+    args.clear();
+    errs.clear();
+
+    switch (format) {
+    case QTestLibArgsParser::TxtFormat:
+        argsVersion = qrand() % 3;
+        if (argsVersion == 1) {
+            args << "-txt";
+            errs << QTestLibArgsParser::NoError;
+        } else if (argsVersion == 2) {
+            args << "-o" << "-,txt";
+            errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
+        }
+        break;
+    case QTestLibArgsParser::CsvFormat:
+        argsVersion = qrand() % 2;
+        if (argsVersion == 1) {
+            args << "-csv";
+            errs << QTestLibArgsParser::NoError;
+        } else {
+            args << "-o" << "-,csv";
+            errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
+        }
+        break;
+    case QTestLibArgsParser::XmlFormat:
+        argsVersion = qrand() % 2;
+        if (argsVersion == 1) {
+            args << "-xml";
+            errs << QTestLibArgsParser::NoError;
+        } else {
+            args << "-o" << "-,xml";
+            errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
+        }
+        break;
+    case QTestLibArgsParser::XUnitXmlFormat:
+        argsVersion = qrand() % 2;
+        if (argsVersion == 1) {
+            args << "-xunitxml";
+            errs << QTestLibArgsParser::NoError;
+        } else {
+            args << "-o" << "-,xunitxml";
+            errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
+        }
+        break;
+    case QTestLibArgsParser::LightXmlFormat:
+        argsVersion = qrand() % 2;
+        if (argsVersion == 1) {
+            args << "-lightxml";
+            errs << QTestLibArgsParser::NoError;
+        } else {
+            args << "-o" << "-,lightxml";
+            errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
+        }
+        break;
+    default:
+        break;
+    }
+
+    for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
+        if (*errsIt == QTestLibArgsParser::NoError)
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << format << verbosity << 2000u << -1 << -1 << -1 << true;
+        else
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::TxtFormat << verbosity << 2000u << -1 << -1 << -1 << true;
+    }
+    args.clear();
+    errs.clear();
+
+    args << "-maxwarnings" << QString::number(maxWarnings, 10);
+    errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
+    for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
+        if (*errsIt == QTestLibArgsParser::NoError)
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << format << verbosity << maxWarnings << -1 << -1 << -1 << true;
+        else
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << format << verbosity << 2000u << -1 << -1 << -1 << true;
+    }
+    args.clear();
+    errs.clear();
+
+    args << "-eventdelay" << QString::number(eventDelay, 10);
+    errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
+    for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
+        if (*errsIt == QTestLibArgsParser::NoError)
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << format << verbosity << maxWarnings << eventDelay << -1 << -1 << true;
+        else
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << format << verbosity << maxWarnings << -1 << -1 << -1 << true;
+    }
+    args.clear();
+    errs.clear();
+
+    args << "-keydelay" << QString::number(keyDelay, 10);
+    errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
+    for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
+        if (*errsIt == QTestLibArgsParser::NoError)
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << format << verbosity << maxWarnings << eventDelay << keyDelay << -1 << true;
+        else
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << format << verbosity << maxWarnings << eventDelay << -1 << -1 << true;
+    }
+    args.clear();
+    errs.clear();
+
+    args << "-mousedelay" << QString::number(mouseDelay, 10);
+    errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
+    for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
+        if (*errsIt == QTestLibArgsParser::NoError)
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << format << verbosity << maxWarnings << eventDelay << keyDelay << mouseDelay << true;
+        else
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << format << verbosity << maxWarnings << eventDelay << keyDelay << -1 << true;
+    }
+    args.clear();
+    errs.clear();
+
+    if (!crashHandler) {
+        args << "-nocrashhandler";
+        errs << QTestLibArgsParser::NoError;
+    }
+    for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
+        if (*errsIt == QTestLibArgsParser::NoError)
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << format << verbosity << maxWarnings << eventDelay << keyDelay << mouseDelay << crashHandler;
+        else
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << format << verbosity << maxWarnings << eventDelay << keyDelay << mouseDelay << true;
+    }
+    args.clear();
+    errs.clear();
+}
+
+void QTestLibArgsParserTest::incrementalParse(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QTestLibArgsParser::Error, err);
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(unsigned int, maxWarings);
+    QFETCH(int, eventDelay);
+    QFETCH(int, keyDelay);
+    QFETCH(int, mouseDelay);
+    QFETCH(bool, crashHandler);
+
+    mParser.appendArgs(args);
+
+    QString errStr;
+    if (err == QTestLibArgsParser::PrematureEndError)
+        errStr = "String of command line arguments ended prematurely";
+
+    SUB_TEST_FUNCTION(checkError(mParser, err, errStr));
+    SUB_TEST_FUNCTION(checkOutput(mParser, verbosity, format));
+    SUB_TEST_FUNCTION(checkDelays(mParser, eventDelay, keyDelay, mouseDelay));
+    SUB_TEST_FUNCTION(checkOutputMode(mParser));
+
+    QVERIFY(mParser.maxWarnings() == maxWarings);
+    QVERIFY(mParser.crashHandlerEnabled() == crashHandler);
 }
 
 void QTestLibArgsParserTest::checkError(const QTestLibArgsParser& parser, QTestLibArgsParser::Error error, const QString& errorString)
