@@ -1,5 +1,7 @@
 #include "testproxymodel.h"
 
+#include <utils/qtcassert.h>
+
 #include <QtWidgets>
 #include <QtDebug>
 
@@ -18,10 +20,7 @@ TestProxyModel::TestProxyModel(QObject *parent) :
 bool TestProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
     QModelIndex sourceIndex = sourceModel()->index(sourceRow, 0, sourceParent);
-    Q_ASSERT(sourceIndex.isValid());
-
-    if (!sourceIndex.isValid())
-        return false;
+    QTC_ASSERT(sourceIndex.isValid(), return false);
 
     QVariant messageType = sourceIndex.data(QTestLibModel::ResultRole);
     Q_ASSERT(messageType.canConvert<QTestLibModel::MessageType>());
