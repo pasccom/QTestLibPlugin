@@ -138,16 +138,18 @@ void QTestLibArgsParser::parse(bool incremental)
         qDebug() << token;
         if (currentFlag == -1) {
             // Token is not a flag argument
-            currentFlag = knownFlags.indexOf(token.mid(1));
+            if (token.startsWith(QLatin1Char('-')))
+                currentFlag = knownFlags.indexOf(token.mid(1));
+            else
+                currentFlag = -2;
             qDebug() << currentFlag;
             switch (currentFlag) {
+            case -2: // Test case name?
+                parseSelectedTest(token);
+                break;
             case -1: // Unknown flag
-                if (!token.startsWith(QLatin1Char('-'))) {
-                    parseSelectedTest(token);
-                } else {
-                    mError = UnknownFlagError;
-                    mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Unknown flag \"%1\"").arg(token);
-                }
+                mError = UnknownFlagError;
+                mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Unknown flag \"%1\"").arg(token);
                 break;
             case 7: // Impossible
                 Q_ASSERT(false);
@@ -251,7 +253,7 @@ void QTestLibArgsParser::parseSelectedTest(const QString& token)
     QRegExp selectedTestCaseRegexp(QLatin1String("[a-zA-Z_][a-zA-Z0-9_]*"));
     if (!selectedTestCaseRegexp.exactMatch(selectedTestCase)) {
         mError = InvalidTestCaseError;
-        mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "The given argument \"%1\"is neither a flag nor a test case").arg(selectedTestCase);
+        mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "The given argument \"%1\" is neither a flag nor a test case").arg(token);
         return;
     }
 
