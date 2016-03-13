@@ -16,18 +16,18 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "plaintextqtestlibparserfactory.h"
+#include "xmlqtestlibparserfactory.h"
 
 #include <projectexplorer/runconfiguration.h>
 
 namespace QTestLibPlugin {
 namespace Internal {
 
-AbstractTestParser* PlainTextQTestLibParserFactory::getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const
+AbstractTestParser* XMLQTestLibParserFactory::getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const
 {
     Q_UNUSED(runConfiguration);
 
-    return new PlainTextQTestLibParser(parent());
+    return new XMLQTestLibParser(parent());
 }
 
 } // namespace Internal

@@ -16,20 +16,20 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef PLAINTEXTQTESTLIBPARSERFACTORYFAKE_H
-#define PLAINTEXTQTESTLIBPARSERFACTORYFAKE_H
+#ifndef XMLQTESTLIBPARSERFACTORYFAKE_H
+#define XMLQTESTLIBPARSERFACTORYFAKE_H
 
 #include "testmodelfactory.h"
-#include "plaintextqtestlibparser.h"
+#include "xmlqtestlibparser.h"
 
 namespace QTestLibPlugin {
 namespace Internal {
 
-class PlainTextQTestLibParserFactory : public AbstractTestParserFactory
+class XMLQTestLibParserFactory : public AbstractTestParserFactory
 {
     Q_OBJECT
 public:
-    inline PlainTextQTestLibParserFactory(QObject *parent = NULL):
+    inline XMLQTestLibParserFactory(QObject *parent = NULL):
         AbstractTestParserFactory(parent) {}
     inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {Q_UNUSED(runConfiguration); return true;}
     AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const;
@@ -38,4 +38,4 @@ public:
 } // namespace Internal
 } // namespace QTestLibPlugin
 
-#endif // PLAINTEXTQTESTLIBPARSERFACTORYFAKE_H
+#endif // XMLQTESTLIBPARSERFACTORYFAKE_H

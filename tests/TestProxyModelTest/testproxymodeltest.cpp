@@ -16,7 +16,7 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "plaintextqtestlibparserfactoryfake.h"
+#include "xmlqtestlibparserfactoryfake.h"
 
 #include <testproxymodel.h>
 
@@ -42,15 +42,25 @@ private Q_SLOTS:
 
     inline void enableDisableToogleMessageType_data(void) {data();}
     void enableDisableToogleMessageType(void);
-    inline void modelProxy_data(void) {data();}
-    void modelProxy(void);
+    inline void oneClass_data(void) {data();}
+    void oneClass(void);
+    inline void allMessages_data(void) {data();}
+    void allMessages(void);
+    inline void multipleclasses_data(void) {data();}
+    void multipleclasses(void);
+    inline void signalsTest_data(void) {data();}
+    void signalsTest(void);
+    inline void limits_data(void) {data();}
+    void limits(void);
 private:
     void data(void);
     void addRow(const QString& row);
     QString commandLineArguments(void);
+    void createModel(const QString& testName);
+    void testProxy(const QString& testName, QVector<bool> filter);
 
     QTestLibPlugin::Internal::TestProxyModel *mProxy;
-    QString mTestName;
+    QMap<QString, QAbstractItemModel*> mModelMap;
     QTestLibModelTester::Verbosity mVerbosity;
 };
 
@@ -58,51 +68,169 @@ TestProxyModelTest::TestProxyModelTest(void) :
     mProxy(NULL)
 {
     qsrand(QDateTime::currentMSecsSinceEpoch());
-    mTestName = "AllMessagesTest";
     mVerbosity = QTestLibModelTester::Verbose2;
 }
 
 TestProxyModelTest::~TestProxyModelTest(void)
 {
-    if (mProxy) {
-        delete mProxy->sourceModel();
-        delete mProxy;
+    for(QMap<QString, QAbstractItemModel*>::iterator it = mModelMap.begin(); it != mModelMap.end();) {
+        delete it.value();
+        it = mModelMap.erase(it);
     }
+
+    if (mProxy != NULL)
+        delete mProxy;
+}
+
+void TestProxyModelTest::addRow(const QString& row)
+{
+    QVector<bool> filter;
+    filter.resize(row.length());
+    for (int i = 0; i < row.length(); i++)
+        filter[i] = (row.at(i) == '1');
+    QTest::newRow(qPrintable(row)) << filter;
+}
+
+void TestProxyModelTest::data(void)
+{
+    QTest::addColumn< QVector<bool> >("filter");
+
+    QString rowTrue = "11111111111111111";
+    QString rowFalse = "00000000000000000";
+
+    addRow(rowTrue);
+    for (int i1 = 0; i1 < rowTrue.length(); i1++) {
+        for (int i2 = i1; i2 < rowTrue.length(); i2++) {
+            QString row = rowTrue;
+            row.replace(i1, 1, '0');
+            row.replace(i2, 1, '0');
+            addRow(row);
+        }
+    }
+
+    addRow(rowFalse);
+    for (int i1 = 0; i1 < rowTrue.length(); i1++) {
+        for (int i2 = i1; i2 < rowTrue.length(); i2++) {
+            QString row = rowFalse;
+            row.replace(i1, 1, '1');
+            row.replace(i2, 1, '1');
+            addRow(row);
+        }
+    }
+}
+
+void TestProxyModelTest::initTestCase(void)
+{
+    // NOTE initTestCase cannot have a _data() function
+    QStringList testNames;
+    testNames << "OneClassTest";
+    testNames << "AllMessagesTest";
+    testNames << "MultipleClassesTest";
+    testNames << "SignalsTest";
+    testNames << "LimitsTest";
+
+    foreach (QString testName, testNames) {
+        createModel(testName);
+    }
+}
+
+void TestProxyModelTest::enableDisableToogleMessageType(void)
+{
+    QFETCH(QVector<bool>, filter);
+
+    for (int i = 0; i < filter.length(); i++) {
+        if (filter.at(i))
+            mProxy->enableMessageType((QTestLibPlugin::Internal::QTestLibModel::MessageType) i);
+        else
+            mProxy->disableMessageType((QTestLibPlugin::Internal::QTestLibModel::MessageType) i);
+    }
+
+    for (int i = 0; i < filter.length(); i++)
+        QCOMPARE(mProxy->isMessageTypeEnabled((QTestLibPlugin::Internal::QTestLibModel::MessageType) i), filter.at(i));
+
+    for (int i = 0; i < filter.length(); i++)
+        mProxy->toogleMessageType((QTestLibPlugin::Internal::QTestLibModel::MessageType) i);
+
+    for (int i = 0; i < filter.length(); i++)
+        QCOMPARE(mProxy->isMessageTypeEnabled((QTestLibPlugin::Internal::QTestLibModel::MessageType) i), !filter.at(i));
+
+    for (int i = 0; i < filter.length(); i++)
+        mProxy->toogleMessageType((QTestLibPlugin::Internal::QTestLibModel::MessageType) i);
+
+    for (int i = 0; i < filter.length(); i++)
+        QCOMPARE(mProxy->isMessageTypeEnabled((QTestLibPlugin::Internal::QTestLibModel::MessageType) i), filter.at(i));
+}
+
+void TestProxyModelTest::oneClass(void)
+{
+    QFETCH(QVector<bool>, filter);
+
+    testProxy("OneClassTest", filter);
+}
+
+void TestProxyModelTest::allMessages(void)
+{
+    QFETCH(QVector<bool>, filter);
+
+    testProxy("AllMessagesTest", filter);
+}
+
+void TestProxyModelTest::multipleclasses(void)
+{
+    QFETCH(QVector<bool>, filter);
+
+    testProxy("MultipleClassesTest", filter);
+}
+
+void TestProxyModelTest::signalsTest(void)
+{
+    QFETCH(QVector<bool>, filter);
+
+    testProxy("SignalsTest", filter);
+}
+
+void TestProxyModelTest::limits(void)
+{
+    QFETCH(QVector<bool>, filter);
+
+    testProxy("LimitsTest", filter);
 }
 
 QString TestProxyModelTest::commandLineArguments(void)
 {
     switch(mVerbosity) {
     case QTestLibModelTester::Silent:
-        return "-silent";
+        return "-xml -silent";
     case QTestLibModelTester::Normal:
         break;
     case QTestLibModelTester::Verbose1:
-        return "-v1";
+        return "-xml -v1";
     case QTestLibModelTester::Verbose2:
-        return "-v2";
+        return "-xml -v2";
     case QTestLibModelTester::VerboseSignal:
-        return "-vs";
+        return "-xml -vs";
     default:
         qWarning() << "Sentinel value VerbosityCountMinusOne must not be used as verbosity.";
         break;
     }
 
-    return QString::null;
+    return "-xml";
 }
 
-void TestProxyModelTest::initTestCase(void)
+void TestProxyModelTest::createModel(const QString& testName)
 {
+    BEGIN_SUB_TEST_FUNCTION
+
     // Creation of RunConfiguration
     ProjectExplorer::Target target(NULL, NULL);
     ProjectExplorer::LocalApplicationRunConfigurationFake runConfig(&target);
-    runConfig.setDisplayName(mTestName);
-    runConfig.setWorkingDirectory(TESTS_DIR "/" + mTestName + "/");
-    runConfig.setExecutable(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + mTestName + "/debug/" + mTestName));
+    runConfig.setDisplayName(testName);
+    runConfig.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
+    runConfig.setExecutable(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName));
     runConfig.setCommandLineArguments(commandLineArguments());
 
     // Creation of parser
-    QTestLibPlugin::Internal::PlainTextQTestLibParserFactory factory(this);
+    QTestLibPlugin::Internal::XMLQTestLibParserFactory factory(this);
     QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
     QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(&runConfig);
     QVERIFY2(parser, "Factory should return a valid parser");
@@ -158,82 +286,25 @@ void TestProxyModelTest::initTestCase(void)
 
     // Get and test model
     QAbstractItemModel *model = parser->getModel();
+    QVERIFY(model != NULL);
+    QVERIFY(!mModelMap.contains(testName));
+    mModelMap.insert(testName, model);
     mProxy = new QTestLibPlugin::Internal::TestProxyModel(this);
     mProxy->setSourceModel(model);
 
-    QTestLibModelTester tester(model, mVerbosity, "txt");
-    QVERIFY2(tester.checkIndex(QModelIndex(), mTestName), qPrintable(tester.error()));
+    QTestLibModelTester tester(model, mVerbosity, "xml");
+    QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
+
+    END_SUB_TEST_FUNCTION
 }
 
-void TestProxyModelTest::addRow(const QString& row)
+void TestProxyModelTest::testProxy(const QString& testName, QVector<bool> filter)
 {
-    QVector<bool> filter;
-    filter.resize(row.length());
-    for (int i = 0; i < row.length(); i++)
-        filter[i] = (row.at(i) == '1');
-    QTest::newRow(qPrintable(row)) << filter;
-}
+    QAbstractItemModel* model = mModelMap.value(testName, NULL);
+    QVERIFY(model != NULL);
+    mProxy->setSourceModel(model);
+    QTestLibModelTester tester(mProxy, mVerbosity, "xml");
 
-void TestProxyModelTest::data(void)
-{
-    QTest::addColumn< QVector<bool> >("filter");
-
-    QString rowTrue = "11111111111111111";
-    QString rowFalse = "00000000000000000";
-
-    addRow(rowTrue);
-    for (int i1 = 0; i1 < rowTrue.length(); i1++) {
-        for (int i2 = i1; i2 < rowTrue.length(); i2++) {
-            QString row = rowTrue;
-            row.replace(i1, 1, '0');
-            row.replace(i2, 1, '0');
-            addRow(row);
-        }
-    }
-
-    addRow(rowFalse);
-    for (int i1 = 0; i1 < rowTrue.length(); i1++) {
-        for (int i2 = i1; i2 < rowTrue.length(); i2++) {
-            QString row = rowFalse;
-            row.replace(i1, 1, '1');
-            row.replace(i2, 1, '1');
-            addRow(row);
-        }
-    }
-}
-
-void TestProxyModelTest::enableDisableToogleMessageType(void)
-{
-    QFETCH(QVector<bool>, filter);
-
-    for (int i = 0; i < filter.length(); i++) {
-        if (filter.at(i))
-            mProxy->enableMessageType((QTestLibPlugin::Internal::QTestLibModel::MessageType) i);
-        else
-            mProxy->disableMessageType((QTestLibPlugin::Internal::QTestLibModel::MessageType) i);
-    }
-
-    for (int i = 0; i < filter.length(); i++)
-        QCOMPARE(mProxy->isMessageTypeEnabled((QTestLibPlugin::Internal::QTestLibModel::MessageType) i), filter.at(i));
-
-    for (int i = 0; i < filter.length(); i++)
-        mProxy->toogleMessageType((QTestLibPlugin::Internal::QTestLibModel::MessageType) i);
-
-    for (int i = 0; i < filter.length(); i++)
-        QCOMPARE(mProxy->isMessageTypeEnabled((QTestLibPlugin::Internal::QTestLibModel::MessageType) i), !filter.at(i));
-
-    for (int i = 0; i < filter.length(); i++)
-        mProxy->toogleMessageType((QTestLibPlugin::Internal::QTestLibModel::MessageType) i);
-
-    for (int i = 0; i < filter.length(); i++)
-        QCOMPARE(mProxy->isMessageTypeEnabled((QTestLibPlugin::Internal::QTestLibModel::MessageType) i), filter.at(i));
-}
-
-void TestProxyModelTest::modelProxy(void)
-{
-    QFETCH(QVector<bool>, filter);
-
-    QTestLibModelTester tester(mProxy, mVerbosity, "txt");
     for (int i = 0; i < filter.length(); i++) {
         if (filter.at(i)) {
             mProxy->enableMessageType((QTestLibPlugin::Internal::QTestLibModel::MessageType) i);
@@ -247,7 +318,7 @@ void TestProxyModelTest::modelProxy(void)
     for (int i = 0; i < filter.length(); i++)
         QCOMPARE(mProxy->isMessageTypeEnabled((QTestLibPlugin::Internal::QTestLibModel::MessageType) i), filter.at(i));
 
-    QVERIFY2(tester.checkIndex(QModelIndex(), mTestName), qPrintable(tester.error()));
+    QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
 }
 
 QTEST_MAIN(TestProxyModelTest)

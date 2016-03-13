@@ -33,8 +33,8 @@ DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 
 # Test files
 SOURCES += testproxymodeltest.cpp                 \
-           plaintextqtestlibparserfactoryfake.cpp
-HEADERS += plaintextqtestlibparserfactoryfake.h
+           xmlqtestlibparserfactoryfake.cpp
+HEADERS += xmlqtestlibparserfactoryfake.h
 
 # The tester libraries
 CONFIG(debug, debug|release) {
