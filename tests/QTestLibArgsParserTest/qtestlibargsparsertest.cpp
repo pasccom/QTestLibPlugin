@@ -719,11 +719,14 @@ void QTestLibArgsParserTest::flagError_data(void)
 
     QTest::newRow("-xxx") << "-xxx" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-xxx\"";
     QTest::newRow("-,txt") << "-,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-,txt\"";
+    QTest::newRow("-o-,txt") << "-o-,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-o-,txt\"";
     QTest::newRow("-\"txt\"") << "-\"txt\"" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-\"txt\"\"";
     QTest::newRow("-silent -xxx") << "-silent -xxx" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-xxx\"";
     QTest::newRow("-silent -,txt") << "-silent -,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-,txt\"";
+    QTest::newRow("-silent -o-,txt") << "-silent -o-,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-o-,txt\"";
     QTest::newRow("-maxwarnings 2000 -xxx") << "-maxwarnings 2000 -xxx" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-xxx\"";
     QTest::newRow("-maxwarnings 2000 -,txt") << "-maxwarnings 2000 -,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-,txt\"";
+    QTest::newRow("-maxwarnings 2000 -o-,txt") << "-maxwarnings 2000 -o-,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-o-,txt\"";
 }
 
 void QTestLibArgsParserTest::flagError(void)
