@@ -25,9 +25,6 @@
 #include <QtWidgets>
 #include <QtDebug>
 
-// TODO remove it
-#include <QLabel>
-
 namespace QTestLibPlugin {
 namespace Internal {
 

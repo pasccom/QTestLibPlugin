@@ -187,7 +187,6 @@ ExtensionSystem::IPlugin::ShutdownFlag QTestLibPluginPlugin::aboutToShutdown(voi
 
 void QTestLibPluginPlugin::handleProjectOpen(ProjectExplorer::Project* project)
 {
-    // TODO remove it!
     qDebug() << "Opened project:" << project->displayName();
 
     /*foreach (ProjectExplorer::Target *t, project->targets()) {
@@ -209,7 +208,6 @@ void QTestLibPluginPlugin::handleProjectOpen(ProjectExplorer::Project* project)
 
 void QTestLibPluginPlugin::handleProjectClose(ProjectExplorer::Project* project)
 {
-    // TODO remove it!
     qDebug() << "Closed project:" << project->displayName();
 
     /*foreach (ProjectExplorer::Target *t, project->targets()) {
