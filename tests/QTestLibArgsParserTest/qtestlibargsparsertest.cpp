@@ -57,6 +57,14 @@ private Q_SLOTS:
     void delays(void);
     void crashHandler(void);
 
+    void parse_data(void);
+    void parse(void);
+    void incrementalParse_data(void);
+    void incrementalParse(void);
+
+    void testCases_data(void);
+    void testCases(void);
+
     void flagError_data(void);
     void flagError(void);
     void invalidArgumentError_data(void);
@@ -66,10 +74,6 @@ private Q_SLOTS:
     void prematureEndError_data(void);
     void prematureEndError(void);
 
-    void parse_data(void);
-    void parse(void);
-    void incrementalParse_data(void);
-    void incrementalParse(void);
 private:
     void checkError(const QTestLibArgsParser& parser, QTestLibArgsParser::Error error = QTestLibArgsParser::NoError, const QString& errorString = QString::null);
     void checkOutput(const QTestLibArgsParser& parser, QTestLibArgsParser::TestVerbosity verb, QTestLibArgsParser::TestOutputFormat format, const QString& filename = QString::null);
@@ -1048,6 +1052,105 @@ void QTestLibArgsParserTest::checkOutputMode(const QTestLibArgsParser& parser, Q
     }
 
     END_SUB_TEST_FUNCTION
+}
+
+
+void QTestLibArgsParserTest::testCases_data(void)
+{
+    QTest::addColumn<QString>("args");
+    QTest::addColumn<QTestLibArgsParser::TestCaseList>("list");
+
+    QTestLibArgsParser::TestCaseList list;
+
+    list.clear();
+    list << qMakePair(QString("test"), QStringList());
+    QTest::newRow("test") << "test" << list;
+    list.clear();
+    list << qMakePair(QString("test1"), QStringList());
+    QTest::newRow("test1") << "test1" << list;
+    list.clear();
+    list << qMakePair(QString("test_"), QStringList());
+    QTest::newRow("test_") << "test_" << list;
+    list.clear();
+    list << qMakePair(QString("_test"), QStringList());
+    QTest::newRow("_test") << "_test" << list;
+    list.clear();
+    list << qMakePair(QString("Test"), QStringList());
+    QTest::newRow("Test") << "Test" << list;
+
+    list.clear();
+    list << qMakePair(QString("test"), QStringList() << "case");
+    QTest::newRow("test:case") << "test:case" << list;
+    list.clear();
+    list << qMakePair(QString("test"), QStringList() << "case1");
+    QTest::newRow("test:case1") << "test:case1" << list;
+    list.clear();
+    list << qMakePair(QString("test"), QStringList() << "case_");
+    QTest::newRow("test:case1") << "test:case_" << list;
+    list.clear();
+    list << qMakePair(QString("test"), QStringList() << "Case");
+    QTest::newRow("test:Case") << "test:Case" << list;
+    list.clear();
+    list << qMakePair(QString("test"), QStringList() << "case 1");
+    QTest::newRow("\"test:case 1\"") << "\"test:case 1\"" << list;
+    list.clear();
+    list << qMakePair(QString("test"), QStringList() << "case 1");
+    QTest::newRow("test:\"case 1\"") << "test:\"case 1\"" << list;
+    list.clear();
+    list << qMakePair(QString("test"), QStringList() << "case:desc");
+    QTest::newRow("test:case:desc") << "test:case:desc" << list;
+    list.clear();
+    list << qMakePair(QString("test"), QStringList() << "1,2,3");
+    QTest::newRow("test:1,2,3") << "test:1,2,3" << list;
+    list.clear();
+    list << qMakePair(QString("test"), QStringList() << "(1,2,3)");
+    QTest::newRow("test:(1,2,3)") << "test:(1,2,3)" << list;
+
+    list.clear();
+    list << qMakePair(QString("test"), QStringList() << "subtest1" << "subtest2");
+    QTest::newRow("test:subtest1 test:subtest2") << "test:subtest1 test:subtest2" << list;
+    list.clear();
+    list << qMakePair(QString("test1"), QStringList() << "subtest1");
+    list << qMakePair(QString("test2"), QStringList() << "subtest2");
+    QTest::newRow("test1:subtest1 test2:subtest2") << "test1:subtest1 test2:subtest2" << list;
+    list.clear();
+    list << qMakePair(QString("test1"), QStringList() << "subtest11" << "subtest12");
+    list << qMakePair(QString("test2"), QStringList() << "subtest21" << "subtest22");
+    QTest::newRow("test1:subtest11 test2:subtest21 test1:subtest12 test2:subtest22") << "test1:subtest11 test2:subtest21 test1:subtest12 test2:subtest22" << list;
+    list.clear();
+    list << qMakePair(QString("test"), QStringList() << "subtest");
+    QTest::newRow("test:subtest test:subtest") << "test:subtest test:subtest" << list;
+    list.clear();
+    list << qMakePair(QString("test1"), QStringList() << "subtest1");
+    list << qMakePair(QString("test2"), QStringList() << "subtest2");
+    QTest::newRow("test1:subtest1 test2:subtest2 test1:subtest1") << "test1:subtest1 test2:subtest2 test1:subtest1" << list;
+    list.clear();
+    list << qMakePair(QString("test"), QStringList());
+    QTest::newRow("test:subtest test") << "test:subtest test" << list;
+    list.clear();
+    list << qMakePair(QString("test1"), QStringList());
+    list << qMakePair(QString("test2"), QStringList() << "subtest2");
+    QTest::newRow("test1:subtest1 test2:subtest2 test1") << "test1:subtest1 test2:subtest2 test1" << list;
+}
+
+void QTestLibArgsParserTest::testCases(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QTestLibArgsParser::TestCaseList, list);
+
+    QTestLibArgsParser parser(args);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    QCOMPARE(parser.selectedTestCases().size(), list.size());
+
+    QTestLibArgsParser::TestCaseList::const_iterator parserIt = parser.selectedTestCases().constBegin();
+    QTestLibArgsParser::TestCaseList::const_iterator listIt = list.constBegin();
+
+    for(; (parserIt != parser.selectedTestCases().constEnd()) && (listIt != list.constEnd()); parserIt++, listIt++) {
+        QCOMPARE((*parserIt).first, (*listIt).first);
+        QCOMPARE((*parserIt).second, (*listIt).second);
+    }
+
 }
 
 void QTestLibArgsParserTest::flagError_data(void)
