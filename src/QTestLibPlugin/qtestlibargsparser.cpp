@@ -443,27 +443,29 @@ QString QTestLibArgsParser::nextToken(void)
 
 void QTestLibArgsParser::removeTestCases(const QString& function, const QString& dataTag)
 {
+    Q_ASSERT(!function.isNull());
+
     TestCaseList::iterator fIt;
 
     for (fIt = mSelectedTestCases.begin(); fIt != mSelectedTestCases.end();) {
-        if (!function.isNull() && (QString::compare((*fIt).first, function, Qt::CaseInsensitive) == 0)) {
+        if (dataTag.isNull() && (QString::compare((*fIt).first, function, Qt::CaseInsensitive) == 0)) {
             fIt = mSelectedTestCases.erase(fIt);
-        } else {
-            if ((*fIt).second.contains(dataTag)) {
-                QStringList tags = (*fIt).second;
-                QStringList::iterator tIt;
+            continue;
+        } else if (!dataTag.isNull() && (QString::compare((*fIt).first, function, Qt::CaseInsensitive) == 0) && (*fIt).second.contains(dataTag)) {
+            QStringList tags = (*fIt).second;
+            QStringList::iterator tIt;
 
-                for (tIt = tags.begin(); tIt != tags.end();) {
-                    if (!dataTag.isNull() && (QString::compare(*tIt, dataTag, Qt::CaseSensitive) == 0))
-                        tIt = tags.erase(tIt);
-                    else
-                        tIt++;
-                }
-
-                fIt = mSelectedTestCases.insert(fIt, QPair<QString, QStringList>((*fIt).first, tags));
-                fIt = mSelectedTestCases.erase(--fIt);
+            for (tIt = tags.begin(); tIt != tags.end();) {
+                if ((QString::compare(*tIt, dataTag, Qt::CaseSensitive) == 0))
+                    tIt = tags.erase(tIt);
+                else
+                    tIt++;
             }
 
+            if (!tags.isEmpty())
+                mSelectedTestCases.insert(fIt, qMakePair((*fIt).first, tags));
+            fIt = mSelectedTestCases.erase(fIt);
+        } else {
             fIt++;
         }
     }
