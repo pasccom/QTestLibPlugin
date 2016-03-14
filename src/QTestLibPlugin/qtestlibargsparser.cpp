@@ -237,17 +237,28 @@ void QTestLibArgsParser::parse(bool incremental)
 
 void QTestLibArgsParser::parseSelectedTest(const QString& token)
 {
-    int colon = token.indexOf(QLatin1Char(':'), 0);
-
-    QString selectedTestCase;
+    QString selectedTestCase = token;
     QString selectedTestData;
 
-    if (colon == -1) {
-        selectedTestCase = token;
-        selectedTestData = QString::null;
-    } else {
-        selectedTestCase = token.left(colon);
-        selectedTestData = token.mid(colon + 1);
+    if (selectedTestCase.startsWith(QLatin1Char('"'))) {
+        QTC_ASSERT(selectedTestCase.endsWith(QLatin1Char('"')),);
+        selectedTestCase.remove(0, 1);
+        if (selectedTestCase.endsWith(QLatin1Char('"')))
+            selectedTestCase.chop(1);
+    }
+
+    int colon = selectedTestCase.indexOf(QLatin1Char(':'), 0);
+
+    if (colon != -1) {
+        selectedTestData = selectedTestCase.mid(colon + 1);
+        selectedTestCase = selectedTestCase.left(colon);
+    }
+
+    if (selectedTestData.startsWith(QLatin1Char('"'))) {
+        QTC_ASSERT(selectedTestData.endsWith(QLatin1Char('"')),);
+        selectedTestData.remove(0, 1);
+        if (selectedTestData.endsWith(QLatin1Char('"')))
+            selectedTestData.chop(1);
     }
 
     QRegExp selectedTestCaseRegexp(QLatin1String("[a-zA-Z_][a-zA-Z0-9_]*"));
@@ -257,18 +268,20 @@ void QTestLibArgsParser::parseSelectedTest(const QString& token)
         return;
     }
 
+    qDebug() << selectedTestCase << selectedTestData;
+
     TestCaseList::iterator it = mSelectedTestCases.begin();
     for (; it != mSelectedTestCases.end(); it++)
         if (QString::compare((*it).first, selectedTestCase, Qt::CaseSensitive) == 0)
             break;
 
     if (it == mSelectedTestCases.end()) {
-        if (!selectedTestCase.isNull())
-            mSelectedTestCases.append(QPair<QString, QStringList>(selectedTestCase, QStringList()));
+        if (selectedTestData.isNull())
+            mSelectedTestCases.append(qMakePair(selectedTestCase, QStringList()));
         else
-            mSelectedTestCases.append(QPair<QString, QStringList>(selectedTestCase, QStringList() << selectedTestData));
+            mSelectedTestCases.append(qMakePair(selectedTestCase, QStringList() << selectedTestData));
     } else {
-        if (!selectedTestCase.isNull()) {
+        if (selectedTestData.isNull()) {
             (*it).second.clear();
         } else {
             if (!(*it).second.contains(selectedTestData))
