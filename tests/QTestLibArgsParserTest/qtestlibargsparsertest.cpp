@@ -76,12 +76,32 @@ private Q_SLOTS:
     void prematureEndError_data(void);
     void prematureEndError(void);
 
+    void toStringOutput_data(void);
+    void toStringOutput(void);
+    void toStringFormatV1_data(void);
+    void toStringFormatV1(void);
+    void toStringFormatV2_data(void);
+    void toStringFormatV2(void);
+    void toStringFormat_data(void);
+    void toStringFormat(void);
+    void toStringOutFileV1_data(void);
+    void toStringOutFileV1(void);
+    void toStringOutFileV2_data(void);
+    void toStringOutFileV2(void);
+    void toStringOutFile_data(void);
+    void toStringOutFile(void);
+    void toStringVerbosity_data(void);
+    void toStringVerbosity(void);
+    void toStringOther_data(void);
+    void toStringOther(void);
+
 private:
     void checkError(const QTestLibArgsParser& parser, QTestLibArgsParser::Error error = QTestLibArgsParser::NoError, const QString& errorString = QString::null);
     void checkOutput(const QTestLibArgsParser& parser, QTestLibArgsParser::TestVerbosity verb, QTestLibArgsParser::TestOutputFormat format, const QString& filename = QString::null);
     void checkDelays(const QTestLibArgsParser& parser, int event = -1, int key = -1, int mouse = -1);
     void checkOutputMode(const QTestLibArgsParser& parser, QTestLibArgsParser::Output mode = QTestLibArgsParser::NormalOutput);
     void checkSelectedTestCases(const QTestLibArgsParser& parser, const QTestLibArgsParser::TestCaseList& list);
+    void checkArguments(const QStringList& args, const QStringList& expected);
 
     QTestLibArgsParser mParser;
 };
@@ -1441,6 +1461,455 @@ void QTestLibArgsParserTest::prematureEndError(void)
 
     QCOMPARE(parser.error(), err);
     QCOMPARE(parser.errorString(), errStr);
+}
+
+void QTestLibArgsParserTest::toStringOutput_data(void)
+{
+    QTest::addColumn<QTestLibArgsParser::Output>("type");
+    QTest::addColumn<QStringList>("args");
+
+    QStringList args;
+
+    args.clear();
+    QTest::newRow("normal") << QTestLibArgsParser::NormalOutput << args;
+    args.clear();
+    args << "-help";
+    QTest::newRow("help") << QTestLibArgsParser::HelpOutput << args;
+    args.clear();
+    args << "-functions";
+    QTest::newRow("functions") << QTestLibArgsParser::FunctionsOutput << args;
+    args.clear();
+    args << "-datatags";
+    QTest::newRow("datatags") << QTestLibArgsParser::DataTagsOutput << args;
+    args.clear();
+    args << "-perfcounterlist";
+    QTest::newRow("perfcounters") << QTestLibArgsParser::PerfCounterNamesOutput << args;
+}
+
+void QTestLibArgsParserTest::toStringOutput(void)
+{
+    QFETCH(QTestLibArgsParser::Output, type);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parser;
+    parser.setOutput(type);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkArguments(parser.toStringList(), args));
+    QCOMPARE(parser.toString(), parser.toStringList().join(' '));
+}
+
+void QTestLibArgsParserTest::toStringFormatV1_data(void)
+{
+    QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
+    QTest::addColumn<QStringList>("args");
+
+    QStringList args;
+
+    args.clear();
+    QTest::newRow("txt") << QTestLibArgsParser::TxtFormat << args;
+    args.clear();
+    args << "-csv";
+    QTest::newRow("csv") << QTestLibArgsParser::CsvFormat << args;
+    args.clear();
+    args << "-xml";
+    QTest::newRow("xml") << QTestLibArgsParser::XmlFormat << args;
+    args.clear();
+    args << "-lightxml";
+    QTest::newRow("lightxml") << QTestLibArgsParser::LightXmlFormat << args;
+    args.clear();
+    args << "-xunitxml";
+    QTest::newRow("xunitxml") << QTestLibArgsParser::XUnitXmlFormat << args;
+}
+
+void QTestLibArgsParserTest::toStringFormatV1(void)
+{
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parser;
+    parser.setOutputFormat(format);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkArguments(parser.toStringList(1), args));
+    QCOMPARE(parser.toString(), parser.toStringList().join(' '));
+}
+
+void QTestLibArgsParserTest::toStringFormatV2_data(void)
+{
+    QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
+    QTest::addColumn<QStringList>("args");
+
+    QStringList args;
+
+    args.clear();
+    QTest::newRow("txt") << QTestLibArgsParser::TxtFormat << args;
+    args.clear();
+    args << "-o" << "-,csv";
+    QTest::newRow("csv") << QTestLibArgsParser::CsvFormat << args;
+    args.clear();
+    args << "-o" << "-,xml";
+    QTest::newRow("xml") << QTestLibArgsParser::XmlFormat << args;
+    args.clear();
+    args << "-o" << "-,lightxml";
+    QTest::newRow("lightxml") << QTestLibArgsParser::LightXmlFormat << args;
+    args.clear();
+    args << "-o" << "-,xunitxml";
+    QTest::newRow("xunitxml") << QTestLibArgsParser::XUnitXmlFormat << args;
+}
+
+void QTestLibArgsParserTest::toStringFormatV2(void)
+{
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parser;
+    parser.setOutputFormat(format);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkArguments(parser.toStringList(2), args));
+    QCOMPARE(parser.toString(), parser.toStringList(2).join(' '));
+}
+
+void QTestLibArgsParserTest::toStringFormat_data(void)
+{
+    QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
+    QTest::addColumn<QStringList>("args");
+
+    QStringList args;
+
+    args.clear();
+    QTest::newRow("txt") << QTestLibArgsParser::TxtFormat << args;
+    args.clear();
+    args << "-o" << "-,csv";
+    QTest::newRow("csv") << QTestLibArgsParser::CsvFormat << args;
+    args.clear();
+    args << "-o" << "-,xml";
+    QTest::newRow("xml") << QTestLibArgsParser::XmlFormat << args;
+    args.clear();
+    args << "-o" << "-,lightxml";
+    QTest::newRow("lightxml") << QTestLibArgsParser::LightXmlFormat << args;
+    args.clear();
+    args << "-o" << "-,xunitxml";
+    QTest::newRow("xunitxml") << QTestLibArgsParser::XUnitXmlFormat << args;
+}
+
+void QTestLibArgsParserTest::toStringFormat(void)
+{
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parser;
+    parser.setOutputFormat(format);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkArguments(parser.toStringList(), args));
+    QCOMPARE(parser.toString(), parser.toStringList().join(' '));
+}
+
+void QTestLibArgsParserTest::toStringOutFileV1_data(void)
+{
+    QTest::addColumn<QString>("filename");
+    QTest::addColumn<QStringList>("args");
+
+    QStringList args;
+
+    args.clear();
+    QTest::newRow("Default") << QString() << args;
+    args.clear();
+    args << "-o" << "\"-\"";
+    QTest::newRow("\"-\"") << "-"  << args;
+    args.clear();
+    args << "-o" << "testresult";
+    QTest::newRow("testresult") << "testresult"  << args;
+    args.clear();
+    args << "-o" << "testResult";
+    QTest::newRow("testResult") << "testResult"  << args;
+    args.clear();
+    args << "-o" << "test_result";
+    QTest::newRow("test_result") << "test_result"  << args;
+    args.clear();
+    args << "-o" << "testresult1";
+    QTest::newRow("testresult1") << "testresult1"  << args;
+    args.clear();
+    args << "-o" << "test-result";
+    QTest::newRow("test-result") << "test-result"  << args;
+    args.clear();
+    args << "-o" << "\"testresult?\"";
+    QTest::newRow("testresult?") << "testresult?"  << args;
+    args.clear();
+    args << "-o" << "\"testresult*\"";
+    QTest::newRow("testresult*") << "testresult*"  << args;
+    args.clear();
+    args << "-o" << "testResult.log";
+    QTest::newRow("testResult.log") << "testResult.log"  << args;
+    args.clear();
+    args << "-o" << "\"test result.log\"";
+    QTest::newRow("test result.log") << "test result.log"  << args;
+    args.clear();
+    args << "-o" << "\"\\\"testResult\\\"\"";
+    QTest::newRow("\"testResult\"") << "\"testResult\""  << args;
+    args.clear();
+    args << "-o" << "\"\\\"testResult.log\\\"\"";
+    QTest::newRow("\"testResult.log\"") << "\"testResult.log\""  << args;
+    args.clear();
+    args << "-o" << "\"\\\"test result.log\\\"\"";
+    QTest::newRow("\"test result.log\"") << "\"test result.log\""  << args;
+}
+
+void QTestLibArgsParserTest::toStringOutFileV1(void)
+{
+    QFETCH(QString, filename);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parser;
+    parser.setOutFileName(Utils::FileName::fromString(filename));
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkArguments(parser.toStringList(1), args));
+    QCOMPARE(parser.toString(), parser.toStringList(1).join(' '));
+}
+
+void QTestLibArgsParserTest::toStringOutFileV2_data(void)
+{
+    QTest::addColumn<QString>("filename");
+    QTest::addColumn<QStringList>("args");
+
+    QStringList args;
+
+    args.clear();
+    QTest::newRow("Default") << QString() << args;
+    args.clear();
+    args << "-o" << "\"-\",txt";
+    QTest::newRow("\"-\"") << "-"  << args;
+    args.clear();
+    args << "-o" << "testresult,txt";
+    QTest::newRow("testresult") << "testresult"  << args;
+    args.clear();
+    args << "-o" << "testResult,txt";
+    QTest::newRow("testResult") << "testResult"  << args;
+    args.clear();
+    args << "-o" << "test_result,txt";
+    QTest::newRow("test_result") << "test_result"  << args;
+    args.clear();
+    args << "-o" << "testresult1,txt";
+    QTest::newRow("testresult1") << "testresult1"  << args;
+    args.clear();
+    args << "-o" << "test-result,txt";
+    QTest::newRow("test-result") << "test-result"  << args;
+    args.clear();
+    args << "-o" << "\"testresult?\",txt";
+    QTest::newRow("testresult?") << "testresult?"  << args;
+    args.clear();
+    args << "-o" << "\"testresult*\",txt";
+    QTest::newRow("testresult*") << "testresult*"  << args;
+    args.clear();
+    args << "-o" << "testResult.log,txt";
+    QTest::newRow("testResult.log") << "testResult.log"  << args;
+    args.clear();
+    args << "-o" << "\"test result.log\",txt";
+    QTest::newRow("test result.log") << "test result.log"  << args;
+    args.clear();
+    args << "-o" << "\"\\\"testResult\\\"\",txt";
+    QTest::newRow("\"testResult\"") << "\"testResult\""  << args;
+    args.clear();
+    args << "-o" << "\"\\\"testResult.log\\\"\",txt";
+    QTest::newRow("\"testResult.log\"") << "\"testResult.log\""  << args;
+    args.clear();
+    args << "-o" << "\"\\\"test result.log\\\"\",txt";
+    QTest::newRow("\"test result.log\"") << "\"test result.log\""  << args;
+}
+
+void QTestLibArgsParserTest::toStringOutFileV2(void)
+{
+    QFETCH(QString, filename);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parser;
+    parser.setOutFileName(Utils::FileName::fromString(filename));
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkArguments(parser.toStringList(2), args));
+    QCOMPARE(parser.toString(), parser.toStringList(2).join(' '));
+}
+
+void QTestLibArgsParserTest::toStringOutFile_data(void)
+{
+    QTest::addColumn<QString>("filename");
+    QTest::addColumn<QStringList>("args");
+
+    QStringList args;
+
+    args.clear();
+    QTest::newRow("Default") << QString() << args;
+    args.clear();
+    args << "-o" << "\"-\",txt";
+    QTest::newRow("\"-\"") << "-"  << args;
+    args.clear();
+    args << "-o" << "testresult,txt";
+    QTest::newRow("testresult") << "testresult"  << args;
+    args.clear();
+    args << "-o" << "testResult,txt";
+    QTest::newRow("testResult") << "testResult"  << args;
+    args.clear();
+    args << "-o" << "test_result,txt";
+    QTest::newRow("test_result") << "test_result"  << args;
+    args.clear();
+    args << "-o" << "testresult1,txt";
+    QTest::newRow("testresult1") << "testresult1"  << args;
+    args.clear();
+    args << "-o" << "test-result,txt";
+    QTest::newRow("test-result") << "test-result"  << args;
+    args.clear();
+    args << "-o" << "\"testresult?\",txt";
+    QTest::newRow("testresult?") << "testresult?"  << args;
+    args.clear();
+    args << "-o" << "\"testresult*\",txt";
+    QTest::newRow("testresult*") << "testresult*"  << args;
+    args.clear();
+    args << "-o" << "testResult.log,txt";
+    QTest::newRow("testResult.log") << "testResult.log"  << args;
+    args.clear();
+    args << "-o" << "\"test result.log\",txt";
+    QTest::newRow("test result.log") << "test result.log"  << args;
+    args.clear();
+    args << "-o" << "\"\\\"testResult\\\"\",txt";
+    QTest::newRow("\"testResult\"") << "\"testResult\""  << args;
+    args.clear();
+    args << "-o" << "\"\\\"testResult.log\\\"\",txt";
+    QTest::newRow("\"testResult.log\"") << "\"testResult.log\""  << args;
+    args.clear();
+    args << "-o" << "\"\\\"test result.log\\\"\",txt";
+    QTest::newRow("\"test result.log\"") << "\"test result.log\""  << args;
+}
+
+void QTestLibArgsParserTest::toStringOutFile(void)
+{
+    QFETCH(QString, filename);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parser;
+    parser.setOutFileName(Utils::FileName::fromString(filename));
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkArguments(parser.toStringList(), args));
+    QCOMPARE(parser.toString(), parser.toStringList().join(' '));
+}
+
+void QTestLibArgsParserTest::toStringVerbosity_data(void)
+{
+    QTest::addColumn<QTestLibArgsParser::TestVerbosity>("verbosity");
+    QTest::addColumn<QStringList>("args");
+
+    QStringList args;
+
+    args.clear();
+    QTest::newRow("normal") << QTestLibArgsParser::NormalVerbosity << args;
+    args.clear();
+    args << "-silent";
+    QTest::newRow("silent") << QTestLibArgsParser::Silent << args;
+    args.clear();
+    args << "-v1";
+    QTest::newRow("v1") << QTestLibArgsParser::Verbose1 << args;
+    args.clear();
+    args << "-v2";
+    QTest::newRow("v2") << QTestLibArgsParser::Verbose2 << args;
+    args.clear();
+    args << "-vs";
+    QTest::newRow("vs") << QTestLibArgsParser::VerboseSignal << args;
+    args.clear();
+    args << "-vb";
+    QTest::newRow("vb") << QTestLibArgsParser::VerboseBenchmark << args;
+}
+
+void QTestLibArgsParserTest::toStringVerbosity(void)
+{
+    QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parser;
+    parser.setVerbosity(verbosity);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkArguments(parser.toStringList(), args));
+    QCOMPARE(parser.toString(), parser.toStringList().join(' '));
+}
+
+void QTestLibArgsParserTest::toStringOther_data(void)
+{
+    QTest::addColumn<unsigned int>("warnings");
+    QTest::addColumn<int>("eventdelay");
+    QTest::addColumn<int>("keydelay");
+    QTest::addColumn<int>("mousedelay");
+    QTest::addColumn<bool>("crashhandler");
+    QTest::addColumn<QStringList>("args");
+
+    QStringList args;
+    unsigned int rand;
+
+    rand = 10000*(qrand() % 100);
+    args.clear();
+    args << "-maxwarnings" << QString::number(rand, 10);
+    QTest::newRow("maxwarnings") << rand << -1 << -1 << -1 << true << args;
+
+    rand = 100*(qrand() % 100);
+    args.clear();
+    args << "-eventdelay" << QString::number(rand, 10);
+    QTest::newRow("eventdelay") << 2000u << (int) rand << -1 << -1 << true << args;
+
+    rand = 100*(qrand() % 100);
+    args.clear();
+    args << "-keydelay" << QString::number(rand, 10);
+    QTest::newRow("keydelay") << 2000u << -1 << (int) rand << -1 << true << args;
+
+    rand = 1000*(qrand() % 1000);
+    args.clear();
+    args << "-mousedelay" << QString::number(rand, 10);
+    QTest::newRow("mousedelay") << 2000u << -1 << -1 << (int) rand << true << args;
+
+    args.clear();
+    args << "-nocrashhandler";
+    QTest::newRow("crashhandler") << 2000u << -1 << -1 << -1 << false << args;
+}
+
+void QTestLibArgsParserTest::toStringOther(void)
+{
+    QFETCH(unsigned int, warnings);
+    QFETCH(int, eventdelay);
+    QFETCH(int, keydelay);
+    QFETCH(int, mousedelay);
+    QFETCH(bool, crashhandler);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parser;
+    if (warnings != 2000)
+        parser.setMaxWarnings(warnings);
+    if (eventdelay >= 0)
+        parser.setEventDelay(eventdelay);
+    if (keydelay >= 0)
+        parser.setKeyDelay(keydelay);
+    if (mousedelay >= 0)
+        parser.setMouseDelay(mousedelay);
+    if (!crashhandler)
+        parser.enableCrashHandler(false);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkArguments(parser.toStringList(), args));
+    QCOMPARE(parser.toString(), parser.toStringList().join(' '));
+}
+
+void QTestLibArgsParserTest::checkArguments(const QStringList& args, const QStringList& expected)
+{
+    QCOMPARE(args.size(), expected.size());
+
+    for (QStringList::const_iterator argsIt = args.constBegin(); argsIt != args.constEnd(); argsIt++) {
+        QStringList::const_iterator expectedIt;
+        for (expectedIt = expected.constBegin(); expectedIt != expected.constEnd(); expectedIt++) {
+            if (QString::compare(*argsIt, *expectedIt, Qt::CaseSensitive) == 0)
+                break;
+        }
+        QVERIFY(expectedIt != expected.constEnd());
+    }
 }
 
 QTEST_APPLESS_MAIN(QTestLibArgsParserTest)
