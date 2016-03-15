@@ -81,7 +81,7 @@ private:
     void checkOutput(const QTestLibArgsParser& parser, QTestLibArgsParser::TestVerbosity verb, QTestLibArgsParser::TestOutputFormat format, const QString& filename = QString::null);
     void checkDelays(const QTestLibArgsParser& parser, int event = -1, int key = -1, int mouse = -1);
     void checkOutputMode(const QTestLibArgsParser& parser, QTestLibArgsParser::Output mode = QTestLibArgsParser::NormalOutput);
-    void CheckSelectedTestCases(const QTestLibArgsParser& parser, const QTestLibArgsParser::TestCaseList& list);
+    void checkSelectedTestCases(const QTestLibArgsParser& parser, const QTestLibArgsParser::TestCaseList& list);
 
     QTestLibArgsParser mParser;
 };
@@ -1144,7 +1144,7 @@ void QTestLibArgsParserTest::testCases(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
-    SUB_TEST_FUNCTION(CheckSelectedTestCases(parser, list));
+    SUB_TEST_FUNCTION(checkSelectedTestCases(parser, list));
 }
 
 void QTestLibArgsParserTest::removeTestCases_data()
@@ -1257,26 +1257,39 @@ void QTestLibArgsParserTest::removeTestCases(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
-    SUB_TEST_FUNCTION(CheckSelectedTestCases(parser, listBefore));
+    SUB_TEST_FUNCTION(checkSelectedTestCases(parser, listBefore));
 
     parser.removeTestCases(test, data);
 
     SUB_TEST_FUNCTION(checkError(parser));
-    SUB_TEST_FUNCTION(CheckSelectedTestCases(parser, listAfter));
+    SUB_TEST_FUNCTION(checkSelectedTestCases(parser, listAfter));
 }
 
-void QTestLibArgsParserTest::CheckSelectedTestCases(const QTestLibArgsParser& parser, const QTestLibArgsParser::TestCaseList& list)
+void QTestLibArgsParserTest::checkSelectedTestCases(const QTestLibArgsParser& parser, const QTestLibArgsParser::TestCaseList& list)
 {
     BEGIN_SUB_TEST_FUNCTION
 
     QCOMPARE(parser.selectedTestCases().size(), list.size());
 
-    QTestLibArgsParser::TestCaseList::const_iterator parserIt = parser.selectedTestCases().constBegin();
-    QTestLibArgsParser::TestCaseList::const_iterator listIt = list.constBegin();
+    for(QTestLibArgsParser::TestCaseList::const_iterator parserIt = parser.selectedTestCases().constBegin(); parserIt != parser.selectedTestCases().constEnd(); parserIt++) {
+        QTestLibArgsParser::TestCaseList::const_iterator listIt;
+        for(listIt = list.constBegin(); listIt != list.constEnd(); listIt++) {
+            if (QString::compare((*parserIt).first, (*listIt).first, Qt::CaseSensitive) == 0) {
+                QCOMPARE((*parserIt).second.size(), (*listIt).second.size());
 
-    for(; (parserIt != parser.selectedTestCases().constEnd()) && (listIt != list.constEnd()); parserIt++, listIt++) {
-        QCOMPARE((*parserIt).first, (*listIt).first);
-        QCOMPARE((*parserIt).second, (*listIt).second);
+                for (QStringList::const_iterator parserDataIt = (*parserIt).second.constBegin(); parserDataIt != (*parserIt).second.constEnd(); parserDataIt++) {
+                    QStringList::const_iterator listDataIt;
+                    for (listDataIt = (*listIt).second.constBegin(); listDataIt != (*listIt).second.constEnd(); listDataIt++) {
+                        if (QString::compare(*parserDataIt, *listDataIt, Qt::CaseSensitive) == 0)
+                            break;
+                    }
+                    QVERIFY(listDataIt != (*listIt).second.constEnd());
+                }
+
+                break;
+            }
+        }
+        QVERIFY(listIt != list.constEnd());
     }
 
     END_SUB_TEST_FUNCTION
