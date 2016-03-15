@@ -71,7 +71,10 @@ QStringList QTestLibArgsParser::toStringList(uint version) const
     QStringList verbosities;
     QStringList outputs;
     QString outFile(mOutFileName.toString());
-    outFile.replace(QLatin1Char(' '), QLatin1String("\\ "));
+    if (!QRegExp(QLatin1String("[A-Za-z0-9_.-]+")).exactMatch(outFile) || (outFile == "-")) {
+        outFile.replace(QLatin1Char('\"'), QLatin1String("\\\""));
+        outFile.prepend(QLatin1Char('\"')).append(QLatin1Char('\"'));
+    }
 
     formats << QLatin1String("txt") << QLatin1String("csv") << QLatin1String("xunitxml") << QLatin1String("xml") << QLatin1String("lightxml");
     verbosities << QLatin1String("-silent") << QLatin1String("") << QLatin1String("-v1") << QLatin1String("-v2") << QLatin1String("-vs") << QLatin1String("-vb");
@@ -91,14 +94,14 @@ QStringList QTestLibArgsParser::toStringList(uint version) const
                 if (mOutFileName.isEmpty())
                     ret << QLatin1String("-,") + formats.at((int) mParser - 1);
                 else
-                    ret << outFile + QLatin1String(",") + formats.at((int) mParser);
+                    ret << outFile + QLatin1String(",") + formats.at((int) mParser - 1);
             }
         }
 
         if (mVerbosity != NormalVerbosity)
             ret << verbosities.at((int) mVerbosity + 1);
         if (!mCrashHandlerEnabled)
-            ret << QLatin1String("-noccrashhandler");
+            ret << QLatin1String("-nocrashhandler");
         if (mMaxWarnings != 2000)
             ret << QLatin1String("-maxwarnings") << QString::number(mMaxWarnings, 10);
         if (mEventDelay > 0)
