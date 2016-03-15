@@ -94,6 +94,7 @@ private Q_SLOTS:
     void toStringVerbosity(void);
     void toStringOther_data(void);
     void toStringOther(void);
+    // TODO mix :-)
 
 private:
     void checkError(const QTestLibArgsParser& parser, QTestLibArgsParser::Error error = QTestLibArgsParser::NoError, const QString& errorString = QString::null);
@@ -1852,17 +1853,17 @@ void QTestLibArgsParserTest::toStringOther_data(void)
     args << "-maxwarnings" << QString::number(rand, 10);
     QTest::newRow("maxwarnings") << rand << -1 << -1 << -1 << true << args;
 
-    rand = 100*(qrand() % 100);
+    rand = 100*(1 + qrand() % 100);
     args.clear();
     args << "-eventdelay" << QString::number(rand, 10);
     QTest::newRow("eventdelay") << 2000u << (int) rand << -1 << -1 << true << args;
 
-    rand = 100*(qrand() % 100);
+    rand = 100*(1 + qrand() % 100);
     args.clear();
     args << "-keydelay" << QString::number(rand, 10);
     QTest::newRow("keydelay") << 2000u << -1 << (int) rand << -1 << true << args;
 
-    rand = 1000*(qrand() % 1000);
+    rand = 100*(1 + qrand() % 100);
     args.clear();
     args << "-mousedelay" << QString::number(rand, 10);
     QTest::newRow("mousedelay") << 2000u << -1 << -1 << (int) rand << true << args;
