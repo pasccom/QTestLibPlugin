@@ -18,6 +18,7 @@
 
 #include <qtestlibargsparser.h>
 using namespace QTestLibPlugin::Internal;
+#include <qtestlibpluginconstants.h>
 
 #include "../common/qttestsubfunction.h"
 
@@ -101,6 +102,10 @@ private Q_SLOTS:
     void toStringMixed_data(void);
     void toStringMixed(void);
 
+    void mapFormat_data(void);
+    void mapFormat(void);
+    void mapVerbosity_data(void);
+    void mapVerbosity(void);
 private:
     void toStringMixed_row(QTestLibArgsParser::TestOutputFormat format, QTestLibArgsParser::TestVerbosity verbosity, int version = 2);
 
@@ -1963,6 +1968,9 @@ void QTestLibArgsParserTest::toStringMixed_row(QTestLibArgsParser::TestOutputFor
     case QTestLibArgsParser::VerboseSignal:
         args << "-vs";
         break;
+    case QTestLibArgsParser::VerboseBenchmark:
+        args << "-vb";
+        break;
     default:
         break;
     }
@@ -2001,7 +2009,7 @@ void QTestLibArgsParserTest::toStringMixedV1_data(void)
     QTest::addColumn<QStringList>("args");
 
     for (int f = (int) QTestLibArgsParser::TxtFormat; f <= (int) QTestLibArgsParser::LightXmlFormat; f++)
-        for (int v = (int) QTestLibArgsParser::Silent; v <= (int) QTestLibArgsParser::VerboseSignal; v++)
+        for (int v = (int) QTestLibArgsParser::Silent; v <= (int) QTestLibArgsParser::VerboseBenchmark; v++)
             toStringMixed_row((QTestLibArgsParser::TestOutputFormat) f, (QTestLibArgsParser::TestVerbosity)v, 1);
 }
 
@@ -2047,7 +2055,7 @@ void QTestLibArgsParserTest::toStringMixedV2_data(void)
     QTest::addColumn<QStringList>("args");
 
     for (int f = (int) QTestLibArgsParser::TxtFormat; f <= (int) QTestLibArgsParser::LightXmlFormat; f++)
-        for (int v = (int) QTestLibArgsParser::Silent; v <= (int) QTestLibArgsParser::VerboseSignal; v++)
+        for (int v = (int) QTestLibArgsParser::Silent; v <= (int) QTestLibArgsParser::VerboseBenchmark; v++)
             toStringMixed_row((QTestLibArgsParser::TestOutputFormat) f, (QTestLibArgsParser::TestVerbosity) v, 2);
 }
 
@@ -2093,7 +2101,7 @@ void QTestLibArgsParserTest::toStringMixed_data(void)
     QTest::addColumn<QStringList>("args");
 
     for (int f = (int) QTestLibArgsParser::TxtFormat; f <= (int) QTestLibArgsParser::LightXmlFormat; f++)
-        for (int v = (int) QTestLibArgsParser::Silent; v <= (int) QTestLibArgsParser::VerboseSignal; v++)
+        for (int v = (int) QTestLibArgsParser::Silent; v <= (int) QTestLibArgsParser::VerboseBenchmark; v++)
             toStringMixed_row((QTestLibArgsParser::TestOutputFormat) f, (QTestLibArgsParser::TestVerbosity)v);
 }
 
@@ -2139,6 +2147,117 @@ void QTestLibArgsParserTest::checkArguments(const QStringList& args, const QStri
         }
         QVERIFY(expectedIt != expected.constEnd());
     }
+}
+
+void QTestLibArgsParserTest::mapFormat_data(void)
+{
+    QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
+    QTest::addColumn<QVariantMap>("map");
+    QTest::addColumn<QStringList>("args");
+
+    QVariantMap map;
+    QStringList args;
+
+    map.clear();
+    args.clear();
+    QTest::newRow("txt") << QTestLibArgsParser::TxtFormat << map << args;
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::FormatKey, (int) QTestLibArgsParser::CsvFormat);
+    args << "-o" << "-,csv";
+    QTest::newRow("csv") << QTestLibArgsParser::CsvFormat << map << args;
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::FormatKey, (int) QTestLibArgsParser::XmlFormat);
+    args << "-o" << "-,xml";
+    QTest::newRow("xml") << QTestLibArgsParser::XmlFormat << map << args;
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::FormatKey, (int) QTestLibArgsParser::LightXmlFormat);
+    args << "-o" << "-,lightxml";
+    QTest::newRow("lightxml") << QTestLibArgsParser::LightXmlFormat << map << args;
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::FormatKey, (int) QTestLibArgsParser::XUnitXmlFormat);
+    args << "-o" << "-,xunitxml";
+    QTest::newRow("xunitxml") << QTestLibArgsParser::XUnitXmlFormat << map << args;
+}
+
+void QTestLibArgsParserTest::mapFormat(void)
+{
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QVariantMap, map);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parserTo;
+    parserTo.setOutputFormat(format);
+
+    QVariantMap parserToMap;
+    parserTo.toMap(parserToMap);
+    QCOMPARE(parserToMap, map);
+
+    QTestLibArgsParser parserFrom;
+    parserFrom.fromMap(map);
+
+    SUB_TEST_FUNCTION(checkArguments(parserFrom.toStringList(), args));
+}
+
+void QTestLibArgsParserTest::mapVerbosity_data(void)
+{
+    QTest::addColumn<QTestLibArgsParser::TestVerbosity>("verbosity");
+    QTest::addColumn<QVariantMap>("map");
+    QTest::addColumn<QStringList>("args");
+
+    QVariantMap map;
+    QStringList args;
+
+    map.clear();
+    args.clear();
+    QTest::newRow("normal") << QTestLibArgsParser::NormalVerbosity << map << args;
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::VerbosityKey, (int) QTestLibArgsParser::Silent);
+    args << "-silent";
+    QTest::newRow("silent") << QTestLibArgsParser::Silent << map << args;
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::VerbosityKey, (int) QTestLibArgsParser::Verbose1);
+    args << "-v1";
+    QTest::newRow("v1") << QTestLibArgsParser::Verbose1 << map << args;
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::VerbosityKey, (int) QTestLibArgsParser::Verbose2);
+    args << "-v2";
+    QTest::newRow("v2") << QTestLibArgsParser::Verbose2 << map << args;
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::VerbosityKey, (int) QTestLibArgsParser::VerboseSignal);
+    args << "-vs";
+    QTest::newRow("vs") << QTestLibArgsParser::VerboseSignal << map << args;
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::VerbosityKey, (int) QTestLibArgsParser::VerboseBenchmark);
+    args << "-vb";
+    QTest::newRow("vb") << QTestLibArgsParser::VerboseBenchmark << map << args;
+}
+
+void QTestLibArgsParserTest::mapVerbosity(void)
+{
+    QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(QVariantMap, map);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parserTo;
+    parserTo.setVerbosity(verbosity);
+
+    QVariantMap parserToMap;
+    parserTo.toMap(parserToMap);
+    QCOMPARE(parserToMap, map);
+
+    QTestLibArgsParser parserFrom;
+    parserFrom.fromMap(map);
+
+    SUB_TEST_FUNCTION(checkArguments(parserFrom.toStringList(), args));
 }
 
 QTEST_APPLESS_MAIN(QTestLibArgsParserTest)
