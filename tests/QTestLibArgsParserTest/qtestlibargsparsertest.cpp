@@ -106,6 +106,9 @@ private Q_SLOTS:
     void mapFormat(void);
     void mapVerbosity_data(void);
     void mapVerbosity(void);
+    void mapOutFile(void);
+    void mapOther_data(void);
+    void mapOther(void);
 private:
     void toStringMixed_row(QTestLibArgsParser::TestOutputFormat format, QTestLibArgsParser::TestVerbosity verbosity, int version = 2);
 
@@ -2249,6 +2252,108 @@ void QTestLibArgsParserTest::mapVerbosity(void)
 
     QTestLibArgsParser parserTo;
     parserTo.setVerbosity(verbosity);
+
+    QVariantMap parserToMap;
+    parserTo.toMap(parserToMap);
+    QCOMPARE(parserToMap, map);
+
+    QTestLibArgsParser parserFrom;
+    parserFrom.fromMap(map);
+
+    SUB_TEST_FUNCTION(checkArguments(parserFrom.toStringList(), args));
+}
+
+void QTestLibArgsParserTest::mapOutFile(void)
+{
+    QString fileName = "testouput.log";
+    QVariantMap map;
+    map.insert(QTestLibPlugin::Constants::OutputFileKey, fileName);
+    QStringList args;
+    args << "-o" << fileName + ",txt";
+
+    QTestLibArgsParser parserTo;
+    parserTo.setOutFileName(Utils::FileName::fromString(fileName));
+
+    QVariantMap parserToMap;
+    parserTo.toMap(parserToMap);
+    QCOMPARE(parserToMap, map);
+
+    QTestLibArgsParser parserFrom;
+    parserFrom.fromMap(map);
+
+    SUB_TEST_FUNCTION(checkArguments(parserFrom.toStringList(), args));
+}
+
+void QTestLibArgsParserTest::mapOther_data(void)
+{
+    QTest::addColumn<unsigned int>("warnings");
+    QTest::addColumn<int>("eventDelay");
+    QTest::addColumn<int>("keyDelay");
+    QTest::addColumn<int>("mouseDelay");
+    QTest::addColumn<bool>("crashHandler");
+    QTest::addColumn<QVariantMap>("map");
+    QTest::addColumn<QStringList>("args");
+
+    QVariantMap map;
+    QStringList args;
+    unsigned int rand;
+
+    rand = 10000*(qrand() % 100);
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::MaxWarningKey, rand);
+    args << "-maxwarnings" << QString::number(rand, 10);
+    QTest::newRow("maxwarnings") << rand << -1 << -1 << -1 << true << map << args;
+
+    rand = 100*(1 + qrand() % 100);
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::EventDelayKey, (int) rand);
+    args << "-eventdelay" << QString::number(rand, 10);
+    QTest::newRow("eventdelay") << 2000u << (int) rand << -1 << -1 << true << map << args;
+
+    rand = 100*(1 + qrand() % 100);
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::KeyDelayKey, (int) rand);
+    args << "-keydelay" << QString::number(rand, 10);
+    QTest::newRow("keydelay") << 2000u << -1 << (int) rand << -1 << true << map << args;
+
+    rand = 100*(1 + qrand() % 100);
+    map.clear();
+    args.clear();
+    map.insert(QTestLibPlugin::Constants::MouseDelayKey, (int) rand);
+    args << "-mousedelay" << QString::number(rand, 10);
+    QTest::newRow("mousedelay") << 2000u << -1 << -1 << (int) rand << true << map << args;
+
+    args.clear();
+    map.clear();
+    map.insert(QTestLibPlugin::Constants::CrashHandlerEnabled, false);
+    args << "-nocrashhandler";
+    QTest::newRow("crashhandler") << 2000u << -1 << -1 << -1 << false << map << args;
+}
+
+void QTestLibArgsParserTest::mapOther(void)
+{
+    QFETCH(unsigned int, warnings);
+    QFETCH(int, eventDelay);
+    QFETCH(int, keyDelay);
+    QFETCH(int, mouseDelay);
+    QFETCH(bool, crashHandler);
+    QFETCH(QVariantMap, map);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parserTo;
+    if (warnings != 2000)
+        parserTo.setMaxWarnings(warnings);
+    if (eventDelay >= 0)
+        parserTo.setEventDelay(eventDelay);
+    if (keyDelay >= 0)
+        parserTo.setKeyDelay(keyDelay);
+    if (mouseDelay >= 0)
+        parserTo.setMouseDelay(mouseDelay);
+    if (!crashHandler)
+        parserTo.enableCrashHandler(false);
 
     QVariantMap parserToMap;
     parserTo.toMap(parserToMap);
