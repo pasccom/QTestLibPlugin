@@ -109,8 +109,11 @@ private Q_SLOTS:
     void mapOutFile(void);
     void mapOther_data(void);
     void mapOther(void);
+    void mapMixed_data(void);
+    void mapMixed(void);
 private:
     void toStringMixed_row(QTestLibArgsParser::TestOutputFormat format, QTestLibArgsParser::TestVerbosity verbosity, int version = 2);
+    void mapMixed_row(QTestLibArgsParser::TestOutputFormat format, QTestLibArgsParser::TestVerbosity verbosity);
 
     void checkError(const QTestLibArgsParser& parser, QTestLibArgsParser::Error error = QTestLibArgsParser::NoError, const QString& errorString = QString::null);
     void checkOutput(const QTestLibArgsParser& parser, QTestLibArgsParser::TestVerbosity verb, QTestLibArgsParser::TestOutputFormat format, const QString& filename = QString::null);
@@ -1954,6 +1957,7 @@ void QTestLibArgsParserTest::toStringMixed_row(QTestLibArgsParser::TestOutputFor
         break;
     default:
         qWarning() << "Unknown format. Assumed txt.";
+        break;
     }
 
     switch (verbosity) {
@@ -1975,6 +1979,7 @@ void QTestLibArgsParserTest::toStringMixed_row(QTestLibArgsParser::TestOutputFor
         args << "-vb";
         break;
     default:
+        qWarning() << "Unknown verbosity. Assumed normal.";
         break;
     }
 
@@ -2328,7 +2333,7 @@ void QTestLibArgsParserTest::mapOther_data(void)
 
     args.clear();
     map.clear();
-    map.insert(QTestLibPlugin::Constants::CrashHandlerEnabled, false);
+    map.insert(QTestLibPlugin::Constants::CrashHandlerEnabledKey, false);
     args << "-nocrashhandler";
     QTest::newRow("crashhandler") << 2000u << -1 << -1 << -1 << false << map << args;
 }
@@ -2346,6 +2351,152 @@ void QTestLibArgsParserTest::mapOther(void)
     QTestLibArgsParser parserTo;
     if (warnings != 2000)
         parserTo.setMaxWarnings(warnings);
+    if (eventDelay >= 0)
+        parserTo.setEventDelay(eventDelay);
+    if (keyDelay >= 0)
+        parserTo.setKeyDelay(keyDelay);
+    if (mouseDelay >= 0)
+        parserTo.setMouseDelay(mouseDelay);
+    if (!crashHandler)
+        parserTo.enableCrashHandler(false);
+
+    QVariantMap parserToMap;
+    parserTo.toMap(parserToMap);
+    QCOMPARE(parserToMap, map);
+
+    QTestLibArgsParser parserFrom;
+    parserFrom.fromMap(map);
+
+    SUB_TEST_FUNCTION(checkArguments(parserFrom.toStringList(), args));
+}
+
+void QTestLibArgsParserTest::mapMixed_row(QTestLibArgsParser::TestOutputFormat format, QTestLibArgsParser::TestVerbosity verbosity)
+{
+    QVariantMap map;
+    QStringList args;
+
+    unsigned int maxWarnings;
+    int eventDelay;
+    int keyDelay;
+    int mouseDelay;
+    bool crashHandler;
+
+    args.clear();
+    map.clear();
+
+    if (format != QTestLibArgsParser::TxtFormat)
+        map.insert(QTestLibPlugin::Constants::FormatKey, (int) format);
+    switch(format) {
+    case QTestLibArgsParser::TxtFormat:
+        break;
+    case QTestLibArgsParser::CsvFormat:
+        args << "-o" << "-,csv";
+        break;
+    case QTestLibArgsParser::XmlFormat:
+        args << "-o" << "-,xml";
+        break;
+    case QTestLibArgsParser::LightXmlFormat:
+        args << "-o" << "-,lightxml";
+        break;
+    case QTestLibArgsParser::XUnitXmlFormat:
+        args << "-o" << "-,xunitxml";
+        break;
+    default:
+        qWarning() << "Unknown format. Assumed txt.";
+        break;
+    }
+
+    if (verbosity != QTestLibArgsParser::NormalVerbosity)
+        map.insert(QTestLibPlugin::Constants::VerbosityKey, (int) verbosity);
+    switch (verbosity) {
+    case QTestLibArgsParser::NormalVerbosity:
+        break;
+    case QTestLibArgsParser::Silent:
+        args << "-silent";
+        break;
+    case QTestLibArgsParser::Verbose1:
+        args << "-v1";
+        break;
+    case QTestLibArgsParser::Verbose2:
+        args << "-v2";
+        break;
+    case QTestLibArgsParser::VerboseSignal:
+        args << "-vs";
+        break;
+    case QTestLibArgsParser::VerboseBenchmark:
+        args << "-vb";
+        break;
+    default:
+        qWarning() << "Unknown verbosity. Assumed normal.";
+        break;
+    }
+
+    QString name = args.join(' ');
+
+    maxWarnings = (qrand() % 2 == 1) ? 1000*(qrand() % 1000) : 2000;
+    eventDelay = (qrand() % 2 == 1) ? 100*(1 + qrand() % 100) : -1;
+    keyDelay = (qrand() % 2 == 1) ? 100*(1 + qrand() % 100) : -1;
+    mouseDelay = (qrand() % 2 == 1) ? 100*(1 + qrand() % 100) : -1;
+    crashHandler = (qrand() % 2 == 1);
+
+    if (maxWarnings != 2000) {
+        map.insert(QTestLibPlugin::Constants::MaxWarningKey, maxWarnings);
+        args << "-maxwarnings" << QString::number(maxWarnings, 10);
+    }
+    if (eventDelay > 0) {
+        map.insert(QTestLibPlugin::Constants::EventDelayKey, eventDelay);
+        args << "-eventdelay" << QString::number(eventDelay, 10);
+    }
+    if (keyDelay > 0) {
+        map.insert(QTestLibPlugin::Constants::KeyDelayKey, keyDelay);
+        args << "-keydelay" << QString::number(keyDelay, 10);
+    }
+    if (mouseDelay > 0) {
+        map.insert(QTestLibPlugin::Constants::MouseDelayKey, mouseDelay);
+        args << "-mousedelay" << QString::number(mouseDelay, 10);
+    }
+    if (!crashHandler) {
+        map.insert(QTestLibPlugin::Constants::CrashHandlerEnabledKey, false);
+        args << "-nocrashhandler";
+    }
+
+    QTest::newRow(qPrintable(name)) << format << verbosity << maxWarnings << eventDelay << keyDelay << mouseDelay << crashHandler << map << args;
+}
+
+void QTestLibArgsParserTest::mapMixed_data(void)
+{
+    QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
+    QTest::addColumn<QTestLibArgsParser::TestVerbosity>("verbosity");
+    QTest::addColumn<unsigned int>("maxWarnings");
+    QTest::addColumn<int>("eventDelay");
+    QTest::addColumn<int>("keyDelay");
+    QTest::addColumn<int>("mouseDelay");
+    QTest::addColumn<bool>("crashHandler");
+    QTest::addColumn<QVariantMap>("map");
+    QTest::addColumn<QStringList>("args");
+
+    for (int f = (int) QTestLibArgsParser::TxtFormat; f <= (int) QTestLibArgsParser::LightXmlFormat; f++)
+        for (int v = (int) QTestLibArgsParser::Silent; v <= (int) QTestLibArgsParser::VerboseBenchmark; v++)
+            mapMixed_row((QTestLibArgsParser::TestOutputFormat) f, (QTestLibArgsParser::TestVerbosity) v);
+}
+
+void QTestLibArgsParserTest::mapMixed(void)
+{
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(unsigned int, maxWarnings);
+    QFETCH(int, eventDelay);
+    QFETCH(int, keyDelay);
+    QFETCH(int, mouseDelay);
+    QFETCH(bool, crashHandler);
+    QFETCH(QVariantMap, map);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parserTo;
+    parserTo.setOutputFormat(format);
+    parserTo.setVerbosity(verbosity);
+    if (maxWarnings != 2000)
+        parserTo.setMaxWarnings(maxWarnings);
     if (eventDelay >= 0)
         parserTo.setEventDelay(eventDelay);
     if (keyDelay >= 0)
