@@ -47,7 +47,7 @@ void QTestLibArgsParser::toMap(QVariantMap& map) const
     if (mMouseDelay > 0)
         map.insert(Constants::MouseDelayKey, mMouseDelay);
     if (!mCrashHandlerEnabled)
-        map.insert(Constants::CrashHandlerEnabled, false);
+        map.insert(Constants::CrashHandlerEnabledKey, false);
 }
 
 void QTestLibArgsParser::fromMap(const QVariantMap& map)
@@ -61,7 +61,7 @@ void QTestLibArgsParser::fromMap(const QVariantMap& map)
     mEventDelay = map.value(Constants::EventDelayKey, -1).toInt();
     mKeyDelay = map.value(Constants::KeyDelayKey, -1).toInt();
     mMouseDelay = map.value(Constants::MouseDelayKey, -1).toInt();
-    mCrashHandlerEnabled = map.value(Constants::CrashHandlerEnabled, true).toBool();
+    mCrashHandlerEnabled = map.value(Constants::CrashHandlerEnabledKey, true).toBool();
 }
 
 
