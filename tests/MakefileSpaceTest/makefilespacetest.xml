@@ -1,0 +1,158 @@
+<?xml version="1.0" ?>
+<!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
+<qtestliboutput>
+    <results format="xunitxml">
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+    </results>
+    <results format="lightxml">
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+    </results>
+    <results format="xml">
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <magicfound />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+    </results>
+    <results format="txt">
+        <unsure/>
+        <magicfound level="silent" />
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure level="verbose1" />
+        <unsure/>
+        <unsure level="silent" />
+        <unsure/>
+    </results>
+    <class name="OnePassTest" type="Pass" format="!lightxml" level="normal">
+        <function name="initTestCase" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
+            </message>
+        </function>
+        <function name="testPass" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Info" strict="true" level="verbose2" file="onepasstest.cpp" line="34">
+                QVERIFY(true)
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
+            </message>
+        </function>
+        <function name="cleanupTestCase" type="Pass">
+            <message type="Info" strict="true" level="verbose1" format="txt">
+                entering
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false" format="xml" >
+                0.00ms
+            </message>
+        </function>
+        <message type="Duration" strict="false" format="xml" >
+            0.00ms
+        </message>
+    </class>
+    <class name="OneSubTest" type="Pass" format="lightxml" level="normal">
+        <function name="initTestCase" type="Pass">
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false">
+                0.00ms
+            </message>
+        </function>
+        <function name="testPass" type="Pass">
+            <message type="Info" strict="true" level="verbose2" file="onepasstest.cpp" line="34">
+                QVERIFY(true)
+            </message>
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false">
+                0.00ms
+            </message>
+        </function>
+        <function name="cleanupTestCase" type="Pass">
+            <message type="Pass" strict="true">
+                Test passed
+            </message>
+            <message type="Duration" strict="false">
+                0.00ms
+            </message>
+        </function>
+        <message type="Duration" strict="false">
+            0.00ms
+        </message>
+    </class>
+</qtestliboutput>

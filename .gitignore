@@ -8,7 +8,10 @@ doc/
 gcov/
 
 # The output and makefiles :
-Makefile*
+Makefile
+Makefile.*
+MyMakefile
+My Makefile
 *.a
 object_script.*.*
 qrc_*.cpp
