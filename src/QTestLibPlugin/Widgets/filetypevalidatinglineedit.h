@@ -5,6 +5,10 @@
 
 #include <QStringList>
 
+namespace Utils {
+    class MacroExpander;
+}
+
 namespace QTestLibPlugin {
 namespace Widgets {
 
@@ -47,6 +51,9 @@ public:
     inline bool acceptEmpty(void) const {return mAccepted & AcceptEmpty;}
     inline void setAcceptNew(bool accept) {manageAcceptFlags(AcceptNew, accept);}
     inline bool acceptNew(void) const {return mAccepted & AcceptNew;}
+
+    inline void setMacroExpander(Utils::MacroExpander* macroExpander) {mMacroExpander = macroExpander;}
+    inline Utils::MacroExpander* macroExpander(void) const {return mMacroExpander;}
 protected:
     virtual bool validate(const QString& value, QString *errorMessage) const;
 private:
@@ -55,6 +62,8 @@ private:
     bool validatePermissions(const QString& value, QString* errorMessage) const;
 
     void manageAcceptFlags(Accept flag, bool enable);
+
+    Utils::MacroExpander* mMacroExpander;
     QStringList mRequiredExtensions;
     Accepts mAccepted;
 };

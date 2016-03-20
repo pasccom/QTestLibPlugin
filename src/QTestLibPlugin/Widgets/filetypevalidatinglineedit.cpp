@@ -1,12 +1,14 @@
 #include "filetypevalidatinglineedit.h"
 
+#include <utils/macroexpander.h>
+
 #include <QtCore>
 
 namespace QTestLibPlugin {
 namespace Widgets {
 
 FileTypeValidatingLineEdit::FileTypeValidatingLineEdit(QWidget* parent) :
-    Utils::FancyLineEdit(parent), mAccepted(0)
+    Utils::FancyLineEdit(parent), mMacroExpander(NULL), mAccepted(0)
 {
     mAccepted |= AcceptsFiles;
     mAccepted |= RequireReadable;
@@ -21,18 +23,23 @@ bool FileTypeValidatingLineEdit::validate(const QString& value, QString *errorMe
     if ((mAccepted & AcceptEmpty) && value.isEmpty())
         return true;
 
-    if ((mAccepted & AcceptNew) && !QFileInfo::exists(value))
-        return validateName(value, errorMessage);
+    QString expandedValue = value;
+    if (mMacroExpander != NULL)
+        expandedValue = mMacroExpander->expand(value);
+    qDebug() << expandedValue;
 
-    if (!QFileInfo::exists(value)) {
+    if ((mAccepted & AcceptNew) && !QFileInfo::exists(expandedValue))
+        return validateName(expandedValue, errorMessage);
+
+    if (!QFileInfo::exists(expandedValue)) {
         if (errorMessage != NULL)
-            *errorMessage = tr("File \"%1\" does not exist").arg(value);
+            *errorMessage = tr("File \"%1\" does not exist").arg(expandedValue);
         return false;
     }
 
-    return (validateName(value, errorMessage)
-         && validateType(value, errorMessage)
-         && validatePermissions(value, errorMessage));
+    return (validateName(expandedValue, errorMessage)
+         && validateType(expandedValue, errorMessage)
+         && validatePermissions(expandedValue, errorMessage));
 }
 
 void FileTypeValidatingLineEdit::manageAcceptFlags(Accept flag, bool enable)
