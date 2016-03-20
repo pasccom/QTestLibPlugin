@@ -32,6 +32,8 @@ void TestRunConfigurationFactoryTest::initTestCase(void)
     // NOTE _data() function is not available for initTestCase()
     projectPathes << QLatin1String(TESTS_DIR "/OneSubTest");
     projectPathes << QLatin1String(TESTS_DIR "/TwoSubTests");
+    projectPathes << QLatin1String(TESTS_DIR "/MakefileTest");
+    projectPathes << QLatin1String(TESTS_DIR "/MakefileSpaceTest");
     projectPathes << QLatin1String(TESTS_DIR "/NoSubTestOne");
     projectPathes << QLatin1String(TESTS_DIR "/NoSubTestTwo");
 
@@ -53,14 +55,18 @@ void TestRunConfigurationFactoryTest::cleanup(void)
 void TestRunConfigurationFactoryTest::testOpenProjectWithTests_data(void)
 {
     QTest::addColumn<QString>("projectPath");
+    QTest::addColumn<QString>("makefile");
 
-    QTest::newRow("OneSubTest") << TESTS_DIR "/OneSubTest/OneSubTest.pro";
-    QTest::newRow("TwoSubTests") << TESTS_DIR "/TwoSubTests/TwoSubTests.pro";
+    QTest::newRow("OneSubTest") << TESTS_DIR "/OneSubTest/OneSubTest.pro" << TESTS_DIR "/OneSubTest/Makefile";
+    QTest::newRow("TwoSubTests") << TESTS_DIR "/TwoSubTests/TwoSubTests.pro" << TESTS_DIR "/TwoSubTests/Makefile";
+    QTest::newRow("MakefileTest") << TESTS_DIR "/MakefileTest/MakefileTest.pro" << TESTS_DIR "/MakefileTest/MyMakefile";
+    QTest::newRow("MakefileSpaceTest") << TESTS_DIR "/MakefileSpaceTest/MakefileSpaceTest.pro" << "\"" TESTS_DIR "/MakefileSpaceTest/My Makefile\"";
 }
 
 void TestRunConfigurationFactoryTest::testOpenProjectWithTests(void)
 {
     QFETCH(QString, projectPath);
+    QFETCH(QString, makefile);
 
     QVERIFY(openQMakeProject(projectPath, &mProject));
     QCOMPARE(mProject->projectFilePath().toString(), projectPath);
@@ -79,7 +85,7 @@ void TestRunConfigurationFactoryTest::testOpenProjectWithTests(void)
         Utils::Environment env = target->activeBuildConfiguration()->environment();
         ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit());
         QCOMPARE(testRunConfig->executable(), toolChain->makeCommand(env));
-        QCOMPARE(testRunConfig->commandLineArguments(), QLatin1String("check"));
+        QCOMPARE(testRunConfig->commandLineArguments(), QString(QLatin1String("-f %1 check")).arg(makefile));
     }
 }
 

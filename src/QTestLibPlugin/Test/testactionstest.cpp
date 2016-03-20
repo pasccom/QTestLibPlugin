@@ -416,13 +416,14 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
     ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(project->activeTarget()->kit());
     ProjectExplorer::RunControl* runControl = runControlStartedSpy.at(0).at(0).value<ProjectExplorer::RunControl*>();
     ProjectExplorer::LocalApplicationRunConfiguration* runConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(runControl->runConfiguration());
-    QVERIFY(runConfig != NULL);
-    QCOMPARE(runConfig->executable(), toolChain->makeCommand(env));
-    QCOMPARE(runConfig->commandLineArguments(), QLatin1String("check"));
 
     QSignalSpy runControlStoppedSpy(runControl, SIGNAL(finished()));
     runControl->stop();
     QCOMPARE(runControlStoppedSpy.size(), 1);
+
+    QVERIFY(runConfig != NULL);
+    QCOMPARE(runConfig->executable(), toolChain->makeCommand(env));
+    QVERIFY(runConfig->commandLineArguments().endsWith(QLatin1String("check")));
 
     END_SUB_TEST_FUNCTION
 }
