@@ -51,7 +51,7 @@ public:
 
     int jobNumber;
     QString testRunner;
-    QString workingDirectory;
+    Utils::FileName workingDirectory;
 private:
     Utils::FileName mAutoMakeExe;
     Utils::FileName mMakeExe;
@@ -116,7 +116,7 @@ public:
 
     virtual inline QString executable() const {return mData->makeExe().toString();}
     virtual inline ProjectExplorer::ApplicationLauncher::Mode runMode(void) const {return ProjectExplorer::ApplicationLauncher::Gui;}
-    virtual inline QString workingDirectory(void) const {return mData->workingDirectory;}
+    virtual inline QString workingDirectory(void) const {return mData->workingDirectory.toString();}
     virtual QString commandLineArguments(void) const;
 
     void setMakefile(const Utils::FileName& makefile);

@@ -20,7 +20,7 @@ TestRunConfigurationData::TestRunConfigurationData(ProjectExplorer::Target *targ
     :  jobNumber(1), testRunner(), mAutoMakeExe(), mMakeExe()
 {
     if (target != NULL) {
-        workingDirectory = target->activeBuildConfiguration()->buildDirectory().toString();
+        workingDirectory = target->activeBuildConfiguration()->buildDirectory();
         Utils::Environment env = target->activeBuildConfiguration()->environment();
         ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit());
         mAutoMakeExe = Utils::FileName::fromString(toolChain->makeCommand(env));
@@ -48,8 +48,8 @@ QStringList TestRunConfigurationData::commandLineArguments(void) const
 
 QVariantMap TestRunConfigurationData::toMap(QVariantMap& map) const
 {
-    if (workingDirectory != QLatin1String("."))
-        map.insert(Constants::WorkingDirectoryKey, workingDirectory);
+    if (!workingDirectory.isNull())
+        map.insert(Constants::WorkingDirectoryKey, workingDirectory.toString());
     if (!mMakeExe.isNull())
         map.insert(Constants::MakeExeKey, mMakeExe.toString());
     if (!mMakefile.isNull())
@@ -63,7 +63,7 @@ QVariantMap TestRunConfigurationData::toMap(QVariantMap& map) const
 
 bool TestRunConfigurationData::fromMap(const QVariantMap& map)
 {
-    workingDirectory = map.value(Constants::WorkingDirectoryKey, QLatin1String(".")).toString();
+    workingDirectory = Utils::FileName::fromString(map.value(Constants::WorkingDirectoryKey, QString()).toString());
     mMakeExe = Utils::FileName::fromString(map.value(Constants::MakeExeKey, QString()).toString());
     mMakefile = Utils::FileName::fromString(map.value(Constants::MakefileKey, QString()).toString());
     testRunner = map.value(Constants::TestRunnerKey, QString()).toString();
@@ -136,7 +136,7 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
 {
     mWorkingDirectoryEdit = new Widgets::FileTypeValidatingLineEdit(this);
     mWorkingDirectoryEdit->setAcceptDirectories(true);
-    mWorkingDirectoryEdit->setText(mData->workingDirectory);
+    mWorkingDirectoryEdit->setText(mData->workingDirectory.toString());
     mWorkingDirectoryLabel = new QLabel(tr("Working directory:"), this);
     mWorkingDirectoryLabel->setBuddy(mWorkingDirectoryEdit);
     mWorkingDirectoryButton = new QPushButton(tr("Browse..."), this);
@@ -230,27 +230,24 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
 
 void TestRunConfigurationWidget::updateWorkingDirectory(bool valid)
 {
-    if (valid) {
-        qDebug() << "Saving WD:" << mWorkingDirectoryEdit->text();
-        mData->workingDirectory = mWorkingDirectoryEdit->text();
-    }
+    if (valid)
+        mData->workingDirectory = Utils::FileName::fromUserInput(mWorkingDirectoryEdit->text());
 }
 
 void TestRunConfigurationWidget::updateWorkingDirectory(void)
 {
     if (mWorkingDirectoryEdit->isValid())
-        mData->workingDirectory = mWorkingDirectoryEdit->text();
-    else
-        mWorkingDirectoryEdit->setText(mData->workingDirectory);
+        mData->workingDirectory = Utils::FileName::fromUserInput(mWorkingDirectoryEdit->text());
+    mWorkingDirectoryEdit->setText(mData->workingDirectory.toString());
 }
 
 void TestRunConfigurationWidget::browseWorkingDirectory(void)
 {
-    QString wd = QFileDialog::getExistingDirectory(this, tr("Choose working directory"), mData->workingDirectory);
+    QString wd = QFileDialog::getExistingDirectory(this, tr("Choose working directory"), mData->workingDirectory.toString());
 
     if (!wd.isNull())
-        mData->workingDirectory = wd;
-    mWorkingDirectoryEdit->setText(mData->workingDirectory);
+        mData->workingDirectory = Utils::FileName::fromString(wd);
+    mWorkingDirectoryEdit->setText(mData->workingDirectory.toString());
 }
 
 void TestRunConfigurationWidget::updateMakefile(bool valid)
