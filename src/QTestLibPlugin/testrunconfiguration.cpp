@@ -37,7 +37,13 @@ void TestRunConfigurationData::setMakeExe(const QString& path)
 QStringList TestRunConfigurationData::commandLineArguments(void) const
 {
     QStringList cmdArgs;
+    QString makefilePath = makefile().toString();
 
+    makefilePath.replace(QLatin1Char('\"'), QLatin1String("\\\""));
+    if (makefilePath.contains(QLatin1Char(' ')))
+        makefilePath = QLatin1Char('\"') + makefilePath + QLatin1Char('\"');
+
+    cmdArgs << QLatin1String("-f") << makefilePath;
     if (jobNumber > 1)
         cmdArgs << QString(QLatin1String("-j%1")).arg(jobNumber);
     cmdArgs << QLatin1String("check");
@@ -53,6 +59,8 @@ QVariantMap TestRunConfigurationData::toMap(QVariantMap& map) const
         map.insert(Constants::WorkingDirectoryKey, workingDirectory);
     if (!mMakeExe.isNull())
         map.insert(Constants::MakeExeKey, mMakeExe.toString());
+    if (!mMakefile.isNull())
+        map.insert(Constants::MakefileKey, mMakefile.toString());
     if (!testRunner.isEmpty())
         map.insert(Constants::TestRunnerKey, testRunner);
     if (jobNumber != 1)
@@ -64,6 +72,7 @@ bool TestRunConfigurationData::fromMap(const QVariantMap& map)
 {
     workingDirectory = map.value(Constants::WorkingDirectoryKey, QLatin1String(".")).toString();
     mMakeExe = Utils::FileName::fromString(map.value(Constants::MakeExeKey, QString()).toString());
+    mMakefile = Utils::FileName::fromString(map.value(Constants::MakefileKey, QString()).toString());
     testRunner = map.value(Constants::TestRunnerKey, QString()).toString();
     jobNumber = map.value(Constants::MakeJobNumberKey, 1).toInt();
 
@@ -83,12 +92,23 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core
     addExtraAspect(new TestRunConfigurationExtraAspect(this));
 
     mData = new TestRunConfigurationData(parent);
+    setMakefile(Utils::FileName());
     setDefaultDisplayName(QLatin1String("make check"));
 }
 
 TestRunConfiguration::~TestRunConfiguration()
 {
     delete mData;
+}
+
+void TestRunConfiguration::setMakefile(const Utils::FileName& makefile)
+{
+    qDebug() << __func__ << makefile;
+
+    if (!makefile.isNull())
+        mData->setAutoMakefile(makefile);
+    else if ((target() != NULL) && (target()->activeBuildConfiguration() != NULL))
+        mData->setAutoMakefile(target()->activeBuildConfiguration()->buildDirectory().appendPath("Makefile"));
 }
 
 QVariantMap TestRunConfiguration::toMap(void) const
@@ -127,6 +147,12 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mWorkingDirectoryLabel = new QLabel(tr("Working directory:"), this);
     mWorkingDirectoryLabel->setBuddy(mWorkingDirectoryEdit);
     mWorkingDirectoryButton = new QPushButton(tr("Browse..."), this);
+    mMakefileEdit = new Widgets::FileTypeValidatingLineEdit(this);
+    mMakefileEdit->setText(mData->makefile().toString());
+    mMakefileLabel = new QLabel(tr("Makefile:"), this);
+    mMakefileLabel->setBuddy(mWorkingDirectoryEdit);
+    mMakefileDetectButton = new QPushButton(tr("Auto-detect"), this);
+    mMakefileBrowseButton = new QPushButton(tr("Browse..."), this);
     mMakeExeEdit = new Widgets::FileTypeValidatingLineEdit(this);
     mMakeExeEdit->setRequireExecutable(true);
     mMakeExeEdit->setText(mData->makeExe());
@@ -156,15 +182,19 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mainLayout->addWidget(mWorkingDirectoryLabel, 0, 0, Qt::AlignLeft);
     mainLayout->addWidget(mWorkingDirectoryEdit, 0, 1, 1, 2);
     mainLayout->addWidget(mWorkingDirectoryButton, 0, 3, Qt::AlignCenter);
-    mainLayout->addWidget(mMakeExeLabel, 1, 0, Qt::AlignLeft);
-    mainLayout->addWidget(mMakeExeEdit, 1, 1);
-    mainLayout->addWidget(mMakeExeDetectButton, 1, 2, Qt::AlignCenter);
-    mainLayout->addWidget(mMakeExeBrowseButton, 1, 3, Qt::AlignCenter);
-    mainLayout->addWidget(mTestRunnerLabel, 2, 0, Qt::AlignLeft);
-    mainLayout->addWidget(mTestRunnerEdit, 2, 1, 1, 2);
-    mainLayout->addWidget(mTestRunnerButton, 2, 3, Qt::AlignCenter);
-    mainLayout->addWidget(mJobsLabel, 3, 0, 1, 3, Qt::AlignLeft);
-    mainLayout->addWidget(mJobsSpin, 3, 3, Qt::AlignRight);
+    mainLayout->addWidget(mMakefileLabel, 1, 0, Qt::AlignLeft);
+    mainLayout->addWidget(mMakefileEdit, 1, 1);
+    mainLayout->addWidget(mMakefileDetectButton, 1, 2, Qt::AlignCenter);
+    mainLayout->addWidget(mMakefileBrowseButton, 1, 3, Qt::AlignCenter);
+    mainLayout->addWidget(mMakeExeLabel, 2, 0, Qt::AlignLeft);
+    mainLayout->addWidget(mMakeExeEdit, 2, 1);
+    mainLayout->addWidget(mMakeExeDetectButton, 2, 2, Qt::AlignCenter);
+    mainLayout->addWidget(mMakeExeBrowseButton, 2, 3, Qt::AlignCenter);
+    mainLayout->addWidget(mTestRunnerLabel, 3, 0, Qt::AlignLeft);
+    mainLayout->addWidget(mTestRunnerEdit, 3, 1, 1, 2);
+    mainLayout->addWidget(mTestRunnerButton, 3, 3, Qt::AlignCenter);
+    mainLayout->addWidget(mJobsLabel, 4, 0, 1, 3, Qt::AlignLeft);
+    mainLayout->addWidget(mJobsSpin, 4, 3, Qt::AlignRight);
     mainLayout->setColumnStretch(1, 1);
 
     setLayout(mainLayout);
@@ -175,6 +205,15 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
             this, SLOT(updateWorkingDirectory()));
     connect(mWorkingDirectoryButton, SIGNAL(released()),
             this, SLOT(browseWorkingDirectory()));
+
+    connect(mMakefileEdit, SIGNAL(validChanged(bool)),
+            this, SLOT(updateMakefile(bool)));
+    connect(mMakefileEdit, SIGNAL(editingFinished()),
+            this, SLOT(updateMakefile()));
+    connect(mMakefileDetectButton, SIGNAL(released()),
+            this, SLOT(autoDetectMakefile()));
+    connect(mMakefileBrowseButton, SIGNAL(released()),
+            this, SLOT(browseMakefile()));
 
     connect(mMakeExeEdit, SIGNAL(validChanged(bool)),
             this, SLOT(updateMakeExe(bool)));
@@ -219,6 +258,35 @@ void TestRunConfigurationWidget::browseWorkingDirectory(void)
     if (!wd.isNull())
         mData->workingDirectory = wd;
     mWorkingDirectoryEdit->setText(mData->workingDirectory);
+}
+
+void TestRunConfigurationWidget::updateMakefile(bool valid)
+{
+    if (valid)
+        mData->setMakefile(mMakefileEdit->text());
+}
+
+void TestRunConfigurationWidget::updateMakefile(void)
+{
+    if (mMakefileEdit->isValid())
+        mData->setMakefile(mMakefileEdit->text());
+    else
+        mMakefileEdit->setText(mData->makefile().toString());
+}
+
+void TestRunConfigurationWidget::autoDetectMakefile(void)
+{
+    mData->useDefaultMakefile();
+    mMakefileEdit->setText(mData->makefile().toString());
+}
+
+void TestRunConfigurationWidget::browseMakefile(void)
+{
+    QString mf = QFileDialog::getOpenFileName(this, tr("Choose \"Makefile\""), mData->makefile().toString());
+
+    if (!mf.isNull())
+        mData->setMakefile(mf);
+    mMakefileEdit->setText(mData->makefile().toString());
 }
 
 void TestRunConfigurationWidget::updateMakeExe(bool valid)

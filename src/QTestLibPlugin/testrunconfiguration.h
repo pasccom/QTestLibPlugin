@@ -36,6 +36,13 @@ public:
     inline void useDefaultMakeExe(void) {mMakeExe = Utils::FileName();}
     void setMakeExe(const QString& path);
 
+    inline Utils::FileName makefile(void) const {return mMakefile.isNull() ? mAutoMakefile : mMakefile;}
+    inline bool usesDefaultMakefile(void) const {return mMakefile.isNull();}
+    inline void useDefaultMakefile(void) {mMakefile = Utils::FileName();}
+    inline void setAutoMakefile(const Utils::FileName& path) {mAutoMakefile = path;}
+    inline void setMakefile(const QString& path) {setMakefile(Utils::FileName::fromUserInput(path));}
+    inline void setMakefile(const Utils::FileName& makefile) {mMakefile = (mAutoMakefile == makefile  ? Utils::FileName() : makefile);}
+
     QVariantMap toMap(QVariantMap& map) const;
     bool fromMap(const QVariantMap& map);
 
@@ -47,6 +54,8 @@ public:
 private:
     Utils::FileName mAutoMakeExe;
     Utils::FileName mMakeExe;
+    Utils::FileName mAutoMakefile;
+    Utils::FileName mMakefile;
 };
 
 class TestRunConfigurationWidget : public QWidget
@@ -58,6 +67,11 @@ private slots:
     void updateWorkingDirectory(bool valid);
     void updateWorkingDirectory(void);
     void browseWorkingDirectory(void);
+
+    void updateMakefile(bool valid);
+    void updateMakefile(void);
+    void autoDetectMakefile(void);
+    void browseMakefile(void);
 
     void updateMakeExe(bool valid);
     void updateMakeExe(void);
@@ -75,6 +89,10 @@ private:
     QLabel* mWorkingDirectoryLabel;
     Widgets::FileTypeValidatingLineEdit* mWorkingDirectoryEdit;
     QPushButton* mWorkingDirectoryButton;
+    QLabel* mMakefileLabel;
+    Widgets::FileTypeValidatingLineEdit* mMakefileEdit;
+    QPushButton* mMakefileDetectButton;
+    QPushButton* mMakefileBrowseButton;
     QLabel* mMakeExeLabel;
     Widgets::FileTypeValidatingLineEdit* mMakeExeEdit;
     QPushButton* mMakeExeDetectButton;
@@ -97,8 +115,11 @@ public:
 
     virtual inline QString executable() const {return mData->makeExe();}
     virtual inline ProjectExplorer::ApplicationLauncher::Mode runMode(void) const {return ProjectExplorer::ApplicationLauncher::Gui;}
-    inline QString workingDirectory(void) const {return mData->workingDirectory;}
-    QString commandLineArguments(void) const;
+    virtual inline QString workingDirectory(void) const {return mData->workingDirectory;}
+    virtual QString commandLineArguments(void) const;
+
+    void setMakefile(const Utils::FileName& makefile);
+    inline Utils::FileName makefile(void) const {return mData->makefile();}
 
     QVariantMap toMap(void) const;
     bool fromMap(const QVariantMap& map);

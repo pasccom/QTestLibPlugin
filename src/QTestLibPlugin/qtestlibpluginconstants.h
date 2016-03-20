@@ -39,6 +39,7 @@ const QString LineWidthKey = QLatin1String("LineWidth");
 // Test run configuration settings:
 const QString WorkingDirectoryKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".WorkingDirectory");
 const QString MakeExeKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".MakeExe");
+const QString MakefileKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".Makefile");
 const QString TestRunnerKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".TestRunner");
 const QString MakeJobNumberKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".JobNumber");
 
