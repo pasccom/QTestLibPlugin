@@ -63,7 +63,7 @@ class TestRunConfigurationWidget : public QWidget
 {
     Q_OBJECT
 public:
-    TestRunConfigurationWidget(TestRunConfigurationData* data, QWidget* parent = NULL);
+    TestRunConfigurationWidget(TestRunConfigurationData* data, Utils::MacroExpander *macroExpander, QWidget* parent = NULL);
 private slots:
     void updateWorkingDirectory(bool valid);
     void updateWorkingDirectory(void);
@@ -112,11 +112,11 @@ class TestRunConfiguration : public ProjectExplorer::LocalApplicationRunConfigur
 public:
     ~TestRunConfiguration();
 
-    inline QWidget* createConfigurationWidget(void) {return new TestRunConfigurationWidget(mData);}
+    inline QWidget* createConfigurationWidget(void) {return new TestRunConfigurationWidget(mData, macroExpander());}
 
-    virtual inline QString executable() const {return mData->makeExe().toString();}
     virtual inline ProjectExplorer::ApplicationLauncher::Mode runMode(void) const {return ProjectExplorer::ApplicationLauncher::Gui;}
-    virtual inline QString workingDirectory(void) const {return mData->workingDirectory.toString();}
+    virtual QString executable() const;
+    virtual QString workingDirectory(void) const;
     virtual QString commandLineArguments(void) const;
 
     void setMakefile(const Utils::FileName& makefile);

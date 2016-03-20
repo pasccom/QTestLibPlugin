@@ -5,6 +5,8 @@
 
 #include "Widgets/filetypevalidatinglineedit.h"
 
+#include <coreplugin/variablechooser.h>
+
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/kitinformation.h>
 #include <projectexplorer/localenvironmentaspect.h>
@@ -117,6 +119,19 @@ bool TestRunConfiguration::fromMap(const QVariantMap& map)
     return mData->fromMap(map) && ProjectExplorer::RunConfiguration::fromMap(map);
 }
 
+QString TestRunConfiguration::executable() const
+{
+    if (macroExpander() != NULL)
+        return macroExpander()->expand(mData->makeExe().toString());
+    return mData->makeExe().toString();
+}
+
+QString TestRunConfiguration::workingDirectory(void) const
+{
+    if (macroExpander() != NULL)
+        return macroExpander()->expand(mData->workingDirectory.toString());
+    return mData->workingDirectory.toString();
+}
 
 QString TestRunConfiguration::commandLineArguments(void) const
 {
@@ -126,27 +141,30 @@ QString TestRunConfiguration::commandLineArguments(void) const
     if (!testCmdArgs.isEmpty())
         cmdArgs << QString(QLatin1String("TESTARGS=\"%1\"")).arg(testCmdArgs.join(QLatin1Char(' ')));
 
-    qDebug() << "Command line arguments:" << cmdArgs;
-
+    if (macroExpander() != NULL)
+        return macroExpander()->expandProcessArgs(cmdArgs.join(QLatin1Char(' ')));
     return cmdArgs.join(QLatin1Char(' '));
 }
 
-TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData* data, QWidget* parent)
+TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData* data, Utils::MacroExpander* macroExpander, QWidget* parent)
     : QWidget(parent), mData(data)
 {
     mWorkingDirectoryEdit = new Widgets::FileTypeValidatingLineEdit(this);
+    mWorkingDirectoryEdit->setMacroExpander(macroExpander);
     mWorkingDirectoryEdit->setAcceptDirectories(true);
     mWorkingDirectoryEdit->setText(mData->workingDirectory.toString());
     mWorkingDirectoryLabel = new QLabel(tr("Working directory:"), this);
     mWorkingDirectoryLabel->setBuddy(mWorkingDirectoryEdit);
     mWorkingDirectoryButton = new QPushButton(tr("Browse..."), this);
     mMakefileEdit = new Widgets::FileTypeValidatingLineEdit(this);
+    mMakefileEdit->setMacroExpander(macroExpander);
     mMakefileEdit->setText(mData->makefile().toString());
     mMakefileLabel = new QLabel(tr("Makefile:"), this);
     mMakefileLabel->setBuddy(mWorkingDirectoryEdit);
     mMakefileDetectButton = new QPushButton(tr("Auto-detect"), this);
     mMakefileBrowseButton = new QPushButton(tr("Browse..."), this);
     mMakeExeEdit = new Widgets::FileTypeValidatingLineEdit(this);
+    mMakeExeEdit->setMacroExpander(macroExpander);
     mMakeExeEdit->setRequireExecutable(true);
     mMakeExeEdit->setText(mData->makeExe().toString());
     if (Utils::HostOsInfo::isWindowsHost())
@@ -158,6 +176,7 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mMakeExeDetectButton = new QPushButton(tr("Auto-detect"), this);
     mMakeExeBrowseButton = new QPushButton(tr("Browse..."), this);
     mTestRunnerEdit = new Widgets::FileTypeValidatingLineEdit(this);
+    mTestRunnerEdit->setMacroExpander(macroExpander);
     mTestRunnerEdit->setAcceptEmpty(true);
     mTestRunnerEdit->setRequireExecutable(true);
     mTestRunnerEdit->setText(mData->testRunner);
@@ -189,6 +208,8 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mainLayout->addWidget(mJobsLabel, 4, 0, 1, 3, Qt::AlignLeft);
     mainLayout->addWidget(mJobsSpin, 4, 3, Qt::AlignRight);
     mainLayout->setColumnStretch(1, 1);
+
+    Core::VariableChooser::addSupportForChildWidgets(this, macroExpander);
 
     setLayout(mainLayout);
 
