@@ -31,10 +31,11 @@ class TestRunConfigurationData
 public:
     TestRunConfigurationData(ProjectExplorer::Target* target);
 
-    inline QString makeExe(void) const {return mMakeExe.isNull() ? mAutoMakeExe.toString() : mMakeExe.toString();}
+    inline Utils::FileName makeExe(void) const {return mMakeExe.isNull() ? mAutoMakeExe : mMakeExe;}
     inline bool usesDefaultMakeExe(void) const {return mMakeExe.isNull();}
     inline void useDefaultMakeExe(void) {mMakeExe = Utils::FileName();}
-    void setMakeExe(const QString& path);
+    inline void setMakeExe(const QString& path) {setMakeExe(Utils::FileName::fromUserInput(path));}
+    inline void setMakeExe(const Utils::FileName& makeExe) {mMakeExe = (mAutoMakeExe == makeExe ? Utils::FileName() : makeExe);}
 
     inline Utils::FileName makefile(void) const {return mMakefile.isNull() ? mAutoMakefile : mMakefile;}
     inline bool usesDefaultMakefile(void) const {return mMakefile.isNull();}
@@ -113,7 +114,7 @@ public:
 
     inline QWidget* createConfigurationWidget(void) {return new TestRunConfigurationWidget(mData);}
 
-    virtual inline QString executable() const {return mData->makeExe();}
+    virtual inline QString executable() const {return mData->makeExe().toString();}
     virtual inline ProjectExplorer::ApplicationLauncher::Mode runMode(void) const {return ProjectExplorer::ApplicationLauncher::Gui;}
     virtual inline QString workingDirectory(void) const {return mData->workingDirectory;}
     virtual QString commandLineArguments(void) const;

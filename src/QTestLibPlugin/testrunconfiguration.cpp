@@ -27,13 +27,6 @@ TestRunConfigurationData::TestRunConfigurationData(ProjectExplorer::Target *targ
     }
 }
 
-void TestRunConfigurationData::setMakeExe(const QString& path)
-{
-    Utils::FileName makeExe = Utils::FileName::fromUserInput(path);
-
-    mMakeExe = (mAutoMakeExe == makeExe ? Utils::FileName() : makeExe);
-}
-
 QStringList TestRunConfigurationData::commandLineArguments(void) const
 {
     QStringList cmdArgs;
@@ -155,7 +148,7 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mMakefileBrowseButton = new QPushButton(tr("Browse..."), this);
     mMakeExeEdit = new Widgets::FileTypeValidatingLineEdit(this);
     mMakeExeEdit->setRequireExecutable(true);
-    mMakeExeEdit->setText(mData->makeExe());
+    mMakeExeEdit->setText(mData->makeExe().toString());
     if (Utils::HostOsInfo::isWindowsHost())
         mMakeExeEdit->setRequiredExtensions(QStringList() << QLatin1String("exe"));
     else
@@ -300,13 +293,13 @@ void TestRunConfigurationWidget::updateMakeExe(void)
     if (mMakeExeEdit->isValid())
         mData->setMakeExe(mMakeExeEdit->text());
     else
-        mMakeExeEdit->setText(mData->makeExe());
+        mMakeExeEdit->setText(mData->makeExe().toString());
 }
 
 void TestRunConfigurationWidget::autoDetectMakeExe(void)
 {
     mData->useDefaultMakeExe();
-    mMakeExeEdit->setText(mData->makeExe());
+    mMakeExeEdit->setText(mData->makeExe().toString());
 }
 void TestRunConfigurationWidget::browseMakeExe(void)
 {
@@ -314,11 +307,11 @@ void TestRunConfigurationWidget::browseMakeExe(void)
     if (Utils::HostOsInfo::isWindowsHost())
         filter = tr("Exécutable files *.exe");
 
-    QString me = QFileDialog::getOpenFileName(this, tr("Choose \"make\""), mData->makeExe(), filter, &filter);
+    QString me = QFileDialog::getOpenFileName(this, tr("Choose \"make\""), mData->makeExe().toString(), filter, &filter);
 
     if (!me.isNull())
         mData->setMakeExe(me);
-    mMakeExeEdit->setText(mData->makeExe());
+    mMakeExeEdit->setText(mData->makeExe().toString());
 }
 
 void TestRunConfigurationWidget::updateTestRunner(bool valid)
