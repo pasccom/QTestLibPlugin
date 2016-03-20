@@ -22,7 +22,7 @@ TestRunConfigurationData::TestRunConfigurationData(ProjectExplorer::Target *targ
     :  jobNumber(1), testRunner(), mAutoMakeExe(), mMakeExe()
 {
     if (target != NULL) {
-        workingDirectory = target->activeBuildConfiguration()->buildDirectory();
+        workingDirectory = Utils::FileName::fromString(QLatin1String("%{buildDir}"));
         Utils::Environment env = target->activeBuildConfiguration()->environment();
         ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit());
         mAutoMakeExe = Utils::FileName::fromString(toolChain->makeCommand(env));
@@ -50,7 +50,7 @@ QStringList TestRunConfigurationData::commandLineArguments(void) const
 
 QVariantMap TestRunConfigurationData::toMap(QVariantMap& map) const
 {
-    if (!workingDirectory.isNull())
+    if (workingDirectory.toString() != QLatin1String("%{buildDir}"))
         map.insert(Constants::WorkingDirectoryKey, workingDirectory.toString());
     if (!mMakeExe.isNull())
         map.insert(Constants::MakeExeKey, mMakeExe.toString());
@@ -65,7 +65,7 @@ QVariantMap TestRunConfigurationData::toMap(QVariantMap& map) const
 
 bool TestRunConfigurationData::fromMap(const QVariantMap& map)
 {
-    workingDirectory = Utils::FileName::fromString(map.value(Constants::WorkingDirectoryKey, QString()).toString());
+    workingDirectory = Utils::FileName::fromString(map.value(Constants::WorkingDirectoryKey, QLatin1String("%{buildDir}")).toString());
     mMakeExe = Utils::FileName::fromString(map.value(Constants::MakeExeKey, QString()).toString());
     mMakefile = Utils::FileName::fromString(map.value(Constants::MakefileKey, QString()).toString());
     testRunner = map.value(Constants::TestRunnerKey, QString()).toString();
