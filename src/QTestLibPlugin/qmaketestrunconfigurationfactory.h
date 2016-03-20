@@ -10,6 +10,7 @@ namespace ProjectExplorer {
 
 namespace QmakeProjectManager {
     class QmakeProject;
+    class QmakeProFileNode;
 }
 
 namespace QTestLibPlugin {
@@ -36,6 +37,9 @@ public:
 private:
     ProjectExplorer::RunConfiguration* doCreate(ProjectExplorer::Target* target, Core::Id id);
     ProjectExplorer::RunConfiguration* doRestore(ProjectExplorer::Target* target, const QVariantMap& map);
+
+    //void updateRunConfiguration(TestRunConfiguration* runConfig, QmakeProjectManager::QmakeProFileNode* qMakeRoot);
+
 };
 
 } // Internal

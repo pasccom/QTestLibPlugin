@@ -15,6 +15,20 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
+void updateRunConfiguration(TestRunConfiguration* runConfig, QmakeProjectManager::QmakeProFileNode* qMakeRoot)
+{
+    if (qMakeRoot == NULL)
+        return;
+    QStringList makefile = qMakeRoot->variableValue(QmakeProjectManager::Makefile);
+    if (makefile.size() == 0) {
+        runConfig->setMakefile(Utils::FileName());
+    } else {
+        QTC_ASSERT(makefile.size() == 1, );
+        runConfig->setMakefile(Utils::FileName::fromString(qMakeRoot->targetInformation().buildDir).appendPath(makefile.first()));
+    }
+}
+
+
 QMakeTestRunConfigurationFactory::QMakeTestRunConfigurationFactory(QObject *parent) :
     IRunConfigurationFactory(parent)
 {
@@ -113,6 +127,13 @@ ProjectExplorer::RunConfiguration *QMakeTestRunConfigurationFactory::clone(Proje
     TestRunConfiguration* runConfig = new TestRunConfiguration(target, Core::Id(Constants::TestRunConfigurationId));
     runConfig->fromMap(product->toMap());
 
+    QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(target->project());
+    connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
+            this, [runConfig, qMakeProject] () {
+        updateRunConfiguration(runConfig, qMakeProject->rootQmakeProjectNode());
+    });
+    updateRunConfiguration(runConfig, qMakeProject->rootQmakeProjectNode());
+
     return runConfig;
 }
 
@@ -121,6 +142,13 @@ ProjectExplorer::RunConfiguration* QMakeTestRunConfigurationFactory::doCreate(Pr
     qDebug() << "Creating run configuration for target:" << target->displayName();
     TestRunConfiguration* runConfig = new TestRunConfiguration(target, id);
 
+    QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(target->project());
+    connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
+            this, [runConfig, qMakeProject] () {
+        updateRunConfiguration(runConfig, qMakeProject->rootQmakeProjectNode());
+    });
+    updateRunConfiguration(runConfig, qMakeProject->rootQmakeProjectNode());
+
     return runConfig;
 }
 
@@ -128,6 +156,13 @@ ProjectExplorer::RunConfiguration* QMakeTestRunConfigurationFactory::doRestore(P
 {
     qDebug() << "Restoring run configuration for target:" << target->displayName();
     TestRunConfiguration* runConfig = new TestRunConfiguration(target, ProjectExplorer::idFromMap(map));
+
+    QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(target->project());
+    connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
+            this, [runConfig, qMakeProject] () {
+        updateRunConfiguration(runConfig, qMakeProject->rootQmakeProjectNode());
+    });
+    updateRunConfiguration(runConfig, qMakeProject->rootQmakeProjectNode());
 
     return runConfig;
 }
