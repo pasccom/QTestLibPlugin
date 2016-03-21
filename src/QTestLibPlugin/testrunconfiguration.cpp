@@ -7,26 +7,40 @@
 
 #include <coreplugin/variablechooser.h>
 
+#include <projectexplorer/projectexplorer.h>
+#include <projectexplorer/projectexplorersettings.h>
+#include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/kitinformation.h>
 #include <projectexplorer/localenvironmentaspect.h>
 #include <projectexplorer/toolchain.h>
+#include <projectexplorer/gcctoolchain.h>
+#include <projectexplorer/customtoolchain.h>
 #include <projectexplorer/target.h>
 
 #include <QtWidgets>
 
+#define UNSUPPORTED_TOOL_CHAIN  0
+#define GCC_BASED_TOOL_CHAIN    1
+#define NMMAKE_MSVC_TOOL_CHAIN  2
+#define JOM_MSVC_TOOL_CHAIN     3
+#define CUSTOM_TOOL_CHAIN       4
+
 namespace QTestLibPlugin {
 namespace Internal {
 
-TestRunConfigurationData::TestRunConfigurationData(ProjectExplorer::Target *target)
-    :  jobNumber(1), testRunner(), mAutoMakeExe(), mMakeExe()
+TestRunConfigurationData::TestRunConfigurationData(QObject* parent)
+    : QObject(parent), jobNumber(1), testRunner(), mTargetToolChain(UNSUPPORTED_TOOL_CHAIN), mAutoMakeExe(), mMakeExe(), mAutoMakefile(), mMakefile()
 {
-    if (target != NULL) {
-        workingDirectory = Utils::FileName::fromString(QLatin1String("%{buildDir}"));
-        Utils::Environment env = target->activeBuildConfiguration()->environment();
-        ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit());
-        mAutoMakeExe = Utils::FileName::fromString(toolChain->makeCommand(env));
-    }
+    workingDirectory = Utils::FileName::fromString(QLatin1String("%{buildDir}"));
+}
+
+void TestRunConfigurationData::setTargetToolChain(unsigned char newToolChain)
+{
+    unsigned char oldToolChain = mTargetToolChain;
+    mTargetToolChain = newToolChain;
+    if (newToolChain != oldToolChain)
+        emit targetToolChainChanged(newToolChain);
 }
 
 QStringList TestRunConfigurationData::commandLineArguments(void) const
@@ -38,9 +52,20 @@ QStringList TestRunConfigurationData::commandLineArguments(void) const
     if (makefilePath.contains(QLatin1Char(' ')))
         makefilePath = QLatin1Char('\"') + makefilePath + QLatin1Char('\"');
 
-    cmdArgs << QLatin1String("-f") << makefilePath;
-    if (jobNumber > 1)
-        cmdArgs << QString(QLatin1String("-j%1")).arg(jobNumber);
+    // Makefile path for make, nmake and jom
+    if ((mTargetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (mTargetToolChain == JOM_MSVC_TOOL_CHAIN))
+        cmdArgs << QLatin1String("/F") << makefilePath;
+    else if (mTargetToolChain == GCC_BASED_TOOL_CHAIN)
+        cmdArgs << QLatin1String("-f") << makefilePath;
+
+    // Number of jobs for make and jom
+    if (jobNumber > 1) {
+        if (mTargetToolChain == JOM_MSVC_TOOL_CHAIN)
+            cmdArgs << QString(QLatin1String("/J %1")).arg(jobNumber);
+        else if (mTargetToolChain != GCC_BASED_TOOL_CHAIN)
+            cmdArgs << QString(QLatin1String("-j%1")).arg(jobNumber);
+        // NOTE other targets don't support setting job number.
+    }
     cmdArgs << QLatin1String("check");
     if (!testRunner.isEmpty())
         cmdArgs << QString(QLatin1String("TESTRUNNER=\"%1\"")).arg(testRunner);
@@ -77,6 +102,8 @@ bool TestRunConfigurationData::fromMap(const QVariantMap& map)
 TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id):
     ProjectExplorer::LocalApplicationRunConfiguration(parent, id)
 {
+    setDefaultDisplayName(QLatin1String("make check"));
+
     /* TODO ensure this run configuration cannot be run with valgrind...
      * To do this, the code of the Valgrind plugin should be altered:
      * 1.ValgrindRunControlFactory should check the type of the given RunConfiguration (e.g. in canRun())
@@ -86,14 +113,36 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core
     addExtraAspect(new ProjectExplorer::LocalEnvironmentAspect(this));
     addExtraAspect(new TestRunConfigurationExtraAspect(this));
 
-    mData = new TestRunConfigurationData(parent);
-    setMakefile(Utils::FileName());
-    setDefaultDisplayName(QLatin1String("make check"));
+    QTC_ASSERT(parent != NULL, return);
+
+    mData = new TestRunConfigurationData(this);
+
+    connect(parent, SIGNAL(kitChanged()),
+            this, SLOT(handleTargetKitChange()));
+    handleTargetKitChange();
 }
 
-TestRunConfiguration::~TestRunConfiguration()
+void TestRunConfiguration::handleTargetKitChange(void)
 {
-    delete mData;
+    QTC_ASSERT(target() != NULL, return);
+    QTC_ASSERT(target()->kit() != NULL, return);
+    QTC_ASSERT(target()->activeBuildConfiguration() != NULL, return);
+
+    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target()->kit());
+
+    Utils::Environment env = target()->activeBuildConfiguration()->environment();
+    mData->setAutoMakeExe(Utils::FileName::fromString(toolChain->makeCommand(env)));
+
+    if (dynamic_cast<ProjectExplorer::GccToolChain*>(toolChain) != NULL) {
+        mData->setTargetToolChain(GCC_BASED_TOOL_CHAIN);
+    } else if (dynamic_cast<ProjectExplorer::CustomToolChain*>(toolChain) != NULL) {
+        mData->setTargetToolChain(CUSTOM_TOOL_CHAIN);
+    } else if ((toolChain->typeId() == ProjectExplorer::Constants::MSVC_TOOLCHAIN_TYPEID) || (toolChain->typeId() == ProjectExplorer::Constants::WINCE_TOOLCHAIN_TYPEID)) {
+        if (ProjectExplorer::ProjectExplorerPlugin::projectExplorerSettings().useJom)
+            mData->setTargetToolChain(JOM_MSVC_TOOL_CHAIN);
+        else
+            mData->setTargetToolChain(NMMAKE_MSVC_TOOL_CHAIN);
+    }
 }
 
 void TestRunConfiguration::setMakefile(const Utils::FileName& makefile)
@@ -128,8 +177,15 @@ QString TestRunConfiguration::executable() const
 
 QString TestRunConfiguration::workingDirectory(void) const
 {
+    if ((mData->targetToolChain() == CUSTOM_TOOL_CHAIN) || (mData->targetToolChain() == UNSUPPORTED_TOOL_CHAIN)) {
+        QTC_ASSERT(target()->activeBuildConfiguration() != NULL, return QLatin1String("."));
+        return target()->activeBuildConfiguration()->buildDirectory().toString();
+    }
+
+    QString wd = mData->workingDirectory.toString();
     if (macroExpander() != NULL)
-        return macroExpander()->expand(mData->workingDirectory.toString());
+        wd = macroExpander()->expand(wd);
+
     return mData->workingDirectory.toString();
 }
 
@@ -247,6 +303,25 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
 
     connect(mJobsSpin, SIGNAL(valueChanged(int)),
             this, SLOT(updateJubNumber(int)));
+
+    connect(data, SIGNAL(targetToolChainChanged(unsigned char)),
+            this, SLOT(handleTargetToolChainChange(unsigned char)));
+    handleTargetToolChainChange(data->targetToolChain());
+}
+
+void TestRunConfigurationWidget::handleTargetToolChainChange(unsigned char targetToolChain)
+{
+    mWorkingDirectoryLabel->setVisible((targetToolChain == GCC_BASED_TOOL_CHAIN) || (targetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (targetToolChain == JOM_MSVC_TOOL_CHAIN));
+    mWorkingDirectoryEdit->setVisible((targetToolChain == GCC_BASED_TOOL_CHAIN) || (targetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (targetToolChain == JOM_MSVC_TOOL_CHAIN));
+    mWorkingDirectoryButton->setVisible((targetToolChain == GCC_BASED_TOOL_CHAIN) || (targetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (targetToolChain == JOM_MSVC_TOOL_CHAIN));
+
+    mMakefileLabel->setVisible((targetToolChain == GCC_BASED_TOOL_CHAIN) || (targetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (targetToolChain == JOM_MSVC_TOOL_CHAIN));
+    mMakefileEdit->setVisible((targetToolChain == GCC_BASED_TOOL_CHAIN) || (targetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (targetToolChain == JOM_MSVC_TOOL_CHAIN));
+    mMakefileDetectButton->setVisible((targetToolChain == GCC_BASED_TOOL_CHAIN) || (targetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (targetToolChain == JOM_MSVC_TOOL_CHAIN));
+    mMakefileBrowseButton->setVisible((targetToolChain == GCC_BASED_TOOL_CHAIN) || (targetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (targetToolChain == JOM_MSVC_TOOL_CHAIN));
+
+    mJobsLabel->setVisible((targetToolChain == GCC_BASED_TOOL_CHAIN) || (targetToolChain == JOM_MSVC_TOOL_CHAIN));
+    mJobsSpin->setVisible((targetToolChain == GCC_BASED_TOOL_CHAIN) || (targetToolChain == JOM_MSVC_TOOL_CHAIN));
 }
 
 void TestRunConfigurationWidget::updateWorkingDirectory(bool valid)

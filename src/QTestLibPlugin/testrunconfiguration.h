@@ -17,6 +17,7 @@ class QSpinBox;
 
 namespace ProjectExplorer {
     class Kit;
+    class ToolChain;
 }
 
 namespace QTestLibPlugin {
@@ -26,14 +27,16 @@ namespace Widgets {
 
 namespace Internal {
 
-class TestRunConfigurationData
+class TestRunConfigurationData : public QObject
 {
+    Q_OBJECT
 public:
-    TestRunConfigurationData(ProjectExplorer::Target* target);
+    TestRunConfigurationData(QObject* parent = NULL);
 
     inline Utils::FileName makeExe(void) const {return mMakeExe.isNull() ? mAutoMakeExe : mMakeExe;}
     inline bool usesDefaultMakeExe(void) const {return mMakeExe.isNull();}
     inline void useDefaultMakeExe(void) {mMakeExe = Utils::FileName();}
+    inline void setAutoMakeExe(const Utils::FileName& makeExe) {mAutoMakeExe = makeExe;}
     inline void setMakeExe(const QString& path) {setMakeExe(Utils::FileName::fromUserInput(path));}
     inline void setMakeExe(const Utils::FileName& makeExe) {mMakeExe = (mAutoMakeExe == makeExe ? Utils::FileName() : makeExe);}
 
@@ -52,7 +55,12 @@ public:
     int jobNumber;
     QString testRunner;
     Utils::FileName workingDirectory;
+    void setTargetToolChain(unsigned char newToolChain);
+    inline unsigned char targetToolChain(void) const {return mTargetToolChain;}
+signals:
+    void targetToolChainChanged(unsigned char newToolChain);
 private:
+    unsigned char mTargetToolChain;
     Utils::FileName mAutoMakeExe;
     Utils::FileName mMakeExe;
     Utils::FileName mAutoMakefile;
@@ -84,6 +92,8 @@ private slots:
     void browseTestRunner(void);
 
     void updateJubNumber(int jobNumber);
+
+    void handleTargetToolChainChange(unsigned char targetToolChain);
 private:
     TestRunConfigurationData* mData;
 
@@ -110,8 +120,6 @@ class TestRunConfiguration : public ProjectExplorer::LocalApplicationRunConfigur
 {
     Q_OBJECT
 public:
-    ~TestRunConfiguration();
-
     inline QWidget* createConfigurationWidget(void) {return new TestRunConfigurationWidget(mData, macroExpander());}
 
     virtual inline ProjectExplorer::ApplicationLauncher::Mode runMode(void) const {return ProjectExplorer::ApplicationLauncher::Gui;}
@@ -124,6 +132,8 @@ public:
 
     QVariantMap toMap(void) const;
     bool fromMap(const QVariantMap& map);
+private slots:
+    void handleTargetKitChange(void);
 private:
     TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id);
 
