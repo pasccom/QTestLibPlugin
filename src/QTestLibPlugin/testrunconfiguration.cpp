@@ -43,34 +43,20 @@ void TestRunConfigurationData::setTargetToolChain(unsigned char newToolChain)
         emit targetToolChainChanged(newToolChain);
 }
 
-QStringList TestRunConfigurationData::commandLineArguments(void) const
+QString TestRunConfigurationData::toMakeFilePath(const QString& path) const
 {
-    QStringList cmdArgs;
-    QString makefilePath = makefile().toString();
+    if (!Utils::HostOsInfo::isWindowsHost() || (mTargetToolChain != GCC_BASED_TOOL_CHAIN))
+        return path;
 
-    makefilePath.replace(QLatin1Char('\"'), QLatin1String("\\\""));
-    if (makefilePath.contains(QLatin1Char(' ')))
-        makefilePath = QLatin1Char('\"') + makefilePath + QLatin1Char('\"');
+    // The path must be converted to MSYS path as used in the Makefile
+    QString mSysPath = path;
 
-    // Makefile path for make, nmake and jom
-    if ((mTargetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (mTargetToolChain == JOM_MSVC_TOOL_CHAIN))
-        cmdArgs << QLatin1String("/F") << makefilePath;
-    else if (mTargetToolChain == GCC_BASED_TOOL_CHAIN)
-        cmdArgs << QLatin1String("-f") << makefilePath;
+    mSysPath.replace(QLatin1Char('\\'), QLatin1Char('/'));
+    if (QDir(path).isAbsolute())
+        mSysPath.replace(QRegExp(QLatin1String("^([^:]+):/")), QLatin1String("/\\1/"));
 
-    // Number of jobs for make and jom
-    if (jobNumber > 1) {
-        if (mTargetToolChain == JOM_MSVC_TOOL_CHAIN)
-            cmdArgs << QString(QLatin1String("/J %1")).arg(jobNumber);
-        else if (mTargetToolChain != GCC_BASED_TOOL_CHAIN)
-            cmdArgs << QString(QLatin1String("-j%1")).arg(jobNumber);
-        // NOTE other targets don't support setting job number.
-    }
-    cmdArgs << QLatin1String("check");
-    if (!testRunner.isEmpty())
-        cmdArgs << QString(QLatin1String("TESTRUNNER=\"%1\"")).arg(testRunner);
-
-    return cmdArgs;
+    qDebug() << path << "--msys>>" << mSysPath;
+    return mSysPath;
 }
 
 QVariantMap TestRunConfigurationData::toMap(QVariantMap& map) const
@@ -186,19 +172,53 @@ QString TestRunConfiguration::workingDirectory(void) const
     if (macroExpander() != NULL)
         wd = macroExpander()->expand(wd);
 
-    return mData->workingDirectory.toString();
+    return wd;
 }
 
 QString TestRunConfiguration::commandLineArguments(void) const
 {
-    QStringList cmdArgs = mData->commandLineArguments();
-    Q_ASSERT(extraAspect<TestRunConfigurationExtraAspect>() != NULL);
-    QStringList testCmdArgs = extraAspect<TestRunConfigurationExtraAspect>()->commandLineArguments();
-    if (!testCmdArgs.isEmpty())
-        cmdArgs << QString(QLatin1String("TESTARGS=\"%1\"")).arg(testCmdArgs.join(QLatin1Char(' ')));
+    QStringList cmdArgs;
 
+    // Makefile path for make, nmake and jom
+    QString makefilePath = mData->makefile().toString();
+    makefilePath.replace(QLatin1Char('\"'), QLatin1String("\\\""));
+    if (makefilePath.contains(QLatin1Char(' ')))
+        makefilePath = QLatin1Char('\"') + makefilePath + QLatin1Char('\"');
     if (macroExpander() != NULL)
-        return macroExpander()->expandProcessArgs(cmdArgs.join(QLatin1Char(' ')));
+        makefilePath = macroExpander()->expand(makefilePath);
+    if ((mData->targetToolChain() == NMMAKE_MSVC_TOOL_CHAIN) || (mData->targetToolChain() == JOM_MSVC_TOOL_CHAIN))
+        cmdArgs << QLatin1String("/F") << makefilePath;
+    else if (mData->targetToolChain() == GCC_BASED_TOOL_CHAIN)
+        cmdArgs << QLatin1String("-f") << makefilePath;
+
+    // Number of jobs for make and jom
+    if (mData->jobNumber > 1) {
+        if (mData->targetToolChain() == JOM_MSVC_TOOL_CHAIN)
+            cmdArgs << QString(QLatin1String("/J %1")).arg(mData->jobNumber);
+        else if (mData->targetToolChain() != GCC_BASED_TOOL_CHAIN)
+            cmdArgs << QString(QLatin1String("-j%1")).arg(mData->jobNumber);
+        // NOTE other targets don't support setting job number.
+    }
+
+    cmdArgs << QLatin1String("check");
+
+    // Test runner:
+    if (!mData->testRunner.isEmpty()) {
+        QString testRunner = mData->testRunner;
+        if (macroExpander() != NULL)
+            testRunner = macroExpander()->expand(testRunner);
+        cmdArgs << QString(QLatin1String("TESTRUNNER=\"%1\"")).arg(mData->toMakeFilePath(testRunner));
+    }
+
+    // Test arguments:
+    Q_ASSERT(extraAspect<TestRunConfigurationExtraAspect>() != NULL);
+    QString testCmdArgs = extraAspect<TestRunConfigurationExtraAspect>()->commandLineArguments().join(QLatin1Char(' '));
+    if (macroExpander() != NULL)
+        testCmdArgs = macroExpander()->expandProcessArgs(testCmdArgs);
+    if (!testCmdArgs.isEmpty())
+        cmdArgs << QString(QLatin1String("TESTARGS=\"%1\"")).arg(testCmdArgs);
+
+    qDebug() << "Run config command line arguments:" << cmdArgs;
     return cmdArgs.join(QLatin1Char(' '));
 }
 

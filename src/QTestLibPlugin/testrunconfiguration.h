@@ -50,7 +50,7 @@ public:
     QVariantMap toMap(QVariantMap& map) const;
     bool fromMap(const QVariantMap& map);
 
-    QStringList commandLineArguments(void) const;
+    QString toMakeFilePath(const QString& path) const;
 
     int jobNumber;
     QString testRunner;
