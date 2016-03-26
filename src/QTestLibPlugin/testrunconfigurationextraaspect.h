@@ -11,6 +11,10 @@ class QCheckBox;
 class QPushButton;
 class QSpinBox;
 
+namespace Utils {
+    class DetailsWidget;
+}
+
 namespace QTestLibPlugin {
 namespace Widgets {
     class FileTypeValidatingLineEdit;
@@ -27,6 +31,7 @@ public:
     TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect);
     inline QString displayName() const {return tr("Test arguments");}
 private slots:
+    void updateSummary(void);
     void updateFormat(int index);
     void updateVerbosity(int index);
 
@@ -45,6 +50,7 @@ private slots:
 private:
     TestRunConfigurationExtraAspect* mAspect;
 
+    Utils::DetailsWidget* mDetailWidget;
     QLabel* mFormatLabel;
     QComboBox* mFormatCombo;
     QLabel* mVerbosityLabel;
