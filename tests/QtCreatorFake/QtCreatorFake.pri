@@ -11,8 +11,7 @@ defineReplace(qtLibraryName) {
    CONFIG(debug, debug|release) {
       !debug_and_release|build_pass {
           mac:RET = $$member(LIBRARY_NAME, 0)_debug
-#          else:win32:RET = $$member(LIBRARY_NAME, 0)d
-          else:win32:RET = $$member(LIBRARY_NAME, 0)
+          else:win32:RET = $$member(LIBRARY_NAME, 0)d
       }
    }
    isEmpty(RET):RET = $$LIBRARY_NAME
@@ -46,8 +45,8 @@ unix {
     !isEmpty(QTC_PLUGIN_DEPENDS):LIBS *= -L$$IDE_BUILD_TREE/plugins
     !isEmpty(QTC_PLUGIN_DEPENDS):QMAKE_LFLAGS += -Wl,-rpath=$${IDE_BUILD_TREE}/plugins
 } else:win32 {
-    !isEmpty(QTC_PLUGIN_DEPENDS):LIBS *= -L$$IDE_BUILD_TREE/bin
-    !isEmpty(QTC_PLUGIN_DEPENDS):QMAKE_LFLAGS += -Wl,-rpath=$${IDE_BUILD_TREE}/bin
+    !isEmpty(QTC_PLUGIN_DEPENDS):LIBS *= -L$$IDE_BUILD_TREE/lib/qtcreator/plugins
+    !isEmpty(QTC_PLUGIN_DEPENDS):QMAKE_LFLAGS += -Wl,-rpath=$${IDE_BUILD_TREE}/lib/qtcreator/plugins
 }
 # Recursively resolve library deps
 done_plugins =
@@ -79,7 +78,7 @@ unix {
     !isEmpty(QTC_LIB_DEPENDS):QMAKE_LFLAGS += -Wl,-rpath=$${IDE_BUILD_TREE}
 } else:win32 {
     !isEmpty(QTC_LIB_DEPENDS):LIBS *= -L$$IDE_BUILD_TREE/bin
-    !isEmpty(QTC_LIB_DEPENDS):QMAKE_LFLAGS += -Wl,-rpath=$${IDE_BUILD_TREE/bin}
+    #!isEmpty(QTC_LIB_DEPENDS):QMAKE_LFLAGS += -Wl,-rpath=$$IDE_BUILD_TREE/bin
 }
 # Recursively resolve library deps
 done_libs =
