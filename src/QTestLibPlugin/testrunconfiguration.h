@@ -72,6 +72,8 @@ class TestRunConfigurationWidget : public QWidget
     Q_OBJECT
 public:
     TestRunConfigurationWidget(TestRunConfigurationData* data, Utils::MacroExpander *macroExpander, QWidget* parent = NULL);
+protected:
+    void showEvent(QShowEvent *se);
 private slots:
     void updateWorkingDirectory(bool valid);
     void updateWorkingDirectory(void);

@@ -228,13 +228,11 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mWorkingDirectoryEdit = new Widgets::FileTypeValidatingLineEdit(this);
     mWorkingDirectoryEdit->setMacroExpander(macroExpander);
     mWorkingDirectoryEdit->setAcceptDirectories(true);
-    mWorkingDirectoryEdit->setText(mData->workingDirectory.toString());
     mWorkingDirectoryLabel = new QLabel(tr("Working directory:"), this);
     mWorkingDirectoryLabel->setBuddy(mWorkingDirectoryEdit);
     mWorkingDirectoryButton = new QPushButton(tr("Browse..."), this);
     mMakefileEdit = new Widgets::FileTypeValidatingLineEdit(this);
     mMakefileEdit->setMacroExpander(macroExpander);
-    mMakefileEdit->setText(mData->makefile().toString());
     mMakefileLabel = new QLabel(tr("Makefile:"), this);
     mMakefileLabel->setBuddy(mWorkingDirectoryEdit);
     mMakefileDetectButton = new QPushButton(tr("Auto-detect"), this);
@@ -242,7 +240,6 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mMakeExeEdit = new Widgets::FileTypeValidatingLineEdit(this);
     mMakeExeEdit->setMacroExpander(macroExpander);
     mMakeExeEdit->setRequireExecutable(true);
-    mMakeExeEdit->setText(mData->makeExe().toString());
     if (Utils::HostOsInfo::isWindowsHost())
         mMakeExeEdit->setRequiredExtensions(QStringList() << QLatin1String("exe"));
     else
@@ -255,13 +252,11 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     mTestRunnerEdit->setMacroExpander(macroExpander);
     mTestRunnerEdit->setAcceptEmpty(true);
     mTestRunnerEdit->setRequireExecutable(true);
-    mTestRunnerEdit->setText(mData->testRunner);
     mTestRunnerLabel = new QLabel(tr("Test runner:"), this);
     mTestRunnerLabel->setBuddy(mTestRunnerLabel);
     mTestRunnerButton = new QPushButton(tr("Browse..."), this);
     mJobsSpin = new QSpinBox(this);
     mJobsSpin->setRange(1, QThread::idealThreadCount());
-    mJobsSpin->setValue(mData->jobNumber);
     mJobsLabel = new QLabel(tr("Number of jobs (for \"make\"):"), this);
     mJobsLabel->setBuddy(mJobsSpin);
 
@@ -324,9 +319,21 @@ TestRunConfigurationWidget::TestRunConfigurationWidget(TestRunConfigurationData*
     connect(mJobsSpin, SIGNAL(valueChanged(int)),
             this, SLOT(updateJubNumber(int)));
 
-    connect(data, SIGNAL(targetToolChainChanged(unsigned char)),
+    connect(mData, SIGNAL(targetToolChainChanged(unsigned char)),
             this, SLOT(handleTargetToolChainChange(unsigned char)));
-    handleTargetToolChainChange(data->targetToolChain());
+}
+
+void TestRunConfigurationWidget::showEvent(QShowEvent *se)
+{
+    mWorkingDirectoryEdit->setText(mData->workingDirectory.toString());
+    mMakefileEdit->setText(mData->makefile().toString());
+    mMakeExeEdit->setText(mData->makeExe().toString());
+    mTestRunnerEdit->setText(mData->testRunner);
+    mJobsSpin->setValue(mData->jobNumber);
+
+    handleTargetToolChainChange(mData->targetToolChain());
+
+    QWidget::showEvent(se);
 }
 
 void TestRunConfigurationWidget::handleTargetToolChainChange(unsigned char targetToolChain)
