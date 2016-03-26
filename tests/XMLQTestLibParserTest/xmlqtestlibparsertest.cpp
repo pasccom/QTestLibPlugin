@@ -28,6 +28,8 @@
 
 #include <QtTest>
 
+typedef QPair<QString, QString> EnvironmentVariable;
+
 class XMLQTestLibParserTest : public QObject
 {
     Q_OBJECT
@@ -54,7 +56,7 @@ private:
     void runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
     void runMakeCheck(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
     void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, QTestLibModelTester::Verbosity verbosity);
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::LocalApplicationRunConfiguration *runConfig);
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::LocalApplicationRunConfiguration *runConfig, const QLinkedList<EnvironmentVariable> &addToEnv = QLinkedList<EnvironmentVariable>());
 };
 
 void XMLQTestLibParserTest::data(void)
@@ -180,7 +182,9 @@ void XMLQTestLibParserTest::runMakeCheck(const QString& testName, QTestLibModelT
     runConfig.setDisplayName(testName);
     runConfig.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
     runConfig.setExecutable(MAKE_EXECUATBLE);
-    runConfig.setCommandLineArguments(QString("-s check TESTARGS=\"%1\"").arg(commandLineArguments(verbosity).join(' ')));
+    runConfig.setCommandLineArguments(QString("-s check"));
+    QLinkedList<EnvironmentVariable> addToEnv;
+    addToEnv << EnvironmentVariable("TESTARGS", commandLineArguments(verbosity).join(' '));
 
     // Creation of parser
     QTestLibPlugin::Internal::XMLQTestLibParserFactory factory(this);
@@ -188,7 +192,7 @@ void XMLQTestLibParserTest::runMakeCheck(const QString& testName, QTestLibModelT
     QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(&runConfig);
     QVERIFY2(parser, "Factory should return a valid parser");
 
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, &runConfig);
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, &runConfig, addToEnv);
     QAbstractItemModel *model = parser->getModel();
 
     checkTest(model, results, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in XML silent is equal to normal
@@ -204,11 +208,17 @@ void XMLQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedLi
     QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
 }
 
-QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::LocalApplicationRunConfiguration *runConfig)
+QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::LocalApplicationRunConfiguration *runConfig, const QLinkedList<EnvironmentVariable> &addToEnv)
 {
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results;
+
+    QProcessEnvironment env;
+    foreach(EnvironmentVariable var, addToEnv)
+        env.insert(var.first, var.second);
     QProcess testProc(this);
-    testProc.setWorkingDirectory(runConfig->workingDirectory() + "/");
+    testProc.setWorkingDirectory(runConfig->workingDirectory());
+    testProc.setProcessEnvironment(env);
+    qDebug() << testProc.processEnvironment().toStringList() << testProc.environment();
     testProc.start(runConfig->executable() + " " + runConfig->commandLineArguments(), QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
@@ -224,11 +234,11 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLib
         while (line.endsWith('\n') || line.endsWith('\r'))
             line.chop(1);
         // Lines added by make (even in silent mode)
-        if (line.startsWith("Makefile:"))
+        if (line.startsWith("Makefile"))
             continue;
-        if (line.startsWith("make["))
+        if (line.startsWith("make[") || line.startsWith("mingw32-make["))
             continue;
-        //qDebug() << "stdout:" << line;
+        qDebug() << "stdout:" << line;
         results << parser->parseStdoutLine(runControl, line);
     }
 
@@ -245,11 +255,11 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLib
         if (QString::compare(line, "Please contact the application's support team for more information.") == 0)
             continue;
         // Lines added by make (even in silent mode)
-        if (line.startsWith("make:"))
+        if (line.startsWith("make:") || line.startsWith("mingw32-make:"))
             continue;
-        if (line.startsWith("make["))
+        if (line.startsWith("make[") || line.startsWith("mingw32-make["))
             continue;
-        //qDebug() << "stderr:" << line;
+        qDebug() << "stderr:" << line;
         results << parser->parseStderrLine(runControl, line);
     }
 
