@@ -26,6 +26,8 @@
 #include <qmakeprojectmanager/qmakeproject.h>
 #include <qmakeprojectmanager/qmakenodes.h>
 
+#include <utils/hostosinfo.h>
+
 #include <QtDebug>
 
 namespace QTestLibPlugin {
@@ -67,9 +69,9 @@ bool BaseQMakeQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfigur
         QDir destDir(pro->targetInformation().destDir);
         if (!destDir.isAbsolute())
             destDir.setPath(pro->targetInformation().buildDir + QLatin1Char('/') + pro->targetInformation().destDir);
-        qDebug() << "TARGET:" << destDir.absoluteFilePath(pro->targetInformation().target);
+        qDebug() << "TARGET:" << destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target));
         qDebug() << "Executable:" << localRunConfig->executable();
-        if (QDir(destDir.absoluteFilePath(pro->targetInformation().target)) != QDir(localRunConfig->executable()))
+        if (QDir(destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target))) != QDir(localRunConfig->executable()))
             continue;
         // Check the testlib is included:
         qDebug() << "QT variable:" << pro->variableValue(QmakeProjectManager::QtVar);
