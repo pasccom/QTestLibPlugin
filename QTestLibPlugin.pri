@@ -15,7 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 
+# Build tests
 BUILD_TESTS=1
+# Build plugin into user config directory
+USE_USER_DESTDIR=yes
 
 QTESTLIBPLUGIN_BIN = $$PWD/bin
 QTESTLIBPLUGIN_LIB = $$PWD/plugin/QTestLibPlugin

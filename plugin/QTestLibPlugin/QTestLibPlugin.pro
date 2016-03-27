@@ -62,14 +62,6 @@ exists(../../QtCreator.local.pri) {
     include(../../QtCreator.local.pri)
 }
 
-## uncomment to build plugin into user config directory
-## <localappdata>/plugins/<ideversion>
-##    where <localappdata> is e.g.
-##    "%LOCALAPPDATA%\QtProject\qtcreator" on Windows Vista and later
-##    "$XDG_DATA_HOME/data/QtProject/qtcreator" or "~/.local/share/data/QtProject/qtcreator" on Linux
-##    "~/Library/Application Support/QtProject/Qt Creator" on Mac
-USE_USER_DESTDIR = yes
-
 include($$QTCREATOR_SOURCES/src/qtcreatorplugin.pri)
 INSTALLS =
 
@@ -184,13 +176,15 @@ defineTest(qtCreatorVersionLessThan) {
 }
 
 win32 {
-    qtCreatorVersionLessThan(3.5.1) {
-        !qtCreatorVersionLessThan(3.3.0) {
-        message("Corrected bug affecting windows between verions 3.3.0 included and 3.5.1 excluded")
-        DESTDIRAPPNAME = "qtcreator"
-        DESTDIRBASE = "$$(LOCALAPPDATA)"
-        isEmpty(DESTDIRBASE):DESTDIRBASE="$$(USERPROFILE)\Local Settings\Application Data"
-        DESTDIR = "$$DESTDIRBASE/data/QtProject/$$DESTDIRAPPNAME/plugins/$$QTCREATOR_VERSION"
+    !isEmpty(USE_USER_DESTDIR) {
+        qtCreatorVersionLessThan(3.5.1) {
+            !qtCreatorVersionLessThan(3.3.0) {
+            message("Corrected bug affecting windows between verions 3.3.0 included and 3.5.1 excluded")
+            DESTDIRAPPNAME = "qtcreator"
+            DESTDIRBASE = "$$(LOCALAPPDATA)"
+            isEmpty(DESTDIRBASE):DESTDIRBASE="$$(USERPROFILE)\Local Settings\Application Data"
+            DESTDIR = "$$DESTDIRBASE/data/QtProject/$$DESTDIRAPPNAME/plugins/$$QTCREATOR_VERSION"
+            }
         }
     }
 }
