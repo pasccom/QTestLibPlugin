@@ -37,24 +37,24 @@ SUBDIRS = $$QTESTLIBPLUGIN_SRC
 }
 
 SUBDIRS += $$QTESTLIBPLUGIN_LIB
+SUBDIRS += $$QTESTLIBPLUGIN_I18N
 
 include(gcov.pri)
 
 ###### Translation files update (not handled by Qt)
 
-lupdate.commands = ( test -d $$QTESTLIBPLUGIN_LIB || mkdir -p $$QTESTLIBPLUGIN_LIB ) && \
-                   cd $$QTESTLIBPLUGIN_LIB &&  \
-                   ( test -e Makefile || $$QMAKE $$QTESTLIBPLUGIN_LIB/QTestLibPlugin.pro -o Makefile ) && \
+lupdate.commands = ( test -d $$QTESTLIBPLUGIN_I18N || mkdir -p $$QTESTLIBPLUGIN_I18N ) && \
+                   cd $$QTESTLIBPLUGIN_I18N &&  \
+                   ( test -e Makefile || $$QMAKE $$QTESTLIBPLUGIN_I18N/translations.pro -o Makefile ) && \
                    make -f Makefile lupdate
 
 QMAKE_EXTRA_TARGETS += lupdate
 
 ###### Translation files generation (not handled by Qt)
 
-
-lrelease.commands = ( test -d $$QTESTLIBPLUGIN_LIB || mkdir -p $$QTESTLIBPLUGIN_LIB ) && \
-                    cd $$QTESTLIBPLUGIN_LIB &&  \
-                    ( test -e Makefile || $$QMAKE $$QTESTLIBPLUGIN_LIB/QTestLibPlugin.pro -o Makefile ) && \
+lrelease.commands = ( test -d $$QTESTLIBPLUGIN_I18N || mkdir -p $$QTESTLIBPLUGIN_I18N ) && \
+                    cd $$QTESTLIBPLUGIN_I18N &&  \
+                    ( test -e Makefile || $$QMAKE $$QTESTLIBPLUGIN_I18N/translations.pro -o Makefile ) && \
                     make -f Makefile compiler_lrelease_make_all
 
 QMAKE_EXTRA_TARGETS += lrelease
