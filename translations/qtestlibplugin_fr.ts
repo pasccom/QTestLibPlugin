@@ -34,6 +34,10 @@
         <source>Got &quot;%1&quot; where integer was expected.</source>
         <translation>A trouvé &quot;%1&quot; au lieu d&apos;un entier signé.</translation>
     </message>
+    <message>
+        <source>The given argument &quot;%1&quot; is neither a flag nor a test case</source>
+        <translation>L&apos;argument &quot;%1&quot; n&apos;est ni un flag ni un item de test</translation>
+    </message>
 </context>
 <context>
     <name>QTestLibPlugin::Internal::QTestLibModel</name>
@@ -257,6 +261,62 @@
         <source>Test arguments</source>
         <translation>Arguments du test</translation>
     </message>
+    <message>
+        <source>Use default settings</source>
+        <translation>Utilise les paramètres par défault</translation>
+    </message>
+    <message>
+        <source>format set to &lt;b&gt;XML&lt;/b&gt;</source>
+        <translation>format changé en &lt;b&gt;XML&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>format set to &lt;b&gt;LightXML&lt;/b&gt;</source>
+        <translation>format changé en &lt;b&gt;LightXML&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>format set to &lt;b&gt;XUnitXML&lt;/b&gt;</source>
+        <translation>format changé en &lt;b&gt;XUnitXML&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>verbosity set to &lt;b&gt;Silent&lt;/b&gt;</source>
+        <translation>verbosité changée en &lt;b&gt;Silent&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>verbosity set to &lt;b&gt;Verbose&lt;/b&gt;</source>
+        <translation>verbosité changée en &lt;b&gt;Verbose&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>verbosity set to &lt;b&gt;Very verbose&lt;/b&gt;</source>
+        <translation>verbosité changée en &lt;b&gt;Very verbose&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>verbosity set to &lt;b&gt;Verbose signal&lt;/b&gt;</source>
+        <translation>verbosité changée en &lt;b&gt;Verbose signal&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source> and </source>
+        <translation> et </translation>
+    </message>
+    <message>
+        <source>output logged in file</source>
+        <translation>sortie redirgée vers un fichier</translation>
+    </message>
+    <message>
+        <source>max warnings set to &lt;b&gt;%1&lt;/b&gt;</source>
+        <translation>nombre maximal de warnings mis à &lt;b&gt;%1&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>event delay set to &lt;b&gt;%1ms&lt;/b&gt;</source>
+        <translation>délai de simulation des événements ajusté à &lt;b&gt;%1&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>key delay set to &lt;b&gt;%1ms&lt;/b&gt;</source>
+        <translation>délai de simulation du clavier ajusté à &lt;b&gt;%1 ms&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>mouse delay set to &lt;b&gt;%1ms&lt;/b&gt;</source>
+        <translation>délai de simulation de la souris ajusté à &lt;b&gt;%1 ms&lt;/b&gt;</translation>
+    </message>
 </context>
 <context>
     <name>QTestLibPlugin::Internal::TestRunConfigurationExtraAspect</name>
@@ -307,6 +367,14 @@
         <source>Choose test runner</source>
         <translation>Choisissez le test runner</translation>
     </message>
+    <message>
+        <source>Makefile:</source>
+        <translation>Makefile:</translation>
+    </message>
+    <message>
+        <source>Choose &quot;Makefile&quot;</source>
+        <translation>Choisissez le &quot;Makefile&quot;</translation>
+    </message>
 </context>
 <context>
     <name>QTestLibPlugin::Internal::XMLQTestLibParser</name>
@@ -317,17 +385,6 @@
     <message>
         <source>%1 msecs per iteration (iterations: %2)</source>
         <translation>%1ms par itération (itérations: %2)</translation>
-    </message>
-</context>
-<context>
-    <name>QTestLibPlugin::Test::TestActionsTest</name>
-    <message>
-        <source>Run tests for &quot;%1&quot; (%2)</source>
-        <translation type="obsolete">Exécuter les tests pour &quot;%1&quot; (%2)</translation>
-    </message>
-    <message>
-        <source>Run tests</source>
-        <translation type="obsolete">Exécuter les tests</translation>
     </message>
 </context>
 <context>
