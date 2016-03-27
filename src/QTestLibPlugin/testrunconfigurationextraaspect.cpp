@@ -208,16 +208,16 @@ void TestRunConfigWidget::updateSummary(void)
     }
 
     if (!mOutFileEdit->text().isEmpty())
-        summaryList << tr("Output logged in file");
+        summaryList << tr("output logged in file");
 
     if (mWarningCheck->isChecked())
-        summaryList << tr("Max warnings set to <b>%1</b>").arg(mWarningSpin->value());
+        summaryList << tr("max warnings set to <b>%1</b>").arg(mWarningSpin->value());
     if (mEventDelayCheck->isChecked())
-        summaryList << tr("Event delay set to <b>%1ms</b>").arg(mEventDelaySpin->value());
+        summaryList << tr("event delay set to <b>%1ms</b>").arg(mEventDelaySpin->value());
     if (mKeyDelayCheck->isChecked())
-        summaryList << tr("Key delay set to <b>%1ms</b>").arg(mKeyDelaySpin->value());
+        summaryList << tr("key delay set to <b>%1ms</b>").arg(mKeyDelaySpin->value());
     if (mMouseDelayCheck->isChecked())
-        summaryList << tr("Mouse delay set to <b>%1ms</b>").arg(mMouseDelaySpin->value());
+        summaryList << tr("mouse delay set to <b>%1ms</b>").arg(mMouseDelaySpin->value());
 
     QString summary;
     for (int i = 0; i < qMin(3, summaryList.size() - 1); i++)
