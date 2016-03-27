@@ -68,19 +68,19 @@
 
 using namespace QTestLibPlugin::Internal;
 
-QTestLibPluginPlugin::QTestLibPluginPlugin()
+TestLibPlugin::TestLibPlugin()
 {
     mTreeCurrentProject = NULL;
     mModel = new TestSuiteModel(this);
 }
 
-QTestLibPluginPlugin::~QTestLibPluginPlugin()
+TestLibPlugin::~TestLibPlugin()
 {
     // Unregister objects from the plugin manager's object pool
     // Delete members
 }
 
-bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *errorString)
+bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorString)
 {
     // Register objects in the plugin manager's object pool
     // Load settings
@@ -162,14 +162,14 @@ bool QTestLibPluginPlugin::initialize(const QStringList &arguments, QString *err
     return true;
 }
 
-void QTestLibPluginPlugin::extensionsInitialized(void)
+void TestLibPlugin::extensionsInitialized(void)
 {
     // Retrieve objects from the plugin manager's object pool
     // In the extensionsInitialized function, a plugin can be sure that all
     // plugins that depend on it are completely initialized.
 }
 
-ExtensionSystem::IPlugin::ShutdownFlag QTestLibPluginPlugin::aboutToShutdown(void)
+ExtensionSystem::IPlugin::ShutdownFlag TestLibPlugin::aboutToShutdown(void)
 {
     // Save settings
     // Disconnect from signals that are not needed during shutdown
@@ -185,7 +185,7 @@ ExtensionSystem::IPlugin::ShutdownFlag QTestLibPluginPlugin::aboutToShutdown(voi
 }
 
 
-void QTestLibPluginPlugin::handleProjectOpen(ProjectExplorer::Project* project)
+void TestLibPlugin::handleProjectOpen(ProjectExplorer::Project* project)
 {
     qDebug() << "Opened project:" << project->displayName();
 
@@ -206,7 +206,7 @@ void QTestLibPluginPlugin::handleProjectOpen(ProjectExplorer::Project* project)
     handleActiveTargetChange(project->activeTarget(), false);
 }
 
-void QTestLibPluginPlugin::handleProjectClose(ProjectExplorer::Project* project)
+void TestLibPlugin::handleProjectClose(ProjectExplorer::Project* project)
 {
     qDebug() << "Closed project:" << project->displayName();
 
@@ -238,7 +238,7 @@ void QTestLibPluginPlugin::handleProjectClose(ProjectExplorer::Project* project)
                this, SLOT(handleActiveTargetChange(ProjectExplorer::Target*)));
 }
 
-void QTestLibPluginPlugin::handleActiveTargetChange(ProjectExplorer::Target* target, bool clean)
+void TestLibPlugin::handleActiveTargetChange(ProjectExplorer::Target* target, bool clean)
 {
     if (target == NULL)
         return;
@@ -272,7 +272,7 @@ void QTestLibPluginPlugin::handleActiveTargetChange(ProjectExplorer::Target* tar
         handleNewRunConfiguration(runConfig);
 }
 
-void QTestLibPluginPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfiguration* runConfig)
+void TestLibPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfiguration* runConfig)
 {
     if (runConfig->id() != Core::Id(Constants::TestRunConfigurationId))
         return;
@@ -308,7 +308,7 @@ void QTestLibPluginPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfigu
     }
 }
 
-void QTestLibPluginPlugin::handleDeleteRunConfiguration(ProjectExplorer::RunConfiguration* runConfig)
+void TestLibPlugin::handleDeleteRunConfiguration(ProjectExplorer::RunConfiguration* runConfig)
 {
     if (runConfig->id() != Core::Id(Constants::TestRunConfigurationId))
         return;
@@ -342,7 +342,7 @@ void QTestLibPluginPlugin::handleDeleteRunConfiguration(ProjectExplorer::RunConf
  * or removed during project loading, we test the current project.
  * If it matches we enable or disable the action.
  */
-void QTestLibPluginPlugin::handleCurrentProjectTreeChange(ProjectExplorer::Project* project)
+void TestLibPlugin::handleCurrentProjectTreeChange(ProjectExplorer::Project* project)
 {
     qDebug() << __func__ << (project != NULL ? project->displayName() : QString::null);
 
@@ -362,7 +362,7 @@ void QTestLibPluginPlugin::handleCurrentProjectTreeChange(ProjectExplorer::Proje
         mRunTestsAction->setText(tr("Run tests for \"%1\" (%2)").arg(project->displayName()).arg(target->displayName()));
 }
 
-void QTestLibPluginPlugin::runTest(void)
+void TestLibPlugin::runTest(void)
 {
     QTC_ASSERT(mTreeCurrentProject != NULL, return);
     QTC_ASSERT(mTreeCurrentProject->activeTarget() != NULL, return);
@@ -381,7 +381,7 @@ void QTestLibPluginPlugin::runTest(void)
 }
 
 #ifdef BUILD_TESTS
-QList<QObject *> QTestLibPluginPlugin::createTestObjects(void) const
+QList<QObject *> TestLibPlugin::createTestObjects(void) const
 {
     QList<QObject *> testObjects;
 

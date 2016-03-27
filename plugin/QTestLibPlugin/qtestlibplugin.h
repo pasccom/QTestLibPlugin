@@ -42,14 +42,14 @@ class TestSuiteModel;
 class TestOutputPane;
 class QMakeTestRunConfigurationFactory;
 
-class QTestLibPluginPlugin : public ExtensionSystem::IPlugin
+class TestLibPlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "QTestLibPlugin.json")
 
 public:
-    QTestLibPluginPlugin();
-    ~QTestLibPluginPlugin();
+    TestLibPlugin();
+    ~TestLibPlugin();
 
     bool initialize(const QStringList &arguments, QString *errorString);
     void extensionsInitialized(void);

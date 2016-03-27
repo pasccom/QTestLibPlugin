@@ -165,7 +165,7 @@
     </message>
 </context>
 <context>
-    <name>QTestLibPlugin::Internal::QTestLibPluginPlugin</name>
+    <name>QTestLibPlugin::Internal::TestLibPlugin</name>
     <message>
         <source>Run tests</source>
         <translation>Run tests</translation>
