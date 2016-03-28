@@ -103,9 +103,10 @@ bool QMakeTestRunConfigurationFactory::isUseful(ProjectExplorer::Project* projec
 bool QMakeTestRunConfigurationFactory::canCreate(ProjectExplorer::Target *target, Core::Id id) const
 {
     QTC_ASSERT(canHandle(target) && isUseful(target->project()), return false);
-    QTC_ASSERT(id == Core::Id(Constants::TestRunConfigurationId), return false);
+    if (id == Core::Id(Constants::TestRunConfigurationId))
+        return true;
 
-    return true;
+    return false;
 }
 
 bool QMakeTestRunConfigurationFactory::canRestore(ProjectExplorer::Target *target, const QVariantMap &map) const
