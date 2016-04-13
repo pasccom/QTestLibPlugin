@@ -42,7 +42,7 @@ class QTestLibModel;
  *
  * \note The name of the test suite (the class name) canno te extracted from Light XML QTestLib output.
  * It is derived from the name of the executable by removing the extension.
- * If several classes are tested successsively, then the names are suffixed with #n, for the nth test.
+ * If several classes are tested successsively, then the names are suffixed with \#n, for the nth test.
  */
 class LightXMLQTestLibParser : public BaseXMLQTestLibParser
 {
