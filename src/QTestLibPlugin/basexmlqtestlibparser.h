@@ -155,7 +155,8 @@ protected:
      *
      * Converts the given QString into a QTestLibModel::MessageType.
      *
-     * \return The type corresponding to the given QString
+     * \param messageType A QString representing a QTestLibModel::MessageType.
+     * \return The type corresponding to the given QString.
      * \sa currentMessageType()
      */
     QTestLibModel::MessageType messageType(const QString& messageType);
