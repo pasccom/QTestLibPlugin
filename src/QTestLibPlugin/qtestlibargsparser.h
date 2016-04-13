@@ -200,12 +200,18 @@ public:
      * \brief Returns a QStringList representation of the arguments
      *
      * This function is the opposite of parse(): It converts the arguments in memory into a list of arguments.
+     * \param version The version of the testlib arguments (0, 1 or 2).
+     * \return A list of the arguments currently set.
+     * \sa toString()
      */
     QStringList toStringList(uint version = 2) const;
     /*!
      * \brief Returns a QString representation of the arguments
      *
      * This function is the opposite of parse(): It converts the arguments in memory into a string of arguments.
+     * \param version The version of the testlib arguments (0, 1 or 2).
+     * \return The string of arguments currently set.
+     * \sa toString()
      */
     inline QString toString(uint version = 2) const {return toStringList(version).join(QLatin1Char(' '));}
 
