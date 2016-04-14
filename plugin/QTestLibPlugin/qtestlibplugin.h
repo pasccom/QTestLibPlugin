@@ -47,15 +47,16 @@ class QMakeTestRunConfigurationFactory;
  *
  * \section features Features
  * Here is a list of the current features of the plugin:
- *  \li Allows to parse plain text (`txt`) QTestLib output
- *  \li Allows to parse XML (`XML`) QTestLib output
- *  \li Allows to parse Light XML (`lightXML`) QTestLib output
- *  \li Allows to parse XUinit XML (`XUnitXML`) QTestLib output
+ *  \li Allows to parse plain text (<tt>txt</tt>) QTestLib output
+ *  \li Allows to parse XML (<tt>xml</tt>) QTestLib output
+ *  \li Allows to parse Light XML (<tt>lightxml</tt>) QTestLib output
+ *  \li Allows to parse XUinit XML (<tt>xunitxml</tt>) QTestLib output
  *  \li Check beforehand if the parser may parse the test
  *  \li Model for a QTestLib test
  *  \li Merge models for multiple tests
  *  \li Display the models in a QTreeView
- *  \li Allows to run <tt>make check</tt>
+ *  \li Allows to run <tt>make check</tt> for projects supporting it.
+ *  \li Easy test environment and arguments configuration
  *
  * \section future Planned developments
  * Here are some ideas I plan to implement later:
@@ -64,7 +65,6 @@ class QMakeTestRunConfigurationFactory;
  *  \li Add filters to filter the test model.
  *  \li Complete information of the model by parsing test files.
  *  \li Allow to easily select test cases and data row.
- *  \li Add parsers for other QTestLib output formats.
  *  \li Have parser read in QTestLib output files (and not only `stdout`).
  *  \li Add parsers and models for other test libraries (gtest, cppunit)
  *

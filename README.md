@@ -11,11 +11,15 @@ FEATURES
 
 Here is a list of the current features of the plugin:
 - Allows to parse plain text (`txt`) QTestLib output
-- Allows to parse XML (`XML`) QTestLib output
+- Allows to parse XML (`xml`) QTestLib output
+- Allows to parse Light XML (`lightxml`) QTestLib output
+- Allows to parse XUinit XML (`xunitxml`) QTestLib output
 - Check beforehand if the parser may parse the test 
 - Model for a QTestLib test
 - Merge models for multiple tests
-- Display the models in a QTreeView 
+- Display the models in a QTreeView
+- Allows to run <tt>make check</tt> for projects supporting it
+- Easy test environment and arguments configuration
 
 INSTALLATION
 ------------
@@ -42,7 +46,6 @@ for lengthy test messages.
 - Add filters to filter the test model.
 - Complete information of the model by parsing test files.
 - Allow to easily select test cases and data row.
-- Add parsers for other QTestLib output formats.
 - Have parser read in QTestLib output files (and not only `stdout`).
 - Add parsers and models for other test libraries (gtest, cppunit)
 
