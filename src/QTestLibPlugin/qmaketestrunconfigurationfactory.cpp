@@ -15,6 +15,15 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
+/*!
+ * \brief Updates the given run configuration
+ *
+ * This function should be executed to update a run configuration
+ * each time the project is changed.
+ * It updates the path to the project \c Makefile.
+ * \param runConfig The run configuration to update
+ * \param qMakeRoot The project root.
+ */
 void updateRunConfiguration(TestRunConfiguration* runConfig, QmakeProjectManager::QmakeProFileNode* qMakeRoot)
 {
     if (qMakeRoot == NULL)
