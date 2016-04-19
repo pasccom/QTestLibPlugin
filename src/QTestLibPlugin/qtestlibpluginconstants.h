@@ -26,39 +26,59 @@
 
 namespace QTestLibPlugin {
 namespace Constants {
+/*!
+ * \defgroup QTestLibPluginConstants QTestLibPlugin constants
+ * @{
+ */
+const QString PluginName = QLatin1String("QTestLibPlugin");                                                             /*!< The nane of the plugin (used as root group name in the settings) */
 
-const QString PluginName = QLatin1String("QTestLibPlugin");
+/*!
+  * \defgroup ViewerSettings Viewer settings
+  * @{
+  */
+const QString FilterProxyGroup = QLatin1String("FilterProxy");                                                          /*!< Group name for Internal::TestProxyModel settings */
+const QString ViewGroup = QLatin1String("View");                                                                        /*!< Group name for Internal::TestOutputPane tree view settings */
+const QString DescWidthKey = QLatin1String("DescWidth");                                                                /*!< Key for message field width in Internal::TestOutputPane */
+const QString FileWidthKey = QLatin1String("FileWidth");                                                                /*!< Key for file field width in Internal::TestOutputPane */
+const QString LineWidthKey = QLatin1String("LineWidth");                                                                /*!< Key for line field width in Internal::TestOutputPane */
+/*!@}*/
 
-// Viewer settings:
-const QString FilterProxyGroup = QLatin1String("FilterProxy");
-const QString ViewGroup = QLatin1String("View");
-const QString DescWidthKey = QLatin1String("DescWidth");
-const QString FileWidthKey = QLatin1String("FileWidth");
-const QString LineWidthKey = QLatin1String("LineWidth");
+/*!
+ * \defgroup TestRunConfigurationSettings Test run configuration settings
+ * @{
+ */
+const QString WorkingDirectoryKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".WorkingDirectory");                       /*!< Key for working directory path in Internal::TestRunConfiguration */
+const QString MakeExeKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".MakeExe");                                         /*!< Key for path to \c make in Internal::TestRunConfiguration */
+const QString MakefileKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".Makefile");                                       /*!< Key for \c Makefile path in Internal::TestRunConfiguration */
+const QString TestRunnerKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".TestRunner");                                   /*!< Key for test runner path in Internal::TestRunConfiguration */
+const QString MakeJobNumberKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".JobNumber");                                 /*!< Key for job number of \c make in Internal::TestRunConfiguration */
+/*!@}*/
 
-// Test run configuration settings:
-const QString WorkingDirectoryKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".WorkingDirectory");
-const QString MakeExeKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".MakeExe");
-const QString MakefileKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".Makefile");
-const QString TestRunnerKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".TestRunner");
-const QString MakeJobNumberKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".JobNumber");
+/*!
+ * \defgroup TestRunConfigurationExtraAspectSettings Test run configuration extra aspect settings
+ * @{
+ */
+const QString FormatKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".Format");                              /*!< Key for test output format of Internal::TestRunConfigurationExtraAspect */
+const QString VerbosityKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".Verbosity");                        /*!< Key for test verbosity of Internal::TestRunConfigurationExtraAspect */
+const QString OutputFileKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".LogFile");                         /*!< Key for log file path in Internal::TestRunConfigurationExtraAspect */
+const QString MaxWarningKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".MaxWarnings");                     /*!< Key for maximum number of warnings field of Internal::TestRunConfigurationExtraAspect */
+const QString EventDelayKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".EventDelay");                      /*!< Key for event delay field of Internal::TestRunConfigurationExtraAspect */
+const QString KeyDelayKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".KeyDelay");                          /*!< Key for key delay field of Internal::TestRunConfigurationExtraAspect */
+const QString MouseDelayKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".MouseDelay");                      /*!< Key for mouse delay field of Internal::TestRunConfigurationExtraAspect */
+const QString CrashHandlerEnabledKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".CrashHandlerEnabled");    /*!< Key for crash handler enabled field of Internal::TestRunConfigurationExtraAspect */
+/*!@}*/
 
-// Test run configuration extra aspect settings:
-const QString FormatKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".Format");
-const QString VerbosityKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".Verbosity");
-const QString OutputFileKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".LogFile");
-const QString MaxWarningKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".MaxWarnings");
-const QString EventDelayKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".EventDelay");
-const QString KeyDelayKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".KeyDelay");
-const QString MouseDelayKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".MouseDelay");
-const QString CrashHandlerEnabledKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".CrashHandlerEnabled");
+/*!
+ * \defgroup QTestLibPluginIds QTestLibPlugin Ids
+ * @{
+ */
+const char TestRunConfigurationId [] = TEST_RUN_CONFIGURATION_ID;                                                       /*!< Id for Internal::TestRunConfiguration */
+const char TestRunConfigurationExtraAspectId [] = TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID;                               /*!< Id for Internal::TestRunConfigurationExtraAspect */
+const char TestRunMenuId[] = "QTestLibPlugin.Menu.TestRun";                                                             /*!< Id for <tt>Run tests</tt> sub menu */
+const char TestRunActionId[] = "QTestLibPlugin.Action.TestRun";                                                         /*!< Id for <tt>Run tests</tt> action in project pane context menu */
+/*!@}*/
 
-// IDs:
-const char TestRunConfigurationId [] = TEST_RUN_CONFIGURATION_ID;
-const char TestRunConfigurationExtraAspectId [] = TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID;
-const char TestRunMenuId[] = "QTestLibPlugin.Menu.TestRun";
-const char TestRunActionId[] = "QTestLibPlugin.Action.TestRun";
-
+/*!@}*/
 } // namespace QTestLibPlugin
 } // namespace Constants
 
