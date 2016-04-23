@@ -28,6 +28,27 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
+QTestLibArgsParser::QTestLibArgsParser(const QTestLibArgsParser& other)
+{
+    if (!mArgs.isNull()) {
+        // Copy the other args and parse them.
+        mArgs = other.mArgs;
+        parse();
+    } else {
+        // Copy the internal data.
+        mSelectedTestCases = other.mSelectedTestCases;
+        mOutFileName = other.mOutFileName;
+        mParser = other.mParser;
+        mVerbosity = other.mVerbosity;
+        mOutput = other.mOutput;
+        mCrashHandlerEnabled = other.mCrashHandlerEnabled;
+        mMaxWarnings = other.mMaxWarnings;
+        mEventDelay = other.mEventDelay;
+        mKeyDelay = other.mKeyDelay;
+        mMouseDelay = other.mMouseDelay;
+    }
+}
+
 void QTestLibArgsParser::toMap(QVariantMap& map) const
 {
     QTC_ASSERT(mOutput == NormalOutput, );

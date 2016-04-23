@@ -164,6 +164,13 @@ public:
     inline QTestLibArgsParser(const QStringList& cmdArgs) :
         QTestLibArgsParser(cmdArgs.join(QLatin1Char(' '))) {}
     /*!
+     * \brief Copy constructor
+     *
+     * Copies the given instance in a new instance.
+     * \param other The instance to copy
+     */
+    QTestLibArgsParser(const QTestLibArgsParser& other);
+    /*!
      * \brief Append arguments to the current arguement list
      *
      * Appends the given string to the current argument list and reparses the argument list.
