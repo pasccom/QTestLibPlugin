@@ -60,6 +60,8 @@ private Q_SLOTS:
 
     void parse_data(void);
     void parse(void);
+    inline void copyParse_data(void) {parse_data();}
+    void copyParse(void);
     void incrementalParse_data(void);
     void incrementalParse(void);
 
@@ -97,10 +99,16 @@ private Q_SLOTS:
     void toStringOther(void);
     void toStringMixedV1_data(void);
     void toStringMixedV1(void);
+    inline void copyToStringMixedV1_data(void) {toStringMixedV1_data();}
+    void copyToStringMixedV1(void);
     void toStringMixedV2_data(void);
     void toStringMixedV2(void);
+    inline void copyToStringMixedV2_data(void) {toStringMixedV2_data();}
+    void copyToStringMixedV2(void);
     void toStringMixed_data(void);
     void toStringMixed(void);
+    inline void copyToStringMixed_data(void) {toStringMixed_data();}
+    void copyToStringMixed(void);
 
     void mapFormat_data(void);
     void mapFormat(void);
@@ -111,6 +119,8 @@ private Q_SLOTS:
     void mapOther(void);
     void mapMixed_data(void);
     void mapMixed(void);
+    inline void copyMapMixed_data(void) {mapMixed_data();}
+    void copyMapMixed(void);
 private:
     void toStringMixed_row(QTestLibArgsParser::TestOutputFormat format, QTestLibArgsParser::TestVerbosity verbosity, int version = 2);
     void mapMixed_row(QTestLibArgsParser::TestOutputFormat format, QTestLibArgsParser::TestVerbosity verbosity);
@@ -803,6 +813,29 @@ void QTestLibArgsParserTest::parse(void)
 
     QVERIFY(parser.maxWarnings() == maxWarings);
     QVERIFY(parser.crashHandlerEnabled() == crashHandler);
+}
+
+void QTestLibArgsParserTest::copyParse(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(unsigned int, maxWarings);
+    QFETCH(int, eventDelay);
+    QFETCH(int, keyDelay);
+    QFETCH(int, mouseDelay);
+    QFETCH(bool, crashHandler);
+
+    QTestLibArgsParser parser(args);
+    QTestLibArgsParser copy(parser);
+
+    SUB_TEST_FUNCTION(checkError(copy));
+    SUB_TEST_FUNCTION(checkOutput(copy, verbosity, format));
+    SUB_TEST_FUNCTION(checkDelays(copy, eventDelay, keyDelay, mouseDelay));
+    SUB_TEST_FUNCTION(checkOutputMode(copy));
+
+    QVERIFY(copy.maxWarnings() == maxWarings);
+    QVERIFY(copy.crashHandlerEnabled() == crashHandler);
 }
 
 
@@ -2051,6 +2084,38 @@ void QTestLibArgsParserTest::toStringMixedV1(void)
     QCOMPARE(parser.toString(), parser.toStringList(1).join(' '));
 }
 
+void QTestLibArgsParserTest::copyToStringMixedV1(void)
+{
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(unsigned int, maxWarnings);
+    QFETCH(int, eventDelay);
+    QFETCH(int, keyDelay);
+    QFETCH(int, mouseDelay);
+    QFETCH(bool, crashHandler);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parser;
+    parser.setOutputFormat(format);
+    parser.setVerbosity(verbosity);
+    if (maxWarnings != 2000)
+        parser.setMaxWarnings(maxWarnings);
+    if (eventDelay >= 0)
+        parser.setEventDelay(eventDelay);
+    if (keyDelay >= 0)
+        parser.setKeyDelay(keyDelay);
+    if (mouseDelay >= 0)
+        parser.setMouseDelay(mouseDelay);
+    if (!crashHandler)
+        parser.enableCrashHandler(false);
+
+    QTestLibArgsParser copy(parser);
+
+    SUB_TEST_FUNCTION(checkError(copy));
+    SUB_TEST_FUNCTION(checkArguments(copy.toStringList(1), args));
+    QCOMPARE(copy.toString(), copy.toStringList(1).join(' '));
+}
+
 void QTestLibArgsParserTest::toStringMixedV2_data(void)
 {
     QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
@@ -2097,6 +2162,39 @@ void QTestLibArgsParserTest::toStringMixedV2(void)
     QCOMPARE(parser.toString(), parser.toStringList(2).join(' '));
 }
 
+void QTestLibArgsParserTest::copyToStringMixedV2(void)
+{
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(unsigned int, maxWarnings);
+    QFETCH(int, eventDelay);
+    QFETCH(int, keyDelay);
+    QFETCH(int, mouseDelay);
+    QFETCH(bool, crashHandler);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parser;
+    parser.setOutputFormat(format);
+    parser.setVerbosity(verbosity);
+    if (maxWarnings != 2000)
+        parser.setMaxWarnings(maxWarnings);
+    if (eventDelay >= 0)
+        parser.setEventDelay(eventDelay);
+    if (keyDelay >= 0)
+        parser.setKeyDelay(keyDelay);
+    if (mouseDelay >= 0)
+        parser.setMouseDelay(mouseDelay);
+    if (!crashHandler)
+        parser.enableCrashHandler(false);
+
+    QTestLibArgsParser copy(parser);
+
+    SUB_TEST_FUNCTION(checkError(copy));
+    SUB_TEST_FUNCTION(checkArguments(copy.toStringList(2), args));
+    QCOMPARE(copy.toString(), copy.toStringList(2).join(' '));
+}
+
+
 void QTestLibArgsParserTest::toStringMixed_data(void)
 {
     QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
@@ -2141,6 +2239,38 @@ void QTestLibArgsParserTest::toStringMixed(void)
     SUB_TEST_FUNCTION(checkError(parser));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(), args));
     QCOMPARE(parser.toString(), parser.toStringList().join(' '));
+}
+
+void QTestLibArgsParserTest::copyToStringMixed(void)
+{
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(unsigned int, maxWarnings);
+    QFETCH(int, eventDelay);
+    QFETCH(int, keyDelay);
+    QFETCH(int, mouseDelay);
+    QFETCH(bool, crashHandler);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parser;
+    parser.setOutputFormat(format);
+    parser.setVerbosity(verbosity);
+    if (maxWarnings != 2000)
+        parser.setMaxWarnings(maxWarnings);
+    if (eventDelay >= 0)
+        parser.setEventDelay(eventDelay);
+    if (keyDelay >= 0)
+        parser.setKeyDelay(keyDelay);
+    if (mouseDelay >= 0)
+        parser.setMouseDelay(mouseDelay);
+    if (!crashHandler)
+        parser.enableCrashHandler(false);
+
+    QTestLibArgsParser copy(parser);
+
+    SUB_TEST_FUNCTION(checkError(copy));
+    SUB_TEST_FUNCTION(checkArguments(copy.toStringList(), args));
+    QCOMPARE(copy.toString(), copy.toStringList().join(' '));
 }
 
 void QTestLibArgsParserTest::checkArguments(const QStringList& args, const QStringList& expected)
@@ -2514,6 +2644,39 @@ void QTestLibArgsParserTest::mapMixed(void)
     parserFrom.fromMap(map);
 
     SUB_TEST_FUNCTION(checkArguments(parserFrom.toStringList(), args));
+}
+
+void QTestLibArgsParserTest::copyMapMixed(void)
+{
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(unsigned int, maxWarnings);
+    QFETCH(int, eventDelay);
+    QFETCH(int, keyDelay);
+    QFETCH(int, mouseDelay);
+    QFETCH(bool, crashHandler);
+    QFETCH(QVariantMap, map);
+    QFETCH(QStringList, args);
+
+    QTestLibArgsParser parserTo;
+    parserTo.setOutputFormat(format);
+    parserTo.setVerbosity(verbosity);
+    if (maxWarnings != 2000)
+        parserTo.setMaxWarnings(maxWarnings);
+    if (eventDelay >= 0)
+        parserTo.setEventDelay(eventDelay);
+    if (keyDelay >= 0)
+        parserTo.setKeyDelay(keyDelay);
+    if (mouseDelay >= 0)
+        parserTo.setMouseDelay(mouseDelay);
+    if (!crashHandler)
+        parserTo.enableCrashHandler(false);
+
+    QTestLibArgsParser copyTo(parserTo);
+
+    QVariantMap copyToMap;
+    copyTo.toMap(copyToMap);
+    QCOMPARE(copyToMap, map);
 }
 
 QTEST_APPLESS_MAIN(QTestLibArgsParserTest)
