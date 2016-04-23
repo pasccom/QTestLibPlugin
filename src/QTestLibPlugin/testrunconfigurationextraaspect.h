@@ -89,7 +89,7 @@ private slots:
      *
      * This slot is called when the validity of the log file path changes in \ref mOutFileEdit.
      * If the current log file path is valid, it is saved. Otherwise the slot does nothing.
-     * \param valid Whether the current log file path is valide in \ref mOutFileEdit
+     * \param valid Whether the current log file path is valid in \ref mOutFileEdit
      */
     void updateOutFile(bool valid);
     /*!
@@ -102,8 +102,8 @@ private slots:
     /*!
      * \brief Open file browser for log file path.
      *
-     * This slot is called when the user click \ref mOutFileButton,
-     * to browe the files for a log file.
+     * This slot is called when the user clicks \ref mOutFileButton,
+     * to browse the files for a log file.
      */
     void browseOutFile(void);
 
@@ -111,7 +111,7 @@ private slots:
      * \brief Updates the maximum number of warnings
      *
      * This slot is called when the user changes the value in \ref mWarningSpin.
-     * \param value The current value in \ref mWarningSpin.
+     * \param value The current value in \ref mWarningSpin
      */
     void updateMaxWarnings(int value);
     /*!
