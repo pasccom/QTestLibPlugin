@@ -221,8 +221,7 @@ public:
      * \return The newly allocated instance of this class.
      * \sa TestRunConfigurationExtraAspect
      */
-    // TODO the implementation is incomplete.
-    inline TestRunConfigurationExtraAspect* create(ProjectExplorer::RunConfiguration* parent) const {return new TestRunConfigurationExtraAspect(parent);}
+    TestRunConfigurationExtraAspect* create(ProjectExplorer::RunConfiguration* parent) const;
     /*!
      * \brief Creates a configuration widget
      *

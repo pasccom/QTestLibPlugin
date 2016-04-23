@@ -354,7 +354,16 @@ TestRunConfigurationExtraAspect::TestRunConfigurationExtraAspect(ProjectExplorer
 
 TestRunConfigurationExtraAspect::~TestRunConfigurationExtraAspect()
 {
+    delete mTestArgsParser;
+}
 
+TestRunConfigurationExtraAspect* TestRunConfigurationExtraAspect::create(ProjectExplorer::RunConfiguration* parent) const
+{
+    TestRunConfigurationExtraAspect* ret = new TestRunConfigurationExtraAspect(parent);
+
+    ret->mTestArgsParser = new QTestLibArgsParser(*mTestArgsParser);
+
+    return ret;
 }
 
 } // Internal
