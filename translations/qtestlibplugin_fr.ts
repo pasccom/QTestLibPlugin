@@ -356,10 +356,6 @@
         <translation>Choisissez le répertoire de travail</translation>
     </message>
     <message>
-        <source>Exécutable files *.exe</source>
-        <translation>Exécutables *.exe</translation>
-    </message>
-    <message>
         <source>Choose &quot;make&quot;</source>
         <translation>Choisissez &quot;make&quot;</translation>
     </message>
@@ -374,6 +370,10 @@
     <message>
         <source>Choose &quot;Makefile&quot;</source>
         <translation>Choisissez le &quot;Makefile&quot;</translation>
+    </message>
+    <message>
+        <source>Executable files *.exe</source>
+        <translation>Exécutables *.exe</translation>
     </message>
 </context>
 <context>

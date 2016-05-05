@@ -363,10 +363,6 @@
         <translation>Choose working directory</translation>
     </message>
     <message>
-        <source>Exécutable files *.exe</source>
-        <translation>Exécutable files *.exe</translation>
-    </message>
-    <message>
         <source>Choose &quot;make&quot;</source>
         <translation>Choose &quot;make&quot;</translation>
     </message>
@@ -381,6 +377,10 @@
     <message>
         <source>Choose &quot;Makefile&quot;</source>
         <translation>Choose &quot;Makefile&quot;</translation>
+    </message>
+    <message>
+        <source>Executable files *.exe</source>
+        <translation>Executable files *.exe</translation>
     </message>
 </context>
 <context>

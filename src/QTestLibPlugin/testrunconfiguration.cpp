@@ -425,7 +425,7 @@ void TestRunConfigurationWidget::browseMakeExe(void)
 {
     QString filter;
     if (Utils::HostOsInfo::isWindowsHost())
-        filter = tr("Exécutable files *.exe");
+        filter = tr("Executable files *.exe");
 
     QString me = QFileDialog::getOpenFileName(this, tr("Choose \"make\""), mData->makeExe().toString(), filter, &filter);
 
