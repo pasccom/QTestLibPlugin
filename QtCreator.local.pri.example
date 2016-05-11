@@ -1,0 +1,12 @@
+# Qt Creator source tree:
+isEmpty(QTCREATOR_SOURCES):QTCREATOR_SOURCES=# The path to Qt Creator sources on your system
+# Qt Creator lib path:
+isEmpty(IDE_BUILD_TREE):IDE_BUILD_TREE=# The path where Qt Creator libraries are
+
+# To compile tests the path to make is needed.
+# You can force it here.
+# FORCE_MAKE_EXE=/usr/bin/make
+# To compile tests you may need to provide the path to make
+# if it cannot be auto-detected in your system PATH and not
+# forced above
+# MAKE_EXE=/usr/bin/make
