@@ -18,13 +18,16 @@ Here is a list of the current features of the plugin:
 - Model for a QTestLib test
 - Merge models for multiple tests
 - Display the models in a QTreeView
-- Allows to run <tt>make check</tt> for projects supporting it
+- Filters to filter the test model (by message type: `Pass`, `Fail`, ...)
+- Allows to run `make check` for projects supporting it
 - Easy test environment and arguments configuration
+Ideas I currently have to extend the plugin are listed in the 
+section PLANNED DEVELOPMENTS below.
 
 INSTALLATION
 ------------
 
-To compile this file, you will need to give some information to qMake about
+To compile this file, you will need to give some information to `qMake` about
 the location of Qt Creator files on your system. For this, you have two
 alternatives:
 - Either set the environment variables `QTC_BUILD` and `QTC_SOURCES` to the
@@ -43,7 +46,6 @@ PLANNED DEVELOPMENTS
 Here are some ideas I plan to implement later:
 - Replace QTreeView by a specially designed view as QTreeView is not suitable
 for lengthy test messages.
-- Add filters to filter the test model.
 - Complete information of the model by parsing test files.
 - Allow to easily select test cases and data row.
 - Have parser read in QTestLib output files (and not only `stdout`).

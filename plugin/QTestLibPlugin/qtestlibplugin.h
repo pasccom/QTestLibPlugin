@@ -46,13 +46,14 @@ class QMakeTestRunConfigurationFactory;
  * \mainpage QTestLib plugin: Qt Creator plugin to simplify testing.
  *
  * \section features Features
- * Here is a list of the current features of the plugin:
+ * Here is a list of the current features of the plugin (see also \ref future for further devopments):
  *  \li Allows to parse plain text (<tt>txt</tt>) QTestLib output
  *  \li Allows to parse XML (<tt>xml</tt>) QTestLib output
  *  \li Allows to parse Light XML (<tt>lightxml</tt>) QTestLib output
  *  \li Allows to parse XUinit XML (<tt>xunitxml</tt>) QTestLib output
  *  \li Check beforehand if the parser may parse the test
  *  \li Model for a QTestLib test
+ *  \li Filters to filter the test model (by message type: \c Pass, \c Fail, ...)
  *  \li Merge models for multiple tests
  *  \li Display the models in a QTreeView
  *  \li Allows to run <tt>make check</tt> for projects supporting it.
@@ -62,14 +63,14 @@ class QMakeTestRunConfigurationFactory;
  * Here are some ideas I plan to implement later:
  *  \li Replace QTreeView by a specially designed view as QTreeView is not suitable
  * for lengthy test messages.
- *  \li Add filters to filter the test model.
- *  \li Complete information of the model by parsing test files.
+ *  \li Parse the message contents (\c QVERIFY, \c QCOMPARE, ...)
+ *  \li Complete information of the model by parsing <tt>*.cpp</tt> test files.
  *  \li Allow to easily select test cases and data row.
- *  \li Have parser read in QTestLib output files (and not only `stdout`).
+ *  \li Have parser read in QTestLib output files (and not only <tt>stdout</tt>).
  *  \li Add parsers and models for other test libraries (gtest, cppunit)
  *
  * If you have any other feature you will be interested in, please let me know.
- * I will be pleased to develop it if I think it is a mush have.
+ * I will be pleased to develop it if I think it is a must have.
  *
  * If you want to implement extension, also tell me please. Admittedly you
  * can do what you desire with the code (under the constraints stated in the
