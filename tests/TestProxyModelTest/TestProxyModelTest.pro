@@ -37,12 +37,12 @@ SOURCES += testproxymodeltest.cpp                 \
 HEADERS += xmlqtestlibparserfactoryfake.h
 
 # The tester libraries
-CONFIG(debug) {
-    LIBS += ../common/debug/libtestcommon.a
-    PRE_TARGETDEPS += ../common/debug/libtestcommon.a
-} else {
+CONFIG(release, debug|release) {
     LIBS += ../common/release/libtestcommon.a
     PRE_TARGETDEPS += ../common/release/libtestcommon.a
+} else {
+    LIBS += ../common/debug/libtestcommon.a
+    PRE_TARGETDEPS += ../common/debug/libtestcommon.a
 }
 
 # The libraries to test
@@ -50,12 +50,12 @@ CONFIG(gcov) {
     SOURCES += $$QTESTLIBPLUGIN_SRC/testproxymodel.cpp
     HEADERS += $$QTESTLIBPLUGIN_SRC/testproxymodel.h
 }
-CONFIG(debug) {
-    LIBS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
-    PRE_TARGETDEPS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
-} else {
+CONFIG(release, debug|release) {
     LIBS += $$QTESTLIBPLUGIN_LIB/release/libqtestlibplugin.a
     PRE_TARGETDEPS += $$QTESTLIBPLUGIN_LIB/release/libqtestlibplugin.a
+} else {
+    LIBS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
+    PRE_TARGETDEPS += $$QTESTLIBPLUGIN_LIB/debug/libqtestlibplugin.a
 }
 
 # Files to be tested are in src folder

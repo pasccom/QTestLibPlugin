@@ -27,12 +27,12 @@ RESOURCES += \
     qtestlibplugin.qrc
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
-CONFIG(debug, debug|release) {
-    LIBS += debug/libqtestlibplugin.a
-    PRE_TARGETDEPS += debug/libqtestlibplugin.a
-} else {
+CONFIG(release, debug|release) {
     LIBS += release/libqtestlibplugin.a
     PRE_TARGETDEPS += release/libqtestlibplugin.a
+} else {
+    LIBS += debug/libqtestlibplugin.a
+    PRE_TARGETDEPS += debug/libqtestlibplugin.a
 }
 
 for (SOURCE, SOURCES) {
