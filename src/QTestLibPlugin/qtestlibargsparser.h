@@ -22,6 +22,7 @@
 #include <utils/fileutils.h>
 #include <QString>
 #include <QStringList>
+#include <QPair>
 #include <QLinkedList>
 
 namespace QTestLibPlugin {
