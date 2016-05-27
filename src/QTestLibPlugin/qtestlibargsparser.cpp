@@ -30,7 +30,7 @@ namespace Internal {
 
 QTestLibArgsParser::QTestLibArgsParser(const QTestLibArgsParser& other)
 {
-    if (!mArgs.isNull()) {
+    if (!other.mArgs.isNull()) {
         // Copy the other args and parse them.
         mArgs = other.mArgs;
         parse();
