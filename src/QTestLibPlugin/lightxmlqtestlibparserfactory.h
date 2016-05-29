@@ -19,8 +19,7 @@
 #ifndef LIGHTXMLQTESTLIBPARSERFACTORY_H
 #define LIGHTXMLQTESTLIBPARSERFACTORY_H
 
-#include "baseqmakeqtestlibparserfactory.h"
-#include "lightxmlqtestlibparser.h"
+#include "testmodelfactory.h"
 
 namespace QTestLibPlugin {
 namespace Internal {
@@ -33,7 +32,7 @@ namespace Internal {
  * may parse the ProjectExplorer::RunConfiguration output and
  * allocate instances of the associated parser if needed.
  */
-class LightXMLQTestLibParserFactory : public BaseQMakeQTestLibParserFactory
+class LightXMLQTestLibParserFactory : public AbstractTestParserFactory
 {
     Q_OBJECT
 public:
@@ -44,9 +43,12 @@ public:
      *
      * \param parent The parent object of the factory.
      */
-    inline LightXMLQTestLibParserFactory(QObject *parent = NULL):
-        BaseQMakeQTestLibParserFactory(parent) {setAcceptedFormat(QTestLibArgsParser::LightXmlFormat);}
+    inline LightXMLQTestLibParserFactory(AbstractTestParserFactory* base):
+        AbstractTestParserFactory(base), mBase(base) {}
+    inline bool canParse(ProjectExplorer::RunConfiguration* runConfiguration) const {return (mBase != nullptr) ? mBase->canParse(runConfiguration) : false;}
     AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const;
+private:
+    AbstractTestParserFactory* mBase;
 };
 
 } // namespace Internal

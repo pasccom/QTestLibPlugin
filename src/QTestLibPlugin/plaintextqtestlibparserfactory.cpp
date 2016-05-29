@@ -17,6 +17,7 @@
  */
 
 #include "plaintextqtestlibparserfactory.h"
+#include "plaintextqtestlibparser.h"
 
 #include <projectexplorer/runconfiguration.h>
 

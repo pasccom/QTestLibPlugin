@@ -19,6 +19,7 @@
 #include "qtestlibplugin.h"
 #include <qtestlibpluginconstants.h>
 
+#include <baseqmakeqtestlibparserfactory.h>
 #include <plaintextqtestlibparserfactory.h>
 #include <xmlqtestlibparserfactory.h>
 #include <lightxmlqtestlibparserfactory.h>
@@ -106,13 +107,13 @@ bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorStrin
         qWarning() << qPrintable(QString(QLatin1String("Translator file \"%1\" not found")).arg(qmFile));
 
     // Parser factories
-    PlainTextQTestLibParserFactory *plainTextFactory = new PlainTextQTestLibParserFactory(this);
+    PlainTextQTestLibParserFactory *plainTextFactory = new PlainTextQTestLibParserFactory(new BaseQMakeQTestLibParserFactory(QTestLibArgsParser::TxtFormat, this));
     addAutoReleasedObject(plainTextFactory);
-    XMLQTestLibParserFactory *xmlFactory = new XMLQTestLibParserFactory(this);
+    XMLQTestLibParserFactory *xmlFactory = new XMLQTestLibParserFactory(new BaseQMakeQTestLibParserFactory(QTestLibArgsParser::XmlFormat, this));
     addAutoReleasedObject(xmlFactory);
-    LightXMLQTestLibParserFactory *lightXmlFactory = new LightXMLQTestLibParserFactory(this);
+    LightXMLQTestLibParserFactory *lightXmlFactory = new LightXMLQTestLibParserFactory(new BaseQMakeQTestLibParserFactory(QTestLibArgsParser::LightXmlFormat, this));
     addAutoReleasedObject(lightXmlFactory);
-    XUnitXMLQTestLibParserFactory *xUnitXmlFactory = new XUnitXMLQTestLibParserFactory(this);
+    XUnitXMLQTestLibParserFactory *xUnitXmlFactory = new XUnitXMLQTestLibParserFactory(new BaseQMakeQTestLibParserFactory(QTestLibArgsParser::XUnitXmlFormat, this));
     addAutoReleasedObject(xUnitXmlFactory);
 
     // Run configuration factories

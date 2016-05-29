@@ -17,6 +17,7 @@
  */
 
 #include "xmlqtestlibparserfactory.h"
+#include "xmlqtestlibparser.h"
 
 #include <projectexplorer/runconfiguration.h>
 

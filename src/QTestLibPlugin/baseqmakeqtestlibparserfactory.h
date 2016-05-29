@@ -44,6 +44,7 @@ namespace Internal {
  */
 class BaseQMakeQTestLibParserFactory : public AbstractTestParserFactory
 {
+    Q_OBJECT
 public:
     /*!
      * \brief Constructor

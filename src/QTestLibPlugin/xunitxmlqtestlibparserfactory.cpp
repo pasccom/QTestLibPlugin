@@ -17,6 +17,7 @@
  */
 
 #include "xunitxmlqtestlibparserfactory.h"
+#include "xunitxmlqtestlibparser.h"
 
 #include <projectexplorer/runconfiguration.h>
 
