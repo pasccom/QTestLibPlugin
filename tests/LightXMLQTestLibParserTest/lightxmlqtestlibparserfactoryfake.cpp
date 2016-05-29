@@ -17,6 +17,7 @@
  */
 
 #include "lightxmlqtestlibparserfactoryfake.h"
+#include "lightxmlqtestlibparser.h"
 
 #include <projectexplorer/runconfiguration.h>
 

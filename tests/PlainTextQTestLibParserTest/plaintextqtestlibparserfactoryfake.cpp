@@ -16,7 +16,8 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "plaintextqtestlibparserfactory.h"
+#include "plaintextqtestlibparserfactoryfake.h"
+#include <plaintextqtestlibparser.h>
 
 #include <projectexplorer/runconfiguration.h>
 

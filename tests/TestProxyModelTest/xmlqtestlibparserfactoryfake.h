@@ -20,7 +20,6 @@
 #define XMLQTESTLIBPARSERFACTORYFAKE_H
 
 #include "testmodelfactory.h"
-#include "xmlqtestlibparser.h"
 
 namespace QTestLibPlugin {
 namespace Internal {

@@ -20,7 +20,6 @@
 #define PLAINTEXTQTESTLIBPARSERFACTORYFAKE_H
 
 #include "testmodelfactory.h"
-#include "plaintextqtestlibparser.h"
 
 namespace QTestLibPlugin {
 namespace Internal {

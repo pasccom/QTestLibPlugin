@@ -20,7 +20,6 @@
 #define LIGHTXMLQTESTLIBPARSERFACTORYFAKE_H
 
 #include "testmodelfactory.h"
-#include "lightxmlqtestlibparser.h"
 
 namespace QTestLibPlugin {
 namespace Internal {
