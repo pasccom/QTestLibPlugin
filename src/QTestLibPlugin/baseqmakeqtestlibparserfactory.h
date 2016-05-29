@@ -44,7 +44,6 @@ namespace Internal {
  */
 class BaseQMakeQTestLibParserFactory : public AbstractTestParserFactory
 {
-    Q_OBJECT
 public:
     /*!
      * \brief Constructor
@@ -53,10 +52,10 @@ public:
      *
      * \param parent The parent object of the factory.
      */
-    inline BaseQMakeQTestLibParserFactory(QObject *parent = NULL):
-        AbstractTestParserFactory(parent), mFormat(QTestLibArgsParser::NoneFormat) {}
+    inline BaseQMakeQTestLibParserFactory(QTestLibArgsParser::TestOutputFormat format, QObject* parent = nullptr):
+        AbstractTestParserFactory(parent), mFormat(format) {}
     inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {return canParseRunConfiguration(runConfiguration) || canParseModule(runConfiguration);}
-protected:
+    inline AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration* runConfiguration) const {Q_UNUSED(runConfiguration); return nullptr;}
     /*!
      * \brief Set the format accepted by the parser.
      *
