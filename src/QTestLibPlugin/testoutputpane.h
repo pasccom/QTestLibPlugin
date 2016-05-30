@@ -19,6 +19,8 @@
 #ifndef TESTOUTPUTPANE_H
 #define TESTOUTPUTPANE_H
 
+#include "qtestlibargsparser.h"
+
 #include <coreplugin/ioutputpane.h>
 #include <utils/outputformat.h>
 #include <QVector>
@@ -26,6 +28,7 @@
 class QTreeView;
 class QAbstractItemModel;
 class QSettings;
+class QComboBox;
 
 namespace ProjectExplorer {
     class RunControl;
@@ -57,15 +60,18 @@ public:
     QList<QWidget *> toolBarWidgets(void) const;
     void visibilityChanged(bool visible) {Q_UNUSED(visible);}
 
+    QTestLibArgsParser::TestOutputFormat userForceParser(void) const;
+
     void loadSettings(QSettings* settings);
     void saveSettings(QSettings* settings);
 private:
     void loadColumnWidth(QSettings* settings, int column, const QString& key);
-
+    QString formatToString(QTestLibArgsParser::TestOutputFormat format) const;
     TestProxyModel *mProxy;
     QAbstractItemModel *mModel;
     QTreeView *mOutputWidget;
     QList<QWidget *> mToolbarWidgets;
+    QComboBox *mUserForceParserCombo;
     QVector<int> mColumnWidths;
 //    Core::MessageOutputWindow *mDebug;
 };

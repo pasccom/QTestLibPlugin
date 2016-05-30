@@ -21,6 +21,8 @@
 #include "qtestlibmodel.h"
 #include "testproxymodel.h"
 
+#include "utils/qtcassert.h"
+
 #include <QtCore>
 #include <QtWidgets>
 #include <QtDebug>
@@ -56,12 +58,48 @@ QWidget* TestOutputPane::outputWidget(QWidget * parent)
     }
 
     if (mToolbarWidgets.isEmpty()) {
+        mUserForceParserCombo = new QComboBox(parent);
+        int f = QTestLibArgsParser::NoneFormat;
+        do {
+            if (f != QTestLibArgsParser::CsvFormat)
+                mUserForceParserCombo->addItem(formatToString((QTestLibArgsParser::TestOutputFormat) f), QVariant::fromValue<QTestLibArgsParser::TestOutputFormat>((QTestLibArgsParser::TestOutputFormat) f));
+        } while (++f <= QTestLibArgsParser::AllFormats);
+        mToolbarWidgets.append(mUserForceParserCombo);
+
+
         int t = QTestLibModel::FirstMessageType;
         while (++t < QTestLibModel::LastMessageType)
             mToolbarWidgets.append(new TestProxyButton((QTestLibModel::MessageType) t, mProxy, parent));
     }
 
     return mOutputWidget;
+}
+
+QString TestOutputPane::formatToString(QTestLibArgsParser::TestOutputFormat format) const
+{
+    switch (format) {
+    case QTestLibArgsParser::NoneFormat:
+        return tr("Auto");
+    case QTestLibArgsParser::TxtFormat:
+        return tr("Force plain text parser");
+    case QTestLibArgsParser::XmlFormat:
+        return tr("Force XML parset");
+    case QTestLibArgsParser::LightXmlFormat:
+        return tr("Force light XML parser");
+    case QTestLibArgsParser::XUnitXmlFormat:
+        return tr("Force XUnit XML parser");
+    case QTestLibArgsParser::AllFormats:
+        return tr("Force all parsers");
+    default:
+        break;
+    }
+
+    QTC_ASSERT(false, return QString::null);
+}
+
+QTestLibArgsParser::TestOutputFormat TestOutputPane::userForceParser(void) const
+{
+    return mUserForceParserCombo->currentData().value<QTestLibArgsParser::TestOutputFormat>();
 }
 
 QList<QWidget *> TestOutputPane::toolBarWidgets(void) const
