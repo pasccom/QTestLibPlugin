@@ -102,6 +102,7 @@ public:
         XUnitXmlFormat, /*!< XUnit XML format */
         XmlFormat, /*!< QTestLIb XML format */
         LightXmlFormat, /*!< Light QTestLib XML format */
+        AllFormats, /*!< Unspecified format, used when unknown test format is output */
     } TestOutputFormat; // WARNING order matters!
     /*!
      * \brief Test verbosity
