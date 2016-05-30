@@ -20,6 +20,8 @@
 #include <qtestlibpluginconstants.h>
 
 #include <baseqmakeqtestlibparserfactory.h>
+#include <baseforceparserfactory.h>
+
 #include <plaintextqtestlibparserfactory.h>
 #include <xmlqtestlibparserfactory.h>
 #include <lightxmlqtestlibparserfactory.h>
@@ -106,15 +108,28 @@ bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorStrin
     else
         qWarning() << qPrintable(QString(QLatin1String("Translator file \"%1\" not found")).arg(qmFile));
 
+    // Output pane
+    mOutputPane = new TestOutputPane(mModel);
+    addAutoReleasedObject(mOutputPane);
+
     // Parser factories
-    PlainTextQTestLibParserFactory *plainTextFactory = new PlainTextQTestLibParserFactory(new BaseQMakeQTestLibParserFactory(QTestLibArgsParser::TxtFormat, this));
-    addAutoReleasedObject(plainTextFactory);
-    XMLQTestLibParserFactory *xmlFactory = new XMLQTestLibParserFactory(new BaseQMakeQTestLibParserFactory(QTestLibArgsParser::XmlFormat, this));
-    addAutoReleasedObject(xmlFactory);
-    LightXMLQTestLibParserFactory *lightXmlFactory = new LightXMLQTestLibParserFactory(new BaseQMakeQTestLibParserFactory(QTestLibArgsParser::LightXmlFormat, this));
-    addAutoReleasedObject(lightXmlFactory);
-    XUnitXMLQTestLibParserFactory *xUnitXmlFactory = new XUnitXMLQTestLibParserFactory(new BaseQMakeQTestLibParserFactory(QTestLibArgsParser::XUnitXmlFormat, this));
-    addAutoReleasedObject(xUnitXmlFactory);
+    PlainTextQTestLibParserFactory *qMakePlainTextFactory = new PlainTextQTestLibParserFactory(new BaseQMakeQTestLibParserFactory(QTestLibArgsParser::TxtFormat, this));
+    addAutoReleasedObject(qMakePlainTextFactory);
+    XMLQTestLibParserFactory *qMakeXmlFactory = new XMLQTestLibParserFactory(new BaseQMakeQTestLibParserFactory(QTestLibArgsParser::XmlFormat, this));
+    addAutoReleasedObject(qMakeXmlFactory);
+    LightXMLQTestLibParserFactory *qMakeLightXmlFactory = new LightXMLQTestLibParserFactory(new BaseQMakeQTestLibParserFactory(QTestLibArgsParser::LightXmlFormat, this));
+    addAutoReleasedObject(qMakeLightXmlFactory);
+    XUnitXMLQTestLibParserFactory *qMakeXUnitXmlFactory = new XUnitXMLQTestLibParserFactory(new BaseQMakeQTestLibParserFactory(QTestLibArgsParser::XUnitXmlFormat, this));
+    addAutoReleasedObject(qMakeXUnitXmlFactory);
+
+    PlainTextQTestLibParserFactory *userPlainTextFactory = new PlainTextQTestLibParserFactory(new BaseForceParserFactory(QTestLibArgsParser::TxtFormat, mOutputPane));
+    addAutoReleasedObject(userPlainTextFactory);
+    XMLQTestLibParserFactory *userXmlFactory = new XMLQTestLibParserFactory(new BaseForceParserFactory(QTestLibArgsParser::XmlFormat, mOutputPane));
+    addAutoReleasedObject(userXmlFactory);
+    LightXMLQTestLibParserFactory *userLightXmlFactory = new LightXMLQTestLibParserFactory(new BaseForceParserFactory(QTestLibArgsParser::LightXmlFormat, mOutputPane));
+    addAutoReleasedObject(userLightXmlFactory);
+    XUnitXMLQTestLibParserFactory *userXUnitXmlFactory = new XUnitXMLQTestLibParserFactory(new BaseForceParserFactory(QTestLibArgsParser::XUnitXmlFormat, mOutputPane));
+    addAutoReleasedObject(userXUnitXmlFactory);
 
     // Run configuration factories
     ProjectExplorer::IRunConfigurationFactory* runConfigFactory = new QMakeTestRunConfigurationFactory;
@@ -137,10 +152,6 @@ bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorStrin
     cmd->setAttribute(Core::Command::CA_UpdateText);
     cmd->setAttribute(Core::Command::CA_NonConfigurable);
     projectContextMenu->addAction(cmd, ProjectExplorer::Constants::G_PROJECT_RUN);
-
-    // Output pane
-    mOutputPane = new TestOutputPane(mModel);
-    addAutoReleasedObject(mOutputPane);
 
     // Load plugin settings
     QSettings *settings = Core::ICore::settings(QSettings::UserScope);
