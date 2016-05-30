@@ -45,7 +45,8 @@ SOURCES += \
     qmaketestrunconfigurationfactory.cpp \
     testrunconfigurationextraaspect.cpp \
     Widgets/filetypevalidatinglineedit.cpp \
-    baseqmakeqtestlibparserfactory.cpp
+    baseqmakeqtestlibparserfactory.cpp \
+    baseforceparserfactory.cpp
 
 HEADERS += \
     qtestlibplugin_global.h \
@@ -69,7 +70,8 @@ HEADERS += \
     qmaketestrunconfigurationfactory.h \
     testrunconfigurationextraaspect.h \
     Widgets/filetypevalidatinglineedit.h \
-    baseqmakeqtestlibparserfactory.h
+    baseqmakeqtestlibparserfactory.h \
+    baseforceparserfactory.h
 
 include(../../QTestLibPlugin.pri)
 

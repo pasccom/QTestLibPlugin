@@ -31,7 +31,7 @@ namespace Internal {
  * As an implementation of AbstractTestParserFactory,
  * this class is in charge of checking that a parser
  * may parse the ProjectExplorer::RunConfiguration output.
- * It does not implement the parser cration method,
+ * It does not implement the parser creation method,
  * as it is not associated to any particular parser.
  * It is only intended to be injected into a parser factory.
  *
