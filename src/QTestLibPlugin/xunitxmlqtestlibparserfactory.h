@@ -31,6 +31,7 @@ namespace Internal {
  * this class is in charge of checking that the associated parser, XUnitXMLQTestLibParser,
  * may parse the ProjectExplorer::RunConfiguration output and
  * allocate instances of the associated parser if needed.
+ * For this it uses the methods of a base factory injected in the constructor.
  */
 class XUnitXMLQTestLibParserFactory : public AbstractTestParserFactory
 {
@@ -41,10 +42,18 @@ public:
      *
      * Just call the parent class constructor.
      *
-     * \param parent The parent object of the factory.
+     * \param base The base of this factory
      */
     inline XUnitXMLQTestLibParserFactory(AbstractTestParserFactory* base):
         AbstractTestParserFactory(base), mBase(base) {}
+    /*!
+     * \brief \copybrief AbstractTestParserFactory::canParse()
+     *
+     * Uses the base factory AbstractTestParserFactory::canParse() method, if available,
+     * to tell whether the associated parser can parse the test.
+     * \param runConfiguration he run configuration to test
+     * \return true, if the associated parser may parse the test output.
+     */
     inline bool canParse(ProjectExplorer::RunConfiguration* runConfiguration) const {return (mBase != nullptr) ? mBase->canParse(runConfiguration) : false;}
     AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const;
 private:

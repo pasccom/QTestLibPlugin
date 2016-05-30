@@ -26,19 +26,19 @@ namespace QTestLibPlugin {
 namespace Internal {
 
 /*!
- * \brief The BaseQMakeQTestLibParserFactory class is an abstract base for parsers factories relying on QTestLib.
+ * \brief The BaseQMakeQTestLibParserFactory class is a base for parsers factories relying on QMake and QTestLib.
  *
  * As an implementation of AbstractTestParserFactory,
  * this class is in charge of checking that a parser
  * may parse the ProjectExplorer::RunConfiguration output.
  * It does not implement the parser cration method,
  * as it is not associated to any particular parser.
- * It is only intended to be a basis for factories.
+ * It is only intended to be injected into a parser factory.
  *
  * It proposes the following heuristic:
  *   \li Accept TestRunConfiguration with the accepted test output format.
  *   \li Accpet ProjectExplorer::LocalApplicationRunconfiguration associated
- * to a project using qtestlib and with the accepted test output format.
+ * to a project using QTestLib and with the accepted test output format.
  *
  * These are sensible heuristics for most qMake projects.
  */
@@ -51,11 +51,31 @@ public:
      *
      * Just call the parent class constructor.
      *
-     * \param parent The parent object of the factory.
+     * \param format The test output format accepted by the parser
+     * \param parent The parent object of the factory
      */
     inline BaseQMakeQTestLibParserFactory(QTestLibArgsParser::TestOutputFormat format, QObject* parent = nullptr):
         AbstractTestParserFactory(parent), mFormat(format) {}
+    /*!
+     * \brief \copybrief AbstractTestParserFactory::canParse()
+     *
+     * Tests whether the project can be parsed by a parser with the given output format.
+     * It uses the following heuristics:
+     *  \li Accept TestRunConfiguration with the accepted test output format.
+     *  \li Accpet ProjectExplorer::LocalApplicationRunconfiguration associated
+     * to a project using QTestLib and with the accepted test output format.
+     *
+     * \param runConfiguration The run configuration to test.
+     * \return \c true, if the associated parser may parse the test output.
+     */
     inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {return canParseRunConfiguration(runConfiguration) || canParseModule(runConfiguration);}
+    /*!
+     * \brief \copybrief AbstractTestParserFactory::getParserInstance()
+     *
+     * Always returns \c nullptr, since this factory is a base (not associated with any parser).
+     * \param runConfiguration Unused.
+     * \return Always \c nullptr.
+     */
     inline AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration* runConfiguration) const {Q_UNUSED(runConfiguration); return nullptr;}
     /*!
      * \brief Set the format accepted by the parser.
