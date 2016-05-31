@@ -16,8 +16,8 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef XUNITXMLQTESTLIBPARSERTEST_H
-#define XUNITXMLQTESTLIBPARSERTEST_H
+#ifndef XMLQTESTLIBPARSERTEST_H
+#define XMLQTESTLIBPARSERTEST_H
 
 #include <QObject>
 #include <QDateTime>
@@ -32,11 +32,11 @@ namespace ProjectExplorer {
 namespace QTestLibPlugin {
 namespace Test {
 
-class XUnitXMLQTestLibParserFactoryTest : public QObject
+class QMakeXMLQTestLibParserFactoryTest : public QObject
 {
     Q_OBJECT
 public:
-    inline XUnitXMLQTestLibParserFactoryTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch());}
+    inline QMakeXMLQTestLibParserFactoryTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch());}
 private Q_SLOTS:
     void initTestCase(void);
     void init(void);
@@ -67,4 +67,4 @@ private:
 } // Test
 } // QTestLibPlugin
 
-#endif // XUNITXMLQTESTLIBPARSERTEST_H
+#endif // XMLQTESTLIBPARSERTEST_H

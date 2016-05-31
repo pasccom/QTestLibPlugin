@@ -16,7 +16,7 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "plaintextqtestlibparserfactorytest.h"
+#include "qmakeplaintextqtestlibparserfactorytest.h"
 #include "testhelper.h"
 
 #include <plaintextqtestlibparserfactory.h>
@@ -46,7 +46,7 @@ namespace Test {
 #define QMAKE_RUNCONFIG_PREFIX "Qt4ProjectManager.Qt4RunConfiguration"
 const QString CommandLineArgumentsKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".CommandLineArguments");
 
-void PlainTextQTestLibParserFactoryTest::initTestCase(void)
+void QMakePlainTextQTestLibParserFactoryTest::initTestCase(void)
 {
     QStringList projectPathes;
 
@@ -65,19 +65,19 @@ void PlainTextQTestLibParserFactoryTest::initTestCase(void)
         QVERIFY(removeProjectUserFiles(projectPath));
 }
 
-void PlainTextQTestLibParserFactoryTest::init(void)
+void QMakePlainTextQTestLibParserFactoryTest::init(void)
 {
     mProject = NULL;
 }
 
-void PlainTextQTestLibParserFactoryTest::cleanup(void)
+void QMakePlainTextQTestLibParserFactoryTest::cleanup(void)
 {
     if (mProject != NULL)
         ProjectExplorer::SessionManager::removeProject(mProject);
 }
 
 
-void PlainTextQTestLibParserFactoryTest::dataTest(void)
+void QMakePlainTextQTestLibParserFactoryTest::dataTest(void)
 {
     QList< QPair<QString, bool> > verbosities;
     verbosities << qMakePair(QString::null, true);
@@ -114,7 +114,7 @@ void PlainTextQTestLibParserFactoryTest::dataTest(void)
     }
 }
 
-void PlainTextQTestLibParserFactoryTest::dataMakeCheck(void)
+void QMakePlainTextQTestLibParserFactoryTest::dataMakeCheck(void)
 {
     QList< QPair<Internal::QTestLibArgsParser::TestVerbosity, bool> > verbosities;
     verbosities << qMakePair(Internal::QTestLibArgsParser::NormalVerbosity, true);
@@ -146,7 +146,7 @@ void PlainTextQTestLibParserFactoryTest::dataMakeCheck(void)
     }
 }
 
-void PlainTextQTestLibParserFactoryTest::testOneClass(void)
+void QMakePlainTextQTestLibParserFactoryTest::testOneClass(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -154,7 +154,7 @@ void PlainTextQTestLibParserFactoryTest::testOneClass(void)
     runTest("OneClassTest", cmdArgs, result);
 }
 
-void PlainTextQTestLibParserFactoryTest::testAllMessages(void)
+void QMakePlainTextQTestLibParserFactoryTest::testAllMessages(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -162,7 +162,7 @@ void PlainTextQTestLibParserFactoryTest::testAllMessages(void)
     runTest("AllMessagesTest", cmdArgs, result);
 }
 
-void PlainTextQTestLibParserFactoryTest::testMultipleClasses(void)
+void QMakePlainTextQTestLibParserFactoryTest::testMultipleClasses(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -170,7 +170,7 @@ void PlainTextQTestLibParserFactoryTest::testMultipleClasses(void)
     runTest("MultipleClassesTest", cmdArgs, result);
 }
 
-void PlainTextQTestLibParserFactoryTest::testSignalsTest(void)
+void QMakePlainTextQTestLibParserFactoryTest::testSignalsTest(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -178,7 +178,7 @@ void PlainTextQTestLibParserFactoryTest::testSignalsTest(void)
     runTest("SignalsTest", cmdArgs, result);
 }
 
-void PlainTextQTestLibParserFactoryTest::testLimits(void)
+void QMakePlainTextQTestLibParserFactoryTest::testLimits(void)
 {
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
@@ -186,7 +186,7 @@ void PlainTextQTestLibParserFactoryTest::testLimits(void)
     runTest("LimitsTest", cmdArgs, result);
 }
 
-void PlainTextQTestLibParserFactoryTest::testOneSubTest(void)
+void QMakePlainTextQTestLibParserFactoryTest::testOneSubTest(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
@@ -195,7 +195,7 @@ void PlainTextQTestLibParserFactoryTest::testOneSubTest(void)
     runMakeCheck("OneSubTest", format, verbosity, result);
 }
 
-void PlainTextQTestLibParserFactoryTest::testTwoSubTests(void)
+void QMakePlainTextQTestLibParserFactoryTest::testTwoSubTests(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
@@ -204,7 +204,7 @@ void PlainTextQTestLibParserFactoryTest::testTwoSubTests(void)
     runMakeCheck("TwoSubTests", format, verbosity, result);
 }
 
-void PlainTextQTestLibParserFactoryTest::runTest(const QString& testName, const QStringList& cmdArgs, bool result)
+void QMakePlainTextQTestLibParserFactoryTest::runTest(const QString& testName, const QStringList& cmdArgs, bool result)
 {
     QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
 
@@ -247,7 +247,7 @@ void PlainTextQTestLibParserFactoryTest::runTest(const QString& testName, const 
     delete parser;
 }
 
-void PlainTextQTestLibParserFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result)
+void QMakePlainTextQTestLibParserFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result)
 {
     QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
 

@@ -27,24 +27,24 @@ QT      += xml
 
 SOURCES +=  \
     testhelper.cpp \
-    plaintextqtestlibparserfactorytest.cpp \
-    xmlqtestlibparserfactorytest.cpp \
-    lightxmlqtestlibparserfactorytest.cpp \
-    xunitxmlqtestlibparserfactorytest.cpp \
     testmodelfactorytest.cpp \
     testsuitemodeltest.cpp \
     testactionstest.cpp \
-    testrunconfigurationfactorytest.cpp
+    testrunconfigurationfactorytest.cpp \
+    qmakelightxmlqtestlibparserfactorytest.cpp \
+    qmakeplaintextqtestlibparserfactorytest.cpp \
+    qmakexmlqtestlibparserfactorytest.cpp \
+    qmakexunitxmlqtestlibparserfactorytest.cpp
 HEADERS += \
     testhelper.h \
-    plaintextqtestlibparserfactorytest.h \
-    xmlqtestlibparserfactorytest.h \
-    lightxmlqtestlibparserfactorytest.h \
-    xunitxmlqtestlibparserfactorytest.h \
     testmodelfactorytest.h \
     testsuitemodeltest.h \
     testactionstest.h \
-    testrunconfigurationfactorytest.h
+    testrunconfigurationfactorytest.h \
+    qmakelightxmlqtestlibparserfactorytest.h \
+    qmakeplaintextqtestlibparserfactorytest.h \
+    qmakexmlqtestlibparserfactorytest.h \
+    qmakexunitxmlqtestlibparserfactorytest.h
 
 include(../../../QTestLibPlugin.pri)
 SOURCES += $$QTESTLIBPLUGIN_TESTS/common/qtestlibmodeltester.cpp

@@ -33,10 +33,10 @@
 #include <qmaketestrunconfigurationfactory.h>
 
 #ifdef BUILD_TESTS
-#   include <Test/plaintextqtestlibparserfactorytest.h>
-#   include <Test/xmlqtestlibparserfactorytest.h>
-#   include <Test/lightxmlqtestlibparserfactorytest.h>
-#   include <Test/xunitxmlqtestlibparserfactorytest.h>
+#   include <Test/qmakeplaintextqtestlibparserfactorytest.h>
+#   include <Test/qmakexmlqtestlibparserfactorytest.h>
+#   include <Test/qmakelightxmlqtestlibparserfactorytest.h>
+#   include <Test/qmakexunitxmlqtestlibparserfactorytest.h>
 #   include <Test/testmodelfactorytest.h>
 #   include <Test/testsuitemodeltest.h>
 #   include <Test/testactionstest.h>
@@ -399,10 +399,10 @@ QList<QObject *> TestLibPlugin::createTestObjects(void) const
 {
     QList<QObject *> testObjects;
 
-    testObjects << new Test::PlainTextQTestLibParserFactoryTest;
-    testObjects << new Test::XMLQTestLibParserFactoryTest;
-    testObjects << new Test::LightXMLQTestLibParserFactoryTest;
-    testObjects << new Test::XUnitXMLQTestLibParserFactoryTest;
+    testObjects << new Test::QMakePlainTextQTestLibParserFactoryTest;
+    testObjects << new Test::QMakeXMLQTestLibParserFactoryTest;
+    testObjects << new Test::QMakeLightXMLQTestLibParserFactoryTest;
+    testObjects << new Test::QMakeXUnitXMLQTestLibParserFactoryTest;
     testObjects << new Test::TestModelFactoryTest;
     testObjects << new Test::TestSuiteModelTest;
     testObjects << new Test::TestActionsTest;
