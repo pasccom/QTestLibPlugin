@@ -47,6 +47,13 @@ public:
     inline LightXMLQTestLibParserFactory(AbstractTestParserFactory* base):
         AbstractTestParserFactory(base), mBase(base) {}
     /*!
+     * \brief Base factory
+     *
+     * Returns the base factory (used by the canParse() method).
+     * \return The base factory
+     */
+    inline AbstractTestParserFactory* baseFactory(void) const {return mBase;}
+    /*!
      * \brief \copybrief AbstractTestParserFactory::canParse()
      *
      * Uses the base factory AbstractTestParserFactory::canParse() method, if available,
