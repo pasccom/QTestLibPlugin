@@ -36,6 +36,7 @@ namespace Internal {
 class LightXMLQTestLibParserFactory : public AbstractTestParserFactory
 {
     Q_OBJECT
+    Q_PROPERTY(AbstractTestParserFactory* baseFactory READ baseFactory)
 public:
     /*!
      * \brief Constructor

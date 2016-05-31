@@ -36,6 +36,7 @@ namespace Internal {
 class XMLQTestLibParserFactory : public AbstractTestParserFactory
 {
     Q_OBJECT
+    Q_PROPERTY(AbstractTestParserFactory* baseFactory READ baseFactory)
 public:
     /*!
      * \brief Constructor
