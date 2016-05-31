@@ -20,6 +20,7 @@
 #include "testhelper.h"
 
 #include <xmlqtestlibparserfactory.h>
+#include <baseqmakeqtestlibparserfactory.h>
 #include <qtestlibpluginconstants.h>
 #include <testrunconfiguration.h>
 
@@ -239,7 +240,16 @@ void QMakeXMLQTestLibParserFactoryTest::runTest(const QString& testName, const Q
     QCOMPARE(testRunConfig->commandLineArguments(), cmdArgs.join(QLatin1Char(' ')));
 
     // Creation of parser:
-    QTestLibPlugin::Internal::XMLQTestLibParserFactory* parserFactory = ExtensionSystem::PluginManager::getObject<QTestLibPlugin::Internal::XMLQTestLibParserFactory>();
+    auto isQMakeFactory = [] (Internal::AbstractTestParserFactory* factory) {
+        QVariant base = factory->property("baseFactory");
+        if (!base.isValid())
+            return false;
+        QObject *baseObject = qvariant_cast<QObject*>(base);
+        if (baseObject == NULL)
+            return false;
+        return (qobject_cast<Internal::BaseQMakeQTestLibParserFactory*>(baseObject) != NULL);
+    };
+    QTestLibPlugin::Internal::XMLQTestLibParserFactory* parserFactory = ExtensionSystem::PluginManager::getObject<QTestLibPlugin::Internal::XMLQTestLibParserFactory>(isQMakeFactory);
     QVERIFY(parserFactory != NULL);
     QCOMPARE(parserFactory->canParse(testRunConfig), result);
     QTestLibPlugin::Internal::AbstractTestParser* parser = parserFactory->getParserInstance(testRunConfig);
@@ -287,7 +297,16 @@ void QMakeXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, In
     QCOMPARE(testRunConfig->commandLineArguments(), expectedCmdArgs);
 
     // Creation of parser:
-    QTestLibPlugin::Internal::XMLQTestLibParserFactory* parserFactory = ExtensionSystem::PluginManager::getObject<QTestLibPlugin::Internal::XMLQTestLibParserFactory>();
+    auto isQMakeFactory = [] (Internal::AbstractTestParserFactory* factory) {
+        QVariant base = factory->property("baseFactory");
+        if (!base.isValid())
+            return false;
+        QObject *baseObject = qvariant_cast<QObject*>(base);
+        if (baseObject == NULL)
+            return false;
+        return (qobject_cast<Internal::BaseQMakeQTestLibParserFactory*>(baseObject) != NULL);
+    };
+    QTestLibPlugin::Internal::XMLQTestLibParserFactory* parserFactory = ExtensionSystem::PluginManager::getObject<QTestLibPlugin::Internal::XMLQTestLibParserFactory>(isQMakeFactory);
     QVERIFY(parserFactory != NULL);
     QCOMPARE(parserFactory->canParse(testRunConfig), result);
     QTestLibPlugin::Internal::AbstractTestParser* parser = parserFactory->getParserInstance(testRunConfig);
