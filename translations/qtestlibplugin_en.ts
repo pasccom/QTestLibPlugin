@@ -185,6 +185,30 @@
         <source>Test output</source>
         <translation>Test output</translation>
     </message>
+    <message>
+        <source>Auto</source>
+        <translation>Auto</translation>
+    </message>
+    <message>
+        <source>Force plain text parser</source>
+        <translation>Force plain text parser</translation>
+    </message>
+    <message>
+        <source>Force light XML parser</source>
+        <translation>Force light XML parser</translation>
+    </message>
+    <message>
+        <source>Force XUnit XML parser</source>
+        <translation>Force XUnit XML parser</translation>
+    </message>
+    <message>
+        <source>Force all parsers</source>
+        <translation>Force all parsers</translation>
+    </message>
+    <message>
+        <source>Force XML parser</source>
+        <translation>Force XML parser</translation>
+    </message>
 </context>
 <context>
     <name>QTestLibPlugin::Internal::TestRunConfigWidget</name>

@@ -83,7 +83,7 @@ QString TestOutputPane::formatToString(QTestLibArgsParser::TestOutputFormat form
     case QTestLibArgsParser::TxtFormat:
         return tr("Force plain text parser");
     case QTestLibArgsParser::XmlFormat:
-        return tr("Force XML parset");
+        return tr("Force XML parser");
     case QTestLibArgsParser::LightXmlFormat:
         return tr("Force light XML parser");
     case QTestLibArgsParser::XUnitXmlFormat:
