@@ -239,22 +239,7 @@ void QMakeXMLQTestLibParserFactoryTest::runTest(const QString& testName, const Q
     QVERIFY(testRunConfig != NULL);
     QCOMPARE(testRunConfig->commandLineArguments(), cmdArgs.join(QLatin1Char(' ')));
 
-    // Creation of parser:
-    auto isQMakeFactory = [] (Internal::AbstractTestParserFactory* factory) {
-        QVariant base = factory->property("baseFactory");
-        if (!base.isValid())
-            return false;
-        QObject *baseObject = qvariant_cast<QObject*>(base);
-        if (baseObject == NULL)
-            return false;
-        return (qobject_cast<Internal::BaseQMakeQTestLibParserFactory*>(baseObject) != NULL);
-    };
-    QTestLibPlugin::Internal::XMLQTestLibParserFactory* parserFactory = ExtensionSystem::PluginManager::getObject<QTestLibPlugin::Internal::XMLQTestLibParserFactory>(isQMakeFactory);
-    QVERIFY(parserFactory != NULL);
-    QCOMPARE(parserFactory->canParse(testRunConfig), result);
-    QTestLibPlugin::Internal::AbstractTestParser* parser = parserFactory->getParserInstance(testRunConfig);
-    QCOMPARE(parser != NULL, result);
-    delete parser;
+    testFactory(testRunConfig, result);
 }
 
 void QMakeXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result)
@@ -296,7 +281,11 @@ void QMakeXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, In
         expectedCmdArgs.append(QString(QLatin1String(" TESTARGS=\"%1\"")).arg(testArgsParser.toString()));
     QCOMPARE(testRunConfig->commandLineArguments(), expectedCmdArgs);
 
-    // Creation of parser:
+    testFactory(testRunConfig, result);
+}
+
+void QMakeXMLQTestLibParserFactoryTest::testFactory(ProjectExplorer::RunConfiguration* testRunConfig, bool result)
+{
     auto isQMakeFactory = [] (Internal::AbstractTestParserFactory* factory) {
         QVariant base = factory->property("baseFactory");
         if (!base.isValid())
@@ -313,6 +302,7 @@ void QMakeXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, In
     QCOMPARE(parser != NULL, result);
     delete parser;
 }
+
 
 } // Test
 } // QTestLibPlugin

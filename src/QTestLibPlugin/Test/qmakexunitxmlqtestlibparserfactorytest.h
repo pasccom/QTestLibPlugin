@@ -16,8 +16,8 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef XUNITXMLQTESTLIBPARSERTEST_H
-#define XUNITXMLQTESTLIBPARSERTEST_H
+#ifndef QMAKEXUNITXMLQTESTLIBPARSERTEST_H
+#define QMAKEXUNITXMLQTESTLIBPARSERTEST_H
 
 #include <QObject>
 #include <QDateTime>
@@ -60,6 +60,7 @@ private:
     void dataMakeCheck(void);
     void runTest(const QString& testName, const QStringList &cmdArgs, bool result);
     void runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result);
+    void testFactory(ProjectExplorer::RunConfiguration* testRunConfig, bool result);
 
     ProjectExplorer::Project* mProject;
 };
@@ -67,4 +68,4 @@ private:
 } // Test
 } // QTestLibPlugin
 
-#endif // XUNITXMLQTESTLIBPARSERTEST_H
+#endif // QMAKEXUNITXMLQTESTLIBPARSERTEST_H
