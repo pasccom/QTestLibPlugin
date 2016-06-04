@@ -39,7 +39,9 @@ SUBDIRS = $$QTESTLIBPLUGIN_SRC
 SUBDIRS += $$QTESTLIBPLUGIN_LIB
 SUBDIRS += $$QTESTLIBPLUGIN_I18N
 
-OTHER_FILES += README.md
+OTHER_FILES +=  README.md \
+                Doxyfile \
+                Doxyfile.internal
 
 include(gcov.pri)
 
