@@ -37,6 +37,10 @@
 #   include <Test/qmakexmlqtestlibparserfactorytest.h>
 #   include <Test/qmakelightxmlqtestlibparserfactorytest.h>
 #   include <Test/qmakexunitxmlqtestlibparserfactorytest.h>
+#   include <Test/forceplaintextqtestlibparserfactorytest.h>
+#   include <Test/forcexmlqtestlibparserfactorytest.h>
+#   include <Test/forcelightxmlqtestlibparserfactorytest.h>
+#   include <Test/forcexunitxmlqtestlibparserfactorytest.h>
 #   include <Test/testmodelfactorytest.h>
 #   include <Test/testsuitemodeltest.h>
 #   include <Test/testactionstest.h>
@@ -403,6 +407,10 @@ QList<QObject *> TestLibPlugin::createTestObjects(void) const
     testObjects << new Test::QMakeXMLQTestLibParserFactoryTest;
     testObjects << new Test::QMakeLightXMLQTestLibParserFactoryTest;
     testObjects << new Test::QMakeXUnitXMLQTestLibParserFactoryTest;
+    testObjects << new Test::ForcePlainTextQTestLibParserFactoryTest;
+    testObjects << new Test::ForceXMLQTestLibParserFactoryTest;
+    testObjects << new Test::ForceLightXMLQTestLibParserFactoryTest;
+    testObjects << new Test::ForceXUnitXMLQTestLibParserFactoryTest;
     testObjects << new Test::TestModelFactoryTest;
     testObjects << new Test::TestSuiteModelTest;
     testObjects << new Test::TestActionsTest;

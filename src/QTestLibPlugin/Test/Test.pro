@@ -32,9 +32,14 @@ SOURCES +=  \
     testactionstest.cpp \
     testrunconfigurationfactorytest.cpp \
     qmakelightxmlqtestlibparserfactorytest.cpp \
+    forcelightxmlqtestlibparserfactorytest.cpp \
     qmakeplaintextqtestlibparserfactorytest.cpp \
+    forceplaintextqtestlibparserfactorytest.cpp \
     qmakexmlqtestlibparserfactorytest.cpp \
-    qmakexunitxmlqtestlibparserfactorytest.cpp
+    forcexmlqtestlibparserfactorytest.cpp \
+    qmakexunitxmlqtestlibparserfactorytest.cpp \
+    forcexunitxmlqtestlibparserfactorytest.cpp \
+
 HEADERS += \
     testhelper.h \
     testmodelfactorytest.h \
@@ -42,9 +47,13 @@ HEADERS += \
     testactionstest.h \
     testrunconfigurationfactorytest.h \
     qmakelightxmlqtestlibparserfactorytest.h \
+    forcelightxmlqtestlibparserfactorytest.h \
     qmakeplaintextqtestlibparserfactorytest.h \
+    forceplaintextqtestlibparserfactorytest.h \
     qmakexmlqtestlibparserfactorytest.h \
-    qmakexunitxmlqtestlibparserfactorytest.h
+    forcexmlqtestlibparserfactorytest.h \
+    qmakexunitxmlqtestlibparserfactorytest.h \
+    forcexunitxmlqtestlibparserfactorytest.h \
 
 include(../../../QTestLibPlugin.pri)
 SOURCES += $$QTESTLIBPLUGIN_TESTS/common/qtestlibmodeltester.cpp
