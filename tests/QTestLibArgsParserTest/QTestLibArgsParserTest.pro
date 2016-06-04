@@ -22,7 +22,7 @@ CONFIG  += console
 CONFIG  -= app_bundle
 CONFIG  += testcase
 CONFIG  += no_testcase_installs
-CONFIG  += gcov
+#CONFIG  += gcov
 QT      += testlib
 QT      += xml
 
