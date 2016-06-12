@@ -63,7 +63,6 @@ isEmpty(QMAKE_LRELEASE) {
 
 lrelease.input = TRANSLATIONS
 lrelease.output = $$QTESTLIBPLUGIN_BIN/${QMAKE_FILE_BASE}.qm
-updateqm.name = lrelease ${QMAKE_FILE_IN}
 lrelease.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm $$QTESTLIBPLUGIN_BIN/${QMAKE_FILE_BASE}.qm
 lrelease.CONFIG += no_link
 
