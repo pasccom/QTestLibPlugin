@@ -26,6 +26,7 @@ CONFIG  += no_testcase_installs
 QT      += testlib
 QT      += xml
 QT      += widgets
+QT      += network
 
 include(../../QTestLibPlugin.pri)
 
@@ -63,9 +64,15 @@ CONFIG(release, debug|release) {
 # Files to be tested are in src folder
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
-# Fake QtCreator tree
+# QtCreator tree
+include(../../QtCreator.local.pri)
 include($$QTESTLIBPLUGIN_LIB/QTestLibPlugin_dependencies.pri)
-include(../QtCreatorFake/QtCreatorFake.pri)
+include($$QTCREATOR_SOURCES/qtcreator.pri)
+DEFINES -= QT_CREATOR QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
+unix {
+    LIBS += "-Wl,-rpath=$$IDE_PLUGIN_PATH"
+    LIBS += "-Wl,-rpath=$$IDE_LIBRARY_PATH"
+}
 
 # The directory where to put MOC-generated files
 MOC_DIR = ./.moc

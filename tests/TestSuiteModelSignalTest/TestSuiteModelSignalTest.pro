@@ -25,6 +25,7 @@ CONFIG  += no_testcase_installs
 QT      += testlib
 QT      += xml
 QT      += widgets
+QT      += network
 
 include(../../QTestLibPlugin.pri)
 
@@ -45,12 +46,15 @@ HEADERS += $$QTESTLIBPLUGIN_SRC/qtestlibmodel.h \
            $$QTESTLIBPLUGIN_SRC/testsuitemodel.h
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
-# Dependencies on Qt Creator libs
-QTC_LIB_DEPENDS += utils \
-                   extensionsystem
-QTC_PLUGIN_DEPENDS += projectexplorer
-# Fake QtCreator tree
-include(../QtCreatorFake/QtCreatorFake.pri)
+# QtCreator tree
+include(../../QtCreator.local.pri)
+include($$QTESTLIBPLUGIN_LIB/QTestLibPlugin_dependencies.pri)
+include($$QTCREATOR_SOURCES/qtcreator.pri)
+DEFINES -= QT_CREATOR QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
+unix {
+    LIBS += "-Wl,-rpath=$$IDE_PLUGIN_PATH"
+    LIBS += "-Wl,-rpath=$$IDE_LIBRARY_PATH"
+}
 
 # The directory where to put MOC-generated files :
 MOC_DIR = ./.moc
@@ -90,14 +94,3 @@ exists($$QTESTLIBMODEL_TESTS/tests.lst) {
 } else {
     message("Test data file not found. Run \"$$QTESTLIBMODEL_TESTS/testlist.sh\"")
 }
-
-# Test case files
-#DISTFILES += tests/addOneItemNoClass/addoneitemnoclasstest.xml \
-#             tests/addOneItemClass/addoneitemclasstest.xml \
-#             tests/addOneItemFunction/addoneitemfunctiontest.xml \
-#             tests/addOneItemDataRow/addoneitemdatarowtest.xml
-# Test result files
-#DISTFILES += tests/addOneItemNoClass/addoneitemnoclass.xml \
-#             tests/addOneItemClass/addoneitemclass.xml \
-#             tests/addOneItemFunction/addoneitemfunction.xml \
-#             tests/addOneItemDataRow/addoneitemdatarow.xml

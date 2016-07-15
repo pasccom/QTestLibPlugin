@@ -26,14 +26,17 @@ CONFIG  += static
 include(../../QTestLibPlugin.pri)
 
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
-SOURCES += qtestlibmodeltester.cpp
-HEADERS += qtestlibmodeltester.h
+SOURCES +=  qtestlibmodeltester.cpp
+HEADERS +=  qtestlibmodeltester.h
 DISTFILES += qttestsubfunction.h
 
 DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 
-QTC_LIB_DEPENDS += utils
-include(../QtCreatorFake/QtCreatorFake.pri)
+# QtCreator tree
+include(../../QtCreator.local.pri)
+include($$QTESTLIBPLUGIN_LIB/QTestLibPlugin_dependencies.pri)
+include($$QTCREATOR_SOURCES/qtcreator.pri)
+DEFINES -= QT_CREATOR QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
 
 # The directory where to put MOC-generated files :
 MOC_DIR = ./.moc
