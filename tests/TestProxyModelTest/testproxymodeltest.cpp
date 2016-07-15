@@ -22,10 +22,6 @@
 
 #include "../common/qtestlibmodeltester.h"
 
-#include <projectexplorer/localapplicationrunconfigurationfake.h>
-#include <projectexplorer/localapplicationruncontrolfake.h>
-#include <projectexplorer/target.h>
-
 #include <utils/hostosinfo.h>
 
 #include <QtTest>
@@ -221,31 +217,20 @@ void TestProxyModelTest::createModel(const QString& testName)
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    // Creation of RunConfiguration
-    ProjectExplorer::Target target(NULL, NULL);
-    ProjectExplorer::LocalApplicationRunConfigurationFake runConfig(&target);
-    runConfig.setDisplayName(testName);
-    runConfig.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
-    runConfig.setExecutable(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName));
-    runConfig.setCommandLineArguments(commandLineArguments());
-
     // Creation of parser
     QTestLibPlugin::Internal::XMLQTestLibParserFactory factory(this);
-    QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
-    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(&runConfig);
+    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(nullptr);
     QVERIFY2(parser, "Factory should return a valid parser");
 
     // Execute test
     QProcess testProc(this);
-    testProc.setWorkingDirectory(runConfig.workingDirectory());
-    testProc.start(runConfig.executable() + " " + runConfig.commandLineArguments(), QIODevice::ReadOnly);
+    testProc.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
+    testProc.start(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName) + " " + commandLineArguments(), QIODevice::ReadOnly);
     if (!testProc.waitForFinished(30000)) {
         testProc.terminate();
         QVERIFY(testProc.waitForFinished());
         QSKIP("This computer is too slow for this test");
     }
-
-    ProjectExplorer::RunControl *runControl = new ProjectExplorer::LocalApplicationRunControlFake(&runConfig);
 
     // Populate model with stdout
     testProc.setReadChannel(QProcess::StandardOutput);
@@ -259,7 +244,7 @@ void TestProxyModelTest::createModel(const QString& testName)
         if (line.startsWith("make["))
             continue;
         //qDebug() << "stdout:" << line;
-        parser->parseStdoutLine(runControl, line);
+        parser->parseStdoutLine(nullptr, line);
     }
 
     // Populate model with stderr
@@ -281,7 +266,7 @@ void TestProxyModelTest::createModel(const QString& testName)
         if (line.startsWith("make["))
             continue;
         //qDebug() << "stderr:" << line;
-        parser->parseStderrLine(runControl, line);
+        parser->parseStderrLine(nullptr, line);
     }
 
     // Get and test model

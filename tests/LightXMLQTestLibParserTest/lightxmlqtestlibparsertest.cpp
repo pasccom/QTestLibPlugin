@@ -17,12 +17,11 @@
  */
 
 #include "lightxmlqtestlibparserfactoryfake.h"
+#include "lightxmlqtestlibparser.h"
 
 #include "../common/qtestlibmodeltester.h"
 
-#include <projectexplorer/localapplicationrunconfigurationfake.h>
-#include <projectexplorer/localapplicationruncontrolfake.h>
-#include <projectexplorer/target.h>
+#include <projectexplorer/runnables.h>
 
 #include <utils/hostosinfo.h>
 
@@ -56,7 +55,7 @@ private:
     void runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
     void runMakeCheck(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
     void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, QTestLibModelTester::Verbosity verbosity);
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::LocalApplicationRunConfiguration *runConfig, const QLinkedList<EnvironmentVariable> &addToEnv = QLinkedList<EnvironmentVariable>());
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::Runnable runnable, const QLinkedList<EnvironmentVariable> &addToEnv = QLinkedList<EnvironmentVariable>());
 };
 
 void LightXMLQTestLibParserTest::data(void)
@@ -151,21 +150,21 @@ QStringList LightXMLQTestLibParserTest::commandLineArguments(QTestLibModelTester
 
 void LightXMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
-    // Creation of RunConfiguration
-    ProjectExplorer::Target target(NULL, NULL);
-    ProjectExplorer::LocalApplicationRunConfigurationFake runConfig(&target);
-    runConfig.setDisplayName(testName);
-    runConfig.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
-    runConfig.setExecutable(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName));
-    runConfig.setCommandLineArguments(commandLineArguments(verbosity).join(' '));
+    // Creation of Runnable
+    ProjectExplorer::StandardRunnable runnable;
+    runnable.workingDirectory = TESTS_DIR "/" + testName + "/";
+    runnable.executable = Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName);
+    runnable.commandLineArguments = commandLineArguments(verbosity).join(' ');
 
     // Creation of parser
     QTestLibPlugin::Internal::LightXMLQTestLibParserFactory factory(this);
-    QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
-    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(&runConfig);
+    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(nullptr);
     QVERIFY2(parser, "Factory should return a valid parser");
+    QTestLibPlugin::Internal::LightXMLQTestLibParser* lightXMLParser = qobject_cast<QTestLibPlugin::Internal::LightXMLQTestLibParser*>(parser);
+    QVERIFY(lightXMLParser != nullptr);
+    lightXMLParser->setDefaultClassName(testName);
 
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, &runConfig);
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, runnable);
     QAbstractItemModel *model = parser->getModel();
 
     checkTest(model, results, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in LightXML silent is equal to normal
@@ -176,23 +175,23 @@ void LightXMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelT
 
 void LightXMLQTestLibParserTest::runMakeCheck(const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
-    // Creation of RunConfiguration
-    ProjectExplorer::Target target(NULL, NULL);
-    ProjectExplorer::LocalApplicationRunConfigurationFake runConfig(&target);
-    runConfig.setDisplayName(testName);
-    runConfig.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
-    runConfig.setExecutable(MAKE_EXECUATBLE);
-    runConfig.setCommandLineArguments(QString("-s check"));
+    // Creation of Runnable
+    ProjectExplorer::StandardRunnable runnable;
+    runnable.workingDirectory = TESTS_DIR "/" + testName + "/";
+    runnable.executable = MAKE_EXECUATBLE;
+    runnable.commandLineArguments = "-s check";
     QLinkedList<EnvironmentVariable> addToEnv;
     addToEnv << EnvironmentVariable("TESTARGS", commandLineArguments(verbosity).join(' '));
 
     // Creation of parser
     QTestLibPlugin::Internal::LightXMLQTestLibParserFactory factory(this);
-    QVERIFY2(factory.canParse(&runConfig), "Factory should parse this test");
-    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(&runConfig);
+    QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(nullptr);
     QVERIFY2(parser, "Factory should return a valid parser");
+    QTestLibPlugin::Internal::LightXMLQTestLibParser* lightXMLParser = qobject_cast<QTestLibPlugin::Internal::LightXMLQTestLibParser*>(parser);
+    QVERIFY(lightXMLParser != nullptr);
+    lightXMLParser->setDefaultClassName(testName);
 
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, &runConfig, addToEnv);
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, runnable, addToEnv);
     QAbstractItemModel *model = parser->getModel();
 
     checkTest(model, results, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in LightXML silent is equal to normal
@@ -208,24 +207,23 @@ void LightXMLQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLin
     QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
 }
 
-QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> LightXMLQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::LocalApplicationRunConfiguration *runConfig, const QLinkedList<EnvironmentVariable> &addToEnv)
+QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> LightXMLQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::Runnable runnable, const QLinkedList<EnvironmentVariable> &addToEnv)
 {
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results;
+    ProjectExplorer::StandardRunnable stdRunnable = runnable.as<ProjectExplorer::StandardRunnable>();
 
     QProcessEnvironment env;
     foreach(EnvironmentVariable var, addToEnv)
         env.insert(var.first, var.second);
     QProcess testProc(this);
-    testProc.setWorkingDirectory(runConfig->workingDirectory());
+    testProc.setWorkingDirectory(stdRunnable.workingDirectory);
     testProc.setProcessEnvironment(env);
-    testProc.start(runConfig->executable() + " " + runConfig->commandLineArguments(), QIODevice::ReadOnly);
+    testProc.start(stdRunnable.executable + " " + stdRunnable.commandLineArguments, QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
         qCritical() << "Test timed out";
         return results;
     }
-
-    ProjectExplorer::RunControl *runControl = new ProjectExplorer::LocalApplicationRunControlFake(runConfig);
 
     testProc.setReadChannel(QProcess::StandardOutput);
     while (!testProc.atEnd()) {
@@ -237,7 +235,7 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> LightXMLQTe
         if (line.startsWith("make[") || line.startsWith("mingw32-make["))
             continue;
         //qDebug() << "stdout:" << line;
-        results << parser->parseStdoutLine(runControl, line);
+        results << parser->parseStdoutLine(nullptr, line);
     }
 
     testProc.setReadChannel(QProcess::StandardError);
@@ -257,7 +255,7 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> LightXMLQTe
         if (line.startsWith("make[") || line.startsWith("mingw32-make["))
             continue;
         //qDebug() << "stderr:" << line;
-        results << parser->parseStderrLine(runControl, line);
+        results << parser->parseStderrLine(nullptr, line);
     }
 
     return results;

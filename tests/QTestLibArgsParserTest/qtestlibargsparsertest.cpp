@@ -416,12 +416,12 @@ void QTestLibArgsParserTest::outputVerbosityV1_data(void)
     for (QLinkedList< QPair<QString, QTestLibArgsParser::TestVerbosity> >::const_iterator v = verbosities.constBegin(); v != verbosities.constEnd(); v++) {
         for (QLinkedList< QPair<QString, QTestLibArgsParser::TestOutputFormat> >::const_iterator f = formats.constBegin(); f != formats.constEnd(); f++) {
             for (QLinkedList< QPair<QString, QString> >::const_iterator n = fileNames.constBegin(); n != fileNames.constEnd(); n++) {
-                QTest::newRow(qPrintable((*v).first + " " + (*f).first + " " + (*n).first)) << (*v).first + " " + (*f).first + " " + (*n).first << (*n).second << (*f).second << (*v).second;
-                QTest::newRow(qPrintable((*v).first + " " + (*n).first + " " + (*f).first)) << (*v).first + " " + (*n).first + " " + (*f).first << (*n).second << (*f).second << (*v).second;
-                QTest::newRow(qPrintable((*f).first + " " + (*v).first + " " + (*n).first)) << (*f).first + " " + (*v).first + " " + (*n).first << (*n).second << (*f).second << (*v).second;
-                QTest::newRow(qPrintable((*f).first + " " + (*n).first + " " + (*v).first)) << (*f).first + " " + (*n).first + " " + (*v).first << (*n).second << (*f).second << (*v).second;
-                QTest::newRow(qPrintable((*n).first + " " + (*v).first + " " + (*f).first)) << (*n).first + " " + (*v).first + " " + (*f).first << (*n).second << (*f).second << (*v).second;
-                QTest::newRow(qPrintable((*n).first + " " + (*f).first + " " + (*v).first)) << (*n).first + " " + (*f).first + " " + (*v).first << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*v).first + " " + (*f).first + " " + (*n).first)) << QString("%1 %2 %3").arg((*v).first).arg((*f).first).arg((*n).first) << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*f).first + " " + (*v).first + " " + (*n).first)) << QString("%1 %2 %3").arg((*f).first).arg((*v).first).arg((*n).first) << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*v).first + " " + (*n).first + " " + (*f).first)) << QString("%1 %2 %3").arg((*v).first).arg((*n).first).arg((*f).first) << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*f).first + " " + (*n).first + " " + (*v).first)) << QString("%1 %2 %3").arg((*f).first).arg((*n).first).arg((*v).first) << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*n).first + " " + (*v).first + " " + (*f).first)) << QString("%1 %2 %3").arg((*n).first).arg((*v).first).arg((*f).first) << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*n).first + " " + (*f).first + " " + (*v).first)) << QString("%1 %2 %3").arg((*n).first).arg((*f).first).arg((*v).first) << (*n).second << (*f).second << (*v).second;
             }
         }
     }
@@ -478,8 +478,8 @@ void QTestLibArgsParserTest::outputVerbosityV2_data(void)
     for (QLinkedList< QPair<QString, QTestLibArgsParser::TestVerbosity> >::const_iterator v = verbosities.constBegin(); v != verbosities.constEnd(); v++) {
         for (QLinkedList< QPair<QString, QTestLibArgsParser::TestOutputFormat> >::const_iterator f = formats.constBegin(); f != formats.constEnd(); f++) {
             for (QLinkedList< QPair<QString, QString> >::const_iterator n = fileNames.constBegin(); n != fileNames.constEnd(); n++) {
-                QTest::newRow(qPrintable((*v).first + " " + (*n).first + "," + (*f).first)) << (*v).first + " " + (*n).first + "," + (*f).first << (*n).second << (*f).second << (*v).second;
-                QTest::newRow(qPrintable((*n).first + "," + (*f).first + " " + (*v).first)) << (*n).first + "," + (*f).first + " " + (*v).first << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*v).first + " " + (*n).first + "," + (*f).first)) << QString("%1 %2,%3").arg((*v).first).arg((*n).first).arg((*f).first) << (*n).second << (*f).second << (*v).second;
+                QTest::newRow(qPrintable((*n).first + "," + (*f).first + " " + (*v).first)) << QString("%1,%2 %3").arg((*n).first).arg((*f).first).arg((*v).first) << (*n).second << (*f).second << (*v).second;
             }
         }
     }
