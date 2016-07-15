@@ -198,16 +198,17 @@ void ForceXUnitXMLQTestLibParserFactoryTest::runTest(const QString& testName, co
     QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
 
     // Retrieve RunConfiguration:
-    ProjectExplorer::LocalApplicationRunConfiguration* testRunConfig = NULL;
+    ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, mProject->activeTarget()->runConfigurations()) {
-        ProjectExplorer::LocalApplicationRunConfiguration* localRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(runConfig);
-        if (localRunConfig == NULL)
+        if (!runConfig->runnable().is<ProjectExplorer::StandardRunnable>())
             continue;
-        QFileInfo exeFileInfo(localRunConfig->executable());
+
+        ProjectExplorer::StandardRunnable runnable = runConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+        QFileInfo exeFileInfo(runnable.executable);
         qDebug() << exeFileInfo.absoluteFilePath();
         QVERIFY(exeFileInfo.exists());
         if (QString::compare(exeFileInfo.baseName(), testName, Qt::CaseSensitive) == 0)
-            testRunConfig = localRunConfig;
+            testRunConfig = runConfig;
         break;
     }
     QVERIFY(testRunConfig != NULL);
@@ -223,11 +224,10 @@ void ForceXUnitXMLQTestLibParserFactoryTest::runTest(const QString& testName, co
     QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
     ProjectExplorer::RunConfiguration *modifiedRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
     QVERIFY(modifiedRunConfig != NULL);
-    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(modifiedRunConfig);
-    QVERIFY(testRunConfig != NULL);
-    QCOMPARE(testRunConfig->commandLineArguments(), cmdArgs.join(QLatin1Char(' ')));
+    ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+    QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
 
-    testFactory(testRunConfig);
+    testFactory(modifiedRunConfig);
 }
 
 void ForceXUnitXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity)
@@ -235,11 +235,11 @@ void ForceXUnitXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testNam
     QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
 
     // Retrieve RunConfiguration:
-    ProjectExplorer::LocalApplicationRunConfiguration* testRunConfig = NULL;
+    ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, mProject->activeTarget()->runConfigurations()) {
-        if (qobject_cast<Internal::TestRunConfiguration*>(runConfig) == NULL)
+        if (runConfig->id() != Core::Id(Constants::TestRunConfigurationId))
             continue;
-        testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(runConfig);
+        testRunConfig = runConfig;
         break;
     }
     QVERIFY(testRunConfig != NULL);
@@ -257,8 +257,8 @@ void ForceXUnitXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testNam
     QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
     ProjectExplorer::RunConfiguration *modifiedRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
     QVERIFY(modifiedRunConfig != NULL);
-    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(modifiedRunConfig);
-    QVERIFY(testRunConfig != NULL);
+    QVERIFY(modifiedRunConfig->runnable().is<ProjectExplorer::StandardRunnable>());
+    ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
 
     // Compare arguments to expected value:
     Internal::QTestLibArgsParser testArgsParser;
@@ -267,9 +267,9 @@ void ForceXUnitXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testNam
     QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR "/") + testName + QLatin1String("/Makefile check"));
     if (!testArgsParser.toString().isEmpty())
         expectedCmdArgs.append(QString(QLatin1String(" TESTARGS=\"%1\"")).arg(testArgsParser.toString()));
-    QCOMPARE(testRunConfig->commandLineArguments(), expectedCmdArgs);
+    QCOMPARE(modifiedRunnable.commandLineArguments, expectedCmdArgs);
 
-    testFactory(testRunConfig);
+    testFactory(modifiedRunConfig);
 }
 
 void ForceXUnitXMLQTestLibParserFactoryTest::testFactory(ProjectExplorer::RunConfiguration* testRunConfig)

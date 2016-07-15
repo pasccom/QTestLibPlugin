@@ -24,8 +24,8 @@
 #include <projectexplorer/session.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/target.h>
+#include <projectexplorer/runnables.h>
 #include <projectexplorer/runconfiguration.h>
-#include <projectexplorer/localapplicationrunconfiguration.h>
 #include <projectexplorer/localapplicationruncontrol.h>
 
 #include <extensionsystem/pluginmanager.h>
@@ -455,16 +455,17 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     mOpenProjects << project;
 
     // Retrieve RunConfiguration:
-    ProjectExplorer::LocalApplicationRunConfiguration* testRunConfig = NULL;
+    ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, project->activeTarget()->runConfigurations()) {
-        ProjectExplorer::LocalApplicationRunConfiguration* localRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(runConfig);
-        if (localRunConfig == NULL)
+        if (!runConfig->runnable().is<ProjectExplorer::StandardRunnable>())
             continue;
-        QFileInfo exeFileInfo(localRunConfig->executable());
+
+        ProjectExplorer::StandardRunnable localRunnable = runConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+        QFileInfo exeFileInfo(localRunnable.executable);
         qDebug() << exeFileInfo.absoluteFilePath();
         QVERIFY(exeFileInfo.exists());
         if (QString::compare(exeFileInfo.baseName(), test, Qt::CaseSensitive) == 0)
-            testRunConfig = localRunConfig;
+            testRunConfig = runConfig;
         break;
     }
     QVERIFY(testRunConfig != NULL);
@@ -483,26 +484,26 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     QVERIFY(runConfigFactory->canRestore(project->activeTarget(), map));
     ProjectExplorer::RunConfiguration* modifiedRunConfig = runConfigFactory->restore(project->activeTarget(), map);
     QVERIFY(modifiedRunConfig != NULL);
-    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(modifiedRunConfig);
-    QVERIFY(testRunConfig != NULL);
-    QCOMPARE(testRunConfig->commandLineArguments(), cmdArgs.join(QLatin1Char(' ')));
-    QCOMPARE(testRunConfig->workingDirectory(), TESTS_DIR "/" + test);
+    QVERIFY(modifiedRunConfig->runnable().is<ProjectExplorer::StandardRunnable>());
+    ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+    QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
+    QCOMPARE(modifiedRunnable.workingDirectory, TESTS_DIR "/" + test);
 
     // Find a run control factory
     ProjectExplorer::IRunControlFactory* runControlFactory = NULL;
     foreach (runControlFactory, ExtensionSystem::PluginManager::getObjects<ProjectExplorer::IRunControlFactory>()) {
-        if (runControlFactory->canRun(testRunConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE))
+        if (runControlFactory->canRun(modifiedRunConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE))
             break;
     }
     QVERIFY(runControlFactory != NULL);
-    QVERIFY(runControlFactory->canRun(testRunConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE));
+    QVERIFY(runControlFactory->canRun(modifiedRunConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE));
 
     // Create a run control
     QString errMsg;
-    ProjectExplorer::RunControl* runControl = runControlFactory->create(testRunConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE, &errMsg);
+    ProjectExplorer::RunControl* runControl = runControlFactory->create(modifiedRunConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE, &errMsg);
     QCOMPARE(errMsg, QString());
     QVERIFY(runControl != NULL);
-    QCOMPARE(runControl->runConfiguration(), testRunConfig);
+    QCOMPARE(runControl->runConfiguration(), modifiedRunConfig);
 
     // Run run control
     model->appendTestRun(runControl);

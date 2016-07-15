@@ -25,13 +25,14 @@
 #include <projectexplorer/projecttree.h>
 #include <projectexplorer/session.h>
 #include <projectexplorer/target.h>
+#include <projectexplorer/runnables.h>
 #include <projectexplorer/kit.h>
 #include <projectexplorer/kitmanager.h>
 #include <projectexplorer/kitinformation.h>
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/buildinfo.h>
 #include <projectexplorer/toolchain.h>
-#include <projectexplorer/localapplicationrunconfiguration.h>
+#include <projectexplorer/runconfiguration.h>
 
 #include <qmakeprojectmanager/qmakeproject.h>
 
@@ -101,11 +102,13 @@ void TestActionsTest::testOpenProjectWithTests(void)
 
     QVERIFY(openQMakeProject(projectPath, &mProject));
     QCOMPARE(mProject->projectFilePath().toString(), projectPath);
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject, true, true));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject, true));
     SUB_TEST_FUNCTION(checkSubMenu(1));
 
     SUB_TEST_FUNCTION(closeProject());
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(projectPath));
     SUB_TEST_FUNCTION(checkContextMenuAction(NULL, false));
     SUB_TEST_FUNCTION(checkSubMenu(0));
@@ -125,11 +128,13 @@ void TestActionsTest::testOpenProjectWithoutTests(void)
 
     QVERIFY(openQMakeProject(projectPath, &mProject));
     QCOMPARE(mProject->projectFilePath().toString(), projectPath);
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject, false, false));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject, false));
     SUB_TEST_FUNCTION(checkSubMenu(1));
 
     SUB_TEST_FUNCTION(closeProject());
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(projectPath));
     SUB_TEST_FUNCTION(checkContextMenuAction(NULL, false));
     SUB_TEST_FUNCTION(checkSubMenu(0));
@@ -146,12 +151,14 @@ void TestActionsTest::testChangeTarget(void)
 
     foreach (ProjectExplorer::Target* target, mProject->targets()) {
         ProjectExplorer::SessionManager::setActiveTarget(mProject, target, ProjectExplorer::SetActive::Cascade);
+        QApplication::processEvents();
         SUB_TEST_FUNCTION(checkSubMenuAction(mProject, true, true));
         SUB_TEST_FUNCTION(checkContextMenuAction(mProject, true));
         SUB_TEST_FUNCTION(checkSubMenu(1));
     }
 
     SUB_TEST_FUNCTION(closeProject());
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(projectPath));
     SUB_TEST_FUNCTION(checkContextMenuAction(NULL, false));
     SUB_TEST_FUNCTION(checkSubMenu(0));
@@ -175,21 +182,26 @@ void TestActionsTest::testTwoProjectsWithTests(void)
     QCOMPARE(mProject1->projectFilePath().toString(), project1FilePath);
     QVERIFY(openQMakeProject(project2FilePath, &mProject2));
     QCOMPARE(mProject2->projectFilePath().toString(), project2FilePath);
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, true, true));
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject2, true, true));
     SUB_TEST_FUNCTION(setCurrentProjectTree(mProject1));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject1, true));
     SUB_TEST_FUNCTION(setCurrentProjectTree(mProject2));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject2, true));
     SUB_TEST_FUNCTION(checkSubMenu(2));
 
     SUB_TEST_FUNCTION(closeProject(2));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, true, true));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject1, true));
     SUB_TEST_FUNCTION(checkSubMenu(1));
 
     SUB_TEST_FUNCTION(closeProject(1));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(project1FilePath));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(NULL, false));
@@ -214,21 +226,26 @@ void TestActionsTest::testTwoProjectsWithAndWithoutTests(void)
     QCOMPARE(mProject1->projectFilePath().toString(), project1FilePath);
     QVERIFY(openQMakeProject(project2FilePath, &mProject2));
     QCOMPARE(mProject2->projectFilePath().toString(), project2FilePath);
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, true, true));
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject2, false, false));
     SUB_TEST_FUNCTION(setCurrentProjectTree(mProject1));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject1, true));
     SUB_TEST_FUNCTION(setCurrentProjectTree(mProject2));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject2, false));
     SUB_TEST_FUNCTION(checkSubMenu(1));
 
     SUB_TEST_FUNCTION(closeProject(2));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, true, true));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject1, true));
     SUB_TEST_FUNCTION(checkSubMenu(1));
 
     SUB_TEST_FUNCTION(closeProject(1));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(project1FilePath));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(NULL, false));
@@ -253,21 +270,25 @@ void TestActionsTest::testTwoProjectsWithoutAndWithTests(void)
     QCOMPARE(mProject1->projectFilePath().toString(), project1FilePath);
     QVERIFY(openQMakeProject(project2FilePath, &mProject2));
     QCOMPARE(mProject2->projectFilePath().toString(), project2FilePath);
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, false, false));
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject2, true, true));
     SUB_TEST_FUNCTION(setCurrentProjectTree(mProject1));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject1, false));
     SUB_TEST_FUNCTION(setCurrentProjectTree(mProject2));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject2, true));
     SUB_TEST_FUNCTION(checkSubMenu(1));
 
     SUB_TEST_FUNCTION(closeProject(2));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, false, false));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject1, false));
     SUB_TEST_FUNCTION(checkSubMenu(0));
 
     SUB_TEST_FUNCTION(closeProject(1));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(project1FilePath));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(NULL, false));
@@ -292,21 +313,25 @@ void TestActionsTest::testTwoProjectsWithoutTests(void)
     QCOMPARE(mProject1->projectFilePath().toString(), project1FilePath);
     QVERIFY(openQMakeProject(project2FilePath, &mProject2));
     QCOMPARE(mProject2->projectFilePath().toString(), project2FilePath);
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, false, false));
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject2, false, false));
     SUB_TEST_FUNCTION(setCurrentProjectTree(mProject1));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject1, false));
     SUB_TEST_FUNCTION(setCurrentProjectTree(mProject2));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject2, false));
     SUB_TEST_FUNCTION(checkSubMenu(0));
 
     SUB_TEST_FUNCTION(closeProject(2));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, false, false));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject1, false));
     SUB_TEST_FUNCTION(checkSubMenu(0));
 
     SUB_TEST_FUNCTION(closeProject(1));
+    QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(project1FilePath));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(NULL, false));
@@ -433,15 +458,16 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
     Utils::Environment env = project->activeTarget()->activeBuildConfiguration()->environment();
     ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(project->activeTarget()->kit());
     ProjectExplorer::RunControl* runControl = runControlStartedSpy.at(0).at(0).value<ProjectExplorer::RunControl*>();
-    ProjectExplorer::LocalApplicationRunConfiguration* runConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(runControl->runConfiguration());
+    QVERIFY(runControl->runConfiguration()->runnable().is<ProjectExplorer::StandardRunnable>());
+    ProjectExplorer::StandardRunnable runnable = runControl->runConfiguration()->runnable().as<ProjectExplorer::StandardRunnable>();
 
     QSignalSpy runControlStoppedSpy(runControl, SIGNAL(finished()));
     runControl->stop();
+    runControlStoppedSpy.wait(1000);
     QCOMPARE(runControlStoppedSpy.size(), 1);
 
-    QVERIFY(runConfig != NULL);
-    QCOMPARE(runConfig->executable(), toolChain->makeCommand(env));
-    QVERIFY(runConfig->commandLineArguments().endsWith(QLatin1String("check")));
+    QCOMPARE(runnable.executable, toolChain->makeCommand(env));
+    QVERIFY(runnable.commandLineArguments.endsWith(QLatin1String("check")));
 
     END_SUB_TEST_FUNCTION
 }

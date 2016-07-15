@@ -25,6 +25,7 @@
 #include <projectexplorer/projectexplorer.h>
 #include <projectexplorer/session.h>
 #include <projectexplorer/target.h>
+#include <projectexplorer/runnables.h>
 #include <projectexplorer/kitmanager.h>
 #include <projectexplorer/kitinformation.h>
 #include <projectexplorer/buildconfiguration.h>
@@ -102,8 +103,11 @@ void TestRunConfigurationFactoryTest::testOpenProjectWithTests(void)
 
         Utils::Environment env = target->activeBuildConfiguration()->environment();
         ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit());
-        QCOMPARE(testRunConfig->executable(), toolChain->makeCommand(env));
-        QCOMPARE(testRunConfig->commandLineArguments(), QString(QLatin1String("-f %1 check")).arg(makefile));
+
+        QVERIFY(testRunConfig->runnable().is<ProjectExplorer::StandardRunnable>());
+        ProjectExplorer::StandardRunnable runnable = testRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+        QCOMPARE(runnable.executable, toolChain->makeCommand(env));
+        QCOMPARE(runnable.commandLineArguments, QString(QLatin1String("-f %1 check")).arg(makefile));
     }
 }
 

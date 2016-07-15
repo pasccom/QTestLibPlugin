@@ -272,16 +272,17 @@ void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibAr
     QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
 
     // Retrieve RunConfiguration:
-    ProjectExplorer::LocalApplicationRunConfiguration* testRunConfig = NULL;
+    ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, mProject->activeTarget()->runConfigurations()) {
-        ProjectExplorer::LocalApplicationRunConfiguration* localRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(runConfig);
-        if (localRunConfig == NULL)
+        if (!runConfig->runnable().is<ProjectExplorer::StandardRunnable>())
             continue;
-        QFileInfo exeFileInfo(localRunConfig->executable());
+
+        ProjectExplorer::StandardRunnable localRunnable = runConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+        QFileInfo exeFileInfo(localRunnable.executable);
         qDebug() << exeFileInfo.absoluteFilePath();
         QVERIFY(exeFileInfo.exists());
         if (QString::compare(exeFileInfo.baseName(), testName, Qt::CaseSensitive) == 0)
-            testRunConfig = localRunConfig;
+            testRunConfig = runConfig;
         break;
     }
     QVERIFY(testRunConfig != NULL);
@@ -300,12 +301,11 @@ void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibAr
     QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
     ProjectExplorer::RunConfiguration* modifiedRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
     QVERIFY(modifiedRunConfig != NULL);
-    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(modifiedRunConfig);
-    QVERIFY(testRunConfig != NULL);
-    QCOMPARE(testRunConfig->commandLineArguments(), cmdArgs.join(QLatin1Char(' ')));
-    QCOMPARE(testRunConfig->workingDirectory(), TESTS_DIR "/" + testName);
+    ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+    QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
+    QCOMPARE(modifiedRunnable.workingDirectory, TESTS_DIR "/" + testName);
 
-    runRunConfiguration(testRunConfig, testName, format, verbosity);
+    runRunConfiguration(modifiedRunConfig, testName, format, verbosity);
 }
 
 void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity)
@@ -313,14 +313,15 @@ void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTest
     QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
 
     // Retrieve RunConfiguration:
-    ProjectExplorer::LocalApplicationRunConfiguration* testRunConfig = NULL;
+    ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, mProject->activeTarget()->runConfigurations()) {
-        if (qobject_cast<Internal::TestRunConfiguration*>(runConfig) == NULL)
+        if (runConfig->id() != Core::Id(Constants::TestRunConfigurationId))
             continue;
-        testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(runConfig);
+        testRunConfig = qobject_cast<ProjectExplorer::RunConfiguration*>(runConfig);
         break;
     }
     QVERIFY(testRunConfig != NULL);
+    qDebug() << testRunConfig->displayName();
 
     // Change the run configuration map:
     QVariantMap map = testRunConfig->toMap();
@@ -335,8 +336,8 @@ void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTest
     QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
     ProjectExplorer::RunConfiguration* modifiedRunConfig  = runConfigFactory->restore(mProject->activeTarget(), map);
     QVERIFY(modifiedRunConfig != NULL);
-    testRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration*>(modifiedRunConfig);
-    QVERIFY(testRunConfig != NULL);
+    QVERIFY(modifiedRunConfig->runnable().is<ProjectExplorer::StandardRunnable>());
+    ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
 
     // Compare arguments to expected value:
     Internal::QTestLibArgsParser testArgsParser;
@@ -344,11 +345,11 @@ void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTest
     testArgsParser.setVerbosity(verbosity);QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR "/") + testName + QLatin1String("/Makefile check"));
     if (!testArgsParser.toString().isEmpty())
         expectedCmdArgs.append(QString(QLatin1String(" TESTARGS=\"%1\"")).arg(testArgsParser.toString()));
-    QCOMPARE(testRunConfig->commandLineArguments(), expectedCmdArgs);
-    QCOMPARE(testRunConfig->displayName(), QLatin1String("make check"));
-    testRunConfig->setDisplayName(testName);
+    QCOMPARE(modifiedRunnable.commandLineArguments, expectedCmdArgs);
+    QCOMPARE(modifiedRunConfig->displayName(), QLatin1String("make check"));
+    modifiedRunConfig->setDisplayName(testName);
 
-    runRunConfiguration(testRunConfig, testName, format, verbosity);
+    runRunConfiguration(modifiedRunConfig, testName, format, verbosity);
 }
 
 void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration *runConfig, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity)
