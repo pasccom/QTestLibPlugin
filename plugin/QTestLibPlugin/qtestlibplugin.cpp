@@ -378,6 +378,7 @@ void TestLibPlugin::handleCurrentProjectTreeChange(ProjectExplorer::Project* pro
         mRunTestsAction->setText(tr("Run tests for \"%1\"").arg(project->displayName()));
     else
         mRunTestsAction->setText(tr("Run tests for \"%1\" (%2)").arg(project->displayName()).arg(target->displayName()));
+    qDebug() << "Set run test action to:" << project->displayName();
 }
 
 void TestLibPlugin::runTest(void)

@@ -21,7 +21,7 @@
 #include "testrunconfiguration.h"
 
 #include <projectexplorer/runconfiguration.h>
-#include <projectexplorer/localapplicationrunconfiguration.h>
+#include <projectexplorer/runnables.h>
 #include <projectexplorer/target.h>
 #include <qmakeprojectmanager/qmakeproject.h>
 #include <qmakeprojectmanager/qmakenodes.h>
@@ -54,9 +54,9 @@ bool BaseQMakeQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfigur
     Q_ASSERT(runConfiguration != NULL);
 
     // Only accept local run configurations:
-    ProjectExplorer::LocalApplicationRunConfiguration *localRunConfig = qobject_cast<ProjectExplorer::LocalApplicationRunConfiguration *>(runConfiguration);
-    if (localRunConfig == NULL)
+    if (!runConfiguration->runnable().is<ProjectExplorer::StandardRunnable>())
         return false;
+    ProjectExplorer::StandardRunnable localRunnable = runConfiguration->runnable().as<ProjectExplorer::StandardRunnable>();
 
     // Only accept qMake projects:
     QmakeProjectManager::QmakeProject *qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject *>(runConfiguration->target()->project());
@@ -70,13 +70,13 @@ bool BaseQMakeQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfigur
         if (!destDir.isAbsolute())
             destDir.setPath(pro->targetInformation().buildDir + QLatin1Char('/') + pro->targetInformation().destDir);
         qDebug() << "TARGET:" << destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target));
-        qDebug() << "Executable:" << localRunConfig->executable();
-        if (QDir(destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target))) != QDir(localRunConfig->executable()))
+        qDebug() << "Executable:" << localRunnable.executable;
+        if (QDir(destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target))) != QDir(localRunnable.executable))
             continue;
         // Check the testlib is included:
         qDebug() << "QT variable:" << pro->variableValue(QmakeProjectManager::QtVar);
         if (pro->variableValue(QmakeProjectManager::QtVar).contains(QLatin1String("testlib"), Qt::CaseSensitive))
-            return canParseArguments(localRunConfig->commandLineArguments());
+            return canParseArguments(localRunnable.commandLineArguments);
     }
 
     return false;

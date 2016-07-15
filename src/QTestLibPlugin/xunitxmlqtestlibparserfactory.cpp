@@ -32,7 +32,7 @@ AbstractTestParser* XUnitXMLQTestLibParserFactory::getParserInstance(ProjectExpl
 
     if (!canParse(runConfiguration))
         return NULL;
-    qDebug() << "XMLTextQTestLibParser can parse this file";
+    qDebug() << "XUnitXMLQTestLibParser can parse this file";
     return new XUnitXMLQTestLibParser(runConfiguration);
 }
 

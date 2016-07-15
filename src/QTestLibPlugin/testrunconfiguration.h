@@ -23,7 +23,7 @@
 
 #include <utils/fileutils.h>
 
-#include <projectexplorer/localapplicationrunconfiguration.h>
+#include <projectexplorer/runconfiguration.h>
 #include <projectexplorer/applicationlauncher.h>
 
 #include <QWidget>
@@ -427,7 +427,7 @@ private:
  *
  * \sa TestRunConfigurationData, TestRunConfigurationWidget, TestRunConfigurationExtraAspect
  */
-class TestRunConfiguration : public ProjectExplorer::LocalApplicationRunConfiguration
+class TestRunConfiguration : public ProjectExplorer::RunConfiguration
 {
     Q_OBJECT
 public:
@@ -440,22 +440,6 @@ public:
      */
     inline QWidget* createConfigurationWidget(void) {return new TestRunConfigurationWidget(mData, macroExpander());}
 
-    /*!
-     * \brief Run mode
-     *
-     * Return the run mode for the run configuration,
-     * which is always <tt>ProjectExplorer::ApplicationLauncher::Gui</tt>.
-     * \return The run mode, which is always <tt>ProjectExplorer::ApplicationLauncher::Gui</tt>
-     */
-    virtual inline ProjectExplorer::ApplicationLauncher::Mode runMode(void) const {return ProjectExplorer::ApplicationLauncher::Gui;}
-    /*!
-     * \brief Path to executable
-     *
-     * Returns the path to the executable which should be started,
-     * which is the path to \c make (see TestRunConfigurationData::makeExe()).
-     * \return The path to the executable to start (\c make)
-     */
-    virtual QString executable() const;
     /*!
      * \brief Path to the working directory
      *
@@ -470,6 +454,8 @@ public:
      * \return The command-line arguments to be passed to \c make
      */
     virtual QString commandLineArguments(void) const;
+
+    virtual ProjectExplorer::Runnable runnable(void) const;
 
     /*!
      * \brief Set the \c Makefile path

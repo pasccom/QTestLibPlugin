@@ -32,7 +32,7 @@ AbstractTestParser* LightXMLQTestLibParserFactory::getParserInstance(ProjectExpl
 
     if (!canParse(runConfiguration))
         return NULL;
-    qDebug() << "XMLTextQTestLibParser can parse this file";
+    qDebug() << "LightXMLQTestLibParser can parse this file";
     return new LightXMLQTestLibParser(runConfiguration);
 }
 

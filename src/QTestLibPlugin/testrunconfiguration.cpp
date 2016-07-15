@@ -30,11 +30,13 @@
 #include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/kitinformation.h>
+#include <projectexplorer/devicesupport/devicemanager.h>
 #include <projectexplorer/localenvironmentaspect.h>
 #include <projectexplorer/toolchain.h>
 #include <projectexplorer/gcctoolchain.h>
 #include <projectexplorer/customtoolchain.h>
 #include <projectexplorer/target.h>
+#include <projectexplorer/runnables.h>
 
 #include <QtWidgets>
 
@@ -104,7 +106,7 @@ bool TestRunConfigurationData::fromMap(const QVariantMap& map)
 }
 
 TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id):
-    ProjectExplorer::LocalApplicationRunConfiguration(parent, id)
+    ProjectExplorer::RunConfiguration(parent, id)
 {
     setDefaultDisplayName(QLatin1String("make check"));
 
@@ -114,7 +116,7 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core
      * and addAspects() should only add aspects provided bu runnable RunControl factories.
      * 2.Alternatively, ValgrindPlugin, should ensure the extra aspects are added to
      * sensible RunConfiguration and RunConfiguration::addExtraAspects() should be removed. */
-    addExtraAspect(new ProjectExplorer::LocalEnvironmentAspect(this));
+    addExtraAspect(new ProjectExplorer::LocalEnvironmentAspect(this, ProjectExplorer::LocalEnvironmentAspect::BaseEnvironmentModifier()));
     addExtraAspect(new TestRunConfigurationExtraAspect(this));
 
     QTC_ASSERT(parent != NULL, return);
@@ -172,11 +174,19 @@ bool TestRunConfiguration::fromMap(const QVariantMap& map)
     return mData->fromMap(map) && ProjectExplorer::RunConfiguration::fromMap(map);
 }
 
-QString TestRunConfiguration::executable() const
+ProjectExplorer::Runnable TestRunConfiguration::runnable(void) const
 {
+    ProjectExplorer::StandardRunnable runnable;
     if (macroExpander() != NULL)
-        return macroExpander()->expand(mData->makeExe().toString());
-    return mData->makeExe().toString();
+        runnable.executable = macroExpander()->expand(mData->makeExe().toString());
+    else
+        runnable.executable = mData->makeExe().toString();
+    runnable.commandLineArguments = commandLineArguments();
+    runnable.workingDirectory = workingDirectory();
+    runnable.environment = extraAspect<ProjectExplorer::LocalEnvironmentAspect>()->environment();
+    runnable.runMode = ProjectExplorer::ApplicationLauncher::Gui;
+    runnable.device = ProjectExplorer::DeviceManager::instance()->defaultDevice(ProjectExplorer::Constants::DESKTOP_DEVICE_TYPE);
+    return runnable;
 }
 
 QString TestRunConfiguration::workingDirectory(void) const

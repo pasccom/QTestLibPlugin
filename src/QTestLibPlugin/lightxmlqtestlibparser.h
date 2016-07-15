@@ -47,6 +47,25 @@ class QTestLibModel;
 class LightXMLQTestLibParser : public BaseXMLQTestLibParser
 {
     Q_OBJECT
+public:
+    /*!
+     * \brief Set default class name
+     *
+     * Sets the default class name, used when the parser cannot obtain another
+     * (i.e. when the given run control is \c nullptr)
+     * \param name The default clas name
+     * \sa defaultClassName
+     */
+    inline void setDefaultClassName(const QString& name) {mDefaultClassName = name;}
+    /*!
+     * \brief Default class name
+     *
+     * Returns the default class name, used when the parser cannot obtain another
+     * (i.e. when the given run control is \c nullptr)
+     * \return The default clas name
+     * \sa setDefaultClassName
+     */
+    inline QString defaultClassName(void) const {return mDefaultClassName;}
 protected:
     /*!
      * \brief Constructor
@@ -100,6 +119,7 @@ private:
     QString mCurrentFunction; /*!< The name of the function currently parsed */
     QString mCurrentRow; /*!< The name of the data row currently parsed */
     QString mCurrentDescription; /*!< The description of the test currently parsed */
+    QString mDefaultClassName; /*!< Default class name, used in case run control is null (mainly in tests) */
 
     friend class LightXMLQTestLibParserFactory;
 };

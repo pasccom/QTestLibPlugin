@@ -61,13 +61,13 @@ TestModelFactory::ParseResult LightXMLQTestLibParser::endElementParsed(ProjectEx
         if (!mQtVersion.isNull() && !mQtBuild.isNull() && !mQTestLibVersion.isNull()) {
             if (mModel == NULL) {
                 mClassStartCount++;
-                mCurrentClass = runControl->displayName();
+                mCurrentClass = runControl ? runControl->displayName() : mDefaultClassName;
                 mModel = new QTestLibModel(runControl);
             } else {
                 if (mClassStartCount == 1)
-                    mModel->renameClass(mCurrentClass, QString(QLatin1String("%1#1")).arg(runControl->displayName()));
+                    mModel->renameClass(mCurrentClass, QString(QLatin1String("%1#1")).arg(runControl ? runControl->displayName() : mDefaultClassName));
                 mClassStartCount++;
-                mCurrentClass = QString(QLatin1String("%1#%2")).arg(runControl->displayName()).arg(mClassStartCount);
+                mCurrentClass = QString(QLatin1String("%1#%2")).arg(runControl ? runControl->displayName() : mDefaultClassName).arg(mClassStartCount);
             }
             qDebug() << "Created QTestLibModel" << mQtVersion << mQtBuild << mQTestLibVersion << mCurrentClass;
             return TestModelFactory::MagicFound;
