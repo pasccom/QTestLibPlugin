@@ -28,6 +28,8 @@ class QAbstractItemModel;
 class QDomDocument;
 class QDomElement;
 
+class QtVersion;
+
 class QTestLibModelTester : public QObject
 {
     Q_OBJECT
@@ -49,6 +51,9 @@ public:
     inline void setFormat(const QString& format) {mParserFormat = format;}
     inline QString format(void) const {return mParserFormat;}
 
+    inline void setResultsFile(const QString& path) {mResultFilePath = path;}
+    inline QString resultFile(void) const {return mResultFilePath;}
+
     inline void enableMessageType(QTestLibPlugin::Internal::QTestLibModel::MessageType type) {mFilters[(int) type] = true;}
     inline void disableMessageType(QTestLibPlugin::Internal::QTestLibModel::MessageType type) {mFilters[(int) type] = false;}
     inline void toogleMessageType(QTestLibPlugin::Internal::QTestLibModel::MessageType type) {mFilters[(int) type] = !mFilters.at((int) type);}
@@ -65,6 +70,9 @@ private:
     void isOutput(const QDomElement& element, bool *ret, bool filter = true);
     void isOutputFormat(const QDomElement& element, bool *ret);
     void isOutputVerbosity(const QDomElement& element, bool *ret);
+    void isOutputQt(const QDomElement& element, bool *ret);
+    bool isOutputMinQt(const QtVersion& qt);
+    bool isOutputMaxQt(const QtVersion& qt);
     void isOutputType(const QDomElement& element, bool* ret);
 
     void checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected);
@@ -77,6 +85,7 @@ private:
     void checkLocation(const QModelIndex& index, const QDomElement& element);
 
     const QAbstractItemModel *mModel;
+    QString mResultFilePath;
     QString mError;
     QString mParserFormat;
     Verbosity mVerbosity;

@@ -18,6 +18,8 @@
 
 #include "qtestlibmodeltester.h"
 
+#include "qtversion.h"
+
 #include <QtXml>
 
 #define QVERIFY(_expr_) \
@@ -125,7 +127,9 @@ void QTestLibModelTester::loadTestResult(QDomDocument& dom, const QString& testN
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    QFile domFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
+    QFile domFile(mResultFilePath);
+    if (mResultFilePath.isNull())
+        domFile.setFileName(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
     QVERIFY(domFile.open(QIODevice::ReadOnly));
     QString error;
     int line = 0;
@@ -143,6 +147,8 @@ void QTestLibModelTester::isOutput(const QDomElement& element, bool *ret, bool f
     SUB_TEST_FUNCTION(isOutputFormat(element, ret));
     if (*ret)
         SUB_TEST_FUNCTION(isOutputVerbosity(element, ret));
+    if (*ret)
+        SUB_TEST_FUNCTION(isOutputQt(element, ret));
     if (*ret && filter)
         SUB_TEST_FUNCTION(isOutputType(element, ret));
 
@@ -195,6 +201,34 @@ void QTestLibModelTester::isOutputVerbosity(const QDomElement& element, bool *re
     }
 
     END_SUB_TEST_FUNCTION
+}
+
+void QTestLibModelTester::isOutputQt(const QDomElement& element, bool* ret)
+{
+    BEGIN_SUB_TEST_FUNCTION
+
+    QString minQt = element.attribute("qtmin");
+    QString maxQt = element.attribute("qtmax");
+
+    *ret = (minQt.isNull() || isOutputMinQt(minQt)) &&
+           (maxQt.isNull() || isOutputMaxQt(maxQt));
+
+    END_SUB_TEST_FUNCTION
+}
+
+bool QTestLibModelTester::isOutputMinQt(const QtVersion& qt)
+{
+    qDebug() << "Min Qt:" << qt;
+
+    qDebug() << QString::number(QT_VERSION, 16) << QString::number(qt, 16);
+    return ((unsigned int) qt == 0) || (QT_VERSION >= (unsigned int) qt);
+}
+
+bool QTestLibModelTester::isOutputMaxQt(const QtVersion& qt)
+{
+    qDebug() << "Max Qt:" << qt;
+
+    return ((unsigned int) qt == 0) || (QT_VERSION < (unsigned int)  qt);
 }
 
 void QTestLibModelTester::isOutputType(const QDomElement& element, bool* ret)

@@ -26,8 +26,12 @@ CONFIG  += static
 include(../../QTestLibPlugin.pri)
 
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
-SOURCES +=  qtestlibmodeltester.cpp
-HEADERS +=  qtestlibmodeltester.h
+SOURCES +=  qtestlibmodeltester.cpp \
+            qtversion.cpp           \
+
+HEADERS +=  qtestlibmodeltester.h   \
+            qtversion.h             \
+
 DISTFILES += qttestsubfunction.h
 
 DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
