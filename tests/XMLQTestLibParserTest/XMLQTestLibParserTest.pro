@@ -71,6 +71,8 @@ DEFINES -= QT_CREATOR QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
 unix {
     LIBS += "-Wl,-rpath=$$IDE_PLUGIN_PATH"
     LIBS += "-Wl,-rpath=$$IDE_LIBRARY_PATH"
+} else:win32 {
+    LIBS+= -L$$IDE_BUILD_TREE/bin
 }
 
 # The directory where to put MOC-generated files
