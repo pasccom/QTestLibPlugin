@@ -56,9 +56,6 @@ HEADERS += \
     forcexunitxmlqtestlibparserfactorytest.h \
 
 include(../../../QTestLibPlugin.pri)
-SOURCES += $$QTESTLIBPLUGIN_TESTS/common/qtestlibmodeltester.cpp
-HEADERS += $$QTESTLIBPLUGIN_TESTS/common/qtestlibmodeltester.h
-
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 INCLUDEPATH += $$QTESTLIBPLUGIN_TESTS
 

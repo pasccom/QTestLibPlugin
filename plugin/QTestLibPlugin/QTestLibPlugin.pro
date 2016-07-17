@@ -27,6 +27,7 @@ RESOURCES += \
     qtestlibplugin.qrc
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC
 
+# Source library
 CONFIG(release, debug|release) {
     LIBS += release/libqtestlibplugin.a
     PRE_TARGETDEPS += release/libqtestlibplugin.a
@@ -35,16 +36,10 @@ CONFIG(release, debug|release) {
     PRE_TARGETDEPS += debug/libqtestlibplugin.a
 }
 
-for (SOURCE, SOURCES) {
-    system("echo -e \"$$PWD/$$SOURCE\" >> \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
-}
-for (HEADER, HEADERS) {
-    system("echo -e \"$$PWD/$$HEADER\" >> \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
-}
-
 !isEmpty(BUILD_TESTS) {
     DEFINES += BUILD_TESTS
     INCLUDEPATH += $$QTESTLIBPLUGIN_TESTS
+    # Embeded tests library
     CONFIG(debug, debug|release) {
         LIBS += debug/libqtestlibplugintest.a
         PRE_TARGETDEPS += debug/libqtestlibplugintest.a
@@ -52,6 +47,21 @@ for (HEADER, HEADERS) {
         LIBS += release/libqtestlibplugintest.a
         PRE_TARGETDEPS += release/libqtestlibplugintest.a
     }
+    # The tester libraries
+    CONFIG(release, debug|release) {
+        LIBS += $$QTESTLIBPLUGIN_TESTS/common/release/libtestcommon.a
+        PRE_TARGETDEPS += $$QTESTLIBPLUGIN_TESTS/common/release/libtestcommon.a
+    } else {
+        LIBS += $$QTESTLIBPLUGIN_TESTS/common/debug/libtestcommon.a
+        PRE_TARGETDEPS += $$QTESTLIBPLUGIN_TESTS/common/debug/libtestcommon.a
+    }
+}
+
+for (SOURCE, SOURCES) {
+    system("echo -e \"$$PWD/$$SOURCE\" >> \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
+}
+for (HEADER, HEADERS) {
+    system("echo -e \"$$PWD/$$HEADER\" >> \"$$QTESTLIBPLUGIN_I18N/sources.lst\"")
 }
 
 # Qt Creator from environment
@@ -125,6 +135,6 @@ target.path = $$DESTDIR
 INSTALLS += target
 DESTDIR = $$QTESTLIBPLUGIN_BIN
 
-win32  {
+win32 {
     LIBS+= -L$$IDE_BUILD_TREE/bin
 }

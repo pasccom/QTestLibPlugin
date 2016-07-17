@@ -33,9 +33,14 @@ DEFINES += TESTS_DIR=\\\"$$QTESTLIBMODEL_TESTS\\\"
 
 SOURCES += testsuitemodelsignaltest.cpp
 
-# Model tester class
-SOURCES += ../common/qtestlibmodeltester.cpp
-HEADERS += ../common/qtestlibmodeltester.h
+# The tester libraries
+CONFIG(release, debug|release) {
+    LIBS += ../common/release/libtestcommon.a
+    PRE_TARGETDEPS += ../common/release/libtestcommon.a
+} else {
+    LIBS += ../common/debug/libtestcommon.a
+    PRE_TARGETDEPS += ../common/debug/libtestcommon.a
+}
 
 # Files to be tested
 SOURCES += $$QTESTLIBPLUGIN_SRC/qtestlibmodel.cpp \
@@ -54,6 +59,8 @@ DEFINES -= QT_CREATOR QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
 unix {
     LIBS += "-Wl,-rpath=$$IDE_PLUGIN_PATH"
     LIBS += "-Wl,-rpath=$$IDE_LIBRARY_PATH"
+} else:win32 {
+    LIBS+= -L$$IDE_BUILD_TREE/bin
 }
 
 # The directory where to put MOC-generated files :
