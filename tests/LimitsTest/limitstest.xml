@@ -1,25 +1,25 @@
 <?xml version="1.0" ?>
 <!-- Copyright 2016 Pascal COMBES <pascom@orange.fr>
-     
+
      This file is part of QTestLibPlugin.
-     
+
      QTestLibPlugin is free software: you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
      the Free Software Foundation, either version 3 of the License, or
      (at your option) any later version.
-     
+
      QTestLibPlugin is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
      GNU General Public License for more details.
-     
+
      You should have received a copy of the GNU General Public License
      along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 -->
 
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
-	<results format="xunitxml">
+    <results format="xunitxml">
         <unsure level="silent" />
         <unsure />
         <unsure />
@@ -28,6 +28,8 @@
         <unsure />
         <unsure />
         <magicfound />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure />
         <unsure />
         <unsure level="verbose2" />
@@ -41,13 +43,6 @@
         <unsure />
         <unsure />
         <unsure />
-		<unsure />
-        <unsure />
-        <unsure />
-        <unsure />
-        <unsure />
-        <unsure />
-		<unsure />
         <unsure />
         <unsure />
         <unsure />
@@ -55,15 +50,23 @@
         <unsure />
         <unsure />
         <unsure />
-		<unsure />
         <unsure />
-		<unsure level="verbose2" />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verbose2" />
         <unsure level="verbose2" />
         <unsure />
         <unsure />
         <unsure />
         <unsure />
-		<unsure />
+        <unsure />
         <unsure />
         <unsure />
         <unsure />
@@ -75,10 +78,10 @@
         <unsure />
         <unsure />
         <unsure level="silent" />
-	    <unsure level="silent" />
-	    <unsure level="silent" />
-	</results>
-	<results format="lightxml">
+        <unsure level="silent" />
+        <unsure level="silent" />
+    </results>
+    <results format="lightxml">
         <unsure level="silent" />
         <unsure />
         <unsure />
@@ -86,6 +89,9 @@
         <unsure />
         <magicfound />
         <unsure />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure />
         <unsure />
         <unsure />
@@ -213,6 +219,9 @@
         <unsure />
         <magicfound />
         <unsure />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure />
         <unsure />
         <unsure />
@@ -335,6 +344,7 @@
         <unsure level="silent" />
         <unsure/>
         <magicfound level="silent" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure level="verbose1" />
         <unsure level="verbose2" />
         <unsure level="verbose2" />
@@ -384,6 +394,9 @@
     </results>
     <class name="LimitsTest" type="Fail" level="silent">
         <function name="initTestCase" type="Pass">
+            <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
+                QThread(29ec6f0) started ()
+            </message>
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
@@ -450,7 +463,7 @@ FAIL!  : other_fun(test)
                     Test passed
                 </message>
             </row>
-			<row title="simple" type="Unknown" format="xunitxml">
+            <row title="simple" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
                     "simple"
                 </message>
@@ -463,7 +476,7 @@ FAIL!  : other_fun(test)
                     Test passed
                 </message>
             </row>
-			<row title="a)" type="Unknown" format="xunitxml">
+            <row title="a)" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
                     "a)"
                 </message>
@@ -476,7 +489,7 @@ FAIL!  : other_fun(test)
                     Test passed
                 </message>
             </row>
-			<row title="fun()" type="Unknown" format="xunitxml">
+            <row title="fun()" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
                     "fun()"
                 </message>
@@ -489,7 +502,7 @@ FAIL!  : other_fun(test)
                     Test passed
                 </message>
             </row>
-			<row title="fun(int test)" type="Unknown" format="xunitxml">
+            <row title="fun(int test)" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
                     "fun(int test)"
                 </message>
@@ -502,7 +515,7 @@ FAIL!  : other_fun(test)
                     Test passed
                 </message>
             </row>
-			<row title="str.at().unicode()" type="Unknown" format="xunitxml">
+            <row title="str.at().unicode()" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
                     "str.at().unicode()"
                 </message>
@@ -515,7 +528,7 @@ FAIL!  : other_fun(test)
                     Test passed
                 </message>
             </row>
-			<row title="( (a + b) + (c + d) ) + ( (e +f) + (g + h) )" type="Unknown" format="xunitxml">
+            <row title="( (a + b) + (c + d) ) + ( (e +f) + (g + h) )" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
                     "( (a + b) + (c + d) ) + ( (e +f) + (g + h) )"
                 </message>
@@ -528,7 +541,7 @@ FAIL!  : other_fun(test)
                     Test passed
                 </message>
             </row>
-			<row title="a)( (a + b) + (c + d) ) + ( (e +f) + (g + h) )" type="Unknown" format="xunitxml">
+            <row title="a)( (a + b) + (c + d) ) + ( (e +f) + (g + h) )" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
                     "a)( (a + b) + (c + d) ) + ( (e +f) + (g + h) )"
                 </message>
@@ -541,7 +554,7 @@ FAIL!  : other_fun(test)
                     Test passed
                 </message>
             </row>
-			<row title="( ( (nested) ) )" type="Unknown" format="xunitxml">
+            <row title="( ( (nested) ) )" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
                     "( ( (nested) ) )"
                 </message>
@@ -554,7 +567,7 @@ FAIL!  : other_fun(test)
                     Test passed
                 </message>
             </row>
-			<row title="a)( ( (nested) ) )" type="Unknown" format="xunitxml">
+            <row title="a)( ( (nested) ) )" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
                     "a)( ( (nested) ) )"
                 </message>
@@ -567,7 +580,7 @@ FAIL!  : other_fun(test)
                     Test passed
                 </message>
             </row>
-			<row title="( ( (double) ) ).( ( (nested) ) )" type="Unknown" format="xunitxml">
+            <row title="( ( (double) ) ).( ( (nested) ) )" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
                     "( ( (double) ) ).( ( (nested) ) )"
                 </message>
@@ -580,14 +593,14 @@ FAIL!  : other_fun(test)
                     Test passed
                 </message>
             </row>
-			<row title="a)( ( (double) ) ).( ( (nested) ) )" type="Unknown" format="xunitxml">
+            <row title="a)( ( (double) ) ).( ( (nested) ) )" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
                     "a)( ( (double) ) ).( ( (nested) ) )"
                 </message>
             </row>
-			<message type="Pass" strict="true" format="xunitxml">
-				Test passed
-			</message>
+            <message type="Pass" strict="true" format="xunitxml">
+                Test passed
+            </message>
             <message type="Duration" strict="false" format="xml,lightxml">
                 0.00ms
             </message>

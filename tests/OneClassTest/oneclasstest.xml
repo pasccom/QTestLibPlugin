@@ -1,25 +1,25 @@
 <?xml version="1.0" ?>
 <!-- Copyright 2016 Pascal COMBES <pascom@orange.fr>
-     
+
      This file is part of QTestLibPlugin.
-     
+
      QTestLibPlugin is free software: you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
      the Free Software Foundation, either version 3 of the License, or
      (at your option) any later version.
-     
+
      QTestLibPlugin is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
      GNU General Public License for more details.
-     
+
      You should have received a copy of the GNU General Public License
      along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 -->
 
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
-	<results format="xunitxml">
+    <results format="xunitxml">
         <unsure />
         <unsure />
         <unsure />
@@ -27,7 +27,9 @@
         <unsure />
         <unsure />
         <magicfound />
-		<unsure />
+        <unsure />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure />
         <unsure level="verbose2" />
         <unsure level="verbose2" />
@@ -39,10 +41,12 @@
         <unsure level="verbose2" />
         <unsure />
         <unsure level="verbose2" />
-		<unsure />
         <unsure />
         <unsure />
         <unsure />
+        <unsure />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure level="verbose2" />
         <unsure level="verbose2" />
         <unsure level="verbose2" />
@@ -51,14 +55,17 @@
         <unsure level="verbose2" />
         <unsure level="verbose2" />
         <unsure />
-	</results>
-	<results format="lightxml">
+    </results>
+    <results format="lightxml">
         <unsure />
         <unsure />
         <unsure />
         <unsure />
         <magicfound />
         <unsure />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure />
         <unsure />
         <unsure />
@@ -128,6 +135,9 @@
         <unsure />
         <magicfound />
         <unsure />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure />
         <unsure />
         <unsure />
@@ -192,6 +202,7 @@
     <results format="txt">
         <unsure/>
         <magicfound level="silent" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure level="verbose1" />
         <unsure/>
         <unsure level="verbose1" />
@@ -224,6 +235,9 @@
     </results>
     <class name="OneClassTest" type="Fail" level="silent">
         <function name="initTestCase" type="Pass">
+            <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
+                QThread(29ec6f0) started ()
+            </message>
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
@@ -246,11 +260,11 @@
                     Test passed
                 </message>
             </row>
-			<row title="firstData" type="Unknown" level="verbose2" format="xunitxml" >
+            <row title="firstData" type="Unknown" level="verbose2" format="xunitxml" >
                 <message type="Info" strict="true" file="oneclasstest.cpp" line="48">
                     QVERIFY(data.endsWith("Data of firstFunction"))
                 </message>
-			</row>
+            </row>
             <row title="secondData" type="Pass" format="!xunitxml">
                 <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="48">
                     QVERIFY(data.endsWith("Data of firstFunction"))
@@ -259,11 +273,11 @@
                     Test passed
                 </message>
             </row>
-			<row title="secondData" type="Unknown" level="verbose2" format="xunitxml">
+            <row title="secondData" type="Unknown" level="verbose2" format="xunitxml">
                 <message type="Info" strict="true" file="oneclasstest.cpp" line="48">
                     QVERIFY(data.endsWith("Data of firstFunction"))
                 </message>
-			</row>
+            </row>
             <row title="thirdData" type="Pass" format="!xunitxml">
                 <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="48">
                     QVERIFY(data.endsWith("Data of firstFunction"))
@@ -272,14 +286,14 @@
                     Test passed
                 </message>
             </row>
-			<row title="thirdData" type="Unknown" level="verbose2" format="xunitxml">
+            <row title="thirdData" type="Unknown" level="verbose2" format="xunitxml">
                 <message type="Info" strict="true" file="oneclasstest.cpp" line="48">
                     QVERIFY(data.endsWith("Data of firstFunction"))
                 </message>
-			</row>
-			<message type="Pass" strict="true" format="xunitxml">
-				Test passed
-			</message>
+            </row>
+            <message type="Pass" strict="true" format="xunitxml">
+                Test passed
+            </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
                 0.00ms
             </message>

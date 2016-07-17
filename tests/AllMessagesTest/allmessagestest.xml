@@ -1,26 +1,26 @@
 <?xml version="1.0" ?>
 <!-- Copyright 2016 Pascal COMBES <pascom@orange.fr>
-     
+
      This file is part of QTestLibPlugin.
-     
+
      QTestLibPlugin is free software: you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
      the Free Software Foundation, either version 3 of the License, or
      (at your option) any later version.
-     
+
      QTestLibPlugin is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
      GNU General Public License for more details.
-     
+
      You should have received a copy of the GNU General Public License
      along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 -->
 
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
-	<results format="xunitxml">
-		<unsure/>
+    <results format="xunitxml">
+        <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
@@ -28,63 +28,66 @@
         <unsure/>
         <magicfound/>
         <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure/>
         <unsure/>
         <unsure/>
-		<unsure level="verbose2" />
-		<unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure/>
-		<unsure level="verbose2" />
-		<unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure/>
-		<unsure level="verbose2" />
-        <unsure/>
-        <unsure/>
-        <unsure/>
-		<unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure/>
         <unsure/>
         <unsure/>
-		<unsure level="verbose2" />
-		<unsure level="verbose2" />
-        <unsure/>
-		<unsure level="verbose2" />
-        <unsure/>
-		<unsure/>
+        <unsure level="verbose2" />
         <unsure/>
         <unsure/>
         <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
         <unsure/>
-        <unsure/>
-        <unsure/>
-		<unsure/>
+        <unsure level="verbose2" />
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
-		<unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
-		<unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
-		<unsure level="verbose2" />
-		<unsure level="verbose2" />
-		<unsure level="verbose2" />
-		<unsure level="verbose2" />
-		<unsure level="verbose2" />
-		<unsure level="verbose2" />
         <unsure/>
         <unsure/>
         <unsure/>
-		<unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
@@ -92,13 +95,16 @@
         <unsure/>
         <unsure/>
     </results>
-	<results format="lightxml">
+    <results format="lightxml">
         <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
         <magicfound/>
         <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure/>
         <unsure/>
         <unsure/>
@@ -221,6 +227,9 @@
         <unsure/>
         <magicfound/>
         <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure/>
         <unsure/>
         <unsure/>
@@ -338,6 +347,7 @@
     <results format="txt">
         <unsure/>
         <magicfound level="silent" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure level="verbose1" />
         <unsure/>
         <unsure level="verbose1" />
@@ -401,6 +411,9 @@
     </results>
     <class name="AllMessagesTest" type="Fail" level="silent">
         <function name="initTestCase" type="Pass">
+            <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
+                QThread(29ec6f0) started ()
+            </message>
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
@@ -491,7 +504,7 @@
             <message type="BFail" strict="true" level="silent" file="allmessagestest.cpp" line="76" format="!xunitxml">
                 'false' returned FALSE. (This test is blacklisted but it should fail)
             </message>
-			<message type="BFail" strict="true" level="silent" file="allmessagestest.cpp" line="76" format="xunitxml">
+            <message type="BFail" strict="true" level="silent" file="allmessagestest.cpp" line="76" format="xunitxml">
                 Blacklisted test failed
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
@@ -508,13 +521,13 @@
             <message type="XFail" strict="true" file="allmessagestest.cpp" line="82" format="!xunitxml">
                 This test should fail as it is marked as expecting failure.
             </message>
-			<message type="Info" strict="true" file="allmessagestest.cpp" line="82" format="xunitxml">
+            <message type="Info" strict="true" file="allmessagestest.cpp" line="82" format="xunitxml">
                 This test should fail as it is marked as expecting failure.
             </message>
             <message type="Pass" strict="true" format="!xunitxml">
                 Test passed
             </message>
-			<message type="XFail" strict="true" format="xunitxml">
+            <message type="XFail" strict="true" format="xunitxml">
                 Test failed unexpectedly
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >

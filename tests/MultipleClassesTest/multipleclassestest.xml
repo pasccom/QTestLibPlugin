@@ -1,25 +1,25 @@
 <?xml version="1.0" ?>
 <!-- Copyright 2016 Pascal COMBES <pascom@orange.fr>
-     
+
      This file is part of QTestLibPlugin.
-     
+
      QTestLibPlugin is free software: you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
      the Free Software Foundation, either version 3 of the License, or
      (at your option) any later version.
-     
+
      QTestLibPlugin is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
      GNU General Public License for more details.
-     
+
      You should have received a copy of the GNU General Public License
      along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 -->
 
 <!DOCTYPE qtestliboutput SYSTEM "../../qtestliboutput.dtd">
 <qtestliboutput>
-	<results format="xunitxml">
+    <results format="xunitxml">
         <unsure/>
         <unsure/>
         <unsure/>
@@ -28,45 +28,23 @@
         <unsure/>
         <magicfound/>
         <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure/>
-		<unsure level="verbose2"/>
-		<unsure level="verbose2"/>
+        <unsure level="verbose2"/>
+        <unsure level="verbose2"/>
         <unsure/>
-		<unsure level="verbose2"/>
-		<unsure level="verbose2"/>
-        <unsure/>
-        <unsure/>
-		<unsure level="verbose2"/>
-		<unsure level="verbose2"/>
-		<unsure level="verbose2"/>
-        <unsure/>
-		<unsure/>
+        <unsure level="verbose2"/>
+        <unsure level="verbose2"/>
         <unsure/>
         <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verbose2"/>
+        <unsure level="verbose2"/>
+        <unsure level="verbose2"/>
         <unsure/>
         <unsure/>
-        <unsure/>
-        <magicfound/>
-        <unsure/>
-        <unsure/>
-		<unsure level="verbose2"/>
-		<unsure level="verbose2"/>
-        <unsure/>
-        <unsure/>
-		<unsure level="verbose2"/>
-        <unsure/>
-		<unsure level="verbose2"/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-		<unsure level="verbose2"/>
-        <unsure/>
-		<unsure level="verbose2"/>
-        <unsure/>
-		<unsure level="verbose2"/>
-        <unsure/>
-        <unsure/>
-		<unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
@@ -74,45 +52,25 @@
         <unsure/>
         <magicfound/>
         <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure/>
-		<unsure level="verbose2"/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-		<unsure level="verbose2"/>
-		<unsure level="verbose2"/>
+        <unsure level="verbose2"/>
+        <unsure level="verbose2"/>
         <unsure/>
         <unsure/>
-		<unsure level="verbose2"/>
-		<unsure level="verbose2"/>
-		<unsure level="verbose2"/>
+        <unsure level="verbose2"/>
         <unsure/>
-	</results>
-	<results format="lightxml">
+        <unsure level="verbose2"/>
         <unsure/>
         <unsure/>
         <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verbose2"/>
         <unsure/>
-        <magicfound/>
+        <unsure level="verbose2"/>
         <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure level="verbose2" />
-        <unsure level="verbose2" />
-        <unsure level="verbose2" />
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure level="verbose2" />
-        <unsure level="verbose2" />
-        <unsure level="verbose2" />
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
+        <unsure level="verbose2"/>
         <unsure/>
         <unsure/>
         <unsure/>
@@ -123,6 +81,34 @@
         <unsure/>
         <magicfound/>
         <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure/>
+        <unsure level="verbose2"/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2"/>
+        <unsure level="verbose2"/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verbose2"/>
+        <unsure level="verbose2"/>
+        <unsure level="verbose2"/>
+        <unsure/>
+    </results>
+    <results format="lightxml">
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure/>
         <unsure/>
         <unsure/>
@@ -134,27 +120,9 @@
         <unsure/>
         <unsure/>
         <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
         <unsure level="verbose2" />
         <unsure level="verbose2" />
         <unsure level="verbose2" />
-        <unsure level="verbose2" />
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure/>
-        <unsure level="verbose2" />
-        <unsure level="verbose2" />
-        <unsure level="verbose2" />
-        <unsure level="verbose2" />
-        <unsure/>
-        <unsure/>
         <unsure/>
         <unsure/>
         <unsure/>
@@ -169,6 +137,58 @@
         <unsure/>
         <magicfound/>
         <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure level="verbose2" />
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <unsure/>
+        <magicfound/>
+        <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure/>
         <unsure/>
         <unsure/>
@@ -203,6 +223,9 @@
         <unsure/>
         <magicfound/>
         <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure/>
         <unsure/>
         <unsure/>
@@ -234,6 +257,9 @@
         <unsure/>
         <magicfound/>
         <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure/>
         <unsure/>
         <unsure/>
@@ -283,6 +309,9 @@
         <unsure/>
         <magicfound/>
         <unsure/>
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure/>
         <unsure/>
         <unsure/>
@@ -312,6 +341,7 @@
     <results format="txt">
         <unsure/>
         <magicfound level="silent" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure level="verbose1" />
         <unsure/>
         <unsure level="verbose1" />
@@ -328,6 +358,7 @@
         <unsure/>
         <unsure/>
         <magicfound level="silent" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure level="verbose1" />
         <unsure/>
         <unsure level="verbose1" />
@@ -349,6 +380,7 @@
         <unsure/>
         <unsure/>
         <magicfound level="silent" />
+        <unsure level="verboses" qtmin="5.6.0" />
         <unsure level="verbose1" />
         <unsure/>
         <unsure level="verbose1" />
@@ -368,6 +400,9 @@
     <root type="Fail">
         <class name="FirstClassTest" type="Pass" format="!lightxml">
             <function name="initTestCase" type="Pass">
+                <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
+                    QThread(29ec6f0) started ()
+                </message>
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
@@ -421,8 +456,11 @@
                 0ms
             </message>
         </class>
-		<class name="MultipleClassesTest#1" type="Pass" format="lightxml">
+        <class name="MultipleClassesTest#1" type="Pass" format="lightxml">
             <function name="initTestCase" type="Pass">
+                <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
+                    QThread(29ec6f0) started ()
+                </message>
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
@@ -466,6 +504,9 @@
         </class>
         <class name="SecondClassTest" type="Pass" format="!lightxml">
             <function name="initTestCase" type="Pass">
+                <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
+                    QThread(29ec6f0) started ()
+                </message>
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
@@ -505,7 +546,7 @@
                         Test passed
                     </message>
                 </row>
-				<row title="firstData" type="Unknown" format="xunitxml">
+                <row title="firstData" type="Unknown" format="xunitxml">
                     <message type="QDebug" strict="true">
                         "firstData"
                     </message>
@@ -524,7 +565,7 @@
                         Test passed
                     </message>
                 </row>
-				<row title="secondData" type="Unknown" format="xunitxml">
+                <row title="secondData" type="Unknown" format="xunitxml">
                     <message type="QDebug" strict="true">
                         "secondData"
                     </message>
@@ -532,9 +573,9 @@
                         QVERIFY(data.endsWith("Data"))
                     </message>
                 </row>
-				<message type="Pass" strict="true" format="xunitxml">
-					Test passed
-				</message>
+                <message type="Pass" strict="true" format="xunitxml">
+                    Test passed
+                </message>
                 <message type="Duration" strict="false" format="xml">
                     0ms
                 </message>
@@ -554,8 +595,11 @@
                 0ms
             </message>
         </class>
-		<class name="MultipleClassesTest#2" type="Pass" format="lightxml">
+        <class name="MultipleClassesTest#2" type="Pass" format="lightxml">
             <function name="initTestCase" type="Pass">
+                <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
+                    QThread(29ec6f0) started ()
+                </message>
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
@@ -615,6 +659,9 @@
         </class>
         <class name="ThirdClassTest" type="Fail" level="silent" format="!lightxml">
             <function name="initTestCase" type="Pass">
+                <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
+                    QThread(29ec6f0) started ()
+                </message>
                 <message type="Info" strict="true" level="verbose1" format="txt">
                     entering
                 </message>
@@ -668,8 +715,11 @@
                 0ms
             </message>
         </class>
-		<class name="MultipleClassesTest#3" type="Fail" level="silent" format="lightxml">
+        <class name="MultipleClassesTest#3" type="Fail" level="silent" format="lightxml">
             <function name="initTestCase" type="Pass">
+                <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
+                    QThread(29ec6f0) started ()
+                </message>
                 <message type="Pass" strict="true">
                     Test passed
                 </message>
