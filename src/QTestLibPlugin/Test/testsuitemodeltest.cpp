@@ -390,7 +390,8 @@ void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const Q
         else
             QVERIFY2(false, qPrintable(QString("Unknown parser format %1").arg((*it)->parserFormat)));
 
-        QVERIFY2(tester.checkIndex(model->index(i, 0, QModelIndex()), (*it)->testName), qPrintable(tester.error()));
+        tester.setResultsFile(TESTS_DIR "/" + (*it)->testName + "/" + (*it)->testName.toLower() + ".xml");
+        QVERIFY2(tester.checkIndex(model->index(i, 0, QModelIndex())), qPrintable(tester.error()));
     }
 
     END_SUB_TEST_FUNCTION

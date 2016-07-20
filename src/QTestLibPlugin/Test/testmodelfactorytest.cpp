@@ -408,7 +408,8 @@ void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration
     if (format != Internal::QTestLibArgsParser::TxtFormat)
         verbosity = qMax(verbosity, Internal::QTestLibArgsParser::NormalVerbosity);
     QTestLibModelTester tester(mPopulatedModel, (QTestLibModelTester::Verbosity) verbosity, formatString);
-    QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
+    tester.setResultsFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
+    QVERIFY2(tester.checkIndex(QModelIndex()), qPrintable(tester.error()));
 }
 
 } // Test

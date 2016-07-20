@@ -163,7 +163,7 @@ void QTestLibModelTest::addTestItem(void)
 
     QTestLibModelTester tester(&model);
     tester.setResultsFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
-    QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
+    QVERIFY2(tester.checkIndex(QModelIndex()), qPrintable(tester.error()));
 
     SUB_TEST_FUNCTION(checkSignals(&model, testSignals, testName));
 }

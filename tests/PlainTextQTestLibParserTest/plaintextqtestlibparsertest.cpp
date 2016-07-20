@@ -197,8 +197,9 @@ void PlainTextQTestLibParserTest::runMakeCheck(const QString& testName, QTestLib
 void PlainTextQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
     QTestLibModelTester tester(model, verbosity, "txt");
-    QVERIFY2(tester.checkResults(results, testName), qPrintable(tester.error()));
-    QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
+    tester.setResultsFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
+    QVERIFY2(tester.checkResults(results), qPrintable(tester.error()));
+    QVERIFY2(tester.checkIndex(QModelIndex()), qPrintable(tester.error()));
 }
 
 QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::Runnable runnable, const QLinkedList<EnvironmentVariable>& addToEnv)

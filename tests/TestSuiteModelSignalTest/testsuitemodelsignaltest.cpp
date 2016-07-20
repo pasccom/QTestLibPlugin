@@ -201,7 +201,7 @@ void TestSuiteModelSignalTest::addTestItem(void)
 
     QTestLibModelTester tester(mModel);
     tester.setResultsFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
-    QVERIFY2(tester.checkIndex(subModelIndex, testName), qPrintable(tester.error()));
+    QVERIFY2(tester.checkIndex(subModelIndex), qPrintable(tester.error()));
 
     SUB_TEST_FUNCTION(checkSignals(mModel, testSignals, testName));
 }

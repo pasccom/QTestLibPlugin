@@ -278,7 +278,8 @@ void TestProxyModelTest::createModel(const QString& testName)
     mProxy->setSourceModel(model);
 
     QTestLibModelTester tester(model, mVerbosity, "xml");
-    QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
+    tester.setResultsFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
+    QVERIFY2(tester.checkIndex(QModelIndex()), qPrintable(tester.error()));
 
     END_SUB_TEST_FUNCTION
 }
@@ -289,6 +290,7 @@ void TestProxyModelTest::testProxy(const QString& testName, QVector<bool> filter
     QVERIFY(model != NULL);
     mProxy->setSourceModel(model);
     QTestLibModelTester tester(mProxy, mVerbosity, "xml");
+    tester.setResultsFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
 
     for (int i = 0; i < filter.length(); i++) {
         if (filter.at(i)) {
@@ -303,7 +305,7 @@ void TestProxyModelTest::testProxy(const QString& testName, QVector<bool> filter
     for (int i = 0; i < filter.length(); i++)
         QCOMPARE(mProxy->isMessageTypeEnabled((QTestLibPlugin::Internal::QTestLibModel::MessageType) i), filter.at(i));
 
-    QVERIFY2(tester.checkIndex(QModelIndex(), testName), qPrintable(tester.error()));
+    QVERIFY2(tester.checkIndex(QModelIndex()), qPrintable(tester.error()));
 }
 
 QTEST_MAIN(TestProxyModelTest)
