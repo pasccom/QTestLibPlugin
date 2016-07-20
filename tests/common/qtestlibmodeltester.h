@@ -59,13 +59,13 @@ public:
     inline void toogleMessageType(QTestLibPlugin::Internal::QTestLibModel::MessageType type) {mFilters[(int) type] = !mFilters.at((int) type);}
     inline bool isMessageTypeEnabled(QTestLibPlugin::Internal::QTestLibModel::MessageType type) const {return mFilters.at((int) type);}
 
-    bool checkResults(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results, const QString& testName);
-    bool checkIndex(const QModelIndex& index, const QString& testName);
+    bool checkResults(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results);
+    bool checkIndex(const QModelIndex& index);
     inline QString error(void) const {return mError;}
 private:
-    void loadTestResult(QDomDocument& dom, const QString& testName);
-    void checkResultsInternal(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results, const QString& testName);
-    void checkIndexInternal(const QModelIndex& model, const QString& testName);
+    void loadTestResult(QDomDocument& dom);
+    void checkResultsInternal(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results);
+    void checkIndexInternal(const QModelIndex& model);
 
     void isOutput(const QDomElement& element, bool *ret, bool filter = true);
     void isOutputFormat(const QDomElement& element, bool *ret);

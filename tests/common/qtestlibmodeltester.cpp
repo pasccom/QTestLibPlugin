@@ -47,21 +47,21 @@ QTestLibModelTester::QTestLibModelTester(const QAbstractItemModel *model, Verbos
         mFilters[i] = true;
 }
 
-bool QTestLibModelTester::checkResults(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results, const QString& testName)
+bool QTestLibModelTester::checkResults(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results)
 {
     mError = QString::null;
 
-    checkResultsInternal(results, testName);
+    checkResultsInternal(results);
 
     return SUB_TEST_FUNCTION_SUCESS_INDICATOR;
 }
 
-void QTestLibModelTester::checkResultsInternal(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results, const QString& testName)
+void QTestLibModelTester::checkResultsInternal(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results)
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    QDomDocument dom(testName);
-    SUB_TEST_FUNCTION(loadTestResult(dom, testName));
+    QDomDocument dom;
+    SUB_TEST_FUNCTION(loadTestResult(dom));
 
     QDomElement expectedResults = dom.documentElement().firstChildElement("results");
     while (!expectedResults.isNull()) {
@@ -77,21 +77,21 @@ void QTestLibModelTester::checkResultsInternal(const QLinkedList<QTestLibPlugin:
     END_SUB_TEST_FUNCTION
 }
 
-bool QTestLibModelTester::checkIndex(const QModelIndex& index, const QString& testName)
+bool QTestLibModelTester::checkIndex(const QModelIndex& index)
 {
     mError = QString::null;
 
-    checkIndexInternal(index, testName);
+    checkIndexInternal(index);
 
     return SUB_TEST_FUNCTION_SUCESS_INDICATOR;
 }
 
-void QTestLibModelTester::checkIndexInternal(const QModelIndex& index, const QString& testName)
+void QTestLibModelTester::checkIndexInternal(const QModelIndex& index)
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    QDomDocument dom(testName);
-    SUB_TEST_FUNCTION(loadTestResult(dom, testName));
+    QDomDocument dom;
+    SUB_TEST_FUNCTION(loadTestResult(dom));
 
     bool isElementOutput = false;
     QDomElement root = dom.documentElement().firstChildElement("root");
@@ -123,13 +123,11 @@ void QTestLibModelTester::checkIndexInternal(const QModelIndex& index, const QSt
     END_SUB_TEST_FUNCTION
 }
 
-void QTestLibModelTester::loadTestResult(QDomDocument& dom, const QString& testName)
+void QTestLibModelTester::loadTestResult(QDomDocument& dom)
 {
     BEGIN_SUB_TEST_FUNCTION
 
     QFile domFile(mResultFilePath);
-    if (mResultFilePath.isNull())
-        domFile.setFileName(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
     QVERIFY(domFile.open(QIODevice::ReadOnly));
     QString error;
     int line = 0;
