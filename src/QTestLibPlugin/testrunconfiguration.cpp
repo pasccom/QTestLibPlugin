@@ -110,14 +110,14 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core
 {
     setDefaultDisplayName(QLatin1String("make check"));
 
+    addExtraAspect(new TestRunConfigurationExtraAspect(this));
     /* TODO ensure this run configuration cannot be run with valgrind...
      * To do this, the code of the Valgrind plugin should be altered:
      * 1.ValgrindRunControlFactory should check the type of the given RunConfiguration (e.g. in canRun())
      * and addAspects() should only add aspects provided bu runnable RunControl factories.
      * 2.Alternatively, ValgrindPlugin, should ensure the extra aspects are added to
      * sensible RunConfiguration and RunConfiguration::addExtraAspects() should be removed. */
-    addExtraAspect(new ProjectExplorer::LocalEnvironmentAspect(this, ProjectExplorer::LocalEnvironmentAspect::BaseEnvironmentModifier()));
-    addExtraAspect(new TestRunConfigurationExtraAspect(this));
+    addExtraAspect(new ProjectExplorer::LocalEnvironmentAspect(this, ProjectExplorer::LocalEnvironmentAspect::BaseEnvironmentModifier()));  
 
     QTC_ASSERT(parent != NULL, return);
 
