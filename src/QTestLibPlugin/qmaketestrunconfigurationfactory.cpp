@@ -129,7 +129,7 @@ bool QMakeTestRunConfigurationFactory::isUseful(ProjectExplorer::Project* projec
 
 bool QMakeTestRunConfigurationFactory::canCreate(ProjectExplorer::Target *target, Core::Id id) const
 {
-    QTC_ASSERT(canHandle(target) && isUseful(target->project()), return false);
+    QTC_ASSERT(canHandle(target) && isReady(target->project()) && isUseful(target->project()), return false);
     if (id == Core::Id(Constants::TestRunConfigurationId))
         return true;
 
@@ -160,7 +160,8 @@ ProjectExplorer::RunConfiguration *QMakeTestRunConfigurationFactory::clone(Proje
             this, [runConfig, qMakeProject] () {
         updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
     });
-    updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
+    if (isReady(target->project()))
+        updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
 
     return runConfig;
 }
@@ -190,7 +191,8 @@ ProjectExplorer::RunConfiguration* QMakeTestRunConfigurationFactory::doRestore(P
             this, [runConfig, qMakeProject] () {
         updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
     });
-    updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
+    if (isReady(target->project()))
+        updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
 
     return runConfig;
 }
