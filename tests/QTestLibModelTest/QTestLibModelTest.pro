@@ -52,11 +52,11 @@ include(../../QtCreator.local.pri)
 include($$QTESTLIBPLUGIN_LIB/QTestLibPlugin_dependencies.pri)
 include($$QTCREATOR_SOURCES/qtcreator.pri)
 DEFINES -= QT_CREATOR QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
-unix {
-    LIBS += "-Wl,-rpath=$$IDE_PLUGIN_PATH"
-    LIBS += "-Wl,-rpath=$$IDE_LIBRARY_PATH"
-} else:win32 {
-    LIBS+= -L$$IDE_BUILD_TREE/bin
+
+QMAKE_RPATHDIR += "$$IDE_PLUGIN_PATH"
+QMAKE_RPATHDIR += "$$IDE_LIBRARY_PATH"
+win32 {
+    LIBS += "-L$$IDE_BUILD_TREE/bin"
 }
 
 # The directory where to put MOC-generated files :

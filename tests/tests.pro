@@ -26,7 +26,11 @@ SUBDIRS +=  AllMessagesTest     \
             OneClassTest        \
             MultipleClassesTest \
             SignalsTest         \
-            LimitsTest          \
+            LimitsTest          \           
+            #OneSubTest          \
+            #TwoSubTests         \
+            # FIXME Uncomment these lines on first generation with make
+            # So that the projects are compiled (they are used in tests)
 
 # Parsers tests:
 SUBDIRS +=  PlainTextQTestLibParserTest \
