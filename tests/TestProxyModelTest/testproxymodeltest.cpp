@@ -38,6 +38,7 @@ private Q_SLOTS:
 
     inline void enableDisableToogleMessageType_data(void) {data();}
     void enableDisableToogleMessageType(void);
+
     inline void oneClass_data(void) {data();}
     void oneClass(void);
     inline void allMessages_data(void) {data();}
@@ -48,6 +49,7 @@ private Q_SLOTS:
     void signalsTest(void);
     inline void limits_data(void) {data();}
     void limits(void);
+
 private:
     void data(void);
     void addRow(const QString& row);
