@@ -295,9 +295,10 @@ private:
          * \note If parent is not \c NULL, the child is
          * automatically apppended to its children.
          *
+         * \param model The model to which the associated index belongs.
          * \param parent The parent of the test item.
          */
-        TestItem(TestItem *parent = NULL);
+        TestItem(QTestLibModel* model, TestItem *parent = NULL);
         /*!
          * \brief Destructor
          *
@@ -500,6 +501,7 @@ private:
         QLinkedList<TestItem *> mChildren; /*!< The children of the test item. */
         int mChildrenCount; /*!< The number of children of the test item (cached for facter access) */
         TestItem* mParent; /*!< The parent of the current item */
+        QTestLibModel* mModel; /*!< The model to which the associated index belongs */
 
         QString mFile; /*!< The file part of the location of the associated event */
         unsigned int mLine; /*!< The line part of the location of the associated event */
@@ -522,10 +524,11 @@ private:
          *
          * Just call parent constructor
          *
+         * \param model The model to which the associated index belongs.
          * \param parent The parent of the test item.
          */
-        inline TestRootItem(TestItem *parent = NULL) :
-            TestItem(parent) {}
+        inline TestRootItem(QTestLibModel* model, TestItem *parent = NULL) :
+            TestItem(model, parent) {}
         inline TestItemType type(void) const {return TestRoot;}
         inline int compareName(const QString& name) const {Q_UNUSED(name); return 1;}
         inline int columnCount(void) const {return 3;}
@@ -547,11 +550,12 @@ private:
          * Constructs a test class item with the given class name.
          * The parent is passed to the parent constructor.
          *
-         * \param className The class name for the current item
+         * \param className The class name for the current item.
+         * \param model The model to which the associated index belongs.
          * \param parent The parent of the current item.
          */
-        inline TestClassItem(const QString& className, TestItem *parent = NULL) :
-            TestItem(parent), mClassName(className) {}
+        inline TestClassItem(const QString& className, QTestLibModel* model, TestItem *parent = NULL) :
+            TestItem(model, parent), mClassName(className) {}
         inline TestItemType type(void) const {return TestClass;}
         inline int compareName(const QString& name) const {return QString::compare(mClassName, name, Qt::CaseSensitive);}
         inline int columnCount(void) const {return 3;}
@@ -576,11 +580,12 @@ private:
          * Constructs a test case item with the given function name.
          * The parent is passed to the parent constructor.
          *
-         * \param functionName The function name for the current item
+         * \param functionName The function name for the current item.
+         * \param model The model to which the associated index belongs.
          * \param parent The parent of the current item.
          */
-        inline TestCaseItem(const QString& functionName, TestItem *parent = NULL) :
-            TestItem(parent), mFunctionName(functionName) {}
+        inline TestCaseItem(const QString& functionName, QTestLibModel* model, TestItem *parent = NULL) :
+            TestItem(model, parent), mFunctionName(functionName) {}
         inline TestItemType type(void) const {return TestCase;}
         inline int compareName(const QString& name) const {return QString::compare(mFunctionName, name, Qt::CaseSensitive);}
         inline int columnCount(void) const {return 3;}
@@ -613,11 +618,12 @@ private:
          * Constructs a test data row item with the given title.
          * The parent is passed to the parent constructor.
          *
-         * \param title The title for the current item
+         * \param title The title for the current item.
+         * \param model The model to which the associated index belongs.
          * \param parent The parent of the current item.
          */
-        inline TestRowItem(const QString& title, TestItem *parent = NULL) :
-            TestItem(parent), mTitle(title) {}
+        inline TestRowItem(const QString& title, QTestLibModel* model, TestItem *parent = NULL) :
+            TestItem(model, parent), mTitle(title) {}
         inline TestItemType type(void) const {return TestRow;}
         inline int compareName(const QString& name) const {return QString::compare(mTitle, name, Qt::CaseSensitive);}
         inline int columnCount(void) const {return 3;}
@@ -654,10 +660,11 @@ private:
          * Construcs a test message item from its type and the message.
          *
          * \param type The type of the associated event.
-         * \param msg The message
+         * \param msg The message.
+         * \param model The model to which the associated index belongs.
          * \param parent The parent of the current item.
          */
-        TestMessageItem(MessageType type, const QString& msg = QString::null, TestItem *parent = NULL);
+        TestMessageItem(MessageType type, const QString& msg, QTestLibModel* model, TestItem *parent = NULL);
         inline TestItemType type(void) const {return TestMessage;}
         inline int compareName(const QString& name) const {Q_UNUSED(name); return 1;}
         inline int columnCount(void) const {return 0;}

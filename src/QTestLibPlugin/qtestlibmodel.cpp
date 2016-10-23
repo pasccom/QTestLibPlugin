@@ -59,10 +59,10 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
 
     if (className.isEmpty()) {
         if (mRoot == NULL) {
-            mRoot = new TestRootItem();
+            mRoot = new TestRootItem(this);
         } else if (mRoot->type() != TestRoot) {
             TestItem *oldRoot = mRoot;
-            mRoot = new TestRootItem();
+            mRoot = new TestRootItem(this);
             mRoot->replace(oldRoot);
             emit dataChanged(index(mRoot, 0), index(mRoot, 2));
 
@@ -80,7 +80,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
 
     // Find the class item
     if (mRoot == NULL) {
-        testClassItem = new TestClassItem(className);
+        testClassItem = new TestClassItem(className, this);
         mRoot = testClassItem;
         emit dataChanged(index(mRoot, 0), index(mRoot, 2));
     } else if (mRoot->type() == TestClass) {
@@ -88,7 +88,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
             testClassItem = dynamic_cast<TestClassItem *>(mRoot);
         } else {
             TestItem *oldRoot = mRoot;
-            mRoot = new TestRootItem();
+            mRoot = new TestRootItem(this);
             mRoot->replace(oldRoot);
             emit dataChanged(index(mRoot, 0), index(mRoot, 2));
 
@@ -101,7 +101,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
             endMoveRows();
 
             beginInsertRows(QModelIndex(), 1, 1);
-            testClassItem = new TestClassItem(className, mRoot);
+            testClassItem = new TestClassItem(className, this, mRoot);
             endInsertRows();
         }
     } else {
@@ -109,7 +109,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
         if (testItem == NULL) {
             // Create a new class item
             beginInsertRows(QModelIndex(), mRoot->childrenCount(), mRoot->childrenCount());
-            testClassItem = new TestClassItem(className, mRoot);
+            testClassItem = new TestClassItem(className, this, mRoot);
             endInsertRows();
         } else {
             // Cast existing class item
@@ -127,7 +127,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
     if (testItem == NULL) {
         // Create a new case item
         beginInsertRows(index(testClassItem), testClassItem->childrenCount(), testClassItem->childrenCount());
-        testCaseItem = new TestCaseItem(functionName, testClassItem);
+        testCaseItem = new TestCaseItem(functionName, this, testClassItem);
         endInsertRows();
     } else {
         // Cast existing case item
@@ -144,7 +144,7 @@ void QTestLibModel::addTestItem(ProjectExplorer::RunControl* runControl, Message
     if (testItem == NULL) {
         // Create a new row item
         beginInsertRows(index(testCaseItem), testCaseItem->childrenCount(), testCaseItem->childrenCount());
-        testRowItem = new TestRowItem(rowTitle, testCaseItem);
+        testRowItem = new TestRowItem(rowTitle, this, testCaseItem);
         endInsertRows();
     } else {
         // Cast existing case item
@@ -161,11 +161,11 @@ void QTestLibModel::createTestMessageItem(MessageType type, const QString& messa
 
     beginInsertRows(index(parent), parent->childrenCount(), parent->childrenCount());
     if (messageTrimmed.startsWith(QLatin1String("Signal: ")))
-        mCurrentMessageItem = new TestMessageItem(Signal, messageTrimmed.mid(8), parent);
+        mCurrentMessageItem = new TestMessageItem(Signal, messageTrimmed.mid(8), this, parent);
     else if (messageTrimmed.startsWith(QLatin1String("Slot: ")))
-        mCurrentMessageItem = new TestMessageItem(Slot, messageTrimmed.mid(6).trimmed(), parent);
+        mCurrentMessageItem = new TestMessageItem(Slot, messageTrimmed.mid(6).trimmed(), this, parent);
     else
-        mCurrentMessageItem = new TestMessageItem(type, message, parent);
+        mCurrentMessageItem = new TestMessageItem(type, message, this, parent);
     endInsertRows();
 }
 
@@ -459,15 +459,15 @@ QString QTestLibModel::resultStringTr(QTestLibModel::MessageType type)
     return tr(qPrintable(QTestLibModel::resultString(type)));
 }
 
-QTestLibModel::TestItem::TestItem(TestItem *parent) :
-    mResult(QTestLibModel::Unknown), mChildrenCount(0), mParent(NULL), mFile(QString::null), mLine(0)
+QTestLibModel::TestItem::TestItem(QTestLibModel* model, TestItem *parent) :
+    mResult(QTestLibModel::Unknown), mChildrenCount(0), mParent(NULL), mModel(model), mFile(QString::null), mLine(0)
 {
     if (parent != NULL)
         parent->appendChild(this);
 }
 
-QTestLibModel::TestMessageItem::TestMessageItem(MessageType type, const QString& msg, TestItem *parent) :
-    TestItem(parent), mMessage(msg)
+QTestLibModel::TestMessageItem::TestMessageItem(MessageType type, const QString& msg, QTestLibModel* model, TestItem *parent) :
+    TestItem(model, parent), mMessage(msg)
 {
     mResult = type;
     if (this->parent() != NULL)
