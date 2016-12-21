@@ -136,6 +136,19 @@ public slots:
      * \sa removeSubModel()
      */
     void clear(void);
+protected:
+    /*!
+     * \brief Convert sub model QModelIndex
+     *
+     * Convert a QModelIndex coming from a given sub model
+     * into a QModelIndex of this model.
+     * Also updates mInternalPointers accordingly.
+     *
+     * \param model The model of the QModelIndex (should be a sub model)
+     * \param idx The QModelIndex (belonging to the given sub model)
+     * \return The same QModelIndex for this model
+     */
+    QModelIndex index(const QAbstractItemModel* model, const QModelIndex& idx = QModelIndex()) const;
 private slots:
     /*!
      * \brief Sub model data changed
@@ -214,19 +227,6 @@ private slots:
      */
     void subModelRowsMoved(const QModelIndex& sourceParent, int sourceStart, int sourceEnd, const QModelIndex& destinationParent, int destinationRow);
 private:
-    /*!
-     * \brief Convert sub model QModelIndex
-     *
-     * Convert a QModelIndex coming from a given sub model
-     * into a QModelIndex of this model.
-     * Also updates mInternalPointers accordingly.
-     *
-     * \param model The model of the QModelIndex (should be a sub model)
-     * \param idx The QModelIndex (belonging to the given sub model)
-     * \return The same QModelIndex for this model
-     */
-    QModelIndex index(const QAbstractItemModel* model, const QModelIndex& idx = QModelIndex()) const;
-
     QList<const QAbstractItemModel *> mSubModels; /*!< The list of sub models */
     mutable QMap<const void *, const QAbstractItemModel *> mInternalPointers; /*!< A map between indexes internal pointers and submodels */
 };
@@ -275,6 +275,15 @@ public slots:
      * \sa appendTestRun()
      */
     inline void removeTestRun(int index) {removeSubModel(index);}
+signals:
+    /*!
+     * \brief Test run finished
+     *
+     * This signal is emitted whenever a test run finishes.
+     *
+     * \param index The index of the test run in the model.
+     */
+    void testRunFinished(const QModelIndex& index);
 private slots:
     /*!
      * \brief Effectively append a test run model to the test suite model
@@ -284,6 +293,16 @@ private slots:
      * \param testModel The test model created by TestModelFactory to append.
      */
     inline void endAppendTestRun(QAbstractItemModel *testModel) {appendSubModel(testModel);}
+    /*!
+     * \brief Called when a test run finishes
+     *
+     * This slot is called when a test run model is populated.
+     * It emits a signal to notify the view/proxy that a new test has been appended.
+     *
+     * \param testModel The model for the finished test run.
+     * \sa testRunFinished()
+     */
+    void endTestRun(QAbstractItemModel *testModel) {emit testRunFinished(index(testModel));}
 };
 
 } // namespace Internal

@@ -26,7 +26,6 @@
 #include <QVector>
 
 class QTreeView;
-class QAbstractItemModel;
 class QSettings;
 class QComboBox;
 
@@ -37,6 +36,7 @@ namespace ProjectExplorer {
 namespace QTestLibPlugin {
 namespace Internal {
 
+class TestSuiteModel;
 class TestProxyModel;
 
 // TODO some functions will be inlined
@@ -44,7 +44,7 @@ class TestOutputPane : public Core::IOutputPane
 {
     Q_OBJECT
 public:
-    TestOutputPane(QAbstractItemModel *model);
+    TestOutputPane(TestSuiteModel *model);
     bool canFocus(void) const {return false;}
     bool canNavigate(void) const {return true;}
     bool canNext(void) const {return false;}
@@ -68,7 +68,7 @@ private:
     void loadColumnWidth(QSettings* settings, int column, const QString& key);
     QString formatToString(QTestLibArgsParser::TestOutputFormat format) const;
     TestProxyModel *mProxy;
-    QAbstractItemModel *mModel;
+    TestSuiteModel *mModel;
     QTreeView *mOutputWidget;
     QList<QWidget *> mToolbarWidgets;
     QComboBox *mUserForceParserCombo;

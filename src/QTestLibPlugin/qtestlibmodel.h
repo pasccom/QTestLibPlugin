@@ -814,6 +814,16 @@ private:
      */
     QModelIndex index(TestItem *testItem, int column = 0) const;
 
+    /*!
+     * \brief The test item result changed.
+     *
+     * This function is called when the result of a test item changes.
+     * It emits the dataChanged() signal for the corresponding index (see index(TestItem*, int)).
+     *
+     * \param item The item whose result changed.
+     */
+    void resultChanged(TestItem* item);
+
     ProjectExplorer::RunControl *mTestRun; /*!< The run control from which test data originates */
     TestItem *mRoot; /*!< The internal root item (may be a TestClassItem or a TestRootItem) */
     TestMessageItem *mCurrentMessageItem; /*!< The last test message item added (where message are appended by appendTestItemMessage() */

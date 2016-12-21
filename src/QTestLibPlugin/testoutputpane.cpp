@@ -19,6 +19,7 @@
 #include "qtestlibpluginconstants.h"
 #include "testoutputpane.h"
 #include "qtestlibmodel.h"
+#include "testsuitemodel.h"
 #include "testproxymodel.h"
 
 #include "utils/qtcassert.h"
@@ -30,13 +31,15 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-TestOutputPane::TestOutputPane(QAbstractItemModel *model) :
+TestOutputPane::TestOutputPane(TestSuiteModel* model) :
     mModel(model), mOutputWidget(NULL)
 {
     mColumnWidths.resize(3);
 
     mProxy = new TestProxyModel(this);
     mProxy->setSourceModel(model);
+    connect(model, SIGNAL(testRunFinished(const QModelIndex&)),
+            mProxy, SLOT(invalidate()));
 }
 
 QWidget* TestOutputPane::outputWidget(QWidget * parent)

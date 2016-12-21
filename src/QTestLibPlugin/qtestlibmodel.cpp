@@ -229,6 +229,12 @@ bool QTestLibModel::renameClass(const QString& oldName, const QString& newName)
     return false;
 }
 
+void QTestLibModel::resultChanged(TestItem* item)
+{
+    QModelIndex idx = index(item);
+    emit dataChanged(idx, idx, QVector<int>() << ResultRole << ResultStringRole);
+}
+
 int QTestLibModel::rowCount(const QModelIndex& parent) const
 {
     TestItem *testItem = mRoot;
@@ -514,8 +520,11 @@ void QTestLibModel::TestItem::updateResult(MessageType result)
 {
     MessageType oldResult = mResult;
     mResult = (MessageType) qMax((int) Unknown, qMax((int) mResult, (int) result));
-    if ((mResult != oldResult) && (mParent != NULL))
-        mParent->updateResult(result);
+    if (mResult != oldResult) {
+        mModel->resultChanged(this);
+        if (mParent != NULL)
+            mParent->updateResult(result);
+    }
 }
 
 QTestLibModel::TestItem* QTestLibModel::TestItem::findChild(const QString& name) const

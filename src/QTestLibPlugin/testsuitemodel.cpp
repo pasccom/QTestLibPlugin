@@ -234,8 +234,8 @@ void TestSuiteModel::appendTestRun(ProjectExplorer::RunControl* runControl)
     TestModelFactory *factory = new TestModelFactory(runControl, this);
     connect(factory, SIGNAL(modelFound(QAbstractItemModel *)),
             this, SLOT(endAppendTestRun(QAbstractItemModel *)));
-    /*connect(factory, SIGNAL(modelPopulated(QAbstractItemModel *)),
-            this, SLOT(endAppendTestRun(QAbstractItemModel *)));*/
+    connect(factory, SIGNAL(modelPopulated(QAbstractItemModel *)),
+            this, SLOT(endTestRun(QAbstractItemModel *)));
 }
 
 } // namespace Internal
