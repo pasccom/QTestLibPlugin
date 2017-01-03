@@ -72,11 +72,11 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectEx
         QTestLibModel::MessageType messageType = QTestLibModel::Unknown;
         if (!isMessageBeginning(line, &messageType)) {
             /* NOTE the message is supposed to be part of the previous one ... */
-            mModel->appendTestItemMessage(runControl, line.trimmed());
+            mModel->appendTestItemMessage(runControl, line);
         } else {
             if (!processMessageBeginning(runControl, line.mid(9), messageType))
                 /* NOTE the message is supposed to be part of the previous one ... */
-                mModel->appendTestItemMessage(runControl, line.trimmed());
+                mModel->appendTestItemMessage(runControl, line);
         }
     }
 
@@ -118,6 +118,8 @@ bool PlainTextQTestLibParser::isMessageBeginning(const QString& line, QTestLibMo
                                          "FAIL!   "));
 
     // Find the type of the message
+    if (line.length() < 8)
+        return false;
     if (line.at(7) != QLatin1Char(':'))
         return false;
     if (!line.left(7).trimmed().isEmpty())

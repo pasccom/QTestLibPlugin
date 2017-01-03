@@ -50,7 +50,7 @@ TestModelFactory::ParseResult BaseXMLQTestLibParser::parseStdoutLine(ProjectExpl
 
     if (!mParserActive)
         return result;
-    mReader->addData(cleanedLine);
+    mReader->addData(line + QLatin1Char('\n'));
 
     while(!mReader->atEnd()) {
         QXmlStreamReader::TokenType currentToken = mReader->readNext();
