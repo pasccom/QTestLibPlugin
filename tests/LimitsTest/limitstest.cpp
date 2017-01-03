@@ -32,6 +32,7 @@ public:
 private Q_SLOTS:
     void p(void);
     void f(void);
+    void multiline_data(void);
     void multiline(void);
     void testRowNames_data(void);
     void testRowNames(void);
@@ -59,9 +60,20 @@ void LimitsTest::f(void)
     QVERIFY2(false, "This test should fail.");
 }
 
+void LimitsTest::multiline_data(void)
+{
+    QTest::addColumn<QString>("data");
+
+    QTest::newRow("simple") << "Multiline message test:\nFirst line\nSecond line";
+    QTest::newRow("with keys") << "Multiline message test:\nPASS   : fun()\nFAIL!  : other_fun(test)";
+    QTest::newRow("short line") << "QList(\n    -item1\n    -item2\n)";
+}
+
 void LimitsTest::multiline(void)
 {
-    qDebug() << "Multiline message test:\nPASS   : fun()\nFAIL!  : other_fun(test)";
+    QFETCH(QString, data);
+
+    qDebug() << qPrintable(data);
 }
 
 void LimitsTest::testRowNames_data(void)
