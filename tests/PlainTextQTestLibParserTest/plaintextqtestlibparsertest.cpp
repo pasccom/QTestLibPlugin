@@ -224,7 +224,7 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQT
 
     testProc.setReadChannel(QProcess::StandardOutput);
     while (!testProc.atEnd()) {
-        QString line = testProc.readLine();
+        QString line = QString::fromLocal8Bit(testProc.readLine());
         while (line.endsWith('\n') || line.endsWith('\r'))
             line.chop(1);
         // Lines added by make (even in silent mode)
@@ -238,7 +238,7 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQT
 
     testProc.setReadChannel(QProcess::StandardError);
     while (!testProc.atEnd()) {
-        QString line = testProc.readLine();
+        QString line = QString::fromLocal8Bit(testProc.readLine());
         while (line.endsWith('\n') || line.endsWith('\r'))
             line.chop(1);
         if (line.isEmpty())
