@@ -456,7 +456,7 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
     QCOMPARE(runControlStartedSpy.size(), 1);
     qDebug() << runControlStartedSpy.at(0);
     Utils::Environment env = project->activeTarget()->activeBuildConfiguration()->environment();
-    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(project->activeTarget()->kit());
+    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(project->activeTarget()->kit(), ProjectExplorer::ToolChain::Language::Cxx);
     ProjectExplorer::RunControl* runControl = runControlStartedSpy.at(0).at(0).value<ProjectExplorer::RunControl*>();
     QVERIFY(runControl->runConfiguration()->runnable().is<ProjectExplorer::StandardRunnable>());
     ProjectExplorer::StandardRunnable runnable = runControl->runConfiguration()->runnable().as<ProjectExplorer::StandardRunnable>();
