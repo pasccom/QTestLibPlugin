@@ -40,7 +40,7 @@ DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 include(../../QtCreator.local.pri)
 include($$QTESTLIBPLUGIN_LIB/QTestLibPlugin_dependencies.pri)
 include($$QTCREATOR_SOURCES/qtcreator.pri)
-DEFINES -= QT_CREATOR QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
+DEFINES -= QT_CREATOR QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII QT_RESTRICTED_CAST_FROM_ASCII
 
 # The directory where to put MOC-generated files :
 MOC_DIR = ./.moc
