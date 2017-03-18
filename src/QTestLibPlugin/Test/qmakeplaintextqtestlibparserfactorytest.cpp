@@ -73,8 +73,7 @@ void QMakePlainTextQTestLibParserFactoryTest::init(void)
 
 void QMakePlainTextQTestLibParserFactoryTest::cleanup(void)
 {
-    if (mProject != NULL)
-        ProjectExplorer::SessionManager::removeProject(mProject);
+    closeProject(mProject);
 }
 
 

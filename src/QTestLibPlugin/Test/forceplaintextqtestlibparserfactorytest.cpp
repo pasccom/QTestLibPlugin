@@ -74,8 +74,7 @@ void ForcePlainTextQTestLibParserFactoryTest::init(void)
 
 void ForcePlainTextQTestLibParserFactoryTest::cleanup(void)
 {
-    if (mProject != NULL)
-        ProjectExplorer::SessionManager::removeProject(mProject);
+    closeProject(mProject);
 }
 
 void ForcePlainTextQTestLibParserFactoryTest::dataTest(void)

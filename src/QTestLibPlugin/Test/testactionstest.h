@@ -70,7 +70,7 @@ private:
     void testOpenProjectWithoutTests_data(void);
     void testOpenProjectWithoutTests(void);
 
-    void closeProject(int number = 0);
+    void cleanupProject(int number = 0);
     void checkSubMenuAction(const QString& projectPath);
     void checkSubMenuAction(ProjectExplorer::Project* project, bool present, bool enabled);
     void checkContextMenuAction(ProjectExplorer::Project* project, bool enabled);

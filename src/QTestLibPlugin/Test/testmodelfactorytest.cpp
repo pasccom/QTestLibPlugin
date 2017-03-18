@@ -81,8 +81,7 @@ void TestModelFactoryTest::init(void)
 
 void TestModelFactoryTest::cleanup(void)
 {
-    if (mProject != NULL)
-        ProjectExplorer::SessionManager::removeProject(mProject);
+    closeProject(mProject);
     if ((mFoundModel != NULL) && (mFoundModel != mPopulatedModel))
         delete mFoundModel;
     if (mPopulatedModel != NULL)

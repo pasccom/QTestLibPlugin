@@ -67,8 +67,7 @@ void TestRunConfigurationFactoryTest::init(void)
 
 void TestRunConfigurationFactoryTest::cleanup(void)
 {
-    if (mProject != NULL)
-        ProjectExplorer::SessionManager::removeProject(mProject);
+    closeProject(mProject);
 }
 
 void TestRunConfigurationFactoryTest::testOpenProjectWithTests_data(void)

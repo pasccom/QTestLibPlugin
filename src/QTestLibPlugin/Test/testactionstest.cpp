@@ -77,12 +77,9 @@ void TestActionsTest::init(void)
 
 void TestActionsTest::cleanup(void)
 {
-    if (mProject != NULL)
-        ProjectExplorer::SessionManager::removeProject(mProject);
-    if (mProject1 != NULL)
-        ProjectExplorer::SessionManager::removeProject(mProject1);
-    if (mProject2 != NULL)
-        ProjectExplorer::SessionManager::removeProject(mProject2);
+    closeProject(mProject);
+    closeProject(mProject1);
+    closeProject(mProject2);
 
     Core::Context projectTreeContext(ProjectExplorer::Constants::C_PROJECT_TREE);
     Core::ICore::removeAdditionalContext(projectTreeContext);
@@ -107,7 +104,7 @@ void TestActionsTest::testOpenProjectWithTests(void)
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject, true));
     SUB_TEST_FUNCTION(checkSubMenu(1));
 
-    SUB_TEST_FUNCTION(closeProject());
+    SUB_TEST_FUNCTION(cleanupProject());
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(projectPath));
     SUB_TEST_FUNCTION(checkContextMenuAction(NULL, false));
@@ -133,7 +130,7 @@ void TestActionsTest::testOpenProjectWithoutTests(void)
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject, false));
     SUB_TEST_FUNCTION(checkSubMenu(1));
 
-    SUB_TEST_FUNCTION(closeProject());
+    SUB_TEST_FUNCTION(cleanupProject());
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(projectPath));
     SUB_TEST_FUNCTION(checkContextMenuAction(NULL, false));
@@ -157,7 +154,7 @@ void TestActionsTest::testChangeTarget(void)
         SUB_TEST_FUNCTION(checkSubMenu(1));
     }
 
-    SUB_TEST_FUNCTION(closeProject());
+    SUB_TEST_FUNCTION(cleanupProject());
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(projectPath));
     SUB_TEST_FUNCTION(checkContextMenuAction(NULL, false));
@@ -193,14 +190,14 @@ void TestActionsTest::testTwoProjectsWithTests(void)
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject2, true));
     SUB_TEST_FUNCTION(checkSubMenu(2));
 
-    SUB_TEST_FUNCTION(closeProject(2));
+    SUB_TEST_FUNCTION(cleanupProject(2));
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, true, true));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject1, true));
     SUB_TEST_FUNCTION(checkSubMenu(1));
 
-    SUB_TEST_FUNCTION(closeProject(1));
+    SUB_TEST_FUNCTION(cleanupProject(1));
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(project1FilePath));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
@@ -237,14 +234,14 @@ void TestActionsTest::testTwoProjectsWithAndWithoutTests(void)
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject2, false));
     SUB_TEST_FUNCTION(checkSubMenu(1));
 
-    SUB_TEST_FUNCTION(closeProject(2));
+    SUB_TEST_FUNCTION(cleanupProject(2));
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, true, true));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject1, true));
     SUB_TEST_FUNCTION(checkSubMenu(1));
 
-    SUB_TEST_FUNCTION(closeProject(1));
+    SUB_TEST_FUNCTION(cleanupProject(1));
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(project1FilePath));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
@@ -280,14 +277,14 @@ void TestActionsTest::testTwoProjectsWithoutAndWithTests(void)
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject2, true));
     SUB_TEST_FUNCTION(checkSubMenu(1));
 
-    SUB_TEST_FUNCTION(closeProject(2));
+    SUB_TEST_FUNCTION(cleanupProject(2));
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, false, false));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject1, false));
     SUB_TEST_FUNCTION(checkSubMenu(0));
 
-    SUB_TEST_FUNCTION(closeProject(1));
+    SUB_TEST_FUNCTION(cleanupProject(1));
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(project1FilePath));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
@@ -323,14 +320,14 @@ void TestActionsTest::testTwoProjectsWithoutTests(void)
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject2, false));
     SUB_TEST_FUNCTION(checkSubMenu(0));
 
-    SUB_TEST_FUNCTION(closeProject(2));
+    SUB_TEST_FUNCTION(cleanupProject(2));
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, false, false));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject1, false));
     SUB_TEST_FUNCTION(checkSubMenu(0));
 
-    SUB_TEST_FUNCTION(closeProject(1));
+    SUB_TEST_FUNCTION(cleanupProject(1));
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(project1FilePath));
     SUB_TEST_FUNCTION(checkSubMenuAction(project2FilePath));
@@ -338,24 +335,24 @@ void TestActionsTest::testTwoProjectsWithoutTests(void)
     SUB_TEST_FUNCTION(checkSubMenu(0));
 }
 
-void TestActionsTest::closeProject(int number)
+void TestActionsTest::cleanupProject(int number)
 {
     BEGIN_SUB_TEST_FUNCTION
 
     switch (number) {
     case 1:
         QVERIFY(mProject1 != NULL);
-        ProjectExplorer::SessionManager::removeProject(mProject1);
+        closeProject(mProject1);
         mProject1 = NULL;
         break;
     case 2:
         QVERIFY(mProject2 != NULL);
-        ProjectExplorer::SessionManager::removeProject(mProject2);
+        closeProject(mProject2);
         mProject2 = NULL;
         break;
     default:
         QVERIFY(mProject != NULL);
-        ProjectExplorer::SessionManager::removeProject(mProject);
+        closeProject(mProject);
         mProject = NULL;
         break;
     }

@@ -74,8 +74,7 @@ void ForceLightXMLQTestLibParserFactoryTest::init(void)
 
 void ForceLightXMLQTestLibParserFactoryTest::cleanup(void)
 {
-    if (mProject != NULL)
-        ProjectExplorer::SessionManager::removeProject(mProject);
+    closeProject(mProject);
 }
 
 void ForceLightXMLQTestLibParserFactoryTest::dataTest(void)

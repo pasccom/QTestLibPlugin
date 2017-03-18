@@ -69,8 +69,7 @@ void TestSuiteModelTest::init(void)
 void TestSuiteModelTest::cleanup(void)
 {
     foreach (ProjectExplorer::Project* project, mOpenProjects) {
-        if (project != NULL)
-            ProjectExplorer::SessionManager::removeProject(project);
+        closeProject(project);
     }
 }
 

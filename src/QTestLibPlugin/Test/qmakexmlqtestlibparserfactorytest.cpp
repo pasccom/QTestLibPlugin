@@ -73,8 +73,7 @@ void QMakeXMLQTestLibParserFactoryTest::init(void)
 
 void QMakeXMLQTestLibParserFactoryTest::cleanup(void)
 {
-    if (mProject != NULL)
-        ProjectExplorer::SessionManager::removeProject(mProject);
+    closeProject(mProject);
 }
 
 
