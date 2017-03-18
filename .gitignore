@@ -17,6 +17,8 @@ object_script.*.*
 qrc_*.cpp
 *.json
 *.lst
+*.rc
+.qmake.stash
 
 # The translations binary files :
 *.qm
