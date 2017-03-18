@@ -42,7 +42,7 @@ TestModelFactory::TestModelFactory(ProjectExplorer::RunControl *runControl, QObj
         Q_ASSERT(mParsers.last() != NULL);
     }
 
-    connect(runControl, SIGNAL(appendMessage(ProjectExplorer::RunControl*, const QString&, Utils::OutputFormat)),
+    connect(runControl, SIGNAL(appendMessageRequested(ProjectExplorer::RunControl*, const QString&, Utils::OutputFormat)),
             this, SLOT(parseTestOutput(ProjectExplorer::RunControl*, const QString&, Utils::OutputFormat)));
     connect(runControl, SIGNAL(finished()),
             this, SLOT(runControlFinished()));
