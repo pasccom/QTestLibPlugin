@@ -21,8 +21,8 @@ Here is a list of the current features of the plugin:
 - Filters to filter the test model (by message type: `Pass`, `Fail`, ...)
 - Allows to run `make check` for projects supporting it
 - Easy test environment and arguments configuration
-Ideas I currently have to extend the plugin are listed in the 
-section PLANNED DEVELOPMENTS below.
+
+Ideas I currently have to extend the plugin are listed [below](#planned-developments).
 
 COMPATIBILITY TABLE
 -------------------
@@ -69,11 +69,10 @@ for lengthy test messages.
 - Add parsers and models for other test libraries (gtest, cppunit)
 
 If you have any other feature you will be interested in, please let me know.
-I will be pleased to develop it if I think it is a mush have.
+I will be pleased to develop it if I think it is a must have.
 
 If you want to implement extension, also tell me please. Admittedly you
-can do what you desire with the code (under the constraints stated in the
-section LICENSING INFORMATION below), but this will avoid double work.
+can do what you desire with the code (under the [licensing constraints](#licensing-information)), but this will avoid double work.
 
 LICENSING INFORMATION
 ---------------------
@@ -88,5 +87,5 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a [copy of the GNU General Public License](LICENSE)
 along with QTestLibPlugin. If not, see http://www.gnu.org/licenses/
