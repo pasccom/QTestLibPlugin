@@ -85,6 +85,7 @@ class QMakeTestRunConfigurationFactory;
  *  | 0.0.3          | 3.6.0      |  `Y`  |   `Y`   |  `?`   |
  *  | 0.0.4          | 3.6.0      |  `Y`  |   `Y`   |  `?`   |
  *  | 0.0.5          | 4.0.0      |  `Y`  |   `Y`   |  `?`   |
+ *  | 0.0.6          | 4.2.0      |  `Y`  |   `Y`   |  `?`   |
  *
  * A \c Y means that QTestLibPlugin was tested against this Qt Creator version
  * under the given operating system. A \c N means that the version of the plugin
