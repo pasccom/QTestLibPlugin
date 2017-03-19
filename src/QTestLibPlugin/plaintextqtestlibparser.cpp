@@ -46,7 +46,7 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectEx
         }
     } else {
         // Test for result line
-        QRegExp stdoutResultRegexp(QLatin1String("Totals: (\\d+) passed, (\\d+) failed, (\\d+) skipped(?:, (\\d+) blacklisted)?"));
+        QRegExp stdoutResultRegexp(QLatin1String("Totals: (\\d+) passed, (\\d+) failed, (\\d+) skipped(?:, (\\d+) blacklisted)?(?:, (\\d+)ms)?"));
         if (stdoutResultRegexp.exactMatch(line)) {
             mParserActive = false;
             return TestModelFactory::Unsure;
