@@ -46,6 +46,9 @@ QTestLibArgsParser::QTestLibArgsParser(const QTestLibArgsParser& other)
         mEventDelay = other.mEventDelay;
         mKeyDelay = other.mKeyDelay;
         mMouseDelay = other.mMouseDelay;
+
+        mError = other.mError;
+        mErrorString = other.mErrorString;
     }
 }
 
