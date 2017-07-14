@@ -42,16 +42,17 @@ namespace Internal {
  * \param runConfig The run configuration to update
  * \param qMakeRoot The project root.
  */
-void updateRunConfiguration(TestRunConfiguration* runConfig, QmakeProjectManager::QmakeProFileNode* qMakeRoot)
+void updateRunConfiguration(TestRunConfiguration* runConfig, QmakeProjectManager::QmakeProFileNode* qMakeRootNode)
 {
-    if (qMakeRoot == NULL)
+    if (qMakeRootNode == NULL)
         return;
-    QStringList makefile = qMakeRoot->variableValue(QmakeProjectManager::Makefile);
+    QmakeProjectManager::QmakeProFile* qMakeRoot = qMakeRootNode->proFile();
+    QStringList makefile = qMakeRoot->variableValue(QmakeProjectManager::Variable::Makefile);
     if (makefile.size() == 0) {
         runConfig->setMakefile(Utils::FileName());
     } else {
         QTC_ASSERT(makefile.size() == 1, );
-        runConfig->setMakefile(Utils::FileName::fromString(qMakeRoot->targetInformation().buildDir).appendPath(makefile.first()));
+        runConfig->setMakefile(qMakeRoot->targetInformation().buildDir.appendPath(makefile.first()));
     }
 }
 
@@ -96,7 +97,7 @@ bool QMakeTestRunConfigurationFactory::isReady(ProjectExplorer::Project* project
     QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(project);
     if (qMakeProject == NULL)
         return false;
-    return qMakeProject->rootProjectNode()->validParse();
+    return qMakeProject->rootProFile()->validParse();
 }
 
 bool QMakeTestRunConfigurationFactory::isUseful(ProjectExplorer::Project* project)
@@ -105,18 +106,18 @@ bool QMakeTestRunConfigurationFactory::isUseful(ProjectExplorer::Project* projec
     QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(project);
 
     QTC_ASSERT(qMakeProject != NULL, return false);
-    QTC_ASSERT(qMakeProject->rootProjectNode() != NULL, return false);
-    QTC_ASSERT(qMakeProject->rootProjectNode()->validParse(), return false);
+    QTC_ASSERT(qMakeProject->rootProFile() != NULL, return false);
+    QTC_ASSERT(qMakeProject->rootProFile()->validParse(), return false);
 
     //qDebug() << "QMake project:" << qMakeProject->displayName();
     //qDebug() << "    Valid parse:" << qMakeProject->rootQmakeProjectNode()->validParse();
     //qDebug() << "    Parse in progress:" << qMakeProject->rootQmakeProjectNode()->parseInProgress();
 
-    if (qMakeProject->rootProjectNode()->projectType() == QmakeProjectManager::SubDirsTemplate) {
-        foreach (QmakeProjectManager::QmakeProFileNode *pro, qMakeProject->applicationProFiles()) {
+    if (qMakeProject->rootProFile()->projectType() == QmakeProjectManager::ProjectType::SubDirsTemplate) {
+        foreach (QmakeProjectManager::QmakeProFile *pro, qMakeProject->applicationProFiles()) {
             //qDebug() << "    Pro file:" << pro->displayName();
             //qDebug() << "        Config:" << pro->variableValue(QmakeProjectManager::ConfigVar);
-            if (!pro->variableValue(QmakeProjectManager::ConfigVar).contains(QLatin1String("testcase"), Qt::CaseSensitive))
+            if (!pro->variableValue(QmakeProjectManager::Variable::Config).contains(QLatin1String("testcase"), Qt::CaseSensitive))
                 continue;
 
             hasTests = true;

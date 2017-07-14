@@ -74,6 +74,7 @@ const QString CrashHandlerEnabledKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTR
  */
 const char TestRunConfigurationId [] = TEST_RUN_CONFIGURATION_ID;                                                       /*!< Id for Internal::TestRunConfiguration */
 const char TestRunConfigurationExtraAspectId [] = TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID;                               /*!< Id for Internal::TestRunConfigurationExtraAspect */
+const char TestRunGroupId[] = "QTestLibPugin.Group.Run";                                                                /*!< Id for <tt>Run test</tt> sub menu group */
 const char TestRunMenuId[] = "QTestLibPlugin.Menu.TestRun";                                                             /*!< Id for <tt>Run tests</tt> sub menu */
 const char TestRunActionId[] = "QTestLibPlugin.Action.TestRun";                                                         /*!< Id for <tt>Run tests</tt> action in project pane context menu */
 /*!@}*/

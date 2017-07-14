@@ -134,7 +134,7 @@ void TestRunConfiguration::handleTargetKitChange(void)
     QTC_ASSERT(target()->kit() != NULL, return);
     QTC_ASSERT(target()->activeBuildConfiguration() != NULL, return);
 
-    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target()->kit(), ProjectExplorer::ToolChain::Language::Cxx);
+    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target()->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
 
     Utils::Environment env = target()->activeBuildConfiguration()->environment();
     mData->setAutoMakeExe(Utils::FileName::fromString(toolChain->makeCommand(env)));

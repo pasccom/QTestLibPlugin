@@ -145,7 +145,8 @@ bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorStrin
     mRunTestsMenu->menu()->setTitle(tr("Run tests"));
     Core::ActionContainer* buildMenu = Core::ActionManager::actionContainer(ProjectExplorer::Constants::M_BUILDPROJECT);
     Q_ASSERT(buildMenu != NULL);
-    buildMenu->addMenu(mRunTestsMenu, ProjectExplorer::Constants::G_BUILD_RUN);
+    buildMenu->appendGroup(Constants::TestRunGroupId);
+    buildMenu->addMenu(mRunTestsMenu, Constants::TestRunGroupId);
 
     mRunTestsAction = new QAction(tr("Run tests"), this);
     qDebug() << "Run tests action:" << mRunTestsAction;
