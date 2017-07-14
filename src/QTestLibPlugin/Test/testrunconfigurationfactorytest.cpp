@@ -101,7 +101,7 @@ void TestRunConfigurationFactoryTest::testOpenProjectWithTests(void)
         QVERIFY(testRunConfig->id() == Core::Id(Constants::TestRunConfigurationId));
 
         Utils::Environment env = target->activeBuildConfiguration()->environment();
-        ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit(), ProjectExplorer::ToolChain::Language::Cxx);
+        ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
 
         QVERIFY(testRunConfig->runnable().is<ProjectExplorer::StandardRunnable>());
         ProjectExplorer::StandardRunnable runnable = testRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
