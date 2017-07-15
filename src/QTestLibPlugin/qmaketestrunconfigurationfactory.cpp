@@ -157,9 +157,14 @@ ProjectExplorer::RunConfiguration *QMakeTestRunConfigurationFactory::clone(Proje
     runConfig->fromMap(product->toMap());
 
     QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(target->project());
-    connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
+    QMetaObject::Connection updateConnection = connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
             this, [runConfig, qMakeProject] () {
         updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
+    });
+    connect(target, &ProjectExplorer::Target::removedRunConfiguration,
+            this, [updateConnection] (ProjectExplorer::RunConfiguration* rc) {
+        qDebug() << "QTC run configuration removed: " << rc;
+        disconnect(updateConnection);
     });
     if (isReady(target->project()))
         updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
@@ -173,9 +178,14 @@ ProjectExplorer::RunConfiguration* QMakeTestRunConfigurationFactory::doCreate(Pr
     TestRunConfiguration* runConfig = new TestRunConfiguration(target, id);
 
     QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(target->project());
-    connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
+    QMetaObject::Connection updateConnection = connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
             this, [runConfig, qMakeProject] () {
         updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
+    });
+    connect(target, &ProjectExplorer::Target::removedRunConfiguration,
+            this, [updateConnection] (ProjectExplorer::RunConfiguration* rc) {
+        qDebug() << "QTC run configuration removed: " << rc;
+        disconnect(updateConnection);
     });
     updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
 
@@ -188,9 +198,14 @@ ProjectExplorer::RunConfiguration* QMakeTestRunConfigurationFactory::doRestore(P
     TestRunConfiguration* runConfig = new TestRunConfiguration(target, ProjectExplorer::idFromMap(map));
 
     QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(target->project());
-    connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
+    QMetaObject::Connection updateConnection = connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
             this, [runConfig, qMakeProject] () {
         updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
+    });
+    connect(target, &ProjectExplorer::Target::removedRunConfiguration,
+            this, [updateConnection] (ProjectExplorer::RunConfiguration* rc) {
+        qDebug() << "QTC run configuration removed: " << rc;
+        disconnect(updateConnection);
     });
     if (isReady(target->project()))
         updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
