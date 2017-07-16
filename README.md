@@ -57,7 +57,11 @@ isEmpty(QTCREATOR_SOURCES):QTCREATOR_SOURCES=/path/to/QtCreator/source/tree
 # Qt Creator build tree:
 isEmpty(IDE_BUILD_TREE):IDE_BUILD_TREE=/path/to/QtCreator/build/tree
 ```
-An example file (`QtCreator.local.pri.example`) is provided along with the souces.
+An example file (`QtCreator.local.pri.example`) is provided along with the sources.
+
+Further build-related configuration options can be provided with
+`QTestLibPlugin.local.pri`. Again an exemple file (`QTestLibPlugin.local.pri.example`)
+is provided along with the sources.
 
 PLANNED DEVELOPMENTS
 --------------------

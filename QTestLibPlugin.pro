@@ -41,6 +41,7 @@ SUBDIRS += $$QTESTLIBPLUGIN_I18N
 
 OTHER_FILES +=  README.md \
                 QtCreator.local.pri.example \
+                QTestLibPlugin.local.pri.example \
                 Doxyfile \
                 Doxyfile.internal
 

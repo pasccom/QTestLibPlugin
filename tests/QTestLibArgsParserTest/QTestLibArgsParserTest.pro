@@ -22,12 +22,13 @@ CONFIG  += console
 CONFIG  -= app_bundle
 CONFIG  += testcase
 CONFIG  += no_testcase_installs
-#CONFIG  += gcov
 QT      += testlib
 QT      += xml
 
 
 include(../../QTestLibPlugin.pri)
+
+!isEmpty(USE_GCOV):CONFIG  += gcov
 
 SOURCES += qtestlibargsparsertest.cpp
 

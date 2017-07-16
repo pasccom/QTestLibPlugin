@@ -15,14 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 
-# Build tests
-BUILD_TESTS=1
-# Build plugin into user config directory
-USE_USER_DESTDIR=yes
-
 QTESTLIBPLUGIN_BIN = $$PWD/bin
 QTESTLIBPLUGIN_LIB = $$PWD/plugin/QTestLibPlugin
 QTESTLIBPLUGIN_SRC = $$PWD/src/QTestLibPlugin
 QTESTLIBPLUGIN_I18N = $$PWD/translations
 QTESTLIBPLUGIN_TESTS = $$PWD/tests
 QTESTLIBMODEL_TESTS = $$PWD/tests/QTestLibModelTest/tests
+
+# By default do not build tests:
+BUILD_TESTS=
+# By default do not run gcov:
+USE_GCOV=
+# By default install into user config directory:
+USE_USER_DESTDIR=yes
+
+exists(QTestLibPlugin.local.pri) {
+    include(QTestLibPlugin.local.pri)
+}

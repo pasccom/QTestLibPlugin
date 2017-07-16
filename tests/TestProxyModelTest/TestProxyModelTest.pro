@@ -22,13 +22,14 @@ CONFIG  += console
 CONFIG  -= app_bundle
 CONFIG  += testcase
 CONFIG  += no_testcase_installs
-#CONFIG  += gcov
 QT      += testlib
 QT      += xml
 QT      += widgets
 QT      += network
 
 include(../../QTestLibPlugin.pri)
+
+!isEmpty(USE_GCOV):CONFIG  += gcov
 
 DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 
