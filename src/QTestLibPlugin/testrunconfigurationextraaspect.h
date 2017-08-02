@@ -221,9 +221,10 @@ public:
      * Constructs a new instance of this class and allocates the internal QTestLibArgsParser
      * to store data.
      * \param parent The run configuration this extra aspect is associated to.
+     * \param argParser An \c testlib argument parser which will be copied in this instance.
      * \sa create()
      */
-    TestRunConfigurationExtraAspect(ProjectExplorer::RunConfiguration *parent);
+    TestRunConfigurationExtraAspect(ProjectExplorer::RunConfiguration* parent, QTestLibArgsParser* argParser = nullptr);
     /*!
      * \brief Destructor
      *
@@ -240,14 +241,6 @@ public:
      * \sa TestRunConfigurationExtraAspect
      */
     TestRunConfigurationExtraAspect* create(ProjectExplorer::RunConfiguration* parent) const;
-    /*!
-     * \brief Creates a configuration widget
-     *
-     * Creates an instance of the configuration widget TestRunConfigWidget
-     * associated to the current instance.
-     * \return The newly allocated instance of the configuration widget.
-     */
-    inline ProjectExplorer::RunConfigWidget* createConfigurationWidget(void) {return new TestRunConfigWidget(this);}
 
     /*!
      * \brief Test command-line arguments
@@ -258,6 +251,7 @@ public:
      */
     inline QStringList commandLineArguments(void) const {return mTestArgsParser->toStringList();}
 
+protected:
     /*!
      * \brief Conversion to map
      *

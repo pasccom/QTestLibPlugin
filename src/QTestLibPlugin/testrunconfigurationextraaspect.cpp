@@ -361,13 +361,18 @@ void TestRunConfigWidget::updateMouseDelay(bool enabled)
     updateSummary();
 }
 
-TestRunConfigurationExtraAspect::TestRunConfigurationExtraAspect(ProjectExplorer::RunConfiguration* parent) :
+TestRunConfigurationExtraAspect::TestRunConfigurationExtraAspect(ProjectExplorer::RunConfiguration* parent, QTestLibArgsParser* argParser) :
   ProjectExplorer::IRunConfigurationAspect(parent)
 {
-    mTestArgsParser = new QTestLibArgsParser;
+    if (argParser != nullptr)
+        mTestArgsParser = new QTestLibArgsParser(*argParser);
+    else
+        mTestArgsParser = new QTestLibArgsParser;
+
 
     setId(Core::Id(Constants::TestRunConfigurationExtraAspectId));
     setDisplayName(tr("Test settings"));
+    setRunConfigWidgetCreator([this] {return new TestRunConfigWidget(this);});
 }
 
 TestRunConfigurationExtraAspect::~TestRunConfigurationExtraAspect()
@@ -377,11 +382,7 @@ TestRunConfigurationExtraAspect::~TestRunConfigurationExtraAspect()
 
 TestRunConfigurationExtraAspect* TestRunConfigurationExtraAspect::create(ProjectExplorer::RunConfiguration* parent) const
 {
-    TestRunConfigurationExtraAspect* ret = new TestRunConfigurationExtraAspect(parent);
-
-    ret->mTestArgsParser = new QTestLibArgsParser(*mTestArgsParser);
-
-    return ret;
+    return new TestRunConfigurationExtraAspect(parent, mTestArgsParser);
 }
 
 } // Internal
