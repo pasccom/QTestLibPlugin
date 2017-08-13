@@ -100,7 +100,7 @@ protected:
      * \param sourceParent The parent of the row to be tested in the source model.
      * \return \c true if the source model row pass through the filter.
      */
-    bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const;
+    bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const override;
 private:
     /*!
      * \brief State of the filter
@@ -149,7 +149,7 @@ protected:
      *
      * \param pe The paint event
      */
-    void paintEvent(QPaintEvent *pe);
+    void paintEvent(QPaintEvent *pe) override;
 private slots:
     /*!
      * \brief Handles a click

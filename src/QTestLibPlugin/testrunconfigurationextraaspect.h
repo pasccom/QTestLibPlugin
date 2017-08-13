@@ -78,7 +78,7 @@ public:
      * Returns the title of the widget, used in the project run configuration page.
      * \return The title of the widget.
      */
-    inline QString displayName() const {return tr("Test arguments");}
+    inline QString displayName() const override {return tr("Test arguments");}
 private slots:
     /*!
      * \brief Updates the summary
@@ -230,7 +230,7 @@ public:
      *
      * Destructs an instance of this class by desallocating the internal QTestLibArgsParser.
      */
-    ~TestRunConfigurationExtraAspect();
+    ~TestRunConfigurationExtraAspect() override;
 
     /*!
      * \brief Clone the instance
@@ -240,7 +240,7 @@ public:
      * \return The newly allocated instance of this class.
      * \sa TestRunConfigurationExtraAspect
      */
-    TestRunConfigurationExtraAspect* create(ProjectExplorer::RunConfiguration* parent) const;
+    TestRunConfigurationExtraAspect* create(ProjectExplorer::RunConfiguration* parent) const override;
 
     /*!
      * \brief Test command-line arguments
@@ -259,7 +259,7 @@ protected:
      * \param map The map to be initialized with the contents of the instance
      * \sa fromMap()
      */
-    inline void toMap(QVariantMap& map) const {mTestArgsParser->toMap(map);}
+    inline void toMap(QVariantMap& map) const override {mTestArgsParser->toMap(map);}
     /*!
      * \brief Conversion from map
      *
@@ -267,7 +267,7 @@ protected:
      * \param map The map containing the data of the instance
      * \sa toMap()
      */
-    inline void fromMap(const QVariantMap& map) {mTestArgsParser->fromMap(map);}
+    inline void fromMap(const QVariantMap& map) override {mTestArgsParser->fromMap(map);}
 private:
     QTestLibArgsParser *mTestArgsParser;    /*!< The internal QTestLibArgsParser used to store data */
 

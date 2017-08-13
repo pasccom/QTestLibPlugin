@@ -62,7 +62,7 @@ public:
      * \param runConfiguration The run configuration to test (unused)
      * \return \c true, if the iuser forced the activation of the parser
      */
-    bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const;
+    bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const override;
     /*!
      * \brief \copybrief AbstractTestParserFactory::getParserInstance()
      *
@@ -70,7 +70,7 @@ public:
      * \param runConfiguration Unused.
      * \return Always \c nullptr.
      */
-    inline AbstractTestParser *getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const {Q_UNUSED(runConfiguration); return nullptr;};
+    inline AbstractTestParser *getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const override {Q_UNUSED(runConfiguration); return nullptr;}
     /*!
      * \brief Set the format accepted by the parser.
      *

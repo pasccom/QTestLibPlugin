@@ -68,7 +68,7 @@ public:
      * \param runConfiguration The run configuration to test.
      * \return \c true, if the associated parser may parse the test output.
      */
-    inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {return canParseRunConfiguration(runConfiguration) || canParseModule(runConfiguration);}
+    inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const override {return canParseRunConfiguration(runConfiguration) || canParseModule(runConfiguration);}
     /*!
      * \brief \copybrief AbstractTestParserFactory::getParserInstance()
      *
@@ -76,7 +76,7 @@ public:
      * \param runConfiguration Unused.
      * \return Always \c nullptr.
      */
-    inline AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration* runConfiguration) const {Q_UNUSED(runConfiguration); return nullptr;}
+    inline AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration* runConfiguration) const override {Q_UNUSED(runConfiguration); return nullptr;}
     /*!
      * \brief Set the format accepted by the parser.
      *

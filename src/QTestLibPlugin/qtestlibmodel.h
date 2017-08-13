@@ -67,7 +67,7 @@ public:
      *
      * Deallocates recursively the underlying item tree.
      */
-    ~QTestLibModel(void);
+    ~QTestLibModel(void) override;
     /*!
      * \brief Types of message
      *
@@ -133,7 +133,7 @@ public:
      * at the given line and column
      * \sa parent()
      */
-    QModelIndex index(int row, int column, const QModelIndex& parent) const;
+    QModelIndex index(int row, int column, const QModelIndex& parent) const override;
     /*!
      * \brief Returns parent model index
      *
@@ -143,7 +143,7 @@ public:
      * \return The model index for the parent of the given child
      * \sa index()
      */
-    QModelIndex parent(const QModelIndex& child) const;
+    QModelIndex parent(const QModelIndex& child) const override;
     /*!
      * \brief Number of child rows
      *
@@ -153,7 +153,7 @@ public:
      * \return The number of child item rows
      * \sa columnCount()
      */
-    int rowCount(const QModelIndex& parent) const;
+    int rowCount(const QModelIndex& parent) const override;
     /*!
      * \brief Number of child colums
      *
@@ -163,7 +163,7 @@ public:
      * \return The number of child item columns
      * \sa rowCount()
      */
-    int columnCount(const QModelIndex& parent) const;
+    int columnCount(const QModelIndex& parent) const override;
     /*!
      * \brief Data for model index
      *
@@ -173,7 +173,7 @@ public:
      * \param role The role for the data
      * \return The data for the given role and the given model index
      */
-    QVariant data(const QModelIndex &index, int role) const;
+    QVariant data(const QModelIndex &index, int role) const override;
 
     /*!
      * \brief Icon for message type
@@ -529,9 +529,9 @@ private:
          */
         inline TestRootItem(QTestLibModel* model, TestItem *parent = NULL) :
             TestItem(model, parent) {}
-        inline TestItemType type(void) const {return TestRoot;}
-        inline int compareName(const QString& name) const {Q_UNUSED(name); return 1;}
-        inline int columnCount(void) const {return 3;}
+        inline TestItemType type(void) const override {return TestRoot;}
+        inline int compareName(const QString& name) const override {Q_UNUSED(name); return 1;}
+        inline int columnCount(void) const override {return 3;}
     };
 
     /*!
@@ -556,10 +556,10 @@ private:
          */
         inline TestClassItem(const QString& className, QTestLibModel* model, TestItem *parent = NULL) :
             TestItem(model, parent), mClassName(className) {}
-        inline TestItemType type(void) const {return TestClass;}
-        inline int compareName(const QString& name) const {return QString::compare(mClassName, name, Qt::CaseSensitive);}
-        inline int columnCount(void) const {return 3;}
-        QVariant data(int column, int role = Qt::DisplayRole) const;
+        inline TestItemType type(void) const override {return TestClass;}
+        inline int compareName(const QString& name) const override {return QString::compare(mClassName, name, Qt::CaseSensitive);}
+        inline int columnCount(void) const override {return 3;}
+        QVariant data(int column, int role = Qt::DisplayRole) const override;
 
         QString mClassName; /*!< The name of the test class */
     };
@@ -586,10 +586,10 @@ private:
          */
         inline TestCaseItem(const QString& functionName, QTestLibModel* model, TestItem *parent = NULL) :
             TestItem(model, parent), mFunctionName(functionName) {}
-        inline TestItemType type(void) const {return TestCase;}
-        inline int compareName(const QString& name) const {return QString::compare(mFunctionName, name, Qt::CaseSensitive);}
-        inline int columnCount(void) const {return 3;}
-        QVariant data(int column, int role = Qt::DisplayRole) const;
+        inline TestItemType type(void) const override {return TestCase;}
+        inline int compareName(const QString& name) const override {return QString::compare(mFunctionName, name, Qt::CaseSensitive);}
+        inline int columnCount(void) const override {return 3;}
+        QVariant data(int column, int role = Qt::DisplayRole) const override;
         /*!
          * \brief The name of the test function
          *
@@ -624,10 +624,10 @@ private:
          */
         inline TestRowItem(const QString& title, QTestLibModel* model, TestItem *parent = NULL) :
             TestItem(model, parent), mTitle(title) {}
-        inline TestItemType type(void) const {return TestRow;}
-        inline int compareName(const QString& name) const {return QString::compare(mTitle, name, Qt::CaseSensitive);}
-        inline int columnCount(void) const {return 3;}
-        QVariant data(int column, int role = Qt::DisplayRole) const;
+        inline TestItemType type(void) const override {return TestRow;}
+        inline int compareName(const QString& name) const override {return QString::compare(mTitle, name, Qt::CaseSensitive);}
+        inline int columnCount(void) const override {return 3;}
+        QVariant data(int column, int role = Qt::DisplayRole) const override;
         /*!
          * \brief The title of the test data row
          *
@@ -665,10 +665,10 @@ private:
          * \param parent The parent of the current item.
          */
         TestMessageItem(MessageType type, const QString& msg, QTestLibModel* model, TestItem *parent = NULL);
-        inline TestItemType type(void) const {return TestMessage;}
-        inline int compareName(const QString& name) const {Q_UNUSED(name); return 1;}
-        inline int columnCount(void) const {return 0;}
-        QVariant data(int column, int role = Qt::DisplayRole) const;
+        inline TestItemType type(void) const override {return TestMessage;}
+        inline int compareName(const QString& name) const override {Q_UNUSED(name); return 1;}
+        inline int columnCount(void) const override {return 0;}
+        QVariant data(int column, int role = Qt::DisplayRole) const override;
 
         /*!
          * \brief Find last child
@@ -680,7 +680,7 @@ private:
          * \param name The name of the searched child (Unused)
          * \return \c NULL as test message items can not have children
          */
-        inline TestItem* findChild(const QString& name) const {Q_UNUSED(name); return NULL;}
+        inline TestItem* findChild(const QString& name) const override {Q_UNUSED(name); return NULL;}
         /*!
          * \brief Find row for child
          *
@@ -691,7 +691,7 @@ private:
          * \param item A child of the current item (Unused)
          * \return -1 as test message items can not have any children
          */
-        inline int findChid(TestItem *item) const {Q_UNUSED(item); return -1;}
+        inline int findChid(TestItem *item) const override {Q_UNUSED(item); return -1;}
         /*!
          * \brief Return child at given row
          *
@@ -701,7 +701,7 @@ private:
          * \param row The row of the desired child (Unused)
          * \return \c NULL as test message items can not have any children
          */
-        inline TestItem* child(int row) const {Q_UNUSED(row); return NULL;}
+        inline TestItem* child(int row) const override {Q_UNUSED(row); return NULL;}
         /*!
          * \brief Number of children
          *
@@ -710,7 +710,7 @@ private:
          *
          * \return 0 as test message items can not have any children
          */
-        inline int childrenCount(void) const {return 0;}
+        inline int childrenCount(void) const override {return 0;}
         /*!
          * \brief Append a child to current item
          *
@@ -721,7 +721,7 @@ private:
          *
          * \param item The item to append to children list of the current item (Unused)
          */
-        inline void appendChild(TestItem *item) {Q_UNUSED(item); Q_ASSERT(false);}
+        inline void appendChild(TestItem *item) override {Q_UNUSED(item); Q_ASSERT(false);}
         /*!
          * \brief Replace the parent
          *
@@ -734,7 +734,7 @@ private:
          * \param first The first child whose ownership is taken (Unused)
          * \param last The last child whose ownership is taken (Unused)
          */
-        virtual void replace(TestItem *item, int first = 0, int last = -1) {Q_UNUSED(item); Q_UNUSED(first); Q_UNUSED(last); Q_ASSERT(false);}
+        virtual void replace(TestItem *item, int first = 0, int last = -1) override {Q_UNUSED(item); Q_UNUSED(first); Q_UNUSED(last); Q_ASSERT(false);}
         /*!
          * \brief Remove a child from current item
          *
@@ -747,7 +747,7 @@ private:
          * \return \c false as test message items can not have any children.
          * \sa removeChildren()
          */
-        inline bool removeChild(TestItem *item) {Q_UNUSED(item); Q_ASSERT(false); return false;}
+        inline bool removeChild(TestItem *item) override {Q_UNUSED(item); Q_ASSERT(false); return false;}
         /*!
          * \brief Remove children of current item
          *
@@ -756,7 +756,7 @@ private:
          * as test message items can not have any children.
          *
          */
-        inline void removeChildren(void) {}
+        inline void removeChildren(void) override {}
 
         /*!
          * \brief Message type for the current item

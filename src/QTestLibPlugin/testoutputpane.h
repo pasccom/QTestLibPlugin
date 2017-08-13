@@ -45,20 +45,20 @@ class TestOutputPane : public Core::IOutputPane
     Q_OBJECT
 public:
     TestOutputPane(TestSuiteModel *model);
-    bool canFocus(void) const {return false;}
-    bool canNavigate(void) const {return true;}
-    bool canNext(void) const {return false;}
-    bool canPrevious(void) const {return false;}
-    void clearContents(void);
-    QString displayName(void) const {return trUtf8("Test output");}
-    void goToNext(void) {}
-    void goToPrev(void) {}
-    bool hasFocus(void) const {return false;}
-    QWidget* outputWidget(QWidget * parent);
-    int priorityInStatusBar(void) const {return 10;}
-    void setFocus(void) {}
-    QList<QWidget *> toolBarWidgets(void) const;
-    void visibilityChanged(bool visible) {Q_UNUSED(visible);}
+    bool canFocus(void) const override {return false;}
+    bool canNavigate(void) const override {return true;}
+    bool canNext(void) const override {return false;}
+    bool canPrevious(void) const override {return false;}
+    void clearContents(void) override;
+    QString displayName(void) const override {return trUtf8("Test output");}
+    void goToNext(void) override {}
+    void goToPrev(void) override {}
+    bool hasFocus(void) const override {return false;}
+    QWidget* outputWidget(QWidget * parent) override;
+    int priorityInStatusBar(void) const override {return 10;}
+    void setFocus(void) override {}
+    QList<QWidget *> toolBarWidgets(void) const override;
+    void visibilityChanged(bool visible) override {Q_UNUSED(visible);}
 
     QTestLibArgsParser::TestOutputFormat userForceParser(void) const;
 

@@ -88,7 +88,7 @@ protected:
      * \param tag The tag of the current element.
      * \return TestModelFactory::Unsure in all cases
      */
-    TestModelFactory::ParseResult startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag);
+    TestModelFactory::ParseResult startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag) override;
     /*!
      * \brief \copybrief BaseXMLQTestLibParser::endElementParsed()
      *
@@ -102,7 +102,7 @@ protected:
      * \param tag The tag of the currently closed element.
      * \return One of TestModelFactory::ParseResult as described hereinabove.
      */
-    TestModelFactory::ParseResult endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag);
+    TestModelFactory::ParseResult endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag) override;
     /*!
      * \brief \copybrief BaseXMLQTestLibParser::textParsed()
      *
@@ -111,7 +111,7 @@ protected:
      * \param runControl The run control from which the parsed line comes
      * \return TestModelFactory::Unsure in all cases
      */
-    TestModelFactory::ParseResult textParsed(ProjectExplorer::RunControl* runControl);
+    TestModelFactory::ParseResult textParsed(ProjectExplorer::RunControl* runControl) override;
 
 private:
     int mClassStartCount; /*!< The number of class start encountered until now */

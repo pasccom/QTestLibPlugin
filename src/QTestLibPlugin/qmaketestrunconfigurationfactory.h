@@ -72,7 +72,7 @@ public:
      * \return A lis of the run configuration IDs this factory can create.
      * \sa canCreate()
      */
-    QList<Core::Id> availableCreationIds(ProjectExplorer::Target *target, CreationMode mode = UserCreate) const;
+    QList<Core::Id> availableCreationIds(ProjectExplorer::Target *target, CreationMode mode = UserCreate) const override;
     /*!
      * \brief The display name corresponding to the given ID
      *
@@ -84,7 +84,7 @@ public:
      * \param id A run configuration ID (expects a TestRunConfiguration ID)
      * \return <tt>"make check"</tt> if the ID is a TestRunConfiguration ID.
      */
-    QString displayNameForId(Core::Id id) const;
+    QString displayNameForId(Core::Id id) const override;
 
     /*!
      * \brief Whether the factory handles the given target
@@ -133,7 +133,7 @@ public:
      * \return \c true if the factory can create a run configuration.
      * \sa canHandle(), isUseful(), canRestore(), canClone()
      */
-    bool canCreate(ProjectExplorer::Target* parent, Core::Id id) const;
+    bool canCreate(ProjectExplorer::Target* parent, Core::Id id) const override;
     /*!
      * \brief Whether a run configuration can be restored
      *
@@ -149,7 +149,7 @@ public:
      * \return \c true if the factory can restore a run configuration from the data.
      * \sa canHandle(), isUseful(), canCreate(), canClone()
      */
-    bool canRestore(ProjectExplorer::Target* parent, const QVariantMap &map) const;
+    bool canRestore(ProjectExplorer::Target* parent, const QVariantMap &map) const override;
     /*!
      * \brief Whether a run configuration can be cloned
      *
@@ -165,7 +165,7 @@ public:
      * \return \c true if the factory can create a run configuration.
      * \sa canHandle(), isUseful(), canCreate(), canRestore(), clone()
      */
-    bool canClone(ProjectExplorer::Target* parent, ProjectExplorer::RunConfiguration *product) const;
+    bool canClone(ProjectExplorer::Target* parent, ProjectExplorer::RunConfiguration *product) const override;
 
     /*!
      * \brief Clones a run configuration
@@ -181,7 +181,7 @@ public:
      * or \c NULL when unsupported.
      * \sa canClone()
      */
-    ProjectExplorer::RunConfiguration* clone(ProjectExplorer::Target *parent, ProjectExplorer::RunConfiguration *product);
+    ProjectExplorer::RunConfiguration* clone(ProjectExplorer::Target *parent, ProjectExplorer::RunConfiguration *product) override;
 private:
     /*!
      * \brief Really creates a run configuration.
@@ -197,7 +197,7 @@ private:
      * or \c NULL when unsupported.
      * \sa canCreate()
      */
-    ProjectExplorer::RunConfiguration* doCreate(ProjectExplorer::Target* target, Core::Id id);
+    ProjectExplorer::RunConfiguration* doCreate(ProjectExplorer::Target* target, Core::Id id) override;
     /*!
      * \brief Really restores a run configuration.
      *
@@ -212,7 +212,7 @@ private:
      * or \c NULL when unsupported.
      * \sa canRestore()
      */
-    ProjectExplorer::RunConfiguration* doRestore(ProjectExplorer::Target* target, const QVariantMap& map);
+    ProjectExplorer::RunConfiguration* doRestore(ProjectExplorer::Target* target, const QVariantMap& map) override;
 };
 
 } // Internal

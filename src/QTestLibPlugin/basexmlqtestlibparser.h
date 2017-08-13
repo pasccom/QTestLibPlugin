@@ -42,7 +42,7 @@ namespace Internal {
 class BaseXMLQTestLibParser : public AbstractTestParser
 {
 public:
-    virtual inline ~BaseXMLQTestLibParser(void) {delete mReader;}
+    virtual inline ~BaseXMLQTestLibParser(void) override {delete mReader;}
     /*!
      * \brief \copybrief AbstractTestParser::parseStdoutLine()
      *
@@ -64,7 +64,7 @@ public:
      * \return A TestModelFactory::ParseResult as specified in the description.
      * \sa parseStderrLine()
      */
-    TestModelFactory::ParseResult parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line);
+    TestModelFactory::ParseResult parseStdoutLine(ProjectExplorer::RunControl* runControl, const QString& line) override;
     /*!
      * \brief \copybrief AbstractTestParser::parseStderrLine()
      *
@@ -79,8 +79,8 @@ public:
      * \return A TestModelFactory::ParseResult as specified in the description.
      * \sa parseStdoutLine()
      */
-    TestModelFactory::ParseResult parseStderrLine(ProjectExplorer::RunControl* runControl, const QString& line);
-    QAbstractItemModel *getModel(void) const {return mModel;}
+    TestModelFactory::ParseResult parseStderrLine(ProjectExplorer::RunControl* runControl, const QString& line) override;
+    QAbstractItemModel *getModel(void) const override {return mModel;}
 protected:
     /*!
      * \brief Constructor

@@ -62,8 +62,8 @@ public:
      * \param runConfiguration he run configuration to test
      * \return true, if the associated parser may parse the test output.
      */
-    inline bool canParse(ProjectExplorer::RunConfiguration* runConfiguration) const {return (mBase != nullptr) ? mBase->canParse(runConfiguration) : false;}
-    AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const;
+    inline bool canParse(ProjectExplorer::RunConfiguration* runConfiguration) const override {return (mBase != nullptr) ? mBase->canParse(runConfiguration) : false;}
+    AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const override;
 private:
     AbstractTestParserFactory* mBase;
 };

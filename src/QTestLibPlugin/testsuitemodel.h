@@ -68,7 +68,7 @@ public:
      * at the given line and column
      * \sa parent()
      */
-    QModelIndex index(int row, int column, const QModelIndex& parent) const;
+    QModelIndex index(int row, int column, const QModelIndex& parent) const override;
     /*!
      * \brief Returns parent model index
      *
@@ -78,7 +78,7 @@ public:
      * \return The model index for the parent of the given child
      * \sa index()
      */
-    QModelIndex parent(const QModelIndex& child) const;
+    QModelIndex parent(const QModelIndex& child) const override;
     /*!
      * \brief Number of child rows
      *
@@ -88,7 +88,7 @@ public:
      * \return The number of child item rows
      * \sa columnCount()
      */
-    int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     /*!
      * \brief Number of child colums
      *
@@ -98,7 +98,7 @@ public:
      * \return The number of child item columns
      * \sa rowCount()
      */
-    int columnCount(const QModelIndex& parent = QModelIndex()) const;
+    int columnCount(const QModelIndex& parent = QModelIndex()) const override;
     /*!
      * \brief Data for model index
      *
@@ -108,7 +108,7 @@ public:
      * \param role The role for the data
      * \return The data for the given role and the given model index
      */
-    QVariant data(const QModelIndex &index, int role) const;
+    QVariant data(const QModelIndex &index, int role) const override;
 public slots:
     /*!
      * \brief Appends a submodel.

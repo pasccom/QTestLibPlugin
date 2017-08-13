@@ -268,7 +268,7 @@ protected:
      * It ensures all the fields are correctly initialized.
      * \param se The show event.
      */
-    void showEvent(QShowEvent *se);
+    void showEvent(QShowEvent *se) override;
 private slots:
     /*!
      * \brief Updates the validity of the working directory path
@@ -438,7 +438,7 @@ public:
      * associated to the current instance.
      * \return The newly allocated instance of the configuration widget.
      */
-    inline QWidget* createConfigurationWidget(void) {return new TestRunConfigurationWidget(mData, macroExpander());}
+    inline QWidget* createConfigurationWidget(void) override {return new TestRunConfigurationWidget(mData, macroExpander());}
 
     /*!
      * \brief Path to the working directory
@@ -455,7 +455,7 @@ public:
      */
     virtual QString commandLineArguments(void) const;
 
-    virtual ProjectExplorer::Runnable runnable(void) const;
+    virtual ProjectExplorer::Runnable runnable(void) const override;
 
     /*!
      * \brief Set the \c Makefile path
@@ -480,7 +480,7 @@ public:
      * \return The map initialized with the contents of the instance
      * \sa fromMap()
      */
-    QVariantMap toMap(void) const;
+    QVariantMap toMap(void) const override;
     /*!
      * \brief Conversion from map
      *
@@ -489,7 +489,7 @@ public:
      * \return \c true when the initialization of the instance was sucessful, \c false otherwise
      * \sa toMap()
      */
-    bool fromMap(const QVariantMap& map);
+    bool fromMap(const QVariantMap& map) override;
 private slots:
     /*!
      * \brief Handles a change of kit
