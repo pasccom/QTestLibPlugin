@@ -40,7 +40,7 @@ namespace Widgets {
 
 namespace Internal {
 
-class TestRunConfigurationExtraAspect;
+class TestExtraAspect;
 
 /*!
  * \brief The TestRunConfigWidget class defines a form widget to configure a TestRunConfigurationExtraAspect
@@ -71,7 +71,7 @@ public:
      * The parent of the widget is set internally by Qt Creator.
      * \param aspect The extra aspect to configure with this form widget
      */
-    TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect);
+    TestRunConfigWidget(TestExtraAspect* aspect);
     /*!
      * \brief Title of the widget
      *
@@ -79,7 +79,12 @@ public:
      * \return The title of the widget.
      */
     inline QString displayName() const override {return tr("Test arguments");}
+signals:
+    // TODO comment
+    void testArgumentsChanged(const QString& newArgs);
 private slots:
+    // TODO comment
+    void handleTestArgumentsChange(void);
     /*!
      * \brief Updates the summary
      *
@@ -182,7 +187,7 @@ private slots:
      */
     void updateMouseDelay(bool enabled);
 private:
-    TestRunConfigurationExtraAspect* mAspect;           /*!< The TestRunConfigurationExtraAspect this widget configures */
+    TestExtraAspect* mAspect;           /*!< The TestRunConfigurationExtraAspect this widget configures */
 
     Utils::DetailsWidget* mDetailWidget;                /*!< The main Detail widgets */
     QLabel* mFormatLabel;                               /*!< The QLabel associated with \ref mFormatCombo */
@@ -211,7 +216,7 @@ private:
  *
  * \sa TestRunConfigWidget, QTestLibArgsParser
  */
-class TestRunConfigurationExtraAspect : public ProjectExplorer::IRunConfigurationAspect
+class TestExtraAspect : public ProjectExplorer::IRunConfigurationAspect
 {
     Q_OBJECT
 public:
@@ -224,13 +229,13 @@ public:
      * \param argParser An \c testlib argument parser which will be copied in this instance.
      * \sa create()
      */
-    TestRunConfigurationExtraAspect(ProjectExplorer::RunConfiguration* parent, QTestLibArgsParser* argParser = nullptr);
+    TestExtraAspect(ProjectExplorer::RunConfiguration* parent, QTestLibArgsParser* argParser = nullptr);
     /*!
      * \brief Destructor
      *
      * Destructs an instance of this class by desallocating the internal QTestLibArgsParser.
      */
-    ~TestRunConfigurationExtraAspect() override;
+    ~TestExtraAspect() override;
 
     /*!
      * \brief Clone the instance
@@ -240,7 +245,7 @@ public:
      * \return The newly allocated instance of this class.
      * \sa TestRunConfigurationExtraAspect
      */
-    TestRunConfigurationExtraAspect* create(ProjectExplorer::RunConfiguration* parent) const override;
+    TestExtraAspect* create(ProjectExplorer::RunConfiguration* parent) const override;
 
     /*!
      * \brief Test command-line arguments
@@ -268,10 +273,30 @@ protected:
      * \sa toMap()
      */
     inline void fromMap(const QVariantMap& map) override {mTestArgsParser->fromMap(map);}
+signals:
+    void testArgumentsChanged(void);
+private slots:
+    void handleTestArgumentsChange(const QString& newArgs);
+    void handleArgumentsChange(const QString& newArgs);
 private:
     QTestLibArgsParser *mTestArgsParser;    /*!< The internal QTestLibArgsParser used to store data */
-
+    QString mOtherArgs;                     /*!< Arguments which are not managed by this extra aspect */
     friend class TestRunConfigWidget;
+};
+
+class TestExtraAspectFactory : public ProjectExplorer::IRunControlFactory
+{
+    Q_OBJECT
+public:
+    inline TestExtraAspectFactory(QObject* parent = NULL) :
+        ProjectExplorer::IRunControlFactory(parent) {}
+
+    inline bool canRun(ProjectExplorer::RunConfiguration *runConfiguration, Core::Id mode) const override {Q_UNUSED(runConfiguration); Q_UNUSED(mode); return false;}
+    inline ProjectExplorer::RunControl* create(ProjectExplorer::RunConfiguration* runConfiguration, Core::Id mode, QString* errorMessage) override {Q_UNUSED(runConfiguration); Q_UNUSED(mode); Q_UNUSED(errorMessage); return NULL;}
+
+    ProjectExplorer::IRunConfigurationAspect* createRunConfigurationAspect(ProjectExplorer::RunConfiguration *runConfiguration) override;
+protected:
+    virtual bool isUseful(ProjectExplorer::RunConfiguration* runConfiguration) const = 0;
 };
 
 } // Internal

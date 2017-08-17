@@ -16,10 +16,14 @@
  * along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "testrunconfigurationextraaspect.h"
+#include "testextraaspect.h"
 #include "qtestlibpluginconstants.h"
 
 #include "Widgets/filetypevalidatinglineedit.h"
+
+#include <projectexplorer/project.h>
+#include <projectexplorer/runconfigurationaspects.h>
+#include <projectexplorer/target.h>
 
 #include <utils/detailswidget.h>
 
@@ -28,7 +32,7 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect) :
+TestRunConfigWidget::TestRunConfigWidget(TestExtraAspect* aspect) :
     ProjectExplorer::RunConfigWidget(), mAspect(aspect)
 {
     QVariantMap map;
@@ -146,6 +150,9 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
     extLayout->addWidget(mDetailWidget, 1);
     setLayout(extLayout);
 
+    connect(mAspect, SIGNAL(testArgumentsChanged()),
+            this, SLOT(handleTestArgumentsChange()));
+
     connect(mFormatCombo, SIGNAL(currentIndexChanged(int)),
             this, SLOT(updateFormat(int)));
     connect(mVerbosityCombo, SIGNAL(currentIndexChanged(int)),
@@ -181,6 +188,8 @@ TestRunConfigWidget::TestRunConfigWidget(TestRunConfigurationExtraAspect* aspect
 void TestRunConfigWidget::updateSummary(void)
 {
     QStringList summaryList;
+
+    QString oldTestArgs(mDetailWidget->additionalSummaryText());
 
     switch (mFormatCombo->currentData().value<QTestLibArgsParser::TestOutputFormat>()) {
     case QTestLibArgsParser::TxtFormat:
@@ -255,6 +264,62 @@ void TestRunConfigWidget::updateSummary(void)
 
     mDetailWidget->setSummaryText(summary);
     mDetailWidget->setAdditionalSummaryText(mAspect->mTestArgsParser->toString());
+
+    if (oldTestArgs != mDetailWidget->additionalSummaryText())
+        emit testArgumentsChanged(mDetailWidget->additionalSummaryText());
+}
+
+void TestRunConfigWidget::handleTestArgumentsChange(void)
+{
+    int index;
+
+    // Output format
+    index = 0;
+    while ((index < mFormatCombo->count()) &&
+           (mFormatCombo->itemData(index).canConvert<QTestLibArgsParser::TestOutputFormat>()) &&
+           (mFormatCombo->itemData(index).value<QTestLibArgsParser::TestOutputFormat>() != mAspect->mTestArgsParser->outputFormat()))
+        index++;
+
+    QTC_ASSERT(index < mFormatCombo->count(), return);
+    QTC_ASSERT(mFormatCombo->itemData(index).canConvert<QTestLibArgsParser::TestOutputFormat>(), return);
+    mFormatCombo->setCurrentIndex(index);
+
+    // Out file name
+    mOutFileEdit->setText(mAspect->mTestArgsParser->outFileName().toString());
+
+    // Verbosity
+    index = 0;
+    while ((index < mVerbosityCombo->count()) &&
+           (mVerbosityCombo->itemData(index).canConvert<QTestLibArgsParser::TestVerbosity>()) &&
+           (mVerbosityCombo->itemData(index).value<QTestLibArgsParser::TestVerbosity>() != mAspect->mTestArgsParser->verbosity()))
+        index++;
+
+    QTC_ASSERT(index < mVerbosityCombo->count(), return);
+    QTC_ASSERT(mVerbosityCombo->itemData(index).canConvert<QTestLibArgsParser::TestVerbosity>(), return);
+    mVerbosityCombo->setCurrentIndex(index);
+
+    // Max warnings
+    mWarningCheck->setChecked(mAspect->mTestArgsParser->maxWarnings() != 2000);
+    mWarningSpin->setEnabled(mAspect->mTestArgsParser->maxWarnings() != 2000);
+    mWarningSpin->setValue(mAspect->mTestArgsParser->maxWarnings());
+
+    // Event delay
+    mEventDelayCheck->setChecked(mAspect->mTestArgsParser->eventDelay() >= 0);
+    mEventDelaySpin->setEnabled(mAspect->mTestArgsParser->eventDelay() >= 0);
+    mEventDelaySpin->setValue(mAspect->mTestArgsParser->eventDelay());
+
+    // Key delay
+    mKeyDelayCheck->setChecked(mAspect->mTestArgsParser->keyDelay() >= 0);
+    mKeyDelaySpin->setEnabled(mAspect->mTestArgsParser->keyDelay() >= 0);
+    mKeyDelaySpin->setValue(mAspect->mTestArgsParser->keyDelay());
+
+    // Mouse delay
+    mMouseDelayCheck->setChecked(mAspect->mTestArgsParser->mouseDelay() >= 0);
+    mMouseDelaySpin->setEnabled(mAspect->mTestArgsParser->mouseDelay() >= 0);
+    mMouseDelaySpin->setValue(mAspect->mTestArgsParser->mouseDelay());
+
+    mDetailWidget->setAdditionalSummaryText(mAspect->mTestArgsParser->toString());
+    updateSummary();
 }
 
 void TestRunConfigWidget::updateFormat(int index)
@@ -361,7 +426,7 @@ void TestRunConfigWidget::updateMouseDelay(bool enabled)
     updateSummary();
 }
 
-TestRunConfigurationExtraAspect::TestRunConfigurationExtraAspect(ProjectExplorer::RunConfiguration* parent, QTestLibArgsParser* argParser) :
+TestExtraAspect::TestExtraAspect(ProjectExplorer::RunConfiguration* parent, QTestLibArgsParser* argParser) :
   ProjectExplorer::IRunConfigurationAspect(parent)
 {
     if (argParser != nullptr)
@@ -369,20 +434,70 @@ TestRunConfigurationExtraAspect::TestRunConfigurationExtraAspect(ProjectExplorer
     else
         mTestArgsParser = new QTestLibArgsParser;
 
-
     setId(Core::Id(Constants::TestRunConfigurationExtraAspectId));
     setDisplayName(tr("Test settings"));
-    setRunConfigWidgetCreator([this] {return new TestRunConfigWidget(this);});
+    setRunConfigWidgetCreator([this] {
+        TestRunConfigWidget* runConfigWidget = new TestRunConfigWidget(this);
+        connect(runConfigWidget, SIGNAL(testArgumentsChanged(const QString&)),
+                this, SLOT(handleTestArgumentsChange(const QString&)));
+        return runConfigWidget;
+    });
+
+    ProjectExplorer::ArgumentsAspect* argAspect = runConfiguration()->extraAspect<ProjectExplorer::ArgumentsAspect>();
+    if (argAspect != NULL) {
+        connect(argAspect, SIGNAL(argumentsChanged(const QString&)),
+                this, SLOT(handleArgumentsChange(const QString&)));
+        handleArgumentsChange(argAspect->arguments());
+    }
 }
 
-TestRunConfigurationExtraAspect::~TestRunConfigurationExtraAspect()
+TestExtraAspect::~TestExtraAspect()
 {
     delete mTestArgsParser;
 }
 
-TestRunConfigurationExtraAspect* TestRunConfigurationExtraAspect::create(ProjectExplorer::RunConfiguration* parent) const
+TestExtraAspect* TestExtraAspect::create(ProjectExplorer::RunConfiguration* parent) const
 {
-    return new TestRunConfigurationExtraAspect(parent, mTestArgsParser);
+    return new TestExtraAspect(parent, mTestArgsParser);
+}
+
+void TestExtraAspect::handleTestArgumentsChange(const QString& newArgs)
+{
+    ProjectExplorer::ArgumentsAspect* argAspect = runConfiguration()->extraAspect<ProjectExplorer::ArgumentsAspect>();
+    if (argAspect != NULL) {
+        QTestLibArgsParser parser(argAspect->arguments());
+        QString testArgs = parser.unknownArgs().join(QLatin1Char(' '));
+        testArgs.prepend(" ").prepend(newArgs);
+        testArgs.append(" ").append(parser.selectedTestCases());
+        argAspect->setArguments(testArgs.trimmed());
+    }
+}
+
+void TestExtraAspect::handleArgumentsChange(const QString& newArgs)
+{
+    mTestArgsParser->setArgs(newArgs);
+    emit testArgumentsChanged();
+}
+
+ProjectExplorer::IRunConfigurationAspect* TestExtraAspectFactory::createRunConfigurationAspect(ProjectExplorer::RunConfiguration *runConfiguration)
+{
+    /* NOTE This strange design is caused by the fact that the factory is called from base class constructor
+     * I would be better if the method is called when the project is updated.
+     */
+    QMetaObject::Connection updateConnection = connect(runConfiguration->target()->project(), &ProjectExplorer::Project::parsingFinished,
+            this, [this, runConfiguration] () {
+        if ((runConfiguration->extraAspect<TestExtraAspect>() == NULL) && isUseful(runConfiguration))
+            runConfiguration->addExtraAspect(new TestExtraAspect(runConfiguration));
+    });
+    connect(runConfiguration, &ProjectExplorer::RunConfiguration::destroyed,
+            this, [updateConnection] () {
+        disconnect(updateConnection);
+    });
+
+    if ((runConfiguration->extraAspect<TestExtraAspect>() == NULL) && isUseful(runConfiguration))
+        runConfiguration->addExtraAspect(new TestExtraAspect(runConfiguration));
+
+    return NULL;
 }
 
 } // Internal

@@ -18,7 +18,7 @@
 
 #include "testrunconfiguration.h"
 
-#include "testrunconfigurationextraaspect.h"
+#include "testextraaspect.h"
 #include "qtestlibpluginconstants.h"
 
 #include "Widgets/filetypevalidatinglineedit.h"
@@ -110,7 +110,7 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core
 {
     setDefaultDisplayName(QLatin1String("make check"));
 
-    addExtraAspect(new TestRunConfigurationExtraAspect(this));
+    addExtraAspect(new TestExtraAspect(this));
     /* TODO ensure this run configuration cannot be run with valgrind...
      * To do this, the code of the Valgrind plugin should be altered:
      * 1.ValgrindRunControlFactory should check the type of the given RunConfiguration (e.g. in canRun())
@@ -239,8 +239,8 @@ QString TestRunConfiguration::commandLineArguments(void) const
     }
 
     // Test arguments:
-    Q_ASSERT(extraAspect<TestRunConfigurationExtraAspect>() != NULL);
-    QString testCmdArgs = extraAspect<TestRunConfigurationExtraAspect>()->commandLineArguments().join(QLatin1Char(' '));
+    Q_ASSERT(extraAspect<TestExtraAspect>() != NULL);
+    QString testCmdArgs = extraAspect<TestExtraAspect>()->commandLineArguments().join(QLatin1Char(' '));
     if (macroExpander() != NULL)
         testCmdArgs = macroExpander()->expandProcessArgs(testCmdArgs);
     if (!testCmdArgs.isEmpty())

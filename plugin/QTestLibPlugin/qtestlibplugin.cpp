@@ -30,6 +30,7 @@
 #include <testoutputpane.h>
 #include <testsuitemodel.h>
 
+#include <qmaketestextraaspectfactory.h>
 #include <qmaketestrunconfigurationfactory.h>
 
 #ifdef BUILD_TESTS
@@ -138,6 +139,10 @@ bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorStrin
     // Run configuration factories
     ProjectExplorer::IRunConfigurationFactory* runConfigFactory = new QMakeTestRunConfigurationFactory;
     addAutoReleasedObject(runConfigFactory);
+
+    // Test extra aspect factories
+    TestExtraAspectFactory* extraAspectFactory = new QMakeTestExtraAspectFactory;
+    addAutoReleasedObject(extraAspectFactory);
 
     // New sub-menu in build menu and action in project tree context menu
     mRunTestsMenu = Core::ActionManager::createMenu(Constants::TestRunMenuId);
