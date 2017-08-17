@@ -29,6 +29,49 @@ namespace QTestLibPlugin {
 namespace Internal {
 
 /*!
+ * \brief A list of test data rows
+ *
+ * Type for a list of test data rows.
+ * Each item in this list is a row of data in the test.
+ * If the list is empty, then all test data rows are selected.
+ */
+ class TestRowList : public QStringList
+ {
+ public:
+     operator QString () const;
+ };
+
+/*!
+ * \brief A list of test cases.
+ *
+ * Type for a list of test cases.
+ * The name of the test case can be accessed with \c first() and the
+ * selected data rows are accessed with \c second().
+ * If the list is empty, then all test cases are selected and
+ * if \c second() is empty then all data rows are selected.
+ */
+class TestCaseList : public QLinkedList< QPair<QString, TestRowList> >
+{
+public:
+    operator QString () const;
+};
+
+/*!
+ * \brief A list of test classes.
+ *
+ * Type for a list of test classes.
+ * The name of the test class can be accessed with \c first() and the
+ * selected test cases are accessed with \c second().
+ * If the list is empty, then all test classes are selected and
+ * if \c second() is empty then all test cases are selected.
+ */
+class TestClassList : public QLinkedList< QPair<QString, TestCaseList> >
+{
+public:
+    operator QString () const;
+};
+
+/*!
  * \brief A parser for QTestLib argument lists.
  *
  * The QTestLibArgsParser class implements a parser for QTestLib command line arguments list.
@@ -80,17 +123,6 @@ class QTestLibArgsParser
 {
 public:
     /*!
-     * \brief A list of test cases.
-     *
-     * Type for a list of test cases.
-     * The name of the test case can be accessed with \c first() and the
-     * selected data rows are accessed with \c second().
-     * If the list is empty then all test cases are selected and
-     * if \c second() is empty then all data rows are selected.
-     */
-    typedef QLinkedList< QPair<QString, QStringList> > TestCaseList;
-
-    /*!
      * \brief Test output format
      *
      * Describes the format of QTestLib output.
@@ -139,7 +171,9 @@ public:
         NoError, /*!< No error occurred */
         PrematureEndError, /*!< The command line argument list ended prematurely */
         UnknownFlagError, /*!< A flag (an argument beginning with <tt>-</tt>) was unknown */
+        EmptyFlagError, /*!< Empty flag in argument list */
         InvalidArgumentError, /*!< The argument of a flag does not have the right format */
+        InvalidTestClassError, /*!< The name of a test class does not fulfill the constraints on class names */
         InvalidTestCaseError, /*!< The name of a test function does not fulfill the constraints on function names */
     } Error;
     /*!
@@ -198,6 +232,24 @@ public:
      * \sa appendArgs(const QString&)
      */
     inline void appendArgs(const QStringList& cmdArgs) {appendArgs(cmdArgs.join(QLatin1Char(' ')));}
+    /*!
+     * \brief Set the current arguement list
+     *
+     * Sets the given string in the current argument list and reparses the argument list.
+     *
+     * \param cmdArgs The command line arguments as a string (replace the existing ones).
+     * \sa appendArgs(const QStringList&)
+     */
+    inline void setArgs(const QString& cmdArgs) {mArgs = cmdArgs.trimmed(); parse();}
+    /*!
+     * \brief Set the current arguement list
+     *
+     * Sets the given string list in the current argument list and reparses the argument list.
+     *
+     * \param cmdArgs The command line arguments as a string list (replace the existing ones).
+     * \sa appendArgs(const QString&)
+     */
+    inline void setArgs(const QStringList& cmdArgs) {mArgs = cmdArgs.join(QLatin1Char(' ')); parse();}
 
     /*!
      * \brief Parses the current command line argument list
@@ -259,6 +311,14 @@ public:
      * \sa error()
      */
     inline QString errorString(void) const {return mErrorString;}
+    /*!
+     * \brief Unknown/bad flags
+     *
+     * Returns all the token which could not be parsed.
+     *
+     * \return The tokens which could not be parsed.
+     */
+    inline QStringList unknownArgs(void) const {return mUnknownFlags;}
 
     /*!
      * \brief The name of the output file.
@@ -454,20 +514,35 @@ public:
      */
     inline void setOutput(Output output) {mOutput = output;}
 
-
     /*!
      * \brief List of selected test cases
      *
      * Returns the list of selected test cases.
      *
      * \return The list of selected test cases
-     * \sa TestCaseList
+     * \sa TestClassList
      */
-    inline TestCaseList selectedTestCases(void) const {return mSelectedTestCases;}
+    inline TestClassList selectedTestCases(void) const {return mSelectedTestCases;}
 
-    inline void addTestCase(const QString& function, const QStringList& dataTags) {mSelectedTestCases << QPair<QString, QStringList>(function, dataTags);}
-    void removeTestCases(const QString& function, const QString& dataTag = QString::null);
+    // TODO Comment
+    void addSelectedTestClass(const QString& selectedTestClass, const QString& selectedTestCase = QString::null, const QString& selectedTestData = QString::null);
+    inline void addSelectedTestCase(const QString& selectedTestCase, const QString& selectedTestData = QString::null) {addSelectedTestClass(QString::null, selectedTestCase, selectedTestData);}
+    // TODO Comment
+    void removeSelectedTestClass(const QString& selectedTestClass, const QString& selectedTestCase = QString::null, const QString& selectedTestData = QString::null);
+    inline void removeSelectedTestCase(const QString& selectedTestCase, const QString& selectedTestData = QString::null) {removeSelectedTestClass(QString::null, selectedTestCase, selectedTestData);}
 private:
+    /*!
+     * \brief Clean test specification
+     *
+     * This function unquotes and unescapes, if required, test specifications.
+     * Its return value indicates whether the test specification is valid.
+     *
+     * \param spec A Test specification (for class, function or data row)
+     * \param escaped Whether this function should unescape the characters
+     * \return \c true when the test specification is valid, \¢ false otherwise
+     */
+    bool cleanTestSpecification(QString& spec, bool escaped = false);
+
     /*!
      * \brief Parses the current command line argument list
      *
@@ -521,7 +596,7 @@ private:
      * the default value if the given token can not be converted to an unsigned integer.
      * \sa parseInteger()
      */
-    unsigned int parseUnsignedInteger(const QString& token, unsigned int defaultValue = 0);
+    unsigned int parseUnsignedInteger(const QString& token, const QString& cmd, unsigned int defaultValue = 0);
     /*!
      * \brief Parses an integer
      *
@@ -535,7 +610,7 @@ private:
      * the default value if the given token can not be converted to an integer.
      * \sa parseUnsignedInteger()
      */
-    int parseInteger(const QString& token, int defaultValue = -1);
+    int parseInteger(const QString& token, const QString& cmd, int defaultValue = -1);
     /*!
      * \brief Parses a string
      *
@@ -572,8 +647,9 @@ private:
     int mPos; /*!< Position of the parser in the current command line argument list */
     Error mError; /*!< Current error state of the parser (see error())*/
     QString mErrorString; /*!< Current error string for the parser (cached for simplicity, see errorString()) */
+    QStringList mUnknownFlags; /*!< List of unknown flags */
 
-    TestCaseList mSelectedTestCases; /*!< List of selected test cases (see selectedTestCases()) */
+    TestClassList mSelectedTestCases; /*!< List of selected test cases (see selectedTestCases()) */
 
     Utils::FileName mOutFileName; /*!< Output file name (currently only one output file is supported (see outFileName()) */
     TestOutputFormat mParser; /*!< The output format of the test (see outputFormat()) */

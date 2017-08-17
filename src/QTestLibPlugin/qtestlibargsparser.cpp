@@ -28,6 +28,87 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
+TestRowList::operator QString () const
+{
+    QString ret;
+    QRegExp escapeRegExp("([\"\\])");
+    QRegExp nonAlphaRegExp("[^A-Za-z0-9_]");
+
+    for (const_iterator it = constBegin(); it != constEnd(); it++) {
+        if (it->isEmpty())
+            continue;
+        if (it->contains(nonAlphaRegExp))
+            ret = ret + " \"" + QString(*it).replace(escapeRegExp, "\\\\\\1") + "\"";
+        else
+            ret = ret + " " + *it;
+    }
+
+    return ret.mid(1);
+}
+
+TestCaseList::operator QString () const
+{
+    QString ret;
+    QRegExp escapeRegExp("([\"\\])");
+    QRegExp nonAlphaRegExp("[^A-Za-z0-9_]");
+
+    for (const_iterator it = constBegin(); it != constEnd(); it++) {
+        if (it->first.isEmpty())
+            continue;
+        if (it->second.isEmpty()) {
+            ret = ret + " " + it->first;
+        } else {
+            for (QString testRow : it->second) {
+                if (testRow.contains(nonAlphaRegExp))
+                    ret = ret + " \"" + it->first + ":" + testRow.replace(escapeRegExp, "\\\\\\1") + "\"";
+                else
+                    ret = ret + " " + it->first + ":" + testRow;
+            }
+        }
+    }
+
+    return ret.mid(1);
+}
+
+TestClassList::operator QString () const
+{
+    QString ret;
+    QRegExp escapeRegExp("([\"\\])");
+    QRegExp nonAlphaRegExp("[^A-Za-z0-9_]");
+
+    for (const_iterator it = constBegin(); it != constEnd(); it++) {
+        if (it->first.isEmpty() && it->second.isEmpty())
+            continue;
+        if (it->second.isEmpty()) {
+            ret = ret + " " + it->first;
+        } else {
+            for (QPair<QString, TestRowList> testCase : it->second) {
+                QString prefix;
+                if (!it->first.isEmpty())
+                    prefix.append(it->first).append("::");
+                if (!testCase.first.isEmpty())
+                    prefix.append(testCase.first).append(":");
+                if (prefix.endsWith("::"))
+                    prefix.chop(1);
+
+                if (testCase.second.isEmpty()) {
+                    prefix.chop(1);
+                    ret = ret + " " + prefix;
+                } else {
+                    for (QString testRow : testCase.second) {
+                        if (testRow.contains(nonAlphaRegExp))
+                            ret = ret + " \"" + prefix + testRow.replace(escapeRegExp, "\\\\\\1") + "\"";
+                        else
+                            ret = ret + " " + prefix + testRow;
+                    }
+                }
+            }
+        }
+    }
+
+    return ret.mid(1);
+}
+
 QTestLibArgsParser::QTestLibArgsParser(const QTestLibArgsParser& other)
 {
     if (!other.mArgs.isNull()) {
@@ -180,9 +261,12 @@ void QTestLibArgsParser::parse(bool incremental)
             case -1: // Unknown flag
                 mError = UnknownFlagError;
                 mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Unknown flag \"%1\"").arg(token);
+                mUnknownFlags << token;
                 break;
-            case 7: // Impossible
-                Q_ASSERT(false);
+            case 7: // Empty flag
+                mError = EmptyFlagError;
+                mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Empty flag");
+                mUnknownFlags << token;
             case 0: // -o
                 continue;
             case 1: // -txt
@@ -243,16 +327,16 @@ void QTestLibArgsParser::parse(bool incremental)
                 parseOutput(token);
                 break;
             case 16: // -eventdelay
-                mEventDelay = parseInteger(token, mEventDelay);
+                mEventDelay = parseInteger(token, "-eventdelay", mEventDelay);
                 break;
             case 17: // -keydelay
-                mKeyDelay = parseInteger(token, mKeyDelay);
+                mKeyDelay = parseInteger(token, "-keydelay", mKeyDelay);
                 break;
             case 18: // -mousedelay
-                mMouseDelay = parseInteger(token, mMouseDelay);
+                mMouseDelay = parseInteger(token, "-mousedelay", mMouseDelay);
                 break;
             case 19: // -maxwarnings
-                mMaxWarnings = parseUnsignedInteger(token, mMaxWarnings);
+                mMaxWarnings = parseUnsignedInteger(token, "-maxwarnings", mMaxWarnings);
                 break;
             }
         }
@@ -262,62 +346,165 @@ void QTestLibArgsParser::parse(bool incremental)
     if (currentFlag != -1) {
         mError = PrematureEndError;
         mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "String of command line arguments ended prematurely");
+        mUnknownFlags << "-" + knownFlags[currentFlag];
     }
 }
 
 void QTestLibArgsParser::parseSelectedTest(const QString& token)
 {
-    QString selectedTestCase = token;
+    QString selectedTestClass = token;
+    QString selectedTestCase;
     QString selectedTestData;
 
-    if (selectedTestCase.startsWith(QLatin1Char('"'))) {
-        QTC_ASSERT(selectedTestCase.endsWith(QLatin1Char('"')),);
-        selectedTestCase.remove(0, 1);
-        if (selectedTestCase.endsWith(QLatin1Char('"')))
-            selectedTestCase.chop(1);
+    if (!cleanTestSpecification(selectedTestClass, true))
+        return;
+
+    int paamayimNekudotayim = selectedTestClass.indexOf(QLatin1String("::"), 0);
+    if (paamayimNekudotayim != -1) {
+        selectedTestCase = selectedTestClass.mid(paamayimNekudotayim + 2);
+        selectedTestClass = selectedTestClass.left(paamayimNekudotayim);
+    } else {
+        selectedTestCase = selectedTestClass;
+        selectedTestClass = QString::null;
     }
+    if (!cleanTestSpecification(selectedTestCase))
+        return;
 
     int colon = selectedTestCase.indexOf(QLatin1Char(':'), 0);
-
     if (colon != -1) {
         selectedTestData = selectedTestCase.mid(colon + 1);
         selectedTestCase = selectedTestCase.left(colon);
     }
+    if (!cleanTestSpecification(selectedTestData))
+        return;
 
-    if (selectedTestData.startsWith(QLatin1Char('"'))) {
-        QTC_ASSERT(selectedTestData.endsWith(QLatin1Char('"')),);
-        selectedTestData.remove(0, 1);
-        if (selectedTestData.endsWith(QLatin1Char('"')))
-            selectedTestData.chop(1);
+    QRegExp nameRegexp(QLatin1String("[a-zA-Z_][a-zA-Z0-9_]*"));
+    if (!selectedTestClass.isEmpty() && !nameRegexp.exactMatch(selectedTestClass)) {
+        mError = InvalidTestClassError;
+        mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "The given argument \"%1\" is neither a flag nor a test specification (bad test class)").arg(token);
+        mUnknownFlags << token;
+        return;
     }
-
-    QRegExp selectedTestCaseRegexp(QLatin1String("[a-zA-Z_][a-zA-Z0-9_]*"));
-    if (!selectedTestCaseRegexp.exactMatch(selectedTestCase)) {
+    if (!selectedTestCase.isEmpty() && !nameRegexp.exactMatch(selectedTestCase)) {
         mError = InvalidTestCaseError;
-        mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "The given argument \"%1\" is neither a flag nor a test case").arg(token);
+        mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "The given argument \"%1\" is neither a flag nor a test specification (bad test case)").arg(token);
+        mUnknownFlags << token;
         return;
     }
 
-    qDebug() << selectedTestCase << selectedTestData;
+    qDebug() << selectedTestClass << selectedTestCase << selectedTestData;
 
-    TestCaseList::iterator it = mSelectedTestCases.begin();
-    for (; it != mSelectedTestCases.end(); it++)
-        if (QString::compare((*it).first, selectedTestCase, Qt::CaseSensitive) == 0)
+    addSelectedTestClass(selectedTestClass, selectedTestCase, selectedTestData);
+}
+
+void QTestLibArgsParser::addSelectedTestClass(const QString& selectedTestClass, const QString& selectedTestCase, const QString& selectedTestData)
+{
+    TestClassList::iterator classIt;
+    for (classIt = mSelectedTestCases.begin(); classIt != mSelectedTestCases.end(); classIt++)
+        if (QString::compare(classIt->first, selectedTestClass, Qt::CaseSensitive) == 0)
             break;
 
-    if (it == mSelectedTestCases.end()) {
-        if (selectedTestData.isNull())
-            mSelectedTestCases.append(qMakePair(selectedTestCase, QStringList()));
-        else
-            mSelectedTestCases.append(qMakePair(selectedTestCase, QStringList() << selectedTestData));
-    } else {
-        if (selectedTestData.isNull()) {
-            (*it).second.clear();
-        } else {
-            if (!(*it).second.contains(selectedTestData))
-                (*it).second.append(selectedTestData);
+    TestCaseList selectedTestCases;
+
+    if (!selectedTestCase.isEmpty()) {
+        if (classIt != mSelectedTestCases.end()) {
+            selectedTestCases = classIt->second;
+            if (selectedTestCases.isEmpty())
+                return;
         }
+        TestCaseList::iterator caseIt;
+        for (caseIt = selectedTestCases.begin(); caseIt != selectedTestCases.end(); caseIt++)
+            if (QString::compare(caseIt->first, selectedTestCase, Qt::CaseSensitive) == 0)
+                break;
+
+        TestRowList selectedTestRows;
+
+        if (!selectedTestData.isEmpty()) {
+            if (caseIt != selectedTestCases.end()) {
+                selectedTestRows = caseIt->second;
+                if (selectedTestRows.isEmpty())
+                    return;
+            }
+            if (!selectedTestRows.contains(selectedTestData))
+                selectedTestRows.append(selectedTestData);
+        }
+
+        caseIt = selectedTestCases.erase(caseIt);
+        caseIt = selectedTestCases.insert(caseIt, qMakePair(selectedTestCase, selectedTestRows));
     }
+
+    classIt = mSelectedTestCases.erase(classIt);
+    classIt = mSelectedTestCases.insert(classIt, qMakePair(selectedTestClass, selectedTestCases));
+}
+
+void QTestLibArgsParser::removeSelectedTestClass(const QString& selectedTestClass, const QString& selectedTestCase, const QString& selectedTestData)
+{
+    TestClassList::iterator classIt;
+    for (classIt = mSelectedTestCases.begin(); classIt != mSelectedTestCases.end(); classIt++)
+        if (QString::compare(classIt->first, selectedTestClass, Qt::CaseSensitive) == 0)
+            break;
+    if (classIt != mSelectedTestCases.end())
+        return;
+    if (selectedTestCase.isEmpty()) {
+        classIt = mSelectedTestCases.erase(classIt);
+        return;
+    }
+
+    TestCaseList selectedTestCases = classIt->second;
+    TestCaseList::iterator caseIt;
+    for (caseIt = selectedTestCases.begin(); caseIt != selectedTestCases.end(); caseIt++)
+        if (QString::compare(caseIt->first, selectedTestCase, Qt::CaseSensitive) == 0)
+            break;
+    if (caseIt != selectedTestCases.end())
+        return;
+    if (selectedTestData.isEmpty()) {
+        caseIt = selectedTestCases.erase(caseIt);
+    } else {
+        TestRowList selectedTestRows = caseIt->second;
+        TestRowList::iterator rowIt;
+
+        for (rowIt = selectedTestRows.begin(); rowIt != selectedTestRows.end();) {
+            if (QString::compare(*rowIt, selectedTestData, Qt::CaseSensitive) == 0)
+                rowIt = selectedTestRows.erase(rowIt);
+            else
+                rowIt++;
+        }
+
+        caseIt = selectedTestCases.erase(caseIt);
+        caseIt = selectedTestCases.insert(caseIt, qMakePair(selectedTestCase, selectedTestRows));
+    }
+
+    classIt = mSelectedTestCases.erase(classIt);
+    classIt = mSelectedTestCases.insert(classIt, qMakePair(selectedTestClass, selectedTestCases));
+}
+
+bool QTestLibArgsParser::cleanTestSpecification(QString& spec, bool escaped)
+{
+    if (spec.startsWith(QLatin1Char('"'))) {
+        // Unescape spec
+        int escape = 0;
+        while (escaped && ((escape = spec.indexOf(QLatin1Char('\\'), escape)) != -1)) {
+            if (escape + 1 >= spec.length()) {
+                mError = PrematureEndError;
+                mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Given test specification is badly terminated (escape)");
+                mUnknownFlags << spec;
+                return false;
+            }
+            spec.remove(escape, 1);
+            escape++;
+        }
+        // Unquote spec
+        if (!spec.endsWith(QLatin1Char('"'))) {
+            mError = PrematureEndError;
+            mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Given test specification is badly terminated (missing quote)");
+            mUnknownFlags << spec;
+            return false;
+        }
+        spec.remove(0, 1);
+        spec.chop(1);
+    }
+
+    return true;
 }
 
 void QTestLibArgsParser::parseOutput(const QString& token)
@@ -367,11 +554,12 @@ void QTestLibArgsParser::parseOutput(const QString& token)
         if (mParser == NoneFormat) {
             mError = InvalidArgumentError;
             mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Got \"%1\" where output format was expected.").arg(format);
+            mUnknownFlags << "-o" << token;
         }
     }
 }
 
-unsigned int QTestLibArgsParser::parseUnsignedInteger(const QString& token, unsigned int defaultValue)
+unsigned int QTestLibArgsParser::parseUnsignedInteger(const QString& token, const QString& cmd, unsigned int defaultValue)
 {
     bool ok;
     unsigned int ret = token.toUInt(&ok, 10);
@@ -379,11 +567,12 @@ unsigned int QTestLibArgsParser::parseUnsignedInteger(const QString& token, unsi
         return ret;
 
     mError = InvalidArgumentError;
-    mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Got \"%1\" where unsigned integer was expected.").arg(token);
+    mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Got \"%1\" where unsigned integer was expected (command \"%2\").").arg(token).arg(cmd);
+    mUnknownFlags << cmd << token;
     return defaultValue;
 }
 
-int QTestLibArgsParser::parseInteger(const QString& token, int defaultValue)
+int QTestLibArgsParser::parseInteger(const QString& token, const QString& cmd, int defaultValue)
 {
     bool ok;
     int ret = token.toInt(&ok, 10);
@@ -391,7 +580,8 @@ int QTestLibArgsParser::parseInteger(const QString& token, int defaultValue)
         return ret;
 
     mError = InvalidArgumentError;
-    mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Got \"%1\" where integer was expected.").arg(token);
+    mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Got \"%1\" where integer was expected (command \"%2\").").arg(token).arg(cmd);
+    mUnknownFlags << cmd << token;
     return defaultValue;
 }
 
@@ -426,6 +616,7 @@ void QTestLibArgsParser::initDefaults(void)
     mError = NoError;
     mErrorString = QString::null;
 
+    mUnknownFlags.clear();
     mSelectedTestCases.clear();
 
     mOutFileName = Utils::FileName();
@@ -469,36 +660,6 @@ QString QTestLibArgsParser::nextToken(void)
     }
 
     return mArgs.mid(b, mPos - b);
-}
-
-void QTestLibArgsParser::removeTestCases(const QString& function, const QString& dataTag)
-{
-    Q_ASSERT(!function.isNull());
-
-    TestCaseList::iterator fIt;
-
-    for (fIt = mSelectedTestCases.begin(); fIt != mSelectedTestCases.end();) {
-        if (dataTag.isNull() && (QString::compare((*fIt).first, function, Qt::CaseInsensitive) == 0)) {
-            fIt = mSelectedTestCases.erase(fIt);
-            continue;
-        } else if (!dataTag.isNull() && (QString::compare((*fIt).first, function, Qt::CaseInsensitive) == 0) && (*fIt).second.contains(dataTag)) {
-            QStringList tags = (*fIt).second;
-            QStringList::iterator tIt;
-
-            for (tIt = tags.begin(); tIt != tags.end();) {
-                if ((QString::compare(*tIt, dataTag, Qt::CaseSensitive) == 0))
-                    tIt = tags.erase(tIt);
-                else
-                    tIt++;
-            }
-
-            if (!tags.isEmpty())
-                mSelectedTestCases.insert(fIt, qMakePair((*fIt).first, tags));
-            fIt = mSelectedTestCases.erase(fIt);
-        } else {
-            fIt++;
-        }
-    }
 }
 
 } // namespace Internal
