@@ -62,13 +62,15 @@ private Q_SLOTS:
     void parse(void);
     inline void copyParse_data(void) {parse_data();}
     void copyParse(void);
+    inline void setArgs_data(void) {parse_data();}
+    void setArgs(void);
     void incrementalParse_data(void);
     void incrementalParse(void);
 
     void testCases_data(void);
     void testCases(void);
-    void removeTestCases_data(void);
-    void removeTestCases(void);
+    //void removeTestCases_data(void);
+    //void removeTestCases(void);
 
     void flagError_data(void);
     void flagError(void);
@@ -125,11 +127,14 @@ private:
     void toStringMixed_row(QTestLibArgsParser::TestOutputFormat format, QTestLibArgsParser::TestVerbosity verbosity, int version = 2);
     void mapMixed_row(QTestLibArgsParser::TestOutputFormat format, QTestLibArgsParser::TestVerbosity verbosity);
 
+    void checkUnknownArguments(const QStringList& actual, const QStringList& expected = QStringList());
     void checkError(const QTestLibArgsParser& parser, QTestLibArgsParser::Error error = QTestLibArgsParser::NoError, const QString& errorString = QString::null);
     void checkOutput(const QTestLibArgsParser& parser, QTestLibArgsParser::TestVerbosity verb, QTestLibArgsParser::TestOutputFormat format, const QString& filename = QString::null);
     void checkDelays(const QTestLibArgsParser& parser, int event = -1, int key = -1, int mouse = -1);
     void checkOutputMode(const QTestLibArgsParser& parser, QTestLibArgsParser::Output mode = QTestLibArgsParser::NormalOutput);
-    void checkSelectedTestCases(const QTestLibArgsParser& parser, const QTestLibArgsParser::TestCaseList& list);
+    void checkSelectedTestClasses(const TestClassList& actual, const TestClassList& expected);
+    void checkSelectedTestCases(const TestCaseList& actual, const TestCaseList& expected);
+    void checkSelectedTestData(const TestRowList& actual, const TestRowList& expected);
     void checkArguments(const QStringList& args, const QStringList& expected);
 
     QTestLibArgsParser mParser;
@@ -137,6 +142,7 @@ private:
 
 Q_DECLARE_METATYPE(QTestLibArgsParser::Output)
 Q_DECLARE_METATYPE(QTestLibArgsParser::Error)
+Q_DECLARE_METATYPE(TestClassList)
 
 void QTestLibArgsParserTest::verbosity_data(void)
 {
@@ -159,6 +165,7 @@ void QTestLibArgsParserTest::verbosity(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, verb, QTestLibArgsParser::TxtFormat));
     SUB_TEST_FUNCTION(checkDelays(parser));
     SUB_TEST_FUNCTION(checkOutputMode(parser));
@@ -188,6 +195,7 @@ void QTestLibArgsParserTest::outputFormatV1(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, QTestLibArgsParser::NormalVerbosity, format));
     SUB_TEST_FUNCTION(checkDelays(parser));
     SUB_TEST_FUNCTION(checkOutputMode(parser));
@@ -223,6 +231,7 @@ void QTestLibArgsParserTest::outputFileNameV1(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, QTestLibArgsParser::NormalVerbosity, QTestLibArgsParser::TxtFormat, filename));
     SUB_TEST_FUNCTION(checkDelays(parser));
     SUB_TEST_FUNCTION(checkOutputMode(parser));
@@ -268,6 +277,7 @@ void QTestLibArgsParserTest::outputV1(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, QTestLibArgsParser::NormalVerbosity, format, filename));
     SUB_TEST_FUNCTION(checkDelays(parser));
     SUB_TEST_FUNCTION(checkOutputMode(parser));
@@ -343,6 +353,7 @@ void QTestLibArgsParserTest::outputV2(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, QTestLibArgsParser::NormalVerbosity, format, filename));
     SUB_TEST_FUNCTION(checkDelays(parser));
     SUB_TEST_FUNCTION(checkOutputMode(parser));
@@ -374,6 +385,7 @@ void QTestLibArgsParserTest::outputV1vsV2(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, QTestLibArgsParser::NormalVerbosity, format));
     SUB_TEST_FUNCTION(checkDelays(parser));
     SUB_TEST_FUNCTION(checkOutputMode(parser));
@@ -437,6 +449,7 @@ void QTestLibArgsParserTest::outputVerbosityV1(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, verb, format, filename));
     SUB_TEST_FUNCTION(checkDelays(parser));
     SUB_TEST_FUNCTION(checkOutputMode(parser));
@@ -495,6 +508,7 @@ void QTestLibArgsParserTest::outputVerbosityV2(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, verb, format, filename));
     SUB_TEST_FUNCTION(checkDelays(parser));
     SUB_TEST_FUNCTION(checkOutputMode(parser));
@@ -507,43 +521,79 @@ void QTestLibArgsParserTest::outputV2Error_data(void)
 {
     QTest::addColumn<QString>("args");
     QTest::addColumn<QTestLibArgsParser::Error>("err");
+    QTest::addColumn<QStringList>("unknown");
     QTest::addColumn<QString>("errStr");
 
-    QTest::newRow("-o -,xxx") << "-o -,xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where output format was expected.";
-    QTest::newRow("-o -,\"txt\"") << "-o -,\"txt\"" << QTestLibArgsParser::InvalidArgumentError << "Got \"\"txt\"\" where output format was expected.";
-    QTest::newRow("-o -,,txt") << "-o -,,txt" << QTestLibArgsParser::InvalidArgumentError << "Got \",txt\" where output format was expected.";
+    QStringList unknown;
 
-    QTest::newRow("-o testResult.log,xxx") << "-o testResult.log,xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where output format was expected.";
-    QTest::newRow("-o testResult.log,\"txt\"") << "-o testResult.log,\"txt\"" << QTestLibArgsParser::InvalidArgumentError << "Got \"\"txt\"\" where output format was expected.";
-    QTest::newRow("-o testResult.log,,txt") << "-o testResult.log,,txt" << QTestLibArgsParser::InvalidArgumentError << "Got \",txt\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "-,xxx";
+    QTest::newRow("-o -,xxx")       << "-o -,xxx"       << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"xxx\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "-,\"txt\"";
+    QTest::newRow("-o -,\"txt\"")   << "-o -,\"txt\""   << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"\"txt\"\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "-,,txt";
+    QTest::newRow("-o -,,txt")      << "-o -,,txt"      << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \",txt\" where output format was expected.";
 
-    QTest::newRow("-o test\\ result.log,xxx") << "-o test\\ result.log,xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where output format was expected.";
-    QTest::newRow("-o test\\ result.log,\"txt\"") << "-o test\\ result.log,\"txt\"" << QTestLibArgsParser::InvalidArgumentError << "Got \"\"txt\"\" where output format was expected.";
-    QTest::newRow("-o test\\ result.log,,txt") << "-o test\\ result.log,,txt" << QTestLibArgsParser::InvalidArgumentError << "Got \",txt\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "testResult.log,xxx";
+    QTest::newRow("-o testResult.log,xxx")      << "-o testResult.log,xxx"      << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"xxx\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "testResult.log,\"txt\"";
+    QTest::newRow("-o testResult.log,\"txt\"")  << "-o testResult.log,\"txt\""  << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"\"txt\"\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "testResult.log,,txt";
+    QTest::newRow("-o testResult.log,,txt")     << "-o testResult.log,,txt"     << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \",txt\" where output format was expected.";
 
-    QTest::newRow("-o \"test result.log\",xxx") << "-o \"test result.log\",xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where output format was expected.";
-    QTest::newRow("-o \"test result.log\",\"txt\"") << "-o \"test result.log\",\"txt\"" << QTestLibArgsParser::InvalidArgumentError << "Got \"\"txt\"\" where output format was expected.";
-    QTest::newRow("-o \"test result.log\",,txt") << "-o \"test result.log\",,txt" << QTestLibArgsParser::InvalidArgumentError << "Got \",txt\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "test\\ result.log,xxx";
+    QTest::newRow("-o test\\ result.log,xxx")       << "-o test\\ result.log,xxx"       << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"xxx\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "test\\ result.log,\"txt\"";
+    QTest::newRow("-o test\\ result.log,\"txt\"")   << "-o test\\ result.log,\"txt\""   << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"\"txt\"\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "test\\ result.log,,txt";
+    QTest::newRow("-o test\\ result.log,,txt")      << "-o test\\ result.log,,txt"      << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \",txt\" where output format was expected.";
 
-    QTest::newRow("-o \"test,result.log\",xxx") << "-o \"test,result.log\",xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where output format was expected.";
-    QTest::newRow("-o \"test,result.log\",\"txt\"") << "-o \"test,result.log\",\"txt\"" << QTestLibArgsParser::InvalidArgumentError << "Got \"\"txt\"\" where output format was expected.";
-    QTest::newRow("-o \"test,result.log\",,txt") << "-o \"test,result.log\",,txt" << QTestLibArgsParser::InvalidArgumentError << "Got \",txt\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "\"test result.log\",xxx";
+    QTest::newRow("-o \"test result.log\",xxx")     << "-o \"test result.log\",xxx"     << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"xxx\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "\"test result.log\",\"txt\"";
+    QTest::newRow("-o \"test result.log\",\"txt\"") << "-o \"test result.log\",\"txt\"" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"\"txt\"\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "\"test result.log\",,txt";
+    QTest::newRow("-o \"test result.log\",,txt")    << "-o \"test result.log\",,txt"    << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \",txt\" where output format was expected.";
+
+    unknown.clear();
+    unknown << "-o" << "\"test,result.log\",xxx";
+    QTest::newRow("-o \"test,result.log\",xxx")     << "-o \"test,result.log\",xxx"     << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"xxx\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "\"test,result.log\",\"txt\"";
+    QTest::newRow("-o \"test,result.log\",\"txt\"") << "-o \"test,result.log\",\"txt\"" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"\"txt\"\" where output format was expected.";
+    unknown.clear();
+    unknown << "-o" << "\"test,result.log\",,txt";
+    QTest::newRow("-o \"test,result.log\",,txt")    << "-o \"test,result.log\",,txt"    << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \",txt\" where output format was expected.";
 }
 
 void QTestLibArgsParserTest::outputV2Error(void)
 {
     QFETCH(QString, args);
     QFETCH(QTestLibArgsParser::Error, err);
+    QFETCH(QStringList, unknown);
     QFETCH(QString, errStr);
 
     QTestLibArgsParser parser(args);
 
-    QVERIFY(parser.error() == err);
-    QVERIFY(QString::compare(parser.errorString(), errStr, Qt::CaseSensitive) == 0);
+    QCOMPARE(parser.error(), err);
+    QCOMPARE(parser.errorString(), errStr);
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs(), unknown));
 }
 
 void QTestLibArgsParserTest::outputMode_data(void)
 {
+
     QTest::addColumn<QString>("args");
     QTest::addColumn<QTestLibArgsParser::Output>("mode");
 
@@ -562,6 +612,7 @@ void QTestLibArgsParserTest::outputMode(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, QTestLibArgsParser::NormalVerbosity, mode == QTestLibArgsParser::NormalOutput ? QTestLibArgsParser::TxtFormat : QTestLibArgsParser::NoneFormat));
     SUB_TEST_FUNCTION(checkDelays(parser));
     SUB_TEST_FUNCTION(checkOutputMode(parser, mode));
@@ -600,6 +651,7 @@ void QTestLibArgsParserTest::maxWarnings(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, QTestLibArgsParser::NormalVerbosity, QTestLibArgsParser::TxtFormat));
     SUB_TEST_FUNCTION(checkDelays(parser));
     SUB_TEST_FUNCTION(checkOutputMode(parser));
@@ -677,6 +729,7 @@ void QTestLibArgsParserTest::delays(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, QTestLibArgsParser::NormalVerbosity, QTestLibArgsParser::TxtFormat));
     SUB_TEST_FUNCTION(checkDelays(parser, event, key, mouse));
     SUB_TEST_FUNCTION(checkOutputMode(parser));
@@ -690,6 +743,7 @@ void QTestLibArgsParserTest::crashHandler(void)
     QTestLibArgsParser parser("-nocrashhandler");
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, QTestLibArgsParser::NormalVerbosity, QTestLibArgsParser::TxtFormat));
     SUB_TEST_FUNCTION(checkDelays(parser));
     SUB_TEST_FUNCTION(checkOutputMode(parser));
@@ -807,6 +861,7 @@ void QTestLibArgsParserTest::parse(void)
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(parser, verbosity, format));
     SUB_TEST_FUNCTION(checkDelays(parser, eventDelay, keyDelay, mouseDelay));
     SUB_TEST_FUNCTION(checkOutputMode(parser));
@@ -830,6 +885,7 @@ void QTestLibArgsParserTest::copyParse(void)
     QTestLibArgsParser copy(parser);
 
     SUB_TEST_FUNCTION(checkError(copy));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkOutput(copy, verbosity, format));
     SUB_TEST_FUNCTION(checkDelays(copy, eventDelay, keyDelay, mouseDelay));
     SUB_TEST_FUNCTION(checkOutputMode(copy));
@@ -838,6 +894,29 @@ void QTestLibArgsParserTest::copyParse(void)
     QVERIFY(copy.crashHandlerEnabled() == crashHandler);
 }
 
+void QTestLibArgsParserTest::setArgs(void)
+{
+    QFETCH(QString, args);
+    QFETCH(QTestLibArgsParser::TestOutputFormat, format);
+    QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(unsigned int, maxWarings);
+    QFETCH(int, eventDelay);
+    QFETCH(int, keyDelay);
+    QFETCH(int, mouseDelay);
+    QFETCH(bool, crashHandler);
+
+    QTestLibArgsParser parser;
+    parser.setArgs(args);
+
+    SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
+    SUB_TEST_FUNCTION(checkOutput(parser, verbosity, format));
+    SUB_TEST_FUNCTION(checkDelays(parser, eventDelay, keyDelay, mouseDelay));
+    SUB_TEST_FUNCTION(checkOutputMode(parser));
+
+    QVERIFY(parser.maxWarnings() == maxWarings);
+    QVERIFY(parser.crashHandlerEnabled() == crashHandler);
+}
 
 void QTestLibArgsParserTest::incrementalParse_data(void)
 {
@@ -849,6 +928,7 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
 
     QTest::addColumn<QString>("args");
     QTest::addColumn<QTestLibArgsParser::Error>("err");
+    QTest::addColumn<QStringList>("unknown");
     QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
     QTest::addColumn<QTestLibArgsParser::TestVerbosity>("verbosity");
     QTest::addColumn<unsigned int>("maxWarings");
@@ -865,7 +945,7 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
     int mouseDelay = 10*(qrand() % 1000);
     bool crashHandler = qrand() % 2;
 
-    QTest::newRow("[none]") << "" << QTestLibArgsParser::NoError << QTestLibArgsParser::TxtFormat << QTestLibArgsParser::NormalVerbosity << 2000u << -1 << -1 << -1 << true;
+    QTest::newRow("[none]") << "" << QTestLibArgsParser::NoError << QStringList() << QTestLibArgsParser::TxtFormat << QTestLibArgsParser::NormalVerbosity << 2000u << -1 << -1 << -1 << true;
     args.clear();
     errs.clear();
 
@@ -895,9 +975,9 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
 
     for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
         if (*errsIt == QTestLibArgsParser::NoError)
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << QTestLibArgsParser::TxtFormat << verbosity << 2000u << -1 << -1 << -1 << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << QStringList() << QTestLibArgsParser::TxtFormat << verbosity << 2000u << -1 << -1 << -1 << true;
         else
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::TxtFormat << QTestLibArgsParser::NormalVerbosity << 2000u << -1 << -1 << -1 << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << QStringList({*argsIt}) << QTestLibArgsParser::TxtFormat << QTestLibArgsParser::NormalVerbosity << 2000u << -1 << -1 << -1 << true;
     }
     args.clear();
     errs.clear();
@@ -959,9 +1039,9 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
 
     for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
         if (*errsIt == QTestLibArgsParser::NoError)
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << format << verbosity << 2000u << -1 << -1 << -1 << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << QStringList() << format << verbosity << 2000u << -1 << -1 << -1 << true;
         else
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::TxtFormat << verbosity << 2000u << -1 << -1 << -1 << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << QStringList({*argsIt}) << QTestLibArgsParser::TxtFormat << verbosity << 2000u << -1 << -1 << -1 << true;
     }
     args.clear();
     errs.clear();
@@ -970,9 +1050,9 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
     errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
     for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
         if (*errsIt == QTestLibArgsParser::NoError)
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << format << verbosity << maxWarnings << -1 << -1 << -1 << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << QStringList() << format << verbosity << maxWarnings << -1 << -1 << -1 << true;
         else
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << format << verbosity << 2000u << -1 << -1 << -1 << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << QStringList({*argsIt}) << format << verbosity << 2000u << -1 << -1 << -1 << true;
     }
     args.clear();
     errs.clear();
@@ -981,9 +1061,9 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
     errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
     for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
         if (*errsIt == QTestLibArgsParser::NoError)
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << format << verbosity << maxWarnings << eventDelay << -1 << -1 << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << QStringList() << format << verbosity << maxWarnings << eventDelay << -1 << -1 << true;
         else
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << format << verbosity << maxWarnings << -1 << -1 << -1 << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << QStringList({*argsIt}) << format << verbosity << maxWarnings << -1 << -1 << -1 << true;
     }
     args.clear();
     errs.clear();
@@ -992,9 +1072,9 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
     errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
     for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
         if (*errsIt == QTestLibArgsParser::NoError)
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << format << verbosity << maxWarnings << eventDelay << keyDelay << -1 << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << QStringList() << format << verbosity << maxWarnings << eventDelay << keyDelay << -1 << true;
         else
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << format << verbosity << maxWarnings << eventDelay << -1 << -1 << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << QStringList({*argsIt}) << format << verbosity << maxWarnings << eventDelay << -1 << -1 << true;
     }
     args.clear();
     errs.clear();
@@ -1003,9 +1083,9 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
     errs << QTestLibArgsParser::PrematureEndError << QTestLibArgsParser::NoError;
     for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
         if (*errsIt == QTestLibArgsParser::NoError)
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << format << verbosity << maxWarnings << eventDelay << keyDelay << mouseDelay << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << QStringList() << format << verbosity << maxWarnings << eventDelay << keyDelay << mouseDelay << true;
         else
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << format << verbosity << maxWarnings << eventDelay << keyDelay << -1 << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << QStringList({*argsIt}) << format << verbosity << maxWarnings << eventDelay << keyDelay << -1 << true;
     }
     args.clear();
     errs.clear();
@@ -1016,9 +1096,9 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
     }
     for (argsIt = args.constBegin(), errsIt = errs.constBegin(); (argsIt != args.constEnd()) && (errsIt != errs.constEnd()); argsIt++, errsIt++) {
         if (*errsIt == QTestLibArgsParser::NoError)
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << format << verbosity << maxWarnings << eventDelay << keyDelay << mouseDelay << crashHandler;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::NoError << QStringList() << format << verbosity << maxWarnings << eventDelay << keyDelay << mouseDelay << crashHandler;
         else
-            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << format << verbosity << maxWarnings << eventDelay << keyDelay << mouseDelay << true;
+            QTest::newRow(qPrintable(*argsIt)) << *argsIt << QTestLibArgsParser::PrematureEndError << QStringList({*argsIt}) << format << verbosity << maxWarnings << eventDelay << keyDelay << mouseDelay << true;
     }
     args.clear();
     errs.clear();
@@ -1028,6 +1108,7 @@ void QTestLibArgsParserTest::incrementalParse(void)
 {
     QFETCH(QString, args);
     QFETCH(QTestLibArgsParser::Error, err);
+    QFETCH(QStringList, unknown);
     QFETCH(QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
     QFETCH(unsigned int, maxWarings);
@@ -1043,12 +1124,31 @@ void QTestLibArgsParserTest::incrementalParse(void)
         errStr = "String of command line arguments ended prematurely";
 
     SUB_TEST_FUNCTION(checkError(mParser, err, errStr));
+    SUB_TEST_FUNCTION(checkUnknownArguments(mParser.unknownArgs(), unknown));
     SUB_TEST_FUNCTION(checkOutput(mParser, verbosity, format));
     SUB_TEST_FUNCTION(checkDelays(mParser, eventDelay, keyDelay, mouseDelay));
     SUB_TEST_FUNCTION(checkOutputMode(mParser));
 
     QVERIFY(mParser.maxWarnings() == maxWarings);
     QVERIFY(mParser.crashHandlerEnabled() == crashHandler);
+}
+
+void QTestLibArgsParserTest::checkUnknownArguments(const QStringList& actual, const QStringList& expected)
+{
+    BEGIN_SUB_TEST_FUNCTION
+
+    QStringList::const_iterator actualIt;
+    QStringList::const_iterator expectedIt;
+
+    for (actualIt = actual.constBegin(); actualIt != actual.constEnd(); actualIt++) {
+        for (expectedIt = expected.constBegin(); expectedIt != expected.constEnd(); expectedIt++) {
+            if (QString::compare(*actualIt, *expectedIt, Qt::CaseSensitive) == 0)
+                break;
+        }
+        QVERIFY2(expectedIt != expected.constEnd(), qPrintable(QString("Unexpected \"%1\"").arg(*actualIt)));
+    }
+
+    END_SUB_TEST_FUNCTION
 }
 
 void QTestLibArgsParserTest::checkError(const QTestLibArgsParser& parser, QTestLibArgsParser::Error error, const QString& errorString)
@@ -1133,104 +1233,403 @@ void QTestLibArgsParserTest::checkOutputMode(const QTestLibArgsParser& parser, Q
 void QTestLibArgsParserTest::testCases_data(void)
 {
     QTest::addColumn<QString>("args");
-    QTest::addColumn<QTestLibArgsParser::TestCaseList>("list");
+    QTest::addColumn<TestClassList>("list");
 
-    QTestLibArgsParser::TestCaseList list;
+    TestClassList classList;
+    TestCaseList caseList;
+    TestRowList rowList;
 
-    list.clear();
-    list << qMakePair(QString("test"), QStringList());
-    QTest::newRow("test") << "test" << list;
-    list.clear();
-    list << qMakePair(QString("test1"), QStringList());
-    QTest::newRow("test1") << "test1" << list;
-    list.clear();
-    list << qMakePair(QString("test_"), QStringList());
-    QTest::newRow("test_") << "test_" << list;
-    list.clear();
-    list << qMakePair(QString("_test"), QStringList());
-    QTest::newRow("_test") << "_test" << list;
-    list.clear();
-    list << qMakePair(QString("Test"), QStringList());
-    QTest::newRow("Test") << "Test" << list;
+    classList.clear();
+    caseList.clear();
+    QTest::newRow("\"\"") << "" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test"), TestRowList());
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test") << "test" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test1"), TestRowList());
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test1") << "test1" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test_"), TestRowList());
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test_") << "test_" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("_test"), TestRowList());
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("_test") << "_test" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("Test"), TestRowList());
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("Test") << "Test" << classList;
 
-    list.clear();
-    list << qMakePair(QString("test"), QStringList() << "case");
-    QTest::newRow("test:case") << "test:case" << list;
-    list.clear();
-    list << qMakePair(QString("test"), QStringList() << "case1");
-    QTest::newRow("test:case1") << "test:case1" << list;
-    list.clear();
-    list << qMakePair(QString("test"), QStringList() << "case_");
-    QTest::newRow("test:case1") << "test:case_" << list;
-    list.clear();
-    list << qMakePair(QString("test"), QStringList() << "Case");
-    QTest::newRow("test:Case") << "test:Case" << list;
-    list.clear();
-    list << qMakePair(QString("test"), QStringList() << "case 1");
-    QTest::newRow("\"test:case 1\"") << "\"test:case 1\"" << list;
-    list.clear();
-    list << qMakePair(QString("test"), QStringList() << "case 1");
-    QTest::newRow("test:\"case 1\"") << "test:\"case 1\"" << list;
-    list.clear();
-    list << qMakePair(QString("test"), QStringList() << "case:desc");
-    QTest::newRow("test:case:desc") << "test:case:desc" << list;
-    list.clear();
-    list << qMakePair(QString("test"), QStringList() << "1,2,3");
-    QTest::newRow("test:1,2,3") << "test:1,2,3" << list;
-    list.clear();
-    list << qMakePair(QString("test"), QStringList() << "(1,2,3)");
-    QTest::newRow("test:(1,2,3)") << "test:(1,2,3)" << list;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test"), TestRowList());
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test") << "Class::test" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test"), TestRowList());
+    classList << qMakePair(QString("Class1"), caseList);
+    QTest::newRow("Class1::test") << "Class1::test" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test"), TestRowList());
+    classList << qMakePair(QString("Class_"), caseList);
+    QTest::newRow("Class_::test") << "Class_::test" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test"), TestRowList());
+    classList << qMakePair(QString("_Class"), caseList);
+    QTest::newRow("_Class::test") << "_Class::test" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test"), TestRowList());
+    classList << qMakePair(QString("class"), caseList);
+    QTest::newRow("class::test") << "class::test" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test1"), TestRowList());
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test1") << "Class::test1" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test_"), TestRowList());
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test_") << "Class::test_" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("_test"), TestRowList());
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::_test") << "Class::_test" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("Test"), TestRowList());
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::Test") << "Class::Test" << classList;
 
-    list.clear();
-    list << qMakePair(QString("test"), QStringList() << "subtest1" << "subtest2");
-    QTest::newRow("test:subtest1 test:subtest2") << "test:subtest1 test:subtest2" << list;
-    list.clear();
-    list << qMakePair(QString("test1"), QStringList() << "subtest1");
-    list << qMakePair(QString("test2"), QStringList() << "subtest2");
-    QTest::newRow("test1:subtest1 test2:subtest2") << "test1:subtest1 test2:subtest2" << list;
-    list.clear();
-    list << qMakePair(QString("test1"), QStringList() << "subtest11" << "subtest12");
-    list << qMakePair(QString("test2"), QStringList() << "subtest21" << "subtest22");
-    QTest::newRow("test1:subtest11 test2:subtest21 test1:subtest12 test2:subtest22") << "test1:subtest11 test2:subtest21 test1:subtest12 test2:subtest22" << list;
-    list.clear();
-    list << qMakePair(QString("test"), QStringList() << "subtest");
-    QTest::newRow("test:subtest test:subtest") << "test:subtest test:subtest" << list;
-    list.clear();
-    list << qMakePair(QString("test1"), QStringList() << "subtest1");
-    list << qMakePair(QString("test2"), QStringList() << "subtest2");
-    QTest::newRow("test1:subtest1 test2:subtest2 test1:subtest1") << "test1:subtest1 test2:subtest2 test1:subtest1" << list;
-    list.clear();
-    list << qMakePair(QString("test"), QStringList());
-    QTest::newRow("test:subtest test") << "test:subtest test" << list;
-    list.clear();
-    list << qMakePair(QString("test1"), QStringList());
-    list << qMakePair(QString("test2"), QStringList() << "subtest2");
-    QTest::newRow("test1:subtest1 test2:subtest2 test1") << "test1:subtest1 test2:subtest2 test1" << list;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test:case") << "test:case" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case1";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test:case1") << "test:case1" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case_";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test:case1") << "test:case_" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "Case";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test:Case") << "test:Case" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case 1";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("\"test:case 1\"") << "\"test:case 1\"" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case 1";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test:\"case 1\"") << "test:\"case 1\"" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case:desc";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test:case:desc") << "test:case:desc" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "1,2,3";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test:1,2,3") << "test:1,2,3" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "(1,2,3)";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test:(1,2,3)") << "test:(1,2,3)" << classList;
+
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test:case") << "Class::test:case" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case1";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test:case1") << "Class::test:case1" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case_";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test:case1") << "Class::test:case_" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "Case";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test:Case") << "Class::test:Case" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case 1";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("\"Class::test:case 1\"") << "\"Class::test:case 1\"" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case 1";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::\"test:case 1\"") << "Class::\"test:case 1\"" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case 1";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test:\"case 1\"") << "Class::test:\"case 1\"" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "case:desc";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test:case:desc") << "Class::test:case:desc" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "1,2,3";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test:1,2,3") << "Class::test:1,2,3" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "(1,2,3)";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test:(1,2,3)") << "Class::test:(1,2,3)" << classList;
+
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "subtest1" << "subtest2";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test:subtest1 test:subtest2") << "test:subtest1 test:subtest2" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "subtest1";
+    caseList << qMakePair(QString("test1"), rowList);
+    rowList.clear();
+    rowList << "subtest2";
+    caseList << qMakePair(QString("test2"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test1:subtest1 test2:subtest2") << "test1:subtest1 test2:subtest2" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "subtest11" << "subtest12";
+    caseList << qMakePair(QString("test1"), rowList);
+    rowList.clear();
+    rowList << "subtest21" << "subtest22";
+    caseList << qMakePair(QString("test2"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test1:subtest11 test2:subtest21 test1:subtest12 test2:subtest22") << "test1:subtest11 test2:subtest21 test1:subtest12 test2:subtest22" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "subtest";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test:subtest test:subtest") << "test:subtest test:subtest" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "subtest1";
+    caseList << qMakePair(QString("test1"), rowList);
+    rowList.clear();
+    rowList << "subtest2";
+    caseList << qMakePair(QString("test2"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test1:subtest1 test2:subtest2 test1:subtest1") << "test1:subtest1 test2:subtest2 test1:subtest1" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test"), TestRowList());
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test:subtest test") << "test:subtest test" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test1"), TestRowList());
+    rowList.clear();
+    rowList << "subtest2";
+    caseList << qMakePair(QString("test2"), rowList);
+    classList << qMakePair(QString::null, caseList);
+    QTest::newRow("test1:subtest1 test2:subtest2 test1") << "test1:subtest1 test2:subtest2 test1" << classList;
+
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "subtest1" << "subtest2";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test:subtest1 Class::test:subtest2") << "Class::test:subtest1 Class::test:subtest2" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "subtest1";
+    caseList << qMakePair(QString("test1"), rowList);
+    rowList.clear();
+    rowList << "subtest2";
+    caseList << qMakePair(QString("test2"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test1:subtest1 Class::test2:subtest2") << "Class::test1:subtest1 Class::test2:subtest2" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "subtest11" << "subtest12";
+    caseList << qMakePair(QString("test1"), rowList);
+    rowList.clear();
+    rowList << "subtest21" << "subtest22";
+    caseList << qMakePair(QString("test2"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test1:subtest11 Class::test2:subtest21 Class::test1:subtest12 Class::test2:subtest22") << "Class::test1:subtest11 Class::test2:subtest21 Class::test1:subtest12 Class::test2:subtest22" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "subtest";
+    caseList << qMakePair(QString("test"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test:subtest Class::test:subtest") << "Class::test:subtest Class::test:subtest" << classList;
+    classList.clear();
+    caseList.clear();
+    rowList.clear();
+    rowList << "subtest1";
+    caseList << qMakePair(QString("test1"), rowList);
+    rowList.clear();
+    rowList << "subtest2";
+    caseList << qMakePair(QString("test2"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test1:subtest1 Class::test2:subtest2 Class::test1:subtest1") << "Class::test1:subtest1 Class::test2:subtest2 Class::test1:subtest1" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test"), TestRowList());
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test:subtest Class::test") << "Class::test:subtest Class::test" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test1"), TestRowList());
+    rowList.clear();
+    rowList << "subtest2";
+    caseList << qMakePair(QString("test2"), rowList);
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test1:subtest1 Class::test2:subtest2 Class::test1") << "Class::test1:subtest1 Class::test2:subtest2 Class::test1" << classList;
+
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test1"), TestRowList());
+    caseList << qMakePair(QString("test2"), TestRowList());
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test1 Class::test2") << "Class::test1 Class::test2" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test1"), TestRowList());
+    classList << qMakePair(QString("Class1"), caseList);
+    caseList.clear();
+    caseList << qMakePair(QString("test2"), TestRowList());
+    classList << qMakePair(QString("Class2"), caseList);
+    QTest::newRow("Class1::test1 Class2::test2") << "Class1::test1 Class2::test2" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test11"), TestRowList());
+    caseList << qMakePair(QString("test12"), TestRowList());
+    classList << qMakePair(QString("Class1"), caseList);
+    caseList.clear();
+    caseList << qMakePair(QString("test21"), TestRowList());
+    caseList << qMakePair(QString("test22"), TestRowList());
+    classList << qMakePair(QString("Class2"), caseList);
+    QTest::newRow("Class1::test11 Class2::test21 Class1::test12 Class2::test22") << "Class1::test11 Class2::test21 Class1::test12 Class2::test22" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test"), TestRowList());
+    classList << qMakePair(QString("Class"), caseList);
+    QTest::newRow("Class::test Class::test") << "Class::test Class::test" << classList;
+    classList.clear();
+    caseList.clear();
+    caseList << qMakePair(QString("test1"), TestRowList());
+    classList << qMakePair(QString("Class1"), caseList);
+    caseList.clear();
+    caseList << qMakePair(QString("test2"), TestRowList());
+    classList << qMakePair(QString("Class2"), caseList);
+    QTest::newRow("Class1::test1 Class2::test2 Class1::test1") << "Class1::test1 Class2::test2 Class1::test1" << classList;
 }
 
 void QTestLibArgsParserTest::testCases(void)
 {
     QFETCH(QString, args);
-    QFETCH(QTestLibArgsParser::TestCaseList, list);
+    QFETCH(TestClassList, list);
 
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
-    SUB_TEST_FUNCTION(checkSelectedTestCases(parser, list));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
+    SUB_TEST_FUNCTION(checkSelectedTestClasses(parser.selectedTestCases(), list));
 }
 
-void QTestLibArgsParserTest::removeTestCases_data()
+/*void QTestLibArgsParserTest::removeTestCases_data()
 {
     QTest::addColumn<QString>("args");
-    QTest::addColumn<QTestLibArgsParser::TestCaseList>("listBefore");
+    QTest::addColumn<TestClassList>("listBefore");
     QTest::addColumn<QString>("test");
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<QTestLibArgsParser::TestCaseList>("listAfter");
+    QTest::addColumn<TestClassList>("listAfter");
 
-    QTestLibArgsParser::TestCaseList listBefore;
-    QTestLibArgsParser::TestCaseList listAfter;
+    TestClassList listBefore;
+    TestClassList listAfter;
 
     listBefore.clear();
+    listAfter.clear();
+    QTest::newRow("\"\"") << "" << listBefore << "" << listAfter;
+
     listBefore << qMakePair(QString("test"), QStringList());
     listAfter.clear();
     QTest::newRow("test/test") << "test" << listBefore << "test" << QString() << listAfter;
@@ -1316,74 +1715,141 @@ void QTestLibArgsParserTest::removeTestCases_data()
     listAfter << qMakePair(QString("test1"), QStringList() << "subtest1");
     listAfter << qMakePair(QString("test2"), QStringList() << "subtest2");
     QTest::newRow("test1:subtest1 test2:subtest2/test:subtest") << "test1:subtest1 test2:subtest2" << listBefore << "test" << "subtest" << listAfter;
-}
+}*/
 
-void QTestLibArgsParserTest::removeTestCases(void)
+/*void QTestLibArgsParserTest::removeTestCases(void)
 {
     QFETCH(QString, args);
-    QFETCH(QTestLibArgsParser::TestCaseList, listBefore);
+    QFETCH(TestClassList, listBefore);
     QFETCH(QString, test);
-    QFETCH(QString, data);
-    QFETCH(QTestLibArgsParser::TestCaseList, listAfter);
+    QFETCH(TestClassList, listAfter);
 
     QTestLibArgsParser parser(args);
 
     SUB_TEST_FUNCTION(checkError(parser));
-    SUB_TEST_FUNCTION(checkSelectedTestCases(parser, listBefore));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
+    SUB_TEST_FUNCTION(checkSelectedTestClasses(parser.selectedTestCases(), listBefore));
 
-    parser.removeTestCases(test, data);
+    parser.removeSelectedTestClass(test);
 
     SUB_TEST_FUNCTION(checkError(parser));
-    SUB_TEST_FUNCTION(checkSelectedTestCases(parser, listAfter));
-}
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
+    SUB_TEST_FUNCTION(checkSelectedTestClasses(parser.selectedTestCases(), listAfter));
+}*/
 
-void QTestLibArgsParserTest::checkSelectedTestCases(const QTestLibArgsParser& parser, const QTestLibArgsParser::TestCaseList& list)
+void QTestLibArgsParserTest::checkSelectedTestClasses(const TestClassList& actual, const TestClassList& expected)
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    QCOMPARE(parser.selectedTestCases().size(), list.size());
+    QCOMPARE(actual.size(), expected.size());
 
-    for(QTestLibArgsParser::TestCaseList::const_iterator parserIt = parser.selectedTestCases().constBegin(); parserIt != parser.selectedTestCases().constEnd(); parserIt++) {
-        QTestLibArgsParser::TestCaseList::const_iterator listIt;
-        for(listIt = list.constBegin(); listIt != list.constEnd(); listIt++) {
-            if (QString::compare((*parserIt).first, (*listIt).first, Qt::CaseSensitive) == 0) {
-                QCOMPARE((*parserIt).second.size(), (*listIt).second.size());
+    TestClassList::const_iterator actualIt;
+    TestClassList::const_iterator expectedIt;
 
-                for (QStringList::const_iterator parserDataIt = (*parserIt).second.constBegin(); parserDataIt != (*parserIt).second.constEnd(); parserDataIt++) {
-                    QStringList::const_iterator listDataIt;
-                    for (listDataIt = (*listIt).second.constBegin(); listDataIt != (*listIt).second.constEnd(); listDataIt++) {
-                        if (QString::compare(*parserDataIt, *listDataIt, Qt::CaseSensitive) == 0)
-                            break;
-                    }
-                    QVERIFY(listDataIt != (*listIt).second.constEnd());
-                }
-
+    for(actualIt = actual.constBegin(); actualIt != actual.constEnd(); actualIt++) {
+        for(expectedIt = expected.constBegin(); expectedIt != expected.constEnd(); expectedIt++) {
+            if (QString::compare(actualIt->first, expectedIt->first, Qt::CaseSensitive) == 0) {
+                SUB_TEST_FUNCTION(checkSelectedTestCases(actualIt->second, expectedIt->second));
                 break;
             }
         }
-        QVERIFY(listIt != list.constEnd());
+        QVERIFY2(expectedIt != expected.constEnd(), qPrintable(QString("Did not expect \"%1\" in test class list").arg(actualIt->first)));
     }
 
     END_SUB_TEST_FUNCTION
 }
 
+void QTestLibArgsParserTest::checkSelectedTestCases(const TestCaseList& actual, const TestCaseList& expected)
+{
+    BEGIN_SUB_TEST_FUNCTION
+
+    QCOMPARE(actual.size(), expected.size());
+
+    TestCaseList::const_iterator actualIt;
+    TestCaseList::const_iterator expectedIt;
+
+    for(actualIt = actual.constBegin(); actualIt != actual.constEnd(); actualIt++) {
+        for(expectedIt = expected.constBegin(); expectedIt != expected.constEnd(); expectedIt++) {
+            if (QString::compare(actualIt->first, expectedIt->first, Qt::CaseSensitive) == 0) {
+                SUB_TEST_FUNCTION(checkSelectedTestData(actualIt->second, expectedIt->second));
+                break;
+            }
+        }
+        QVERIFY2(expectedIt != expected.constEnd(), qPrintable(QString("Did not expect \"%1\" in test case list").arg(actualIt->first)));
+    }
+
+    END_SUB_TEST_FUNCTION
+}
+
+void QTestLibArgsParserTest::checkSelectedTestData(const TestRowList& actual, const TestRowList& expected)
+{
+    BEGIN_SUB_TEST_FUNCTION
+
+    QCOMPARE(actual.size(), expected.size());
+
+    TestRowList::const_iterator actualIt;
+    TestRowList::const_iterator expectedIt;
+
+    for(actualIt = actual.constBegin(); actualIt != actual.constEnd(); actualIt++) {
+        for(expectedIt = expected.constBegin(); expectedIt != expected.constEnd(); expectedIt++) {
+            if (QString::compare(*actualIt, *expectedIt, Qt::CaseSensitive) == 0) {
+                break;
+            }
+        }
+        QVERIFY2(expectedIt != expected.constEnd(), qPrintable(QString("Did not expect \"%1\" in test data list").arg(*actualIt)));
+    }
+
+    END_SUB_TEST_FUNCTION
+}
 
 void QTestLibArgsParserTest::flagError_data(void)
 {
     QTest::addColumn<QString>("args");
     QTest::addColumn<QTestLibArgsParser::Error>("err");
+    QTest::addColumn<QStringList>("unknown");
     QTest::addColumn<QString>("errStr");
 
-    QTest::newRow("-xxx") << "-xxx" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-xxx\"";
-    QTest::newRow("-,txt") << "-,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-,txt\"";
-    QTest::newRow("-o-,txt") << "-o-,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-o-,txt\"";
-    QTest::newRow("-\"txt\"") << "-\"txt\"" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-\"txt\"\"";
-    QTest::newRow("-silent -xxx") << "-silent -xxx" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-xxx\"";
-    QTest::newRow("-silent -,txt") << "-silent -,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-,txt\"";
-    QTest::newRow("-silent -o-,txt") << "-silent -o-,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-o-,txt\"";
-    QTest::newRow("-maxwarnings 2000 -xxx") << "-maxwarnings 2000 -xxx" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-xxx\"";
-    QTest::newRow("-maxwarnings 2000 -,txt") << "-maxwarnings 2000 -,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-,txt\"";
-    QTest::newRow("-maxwarnings 2000 -o-,txt") << "-maxwarnings 2000 -o-,txt" << QTestLibArgsParser::UnknownFlagError << "Unknown flag \"-o-,txt\"";
+    QStringList unknown;
+
+    unknown.clear();
+    unknown << "-xxx";
+    QTest::newRow("-xxx")                        << "-xxx"                        << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-xxx\"";
+    unknown.clear();
+    unknown << "-,txt";
+    QTest::newRow("-,txt")                       << "-,txt"                       << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-,txt\"";
+    unknown.clear();
+    unknown << "-o-,txt";
+    QTest::newRow("-o-,txt")                     << "-o-,txt"                     << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-o-,txt\"";
+    unknown.clear();
+    unknown << "-\"txt\"";
+    QTest::newRow("-\"txt\"")                    << "-\"txt\""                    << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-\"txt\"\"";
+    unknown.clear();
+    unknown << "-xxx";
+    QTest::newRow("-silent -xxx")                << "-silent -xxx"                << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-xxx\"";
+    unknown.clear();
+    unknown << "-,txt";
+    QTest::newRow("-silent -,txt")               << "-silent -,txt"               << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-,txt\"";
+    unknown.clear();
+    unknown << "-o-,txt";
+    QTest::newRow("-silent -o-,txt")             << "-silent -o-,txt"             << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-o-,txt\"";
+    unknown.clear();
+    unknown << "-xxx";
+    QTest::newRow("-maxwarnings 2000 -xxx")      << "-maxwarnings 2000 -xxx"      << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-xxx\"";
+    unknown.clear();
+    unknown << "-,txt";
+    QTest::newRow("-maxwarnings 2000 -,txt")     << "-maxwarnings 2000 -,txt"     << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-,txt\"";
+    unknown.clear();
+    unknown << "-o-,txt";
+    QTest::newRow("-maxwarnings 2000 -o-,txt")   << "-maxwarnings 2000 -o-,txt"   << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-o-,txt\"";
+    unknown.clear();
+    unknown << "-xxx" << "-yyy";
+    QTest::newRow("-xxx -yyy")                   << "-xxx -yyy"                   << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-yyy\"";
+    unknown.clear();
+    unknown << "-xxx" << "-yyy";
+    QTest::newRow("-xxx -silent -yyy")           << "-xxx -silent -yyy"           << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-yyy\"";
+    unknown.clear();
+    unknown << "-xxx" << "-yyy";
+    QTest::newRow("-xxx -maxwarnings 2000 -yyy") << "-xxx -maxwarnings 2000 -yyy" << QTestLibArgsParser::UnknownFlagError << unknown << "Unknown flag \"-yyy\"";
 }
 
 void QTestLibArgsParserTest::flagError(void)
@@ -1391,43 +1857,90 @@ void QTestLibArgsParserTest::flagError(void)
     QFETCH(QString, args);
     QFETCH(QTestLibArgsParser::Error, err);
     QFETCH(QString, errStr);
+    QFETCH(QStringList, unknown);
 
     QTestLibArgsParser parser(args);
 
     QCOMPARE(parser.error(), err);
     QCOMPARE(parser.errorString(), errStr);
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs(), unknown));
 }
 
 void QTestLibArgsParserTest::invalidArgumentError_data(void)
 {
     QTest::addColumn<QString>("args");
     QTest::addColumn<QTestLibArgsParser::Error>("err");
+    QTest::addColumn<QStringList>("unknown");
     QTest::addColumn<QString>("errStr");
 
-    QTest::newRow("-maxwarnings xxx") << "-maxwarnings xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where unsigned integer was expected.";
-    QTest::newRow("-maxwarnings 10s") << "-maxwarnings 10s" << QTestLibArgsParser::InvalidArgumentError << "Got \"10s\" where unsigned integer was expected.";
-    QTest::newRow("-maxwarnings x10") << "-maxwarnings x10" << QTestLibArgsParser::InvalidArgumentError << "Got \"x10\" where unsigned integer was expected.";
-    QTest::newRow("-maxwarnings -10") << "-maxwarnings -10" << QTestLibArgsParser::InvalidArgumentError << "Got \"-10\" where unsigned integer was expected.";
-    QTest::newRow("-maxwarnings 10.") << "-maxwarnings 10." << QTestLibArgsParser::InvalidArgumentError << "Got \"10.\" where unsigned integer was expected.";
-    QTest::newRow("-maxwarnings 1.0") << "-maxwarnings 1.0" << QTestLibArgsParser::InvalidArgumentError << "Got \"1.0\" where unsigned integer was expected.";
+    QStringList unknown;
 
-    QTest::newRow("-eventdelay xxx") << "-eventdelay xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where integer was expected.";
-    QTest::newRow("-eventdelay 10s") << "-eventdelay 10s" << QTestLibArgsParser::InvalidArgumentError << "Got \"10s\" where integer was expected.";
-    QTest::newRow("-eventdelay x10") << "-eventdelay x10" << QTestLibArgsParser::InvalidArgumentError << "Got \"x10\" where integer was expected.";
-    QTest::newRow("-eventdelay 10.") << "-eventdelay 10." << QTestLibArgsParser::InvalidArgumentError << "Got \"10.\" where integer was expected.";
-    QTest::newRow("-eventdelay 1.0") << "-eventdelay 1.0" << QTestLibArgsParser::InvalidArgumentError << "Got \"1.0\" where integer was expected.";
+    unknown.clear();
+    unknown << "-maxwarnings" << "xxx";
+    QTest::newRow("-maxwarnings xxx") << "-maxwarnings xxx" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"xxx\" where unsigned integer was expected (command \"-maxwarnings\").";
+    unknown.clear();
+    unknown << "-maxwarnings" << "10s";
+    QTest::newRow("-maxwarnings 10s") << "-maxwarnings 10s" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"10s\" where unsigned integer was expected (command \"-maxwarnings\").";
+    unknown.clear();
+    unknown << "-maxwarnings" << "x10";
+    QTest::newRow("-maxwarnings x10") << "-maxwarnings x10" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"x10\" where unsigned integer was expected (command \"-maxwarnings\").";
+    unknown.clear();
+    unknown << "-maxwarnings" << "-10";
+    QTest::newRow("-maxwarnings -10") << "-maxwarnings -10" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"-10\" where unsigned integer was expected (command \"-maxwarnings\").";
+    unknown.clear();
+    unknown << "-maxwarnings" << "10.";
+    QTest::newRow("-maxwarnings 10.") << "-maxwarnings 10." << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"10.\" where unsigned integer was expected (command \"-maxwarnings\").";
+    unknown.clear();
+    unknown << "-maxwarnings" << "1.0";
+    QTest::newRow("-maxwarnings 1.0") << "-maxwarnings 1.0" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"1.0\" where unsigned integer was expected (command \"-maxwarnings\").";
 
-    QTest::newRow("-keydelay xxx") << "-keydelay xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where integer was expected.";
-    QTest::newRow("-keydelay 10s") << "-keydelay 10s" << QTestLibArgsParser::InvalidArgumentError << "Got \"10s\" where integer was expected.";
-    QTest::newRow("-keydelay x10") << "-keydelay x10" << QTestLibArgsParser::InvalidArgumentError << "Got \"x10\" where integer was expected.";
-    QTest::newRow("-keydelay 10.") << "-keydelay 10." << QTestLibArgsParser::InvalidArgumentError << "Got \"10.\" where integer was expected.";
-    QTest::newRow("-keydelay 1.0") << "-keydelay 1.0" << QTestLibArgsParser::InvalidArgumentError << "Got \"1.0\" where integer was expected.";
+    unknown.clear();
+    unknown << "-eventdelay" << "xxx";
+    QTest::newRow("-eventdelay xxx") << "-eventdelay xxx" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"xxx\" where integer was expected (command \"-eventdelay\").";
+    unknown.clear();
+    unknown << "-eventdelay" << "10s";
+    QTest::newRow("-eventdelay 10s") << "-eventdelay 10s" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"10s\" where integer was expected (command \"-eventdelay\").";
+    unknown.clear();
+    unknown << "-eventdelay" << "x10";
+    QTest::newRow("-eventdelay x10") << "-eventdelay x10" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"x10\" where integer was expected (command \"-eventdelay\").";
+    unknown.clear();
+    unknown << "-eventdelay" << "10.";
+    QTest::newRow("-eventdelay 10.") << "-eventdelay 10." << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"10.\" where integer was expected (command \"-eventdelay\").";
+    unknown.clear();
+    unknown << "-eventdelay" << "1.0";
+    QTest::newRow("-eventdelay 1.0") << "-eventdelay 1.0" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"1.0\" where integer was expected (command \"-eventdelay\").";
 
-    QTest::newRow("-mousedelay xxx") << "-mousedelay xxx" << QTestLibArgsParser::InvalidArgumentError << "Got \"xxx\" where integer was expected.";
-    QTest::newRow("-mousedelay 10s") << "-mousedelay 10s" << QTestLibArgsParser::InvalidArgumentError << "Got \"10s\" where integer was expected.";
-    QTest::newRow("-mousedelay x10") << "-mousedelay x10" << QTestLibArgsParser::InvalidArgumentError << "Got \"x10\" where integer was expected.";
-    QTest::newRow("-mousedelay 10.") << "-mousedelay 10." << QTestLibArgsParser::InvalidArgumentError << "Got \"10.\" where integer was expected.";
-    QTest::newRow("-mousedelay 1.0") << "-mousedelay 1.0" << QTestLibArgsParser::InvalidArgumentError << "Got \"1.0\" where integer was expected.";
+    unknown.clear();
+    unknown << "-keydelay" << "xxx";
+    QTest::newRow("-keydelay xxx") << "-keydelay xxx" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"xxx\" where integer was expected (command \"-keydelay\").";
+    unknown.clear();
+    unknown << "-keydelay" << "10s";
+    QTest::newRow("-keydelay 10s") << "-keydelay 10s" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"10s\" where integer was expected (command \"-keydelay\").";
+    unknown.clear();
+    unknown << "-keydelay" << "x10";
+    QTest::newRow("-keydelay x10") << "-keydelay x10" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"x10\" where integer was expected (command \"-keydelay\").";
+    unknown.clear();
+    unknown << "-keydelay" << "10.";
+    QTest::newRow("-keydelay 10.") << "-keydelay 10." << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"10.\" where integer was expected (command \"-keydelay\").";
+    unknown.clear();
+    unknown << "-keydelay" << "1.0";
+    QTest::newRow("-keydelay 1.0") << "-keydelay 1.0" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"1.0\" where integer was expected (command \"-keydelay\").";
+
+    unknown.clear();
+    unknown << "-mousedelay" << "xxx";
+    QTest::newRow("-mousedelay xxx") << "-mousedelay xxx" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"xxx\" where integer was expected (command \"-mousedelay\").";
+    unknown.clear();
+    unknown << "-mousedelay" << "10s";
+    QTest::newRow("-mousedelay 10s") << "-mousedelay 10s" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"10s\" where integer was expected (command \"-mousedelay\").";
+    unknown.clear();
+    unknown << "-mousedelay" << "x10";
+    QTest::newRow("-mousedelay x10") << "-mousedelay x10" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"x10\" where integer was expected (command \"-mousedelay\").";
+    unknown.clear();
+    unknown << "-mousedelay" << "10.";
+    QTest::newRow("-mousedelay 10.") << "-mousedelay 10." << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"10.\" where integer was expected (command \"-mousedelay\").";
+    unknown.clear();
+    unknown << "-mousedelay" << "1.0";
+    QTest::newRow("-mousedelay 1.0") << "-mousedelay 1.0" << QTestLibArgsParser::InvalidArgumentError << unknown << "Got \"1.0\" where integer was expected (command \"-mousedelay\").";
 }
 
 void QTestLibArgsParserTest::invalidArgumentError(void)
@@ -1435,84 +1948,185 @@ void QTestLibArgsParserTest::invalidArgumentError(void)
     QFETCH(QString, args);
     QFETCH(QTestLibArgsParser::Error, err);
     QFETCH(QString, errStr);
+    QFETCH(QStringList, unknown);
 
     QTestLibArgsParser parser(args);
 
     QCOMPARE(parser.error(), err);
     QCOMPARE(parser.errorString(), errStr);
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs(), unknown));
 }
 
 void QTestLibArgsParserTest::invalidTestError_data(void)
 {
     QTest::addColumn<QString>("args");
     QTest::addColumn<QTestLibArgsParser::Error>("err");
+    QTest::addColumn<QStringList>("unknown");
     QTest::addColumn<QString>("errStr");
 
-    QTest::newRow("TESTARGS=\"-silent\"") << "TESTARGS=\"-silent\"" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"TESTARGS=\"-silent\"\" is neither a flag nor a test case";
-    QTest::newRow("o-") << "o-" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"o-\" is neither a flag nor a test case";
-    QTest::newRow("o-,txt") << "o-,txt" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"o-,txt\" is neither a flag nor a test case";
-    QTest::newRow("0") << "0" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0\" is neither a flag nor a test case";
-    QTest::newRow("0test") << "0test" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0test\" is neither a flag nor a test case";
-    QTest::newRow("0:test") << "0:test" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0:test\" is neither a flag nor a test case";
-    QTest::newRow("0test:data") << "0test:data" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0test:data\" is neither a flag nor a test case";
+    QStringList unknown;
 
-    QTest::newRow("-silent TESTARGS=\"-silent\"") << "-silent TESTARGS=\"-silent\"" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"TESTARGS=\"-silent\"\" is neither a flag nor a test case";
-    QTest::newRow("-silent o-") << "-silent o-" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"o-\" is neither a flag nor a test case";
-    QTest::newRow("-silent o-,txt") << "-silent o-,txt" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"o-,txt\" is neither a flag nor a test case";
-    QTest::newRow("-silent 0") << "-silent 0" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0\" is neither a flag nor a test case";
-    QTest::newRow("-silent 0test") << "-silent 0test" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0test\" is neither a flag nor a test case";
-    QTest::newRow("-silent 0:test") << "-silent 0:test" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0:test\" is neither a flag nor a test case";
-    QTest::newRow("-silent 0test:data") << "-silent 0test:data" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0test:data\" is neither a flag nor a test case";
+    unknown.clear();
+    unknown << "TESTARGS=\"-silent\"";
+    QTest::newRow("TESTARGS=\"-silent\"") << "TESTARGS=\"-silent\"" << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"TESTARGS=\"-silent\"\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "o-";
+    QTest::newRow("o-")                   << "o-"                   << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"o-\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "o-,txt";
+    QTest::newRow("o-,txt")               << "o-,txt"               << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"o-,txt\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0";
+    QTest::newRow("0")                    << "0"                    << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0test";
+    QTest::newRow("0test")                << "0test"                << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0test\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0:test";
+    QTest::newRow("0:test")               << "0:test"               << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0:test\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0:Test";
+    QTest::newRow("0:Test")               << "0:Test"               << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0:Test\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0test:data";
+    QTest::newRow("0test:data")           << "0test:data"           << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0test:data\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0Class::test";
+    QTest::newRow("0Class::test")         << "0Class::test"         << QTestLibArgsParser::InvalidTestClassError << unknown << "The given argument \"0Class::test\" is neither a flag nor a test specification (bad test class)";
+    unknown.clear();
+    unknown << "0Class::test:data";
+    QTest::newRow("0Class::test:data")    << "0Class::test:data"    << QTestLibArgsParser::InvalidTestClassError << unknown << "The given argument \"0Class::test:data\" is neither a flag nor a test specification (bad test class)";
 
-    QTest::newRow("-maxwarnings 2000 TESTARGS=\"-silent\"") << "-maxwarnings 2000 TESTARGS=\"-silent\"" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"TESTARGS=\"-silent\"\" is neither a flag nor a test case";
-    QTest::newRow("-maxwarnings 2000 o-") << "-maxwarnings 2000 o-" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"o-\" is neither a flag nor a test case";
-    QTest::newRow("-maxwarnings 2000 o-,txt") << "-maxwarnings 2000 o-,txt" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"o-,txt\" is neither a flag nor a test case";
-    QTest::newRow("-maxwarnings 2000 0") << "-maxwarnings 2000 0" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0\" is neither a flag nor a test case";
-    QTest::newRow("-maxwarnings 2000 0test") << "-maxwarnings 2000 0test" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0test\" is neither a flag nor a test case";
-    QTest::newRow("-maxwarnings 2000 0:test") << "-maxwarnings 2000 0:test" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0:test\" is neither a flag nor a test case";
-    QTest::newRow("-maxwarnings 2000 0test:data") << "-maxwarnings 2000 0test:data" << QTestLibArgsParser::InvalidTestCaseError << "The given argument \"0test:data\" is neither a flag nor a test case";
+    unknown.clear();
+    unknown << "TESTARGS=\"-silent\"";
+    QTest::newRow("-silent TESTARGS=\"-silent\"") << "-silent TESTARGS=\"-silent\"" << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"TESTARGS=\"-silent\"\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "o-";
+    QTest::newRow("-silent o-")                   << "-silent o-"                   << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"o-\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "o-,txt";
+    QTest::newRow("-silent o-,txt")               << "-silent o-,txt"               << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"o-,txt\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0";
+    QTest::newRow("-silent 0")                    << "-silent 0"                    << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0test";
+    QTest::newRow("-silent 0test")                << "-silent 0test"                << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0test\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0:test";
+    QTest::newRow("-silent 0:test")               << "-silent 0:test"               << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0:test\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0:Test";
+    QTest::newRow("-silent 0:Test")               << "-silent 0:Test"               << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0:Test\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0test:data";
+    QTest::newRow("-silent 0test:data")           << "-silent 0test:data"           << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0test:data\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0Class::test";
+    QTest::newRow("-silent 0Class::test")         << "-silent 0Class::test"         << QTestLibArgsParser::InvalidTestClassError << unknown << "The given argument \"0Class::test\" is neither a flag nor a test specification (bad test class)";
+    unknown.clear();
+    unknown << "0Class::test:data";
+    QTest::newRow("-silent 0Class::test:data")    << "-silent 0Class::test:data"    << QTestLibArgsParser::InvalidTestClassError << unknown << "The given argument \"0Class::test:data\" is neither a flag nor a test specification (bad test class)";
+
+    unknown.clear();
+    unknown << "TESTARGS=\"-silent\"";
+    QTest::newRow("-maxwarnings 2000 TESTARGS=\"-silent\"") << "-maxwarnings 2000 TESTARGS=\"-silent\"" << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"TESTARGS=\"-silent\"\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "o-";
+    QTest::newRow("-maxwarnings 2000 o-")                   << "-maxwarnings 2000 o-"                   << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"o-\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "o-,txt";
+    QTest::newRow("-maxwarnings 2000 o-,txt")               << "-maxwarnings 2000 o-,txt"               << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"o-,txt\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0";
+    QTest::newRow("-maxwarnings 2000 0")                    << "-maxwarnings 2000 0"                    << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0test";
+    QTest::newRow("-maxwarnings 2000 0test")                << "-maxwarnings 2000 0test"                << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0test\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0:test";
+    QTest::newRow("-maxwarnings 2000 0:test")               << "-maxwarnings 2000 0:test"               << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0:test\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0:Test";
+    QTest::newRow("-maxwarnings 2000 0:Test")               << "-maxwarnings 2000 0:Test"               << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0:Test\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0test:data";
+    QTest::newRow("-maxwarnings 2000 0test:data")           << "-maxwarnings 2000 0test:data"           << QTestLibArgsParser::InvalidTestCaseError  << unknown << "The given argument \"0test:data\" is neither a flag nor a test specification (bad test case)";
+    unknown.clear();
+    unknown << "0Class::test";
+    QTest::newRow("-maxwarnings 2000 0Class::test")         << "-maxwarnings 2000 0Class::test"         << QTestLibArgsParser::InvalidTestClassError << unknown << "The given argument \"0Class::test\" is neither a flag nor a test specification (bad test class)";
+    unknown.clear();
+    unknown << "0Class::test:data";
+    QTest::newRow("-maxwarnings 2000 0Class::test:data")    << "-maxwarnings 2000 0Class::test:data"    << QTestLibArgsParser::InvalidTestClassError << unknown << "The given argument \"0Class::test:data\" is neither a flag nor a test specification (bad test class)";
 }
 
 void QTestLibArgsParserTest::invalidTestError(void)
 {
     QFETCH(QString, args);
     QFETCH(QTestLibArgsParser::Error, err);
+    QFETCH(QStringList, unknown);
     QFETCH(QString, errStr);
 
     QTestLibArgsParser parser(args);
 
     QCOMPARE(parser.error(), err);
     QCOMPARE(parser.errorString(), errStr);
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs(), unknown));
 }
 
 void QTestLibArgsParserTest::prematureEndError_data(void)
 {
     QTest::addColumn<QString>("args");
     QTest::addColumn<QTestLibArgsParser::Error>("err");
+    QTest::addColumn<QStringList>("unknown");
     QTest::addColumn<QString>("errStr");
 
-    QTest::newRow("-o") << "-o" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
-    QTest::newRow("-silent -o") << "-silent -o" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
-    QTest::newRow("-maxwarnings") << "-maxwarnings" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
-    QTest::newRow("-silent -maxwarnings") << "-silent -maxwarnings" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
-    QTest::newRow("-eventdelay") << "-eventdelay" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
-    QTest::newRow("-silent -eventdelay") << "-silent -eventdelay" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
-    QTest::newRow("-keydelay") << "-keydelay" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
-    QTest::newRow("-silent -keydelay") << "-silent -keydelay" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
-    QTest::newRow("-mousedelay") << "-mousedelay" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
-    QTest::newRow("-silent -mousedelay") << "-silent -mousedelay" << QTestLibArgsParser::PrematureEndError << "String of command line arguments ended prematurely";
+    QStringList unknown;
+
+    unknown.clear();
+    unknown << "-o";
+    QTest::newRow("-o")                   << "-o"                   << QTestLibArgsParser::PrematureEndError << unknown << "String of command line arguments ended prematurely";
+    unknown.clear();
+    unknown << "-o";
+    QTest::newRow("-silent -o")           << "-silent -o"           << QTestLibArgsParser::PrematureEndError << unknown << "String of command line arguments ended prematurely";
+    unknown.clear();
+    unknown << "-maxwarnings";
+    QTest::newRow("-maxwarnings")         << "-maxwarnings"         << QTestLibArgsParser::PrematureEndError << unknown << "String of command line arguments ended prematurely";
+    unknown.clear();
+    unknown << "-maxwarnings";
+    QTest::newRow("-silent -maxwarnings") << "-silent -maxwarnings" << QTestLibArgsParser::PrematureEndError << unknown << "String of command line arguments ended prematurely";
+    unknown.clear();
+    unknown << "-eventdelay";
+    QTest::newRow("-eventdelay")          << "-eventdelay"          << QTestLibArgsParser::PrematureEndError << unknown << "String of command line arguments ended prematurely";
+    unknown.clear();
+    unknown << "-eventdelay";
+    QTest::newRow("-silent -eventdelay")  << "-silent -eventdelay"  << QTestLibArgsParser::PrematureEndError << unknown << "String of command line arguments ended prematurely";
+    unknown.clear();
+    unknown << "-keydelay";
+    QTest::newRow("-keydelay")            << "-keydelay"            << QTestLibArgsParser::PrematureEndError << unknown << "String of command line arguments ended prematurely";
+    unknown.clear();
+    unknown << "-keydelay";
+    QTest::newRow("-silent -keydelay")    << "-silent -keydelay"    << QTestLibArgsParser::PrematureEndError << unknown << "String of command line arguments ended prematurely";
+    unknown.clear();
+    unknown << "-mousedelay";
+    QTest::newRow("-mousedelay")          << "-mousedelay"          << QTestLibArgsParser::PrematureEndError << unknown << "String of command line arguments ended prematurely";
+    unknown.clear();
+    unknown << "-mousedelay";
+    QTest::newRow("-silent -mousedelay")  << "-silent -mousedelay"  << QTestLibArgsParser::PrematureEndError << unknown << "String of command line arguments ended prematurely";
 }
 
 void QTestLibArgsParserTest::prematureEndError(void)
 {
     QFETCH(QString, args);
     QFETCH(QTestLibArgsParser::Error, err);
+    QFETCH(QStringList, unknown);
     QFETCH(QString, errStr);
 
     QTestLibArgsParser parser(args);
 
     QCOMPARE(parser.error(), err);
     QCOMPARE(parser.errorString(), errStr);
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs(), unknown));
 }
 
 void QTestLibArgsParserTest::toStringOutput_data(void)
@@ -1547,6 +2161,7 @@ void QTestLibArgsParserTest::toStringOutput(void)
     parser.setOutput(type);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(), args));
     QCOMPARE(parser.toString(), parser.toStringList().join(' '));
 }
@@ -1583,6 +2198,7 @@ void QTestLibArgsParserTest::toStringFormatV1(void)
     parser.setOutputFormat(format);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(1), args));
     QCOMPARE(parser.toString(), parser.toStringList().join(' '));
 }
@@ -1619,6 +2235,7 @@ void QTestLibArgsParserTest::toStringFormatV2(void)
     parser.setOutputFormat(format);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(2), args));
     QCOMPARE(parser.toString(), parser.toStringList(2).join(' '));
 }
@@ -1655,6 +2272,7 @@ void QTestLibArgsParserTest::toStringFormat(void)
     parser.setOutputFormat(format);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(), args));
     QCOMPARE(parser.toString(), parser.toStringList().join(' '));
 }
@@ -1718,6 +2336,7 @@ void QTestLibArgsParserTest::toStringOutFileV1(void)
     parser.setOutFileName(Utils::FileName::fromString(filename));
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(1), args));
     QCOMPARE(parser.toString(), parser.toStringList(1).join(' '));
 }
@@ -1781,6 +2400,7 @@ void QTestLibArgsParserTest::toStringOutFileV2(void)
     parser.setOutFileName(Utils::FileName::fromString(filename));
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(2), args));
     QCOMPARE(parser.toString(), parser.toStringList(2).join(' '));
 }
@@ -1844,6 +2464,7 @@ void QTestLibArgsParserTest::toStringOutFile(void)
     parser.setOutFileName(Utils::FileName::fromString(filename));
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(), args));
     QCOMPARE(parser.toString(), parser.toStringList().join(' '));
 }
@@ -1883,6 +2504,7 @@ void QTestLibArgsParserTest::toStringVerbosity(void)
     parser.setVerbosity(verbosity);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(), args));
     QCOMPARE(parser.toString(), parser.toStringList().join(' '));
 }
@@ -1946,6 +2568,7 @@ void QTestLibArgsParserTest::toStringOther(void)
         parser.enableCrashHandler(false);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(), args));
     QCOMPARE(parser.toString(), parser.toStringList().join(' '));
 }
@@ -2080,6 +2703,7 @@ void QTestLibArgsParserTest::toStringMixedV1(void)
         parser.enableCrashHandler(false);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(1), args));
     QCOMPARE(parser.toString(), parser.toStringList(1).join(' '));
 }
@@ -2112,6 +2736,7 @@ void QTestLibArgsParserTest::copyToStringMixedV1(void)
     QTestLibArgsParser copy(parser);
 
     SUB_TEST_FUNCTION(checkError(copy));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(copy.toStringList(1), args));
     QCOMPARE(copy.toString(), copy.toStringList(1).join(' '));
 }
@@ -2158,6 +2783,7 @@ void QTestLibArgsParserTest::toStringMixedV2(void)
         parser.enableCrashHandler(false);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(2), args));
     QCOMPARE(parser.toString(), parser.toStringList(2).join(' '));
 }
@@ -2190,6 +2816,7 @@ void QTestLibArgsParserTest::copyToStringMixedV2(void)
     QTestLibArgsParser copy(parser);
 
     SUB_TEST_FUNCTION(checkError(copy));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(copy.toStringList(2), args));
     QCOMPARE(copy.toString(), copy.toStringList(2).join(' '));
 }
@@ -2237,6 +2864,7 @@ void QTestLibArgsParserTest::toStringMixed(void)
         parser.enableCrashHandler(false);
 
     SUB_TEST_FUNCTION(checkError(parser));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(), args));
     QCOMPARE(parser.toString(), parser.toStringList().join(' '));
 }
@@ -2269,6 +2897,7 @@ void QTestLibArgsParserTest::copyToStringMixed(void)
     QTestLibArgsParser copy(parser);
 
     SUB_TEST_FUNCTION(checkError(copy));
+    SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(copy.toStringList(), args));
     QCOMPARE(copy.toString(), copy.toStringList().join(' '));
 }
