@@ -353,27 +353,17 @@ void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTest
 
 void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration *runConfig, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity)
 {
-    // Find a run control factory
-    ProjectExplorer::IRunControlFactory* runControlFactory = NULL;
-    foreach (runControlFactory, ExtensionSystem::PluginManager::getObjects<ProjectExplorer::IRunControlFactory>()) {
-        if (runControlFactory->canRun(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE))
-            break;
-    }
-    QVERIFY(runControlFactory != NULL);
-    QVERIFY(runControlFactory->canRun(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE));
-
-    // Create a run control
-    QString errMsg;
-    ProjectExplorer::RunControl* runControl = runControlFactory->create(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE, &errMsg);
-    QCOMPARE(errMsg, QString());
-    QVERIFY(runControl != NULL);
-    QCOMPARE(runControl->runConfiguration(), runConfig);
+    // Create a run control and a run worker:
+    ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE);
+    ProjectExplorer::RunControl::WorkerCreator workerFactory = ProjectExplorer::RunControl::producer(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE);
+    ProjectExplorer::RunWorker* runWorker = workerFactory(runControl);
 
     // Create test model factory
     Internal::TestModelFactory* modelFactory = new Internal::TestModelFactory(runControl, this);
 
     // Signal spies
-    QSignalSpy runControlFinishedSpy(runControl, SIGNAL(finished()));
+    QSignalSpy runWorkerStartedSpy(runWorker, SIGNAL(started()));
+    QSignalSpy runWorkerStoppedSpy(runWorker, SIGNAL(stopped()));
     connect(modelFactory, &Internal::TestModelFactory::modelFound,
             this, [this] (QAbstractItemModel *model) {
         mFoundModel = model;
@@ -389,10 +379,11 @@ void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration
     });
 
     // Run the test
-    runControl->start();
-    if (!runControlFinishedSpy.wait()) {
-        runControl->stop();
-        QVERIFY((runControlFinishedSpy.count() == 1) || runControlFinishedSpy.wait());
+    ProjectExplorer::ProjectExplorerPlugin::startRunControl(runControl);
+    QVERIFY((runWorkerStartedSpy.count() == 1) || runWorkerStartedSpy.wait());
+    if (!runWorkerStoppedSpy.wait()) {
+        runControl->initiateStop();
+        QVERIFY((runWorkerStoppedSpy.count() == 1) || runWorkerStoppedSpy.wait());
         QSKIP("Computer is too slow for this test.");
     }
 

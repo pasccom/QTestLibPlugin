@@ -450,7 +450,7 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    QSignalSpy runControlStartedSpy(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl*)));
+    QSignalSpy runControlStartedSpy(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(aboutToExecuteRunControl(ProjectExplorer::RunControl*,Core::Id)));
     runControlAction->trigger();
 
     QCOMPARE(runControlStartedSpy.size(), 1);
@@ -461,8 +461,9 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
     QVERIFY(runControl->runConfiguration()->runnable().is<ProjectExplorer::StandardRunnable>());
     ProjectExplorer::StandardRunnable runnable = runControl->runConfiguration()->runnable().as<ProjectExplorer::StandardRunnable>();
 
-    QSignalSpy runControlStoppedSpy(runControl, SIGNAL(finished()));
-    runControl->stop();
+    QSignalSpy runControlStoppedSpy(runControl, SIGNAL(stopped()));
+    //runControl->stop();
+    runControl->initiateStop();
     runControlStoppedSpy.wait(1000);
     QCOMPARE(runControlStoppedSpy.size(), 1);
 

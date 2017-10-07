@@ -106,12 +106,12 @@ private slots:
      */
     void parseTestOutput(ProjectExplorer::RunControl* runControl, const QString& msg, Utils::OutputFormat format);
     /*!
-     * \brief Called when a run control finishes.
+     * \brief Called when a run control stops.
      *
      * Thanks to this slot, the factory is notified of the end of the currently run ProjectExplorer::RunControl.
      * It emits the signal modelPopulated() if a model was found and marks the factory for deletion.
      */
-    void runControlFinished(void);
+    void runControlStopped(void);
 private:
     /*!
      * \brief Call each known parser on the line.

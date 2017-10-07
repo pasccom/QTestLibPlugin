@@ -44,8 +44,8 @@ TestModelFactory::TestModelFactory(ProjectExplorer::RunControl *runControl, QObj
 
     connect(runControl, SIGNAL(appendMessageRequested(ProjectExplorer::RunControl*, const QString&, Utils::OutputFormat)),
             this, SLOT(parseTestOutput(ProjectExplorer::RunControl*, const QString&, Utils::OutputFormat)));
-    connect(runControl, SIGNAL(finished()),
-            this, SLOT(runControlFinished()));
+    connect(runControl, SIGNAL(stopped()),
+            this, SLOT(runControlStopped()));
 }
 
 void TestModelFactory::parseTestOutput(ProjectExplorer::RunControl* runControl, const QString& msg, Utils::OutputFormat format)
@@ -58,7 +58,7 @@ void TestModelFactory::parseTestOutput(ProjectExplorer::RunControl* runControl, 
     }
 }
 
-void TestModelFactory::runControlFinished(void)
+void TestModelFactory::runControlStopped(void)
 {
     if (mModelFound) {
         Q_ASSERT(mParsers.size() == 1);

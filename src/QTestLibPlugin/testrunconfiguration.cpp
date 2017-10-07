@@ -143,7 +143,7 @@ void TestRunConfiguration::handleTargetKitChange(void)
         mData->setTargetToolChain(GCC_BASED_TOOL_CHAIN);
     } else if (dynamic_cast<ProjectExplorer::CustomToolChain*>(toolChain) != NULL) {
         mData->setTargetToolChain(CUSTOM_TOOL_CHAIN);
-    } else if ((toolChain->typeId() == ProjectExplorer::Constants::MSVC_TOOLCHAIN_TYPEID) || (toolChain->typeId() == ProjectExplorer::Constants::WINCE_TOOLCHAIN_TYPEID)) {
+    } else if ((toolChain->typeId() == ProjectExplorer::Constants::MSVC_TOOLCHAIN_TYPEID) || (toolChain->typeId() == ProjectExplorer::Constants::CLANG_CL_TOOLCHAIN_TYPEID)) {
         if (ProjectExplorer::ProjectExplorerPlugin::projectExplorerSettings().useJom)
             mData->setTargetToolChain(JOM_MSVC_TOOL_CHAIN);
         else

@@ -30,7 +30,6 @@
 #include <testoutputpane.h>
 #include <testsuitemodel.h>
 
-#include <qmaketestextraaspectfactory.h>
 #include <qmaketestrunconfigurationfactory.h>
 
 #ifdef BUILD_TESTS
@@ -140,10 +139,6 @@ bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorStrin
     ProjectExplorer::IRunConfigurationFactory* runConfigFactory = new QMakeTestRunConfigurationFactory;
     addAutoReleasedObject(runConfigFactory);
 
-    // Test extra aspect factories
-    TestExtraAspectFactory* extraAspectFactory = new QMakeTestExtraAspectFactory;
-    addAutoReleasedObject(extraAspectFactory);
-
     // New sub-menu in build menu and action in project tree context menu
     mRunTestsMenu = Core::ActionManager::createMenu(Constants::TestRunMenuId);
     qDebug() << "Run tests menu:" << mRunTestsMenu->menu();
@@ -170,7 +165,7 @@ bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorStrin
     settings->endGroup();
 
     // Connections
-    connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(runControlStarted(ProjectExplorer::RunControl*)),
+    connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(aboutToExecuteRunControl(ProjectExplorer::RunControl*, Core::Id)),
             mModel, SLOT(appendTestRun(ProjectExplorer::RunControl*)));
     connect(ProjectExplorer::SessionManager::instance(), SIGNAL(projectAdded(ProjectExplorer::Project*)),
             this, SLOT(handleProjectOpen(ProjectExplorer::Project*)));
@@ -309,7 +304,7 @@ void TestLibPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfiguration*
 
     Core::Command* cmd = Core::ActionManager::command(Core::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
     if (cmd == NULL) {
-        QAction *action = new QAction(tr("Run tests for \"%1\"").arg(project->displayName()), this);
+        QAction *action = new QAction(tr("Run tests for \"%1\"").arg(project->displayName()), cmd);
         connect(action, &QAction::triggered,
                 this, [runConfig] () {
             ProjectExplorer::ProjectExplorerPlugin::runRunConfiguration(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE, true);

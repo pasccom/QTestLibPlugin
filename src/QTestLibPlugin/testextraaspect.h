@@ -284,7 +284,7 @@ private:
     friend class TestRunConfigWidget;
 };
 
-class TestExtraAspectFactory : public ProjectExplorer::IRunControlFactory
+/*class TestExtraAspectFactory : public ProjectExplorer::IRunControlFactory
 {
     Q_OBJECT
 public:
@@ -297,7 +297,7 @@ public:
     ProjectExplorer::IRunConfigurationAspect* createRunConfigurationAspect(ProjectExplorer::RunConfiguration *runConfiguration) override;
 protected:
     virtual bool isUseful(ProjectExplorer::RunConfiguration* runConfiguration) const = 0;
-};
+};*/
 
 } // Internal
 } // QTestLibPlugin
