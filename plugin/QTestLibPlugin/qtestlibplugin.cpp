@@ -30,6 +30,7 @@
 #include <testoutputpane.h>
 #include <testsuitemodel.h>
 
+#include <testextraaspect.h>
 #include <qmaketestrunconfigurationfactory.h>
 
 #ifdef BUILD_TESTS
@@ -222,6 +223,8 @@ void TestLibPlugin::handleProjectOpen(ProjectExplorer::Project* project)
 
     connect(project, SIGNAL(activeTargetChanged(ProjectExplorer::Target*)),
             this, SLOT(handleActiveTargetChange(ProjectExplorer::Target*)));
+    connect(project, SIGNAL(parsingFinished()),
+            this, SLOT(handleProjectParsingFinished()));
     handleActiveTargetChange(project->activeTarget(), false);
 }
 
@@ -289,6 +292,19 @@ void TestLibPlugin::handleActiveTargetChange(ProjectExplorer::Target* target, bo
             this, SLOT(handleDeleteRunConfiguration(ProjectExplorer::RunConfiguration*)));
     foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations())
         handleNewRunConfiguration(runConfig);
+}
+
+void TestLibPlugin::handleProjectParsingFinished(void)
+{
+    ProjectExplorer::Project* project = qobject_cast<ProjectExplorer::Project*>(sender());
+    QTC_ASSERT(project != NULL, return);
+
+    foreach (ProjectExplorer::Target* target, project->targets()) {
+        foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations()) {
+            if ((runConfig->extraAspect<TestExtraAspect>() == NULL) && TestExtraAspect::isUseful(runConfig))
+                runConfig->addExtraAspect(new TestExtraAspect(runConfig));
+        }
+    }
 }
 
 void TestLibPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfiguration* runConfig)

@@ -216,6 +216,14 @@ private slots:
     void handleCurrentProjectTreeChange(ProjectExplorer::Project* project);
 
     /*!
+     * \brief Handler for end of project parsing.
+     *
+     * This slot should be called when the project parser finishes.
+     * It uses the sender() function, so it MUST be called through signal/slot mecanism.
+     */
+    void handleProjectParsingFinished(void);
+
+    /*!
      * \brief Handler for active target change.
      *
      * This slot is intended to be called when

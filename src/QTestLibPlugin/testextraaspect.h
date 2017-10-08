@@ -256,6 +256,15 @@ public:
      */
     inline QStringList commandLineArguments(void) const {return mTestArgsParser->toStringList();}
 
+    /*!
+     * \brief Whether this class is useful
+     *
+     * Tells whether this class should be added in the list of extra aspects
+     * of the given run configuration by inspecting its attributes.
+     * \param runConfiguration The run configuration to test.
+     * \return \c true it this class is useful for the given run configuration, \c false otherwise.
+     */
+    static bool isUseful(ProjectExplorer::RunConfiguration* runConfiguration);
 protected:
     /*!
      * \brief Conversion to map
