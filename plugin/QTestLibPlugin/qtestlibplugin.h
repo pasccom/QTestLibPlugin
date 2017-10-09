@@ -87,11 +87,14 @@ class QMakeTestRunConfigurationFactory;
  *  | 0.0.5          | 4.0.0      |  `Y`  |   `Y`   |  `?`   |
  *  | 0.0.6          | 4.2.0      |  `Y`  |   `Y`   |  `?`   |
  *  | 0.0.7          | 4.3.0      |  `Y`  |   `Y`   |  `?`   |
+ *  | 0.0.8          | 4.4.0      |  `P`  |   `P`   |  `?`   |
  *
  * A \c Y means that QTestLibPlugin was tested against this Qt Creator version
  * under the given operating system. A \c N means that the version of the plugin
- * cannot work properly for the given operating system. A \c ? means that I
- * currently do not know whether it works.
+ * cannot work properly for the given operating system. A `P` means that
+ * the sources should be patched (see \c patches/ folder) for the plugin to work
+ * under the given operating system. A \c ? means that I currently do not know
+ * whether it works.
  * 
  * \section license Licensing information
  *
