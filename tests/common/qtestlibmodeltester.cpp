@@ -21,22 +21,32 @@
 #include "qtversion.h"
 
 #include <QtXml>
+#include <QtTest>
 
-#define QVERIFY(_expr_) \
-    do { \
-        if (!(_expr_)) { \
-            mError = QString("'%1' returned FALSE.\n   Loc: [%2(%3)]").arg(#_expr_).arg(__FILE__).arg(__LINE__); \
-            return; \
-        } \
-    } while(false); \
+#undef QVERIFY
+#define QVERIFY(_expr_)                                                                                                             \
+    do {                                                                                                                            \
+        if (!(_expr_)) {                                                                                                            \
+            mError = QString("'%1' returned FALSE.\n   Loc: [%2(%3)]").arg(#_expr_).arg(__FILE__).arg(__LINE__);                    \
+            return;                                                                                                                 \
+        }                                                                                                                           \
+    } while(false)                                                                                                                  \
 
-#define QVERIFY2(_expr_, _desc_) \
-    do { \
-        if (!(_expr_)) { \
-            mError = QString("'%1' returned FALSE (%2).\n   Loc: [%3(%4)]").arg(#_expr_).arg(_desc_).arg(__FILE__).arg(__LINE__); \
-            return; \
-        } \
-    } while(false); \
+#undef QVERIFY2
+#define QVERIFY2(_expr_, _desc_)                                                                                                    \
+    do {                                                                                                                            \
+        if (!(_expr_)) {                                                                                                            \
+            mError = QString("'%1' returned FALSE (%2).\n   Loc: [%3(%4)]").arg(#_expr_).arg(_desc_).arg(__FILE__).arg(__LINE__);   \
+            return;                                                                                                                 \
+        }                                                                                                                           \
+    } while(false)                                                                                                                  \
+
+#undef QFAIL
+#define QFAIL(_desc_)                                                                                                               \
+    do {                                                                                                                            \
+        mError = QString("%1.\n   Loc: [%2(%3)]").arg(_desc_).arg(__FILE__).arg(__LINE__);                                          \
+        return;                                                                                                                     \
+    } while(false)                                                                                                                  \
 
 QTestLibModelTester::QTestLibModelTester(const QAbstractItemModel *model, Verbosity verbosity, const QString& format) :
     mModel(model), mError(QString::null), mParserFormat(format), mVerbosity(verbosity)

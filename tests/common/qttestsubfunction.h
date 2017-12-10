@@ -20,19 +20,35 @@
 #define QT_TEST_SUB_FUNCTION_H
 
 #define SUB_TEST_FUNCTION_SUCESS_INDICATOR __mSuccess
-#define HAS_SUB_TEST_FUNCTIONS bool SUB_TEST_FUNCTION_SUCESS_INDICATOR;
-#define BEGIN_SUB_TEST_FUNCTION SUB_TEST_FUNCTION_SUCESS_INDICATOR = false;
+#define SUB_TEST_FUNCTION_SKIP_INDICATOR __mSkip
+
+#define HAS_SUB_TEST_FUNCTIONS                                                 \
+    bool SUB_TEST_FUNCTION_SUCESS_INDICATOR;                                   \
+    bool SUB_TEST_FUNCTION_SKIP_INDICATOR;                                     \
+
+#define BEGIN_SUB_TEST_FUNCTION                                                \
+    SUB_TEST_FUNCTION_SUCESS_INDICATOR = false;                                \
+    SUB_TEST_FUNCTION_SKIP_INDICATOR = false;                                  \
+
 #define END_SUB_TEST_FUNCTION                                                  \
     do {                                                                       \
         SUB_TEST_FUNCTION_SUCESS_INDICATOR = true;                             \
         return;                                                                \
     } while(false);                                                            \
 
+#define SUB_TEST_FUNCTION_SKIP(__msg__)                                        \
+    do {                                                                       \
+        SUB_TEST_FUNCTION_SKIP_INDICATOR = true;                               \
+        QSKIP(__msg__);                                                        \
+    } while(false);                                                            \
+
 #define SUB_TEST_FUNCTION(__fun__)                                             \
     do {                                                                       \
         __fun__;                                                               \
+        if (SUB_TEST_FUNCTION_SKIP_INDICATOR)                                  \
+            QSKIP("Following sub-test function skipped: " #__fun__);           \
         if (!SUB_TEST_FUNCTION_SUCESS_INDICATOR)                               \
-            return;                                                            \
+            QFAIL("Following sub-test function failed: " #__fun__);            \
         else                                                                   \
             SUB_TEST_FUNCTION_SUCESS_INDICATOR = false;                        \
     } while(false)                                                             \
