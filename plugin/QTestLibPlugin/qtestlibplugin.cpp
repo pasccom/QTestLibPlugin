@@ -223,7 +223,7 @@ void TestLibPlugin::handleProjectOpen(ProjectExplorer::Project* project)
 
     connect(project, SIGNAL(activeTargetChanged(ProjectExplorer::Target*)),
             this, SLOT(handleActiveTargetChange(ProjectExplorer::Target*)));
-    connect(project, SIGNAL(parsingFinished()),
+    connect(project, SIGNAL(parsingFinished(bool)),
             this, SLOT(handleProjectParsingFinished()));
     handleActiveTargetChange(project->activeTarget(), false);
 }

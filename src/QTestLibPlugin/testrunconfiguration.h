@@ -498,17 +498,24 @@ private slots:
      * It updates the internal toolchain ID in TestRunConfigurationData
      */
     void handleTargetKitChange(void);
-private:
+protected:
     /*!
      * \brief Constructor
      *
-     * Initializes a new instance and allocates a new TestRunConfigurationData
-     * to store internal data.
-     * \param parent A target
+     * Creates a new instance with parent target.
+     * \param parent The parent target
+     * \sa initialize()
+     */
+    TestRunConfiguration(ProjectExplorer::Target *parent);
+    /*!
+     * \brief Initialize run configuration
+     *
+     * Initializes a new instance and set run configuration ID.
      * \param id The ID of this instance
      */
-    TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id);
+    inline void initialize(Core::Id id) {ProjectExplorer::RunConfiguration::initialize(id);}
 
+private:
     TestRunConfigurationData* mData;    /*!< TestRunConfigurationData to hold internal data. */
 
     friend class QMakeTestRunConfigurationFactory;

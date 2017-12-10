@@ -153,7 +153,8 @@ ProjectExplorer::RunConfiguration *QMakeTestRunConfigurationFactory::clone(Proje
     QTC_ASSERT(qobject_cast<TestRunConfiguration *>(product) != NULL, return NULL);
 
     qDebug() << "Cloning run configuration for target:" << target->displayName();
-    TestRunConfiguration* runConfig = new TestRunConfiguration(target, Core::Id(Constants::TestRunConfigurationId));
+    TestRunConfiguration* runConfig = new TestRunConfiguration(target);
+    runConfig->initialize(Core::Id(Constants::TestRunConfigurationId));
     runConfig->fromMap(product->toMap());
 
     QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(target->project());
@@ -175,7 +176,8 @@ ProjectExplorer::RunConfiguration *QMakeTestRunConfigurationFactory::clone(Proje
 ProjectExplorer::RunConfiguration* QMakeTestRunConfigurationFactory::doCreate(ProjectExplorer::Target* target, Core::Id id)
 {
     qDebug() << "Creating run configuration for target:" << target->displayName();
-    TestRunConfiguration* runConfig = new TestRunConfiguration(target, id);
+    TestRunConfiguration* runConfig = new TestRunConfiguration(target);
+    runConfig->initialize(id);
 
     QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(target->project());
     QMetaObject::Connection updateConnection = connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
@@ -195,7 +197,8 @@ ProjectExplorer::RunConfiguration* QMakeTestRunConfigurationFactory::doCreate(Pr
 ProjectExplorer::RunConfiguration* QMakeTestRunConfigurationFactory::doRestore(ProjectExplorer::Target* target, const QVariantMap& map)
 {
     qDebug() << "Restoring run configuration for target:" << target->displayName();
-    TestRunConfiguration* runConfig = new TestRunConfiguration(target, ProjectExplorer::idFromMap(map));
+    TestRunConfiguration* runConfig = new TestRunConfiguration(target);
+    runConfig->initialize(ProjectExplorer::idFromMap(map));
 
     QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(target->project());
     QMetaObject::Connection updateConnection = connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,

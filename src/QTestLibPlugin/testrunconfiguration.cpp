@@ -105,8 +105,8 @@ bool TestRunConfigurationData::fromMap(const QVariantMap& map)
     return true;
 }
 
-TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id):
-    ProjectExplorer::RunConfiguration(parent, id)
+TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent):
+    ProjectExplorer::RunConfiguration(parent)
 {
     setDefaultDisplayName(QLatin1String("make check"));
 

@@ -459,11 +459,6 @@ TestExtraAspect::~TestExtraAspect()
     delete mTestArgsParser;
 }
 
-TestExtraAspect* TestExtraAspect::create(ProjectExplorer::RunConfiguration* parent) const
-{
-    return new TestExtraAspect(parent, mTestArgsParser);
-}
-
 void TestExtraAspect::handleTestArgumentsChange(const QString& newArgs)
 {
     ProjectExplorer::ArgumentsAspect* argAspect = runConfiguration()->extraAspect<ProjectExplorer::ArgumentsAspect>();

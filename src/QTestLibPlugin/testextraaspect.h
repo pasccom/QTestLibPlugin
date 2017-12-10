@@ -238,16 +238,6 @@ public:
     ~TestExtraAspect() override;
 
     /*!
-     * \brief Clone the instance
-     *
-     * Clones the current instance and associate it with the given run configuration.
-     * \param parent The run configuration to which this extra aspect is associated.
-     * \return The newly allocated instance of this class.
-     * \sa TestRunConfigurationExtraAspect
-     */
-    TestExtraAspect* create(ProjectExplorer::RunConfiguration* parent) const override;
-
-    /*!
      * \brief Test command-line arguments
      *
      * Returns the command-line arguments which should be passed to the test
