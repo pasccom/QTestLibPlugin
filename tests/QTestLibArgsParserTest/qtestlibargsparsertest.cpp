@@ -2200,7 +2200,7 @@ void QTestLibArgsParserTest::toStringFormatV1(void)
     SUB_TEST_FUNCTION(checkError(parser));
     SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(1), args));
-    QCOMPARE(parser.toString(), parser.toStringList().join(' '));
+    QCOMPARE(parser.toString(1), parser.toStringList(1).join(' '));
 }
 
 void QTestLibArgsParserTest::toStringFormatV2_data(void)
@@ -2237,7 +2237,7 @@ void QTestLibArgsParserTest::toStringFormatV2(void)
     SUB_TEST_FUNCTION(checkError(parser));
     SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(2), args));
-    QCOMPARE(parser.toString(), parser.toStringList(2).join(' '));
+    QCOMPARE(parser.toString(2), parser.toStringList(2).join(' '));
 }
 
 void QTestLibArgsParserTest::toStringFormat_data(void)
@@ -2338,7 +2338,7 @@ void QTestLibArgsParserTest::toStringOutFileV1(void)
     SUB_TEST_FUNCTION(checkError(parser));
     SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(1), args));
-    QCOMPARE(parser.toString(), parser.toStringList(1).join(' '));
+    QCOMPARE(parser.toString(1), parser.toStringList(1).join(' '));
 }
 
 void QTestLibArgsParserTest::toStringOutFileV2_data(void)
@@ -2402,7 +2402,7 @@ void QTestLibArgsParserTest::toStringOutFileV2(void)
     SUB_TEST_FUNCTION(checkError(parser));
     SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(2), args));
-    QCOMPARE(parser.toString(), parser.toStringList(2).join(' '));
+    QCOMPARE(parser.toString(2), parser.toStringList(2).join(' '));
 }
 
 void QTestLibArgsParserTest::toStringOutFile_data(void)
@@ -2705,7 +2705,7 @@ void QTestLibArgsParserTest::toStringMixedV1(void)
     SUB_TEST_FUNCTION(checkError(parser));
     SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(1), args));
-    QCOMPARE(parser.toString(), parser.toStringList(1).join(' '));
+    QCOMPARE(parser.toString(1), parser.toStringList(1).join(' '));
 }
 
 void QTestLibArgsParserTest::copyToStringMixedV1(void)
@@ -2738,7 +2738,7 @@ void QTestLibArgsParserTest::copyToStringMixedV1(void)
     SUB_TEST_FUNCTION(checkError(copy));
     SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(copy.toStringList(1), args));
-    QCOMPARE(copy.toString(), copy.toStringList(1).join(' '));
+    QCOMPARE(copy.toString(1), copy.toStringList(1).join(' '));
 }
 
 void QTestLibArgsParserTest::toStringMixedV2_data(void)
@@ -2785,7 +2785,7 @@ void QTestLibArgsParserTest::toStringMixedV2(void)
     SUB_TEST_FUNCTION(checkError(parser));
     SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(parser.toStringList(2), args));
-    QCOMPARE(parser.toString(), parser.toStringList(2).join(' '));
+    QCOMPARE(parser.toString(2), parser.toStringList(2).join(' '));
 }
 
 void QTestLibArgsParserTest::copyToStringMixedV2(void)
@@ -2818,7 +2818,7 @@ void QTestLibArgsParserTest::copyToStringMixedV2(void)
     SUB_TEST_FUNCTION(checkError(copy));
     SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
     SUB_TEST_FUNCTION(checkArguments(copy.toStringList(2), args));
-    QCOMPARE(copy.toString(), copy.toStringList(2).join(' '));
+    QCOMPARE(copy.toString(2), copy.toStringList(2).join(' '));
 }
 
 
@@ -2904,6 +2904,8 @@ void QTestLibArgsParserTest::copyToStringMixed(void)
 
 void QTestLibArgsParserTest::checkArguments(const QStringList& args, const QStringList& expected)
 {
+    BEGIN_SUB_TEST_FUNCTION
+
     QCOMPARE(args.size(), expected.size());
 
     for (QStringList::const_iterator argsIt = args.constBegin(); argsIt != args.constEnd(); argsIt++) {
@@ -2914,6 +2916,8 @@ void QTestLibArgsParserTest::checkArguments(const QStringList& args, const QStri
         }
         QVERIFY(expectedIt != expected.constEnd());
     }
+
+    END_SUB_TEST_FUNCTION
 }
 
 void QTestLibArgsParserTest::mapFormat_data(void)

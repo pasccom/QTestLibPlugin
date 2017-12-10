@@ -128,7 +128,7 @@ void TestActionsTest::testOpenProjectWithoutTests(void)
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject, false, false));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject, false));
-    SUB_TEST_FUNCTION(checkSubMenu(1));
+    SUB_TEST_FUNCTION(checkSubMenu(0));
 
     SUB_TEST_FUNCTION(cleanupProject());
     QApplication::processEvents();
@@ -149,6 +149,10 @@ void TestActionsTest::testChangeTarget(void)
     foreach (ProjectExplorer::Target* target, mProject->targets()) {
         ProjectExplorer::SessionManager::setActiveTarget(mProject, target, ProjectExplorer::SetActive::Cascade);
         QApplication::processEvents();
+        if (mProject->isParsing()) {
+            QSignalSpy parsingFinishedSpy(mProject, SIGNAL(parsingFinished(bool)));
+            parsingFinishedSpy.wait(5000);
+        }
         SUB_TEST_FUNCTION(checkSubMenuAction(mProject, true, true));
         SUB_TEST_FUNCTION(checkContextMenuAction(mProject, true));
         SUB_TEST_FUNCTION(checkSubMenu(1));
@@ -382,13 +386,14 @@ void TestActionsTest::checkSubMenuAction(ProjectExplorer::Project* project, bool
 
     Core::Command* runProjectTestsCommand = Core::ActionManager::command(runProjectTestsCommandId);
     QCOMPARE(runProjectTestsCommand != NULL, present);
-    if (!present)
-        return;
-    QCOMPARE(runProjectTestsCommand->action()->isEnabled(), enabled);
-    QCOMPARE(runProjectTestsCommand->action()->text(), tr("Run tests for \"%1\" (%2)").arg(project->displayName()).arg(project->activeTarget()->displayName()));
 
-    if (enabled)
-        SUB_TEST_FUNCTION(runMakeCheck(project, runProjectTestsCommand->action()));
+    if (present) {
+        QCOMPARE(runProjectTestsCommand->action()->isEnabled(), enabled);
+        QCOMPARE(runProjectTestsCommand->action()->text().replace('&', ""), QString("Run tests for \"%1\" (%2)").arg(project->displayName()).arg(project->activeTarget()->displayName()));
+
+        if (enabled)
+            SUB_TEST_FUNCTION(runMakeCheck(project, runProjectTestsCommand->action()));
+    }
 
     END_SUB_TEST_FUNCTION
 }
@@ -433,7 +438,7 @@ void TestActionsTest::setCurrentProjectTree(ProjectExplorer::Project* project)
     BEGIN_SUB_TEST_FUNCTION
 
     Q_UNUSED(project);
-    QSKIP("Could not change the current project programatically any more.");
+    SUB_TEST_FUNCTION_SKIP("Could not change the current project programatically any more.");
 
     QSignalSpy currentProjectChangedSpy(ProjectExplorer::ProjectTree::instance(), SIGNAL(currentProjectChanged(ProjectExplorer::Project*)));
     ProjectExplorer::ProjectTree::highlightProject(project, QString::null);
