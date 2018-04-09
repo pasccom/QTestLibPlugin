@@ -18,7 +18,7 @@
 TEMPLATE = lib
 TARGET   = qtestlibplugintest
 
-CONFIG  += c++11
+CONFIG  += c++14
 CONFIG  += static
 QT      += network
 QT      += widgets
