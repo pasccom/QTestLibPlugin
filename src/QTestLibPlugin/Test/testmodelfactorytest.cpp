@@ -292,7 +292,7 @@ void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibAr
     map.remove(CommandLineArgumentsKey);
     map.insert(CommandLineArgumentsKey, cmdArgs.join(QLatin1Char(' ')));
     map.remove(WorkingDirectoryKey);
-    map.insert(WorkingDirectoryKey, TESTS_DIR "/" + testName + "/");
+    map.insert(WorkingDirectoryKey, QVariant(TESTS_DIR "/" + testName + "/"));
 
     // Restore a modified run configuration from the modified map:
     ProjectExplorer::IRunConfigurationFactory* runConfigFactory = ProjectExplorer::IRunConfigurationFactory::find(mProject->activeTarget(), map);
@@ -302,7 +302,7 @@ void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibAr
     QVERIFY(modifiedRunConfig != NULL);
     ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
     QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
-    QCOMPARE(modifiedRunnable.workingDirectory, TESTS_DIR "/" + testName);
+    QCOMPARE(modifiedRunnable.workingDirectory, QString(TESTS_DIR "/" + testName));
 
     runRunConfiguration(modifiedRunConfig, testName, format, verbosity);
 }

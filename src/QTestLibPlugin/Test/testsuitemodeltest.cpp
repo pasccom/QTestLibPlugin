@@ -476,7 +476,7 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     map.remove(CommandLineArgumentsKey);
     map.insert(CommandLineArgumentsKey, cmdArgs.join(QLatin1Char(' ')));
     map.remove(WorkingDirectoryKey);
-    map.insert(WorkingDirectoryKey, TESTS_DIR "/" + test + "/");
+    map.insert(WorkingDirectoryKey, QVariant(TESTS_DIR "/" + test + "/"));
 
     // Restore a modified run configuration from the modified map:
     ProjectExplorer::IRunConfigurationFactory* runConfigFactory = ProjectExplorer::IRunConfigurationFactory::find(project->activeTarget(), map);
@@ -487,7 +487,7 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     QVERIFY(modifiedRunConfig->runnable().is<ProjectExplorer::StandardRunnable>());
     ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
     QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
-    QCOMPARE(modifiedRunnable.workingDirectory, TESTS_DIR "/" + test);
+    QCOMPARE(modifiedRunnable.workingDirectory, QString(TESTS_DIR "/" + test));
 
     // Create a run control and a run worker:
     ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(modifiedRunConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE);
