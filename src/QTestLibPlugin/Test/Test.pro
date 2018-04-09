@@ -15,10 +15,21 @@
 # You should have received a copy of the GNU General Public License
 # along with QTestLibPlugin. If not, see <http://www.gnu.org/licenses/>
 
+# Qt Creator from environment
+# Set the QTC_SOURCE environment variable to override the setting here
+QTCREATOR_SOURCES = $$(QTC_SOURCE)
+# Set the QTC_BUILD environment variable to override the setting here
+IDE_BUILD_TREE = $$(QTC_BUILD)
+
+# Qt Creator from local pri file if it exists
+exists(../../../QtCreator.local.pri) {
+    include(../../../QtCreator.local.pri)
+}
+include($$QTCREATOR_SOURCES/qtcreator.pri)
+
 TEMPLATE = lib
 TARGET   = qtestlibplugintest
 
-CONFIG  += c++14
 CONFIG  += static
 QT      += network
 QT      += widgets
@@ -64,17 +75,6 @@ DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 
 CONFIG(debug, debug|release):DESTDIR = $$QTESTLIBPLUGIN_LIB/debug
 else:DESTDIR = $$QTESTLIBPLUGIN_LIB/release
-
-# Qt Creator from environment
-# Set the QTC_SOURCE environment variable to override the setting here
-QTCREATOR_SOURCES = $$(QTC_SOURCE)
-# Set the QTC_BUILD environment variable to override the setting here
-IDE_BUILD_TREE = $$(QTC_BUILD)
-
-# Qt Creator from local pri file if it exists
-exists(../../../QtCreator.local.pri) {
-    include(../../../QtCreator.local.pri)
-}
 
 INCLUDEPATH += $$QTCREATOR_SOURCES/src/libs
 INCLUDEPATH += $$QTCREATOR_SOURCES/src/plugins
