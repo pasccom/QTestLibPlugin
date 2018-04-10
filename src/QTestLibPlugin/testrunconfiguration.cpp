@@ -38,6 +38,8 @@
 #include <projectexplorer/target.h>
 #include <projectexplorer/runnables.h>
 
+#include <qmakeprojectmanager/qmakeproject.h>
+
 #include <QtWidgets>
 
 #define UNSUPPORTED_TOOL_CHAIN  0
@@ -105,8 +107,8 @@ bool TestRunConfigurationData::fromMap(const QVariantMap& map)
     return true;
 }
 
-TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent):
-    ProjectExplorer::RunConfiguration(parent)
+TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id) :
+    ProjectExplorer::RunConfiguration(parent, id)
 {
     setDefaultDisplayName(QLatin1String("make check"));
 
@@ -126,6 +128,24 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent):
     connect(parent, SIGNAL(kitChanged()),
             this, SLOT(handleTargetKitChange()));
     handleTargetKitChange();
+    update();
+}
+
+bool TestRunConfiguration::update(void)
+{
+    QmakeProjectManager::QmakeProject* qMakeRootNode = qobject_cast<QmakeProjectManager::QmakeProject*>(target()->project());
+    QTC_ASSERT(qMakeRootNode != nullptr, return false);
+
+    QmakeProjectManager::QmakeProFile* qMakeRoot = qMakeRootNode->rootProFile();
+    QStringList makefile = qMakeRoot->variableValue(QmakeProjectManager::Variable::Makefile);
+    if (makefile.size() == 0) {
+        setMakefile(Utils::FileName());
+    } else {
+        QTC_ASSERT(makefile.size() == 1, );
+        setMakefile(qMakeRoot->targetInformation().buildDir.appendPath(makefile.first()));
+    }
+
+    return true;
 }
 
 void TestRunConfiguration::handleTargetKitChange(void)

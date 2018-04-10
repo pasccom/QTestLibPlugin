@@ -21,75 +21,28 @@
 #include "qtestlibpluginconstants.h"
 
 #include <projectexplorer/target.h>
-#include <projectexplorer/kit.h>
 
-#include <qtsupport/qtsupportconstants.h>
-
+#include <qmakeprojectmanager/qmakeprojectmanagerconstants.h>
 #include <qmakeprojectmanager/qmakeproject.h>
-#include <qmakeprojectmanager/qmakenodes.h>
 
 #include <qobject.h>
 
 namespace QTestLibPlugin {
 namespace Internal {
 
-/*!
- * \brief Updates the given run configuration
- *
- * This function should be executed to update a run configuration
- * each time the project is changed.
- * It updates the path to the project \c Makefile.
- * \param runConfig The run configuration to update
- * \param qMakeRoot The project root.
- */
-void updateRunConfiguration(TestRunConfiguration* runConfig, QmakeProjectManager::QmakeProFileNode* qMakeRootNode)
-{
-    if (qMakeRootNode == NULL)
-        return;
-    QmakeProjectManager::QmakeProFile* qMakeRoot = qMakeRootNode->proFile();
-    QStringList makefile = qMakeRoot->variableValue(QmakeProjectManager::Variable::Makefile);
-    if (makefile.size() == 0) {
-        runConfig->setMakefile(Utils::FileName());
-    } else {
-        QTC_ASSERT(makefile.size() == 1, );
-        runConfig->setMakefile(qMakeRoot->targetInformation().buildDir.appendPath(makefile.first()));
-    }
-}
-
-
 QMakeTestRunConfigurationFactory::QMakeTestRunConfigurationFactory(QObject *parent) :
     IRunConfigurationFactory(parent)
 {
+    addSupportedProjectType(QmakeProjectManager::Constants::QMAKEPROJECT_ID);
+    setSupportedTargetDeviceTypes({ProjectExplorer::Constants::DESKTOP_DEVICE_TYPE});
+
+    addFixedBuildTarget(QLatin1String("make check"));
+    registerRunConfiguration<TestRunConfiguration>(Core::Id(Constants::TestRunConfigurationId));
 }
 
-QList<Core::Id> QMakeTestRunConfigurationFactory::availableCreationIds(ProjectExplorer::Target *target, CreationMode mode) const
+bool QMakeTestRunConfigurationFactory::canHandle(ProjectExplorer::Target* target) const
 {
-    Q_UNUSED(mode);
-
-    if (canHandle(target) && isReady(target->project()) && isUseful(target->project()))
-        return QList<Core::Id>() << Core::Id(Constants::TestRunConfigurationId);
-
-    return QList<Core::Id>();
-}
-
-QString QMakeTestRunConfigurationFactory::displayNameForId(Core::Id id) const
-{
-    QTC_ASSERT(id == Core::Id(Constants::TestRunConfigurationId), return QString::null);
-    return QLatin1String("make check");
-}
-
-bool QMakeTestRunConfigurationFactory::canHandle(ProjectExplorer::Target* target)
-{
-    QTC_ASSERT((target != NULL) && (target->kit() != NULL), return false);
-
-    if (qobject_cast<QmakeProjectManager::QmakeProject*>(target->project()) == NULL)
-        return false;
-
-    if (target->kit() == NULL)
-        return false;
-    if (target->kit()->hasFeatures(QSet<Core::Id>() << Core::Id(QtSupport::Constants::FEATURE_DESKTOP)))
-        return true;
-    return false;
+    return IRunConfigurationFactory::canHandle(target) && isReady(target->project()) && isUseful(target->project());
 }
 
 bool QMakeTestRunConfigurationFactory::isReady(ProjectExplorer::Project* project)
@@ -126,94 +79,6 @@ bool QMakeTestRunConfigurationFactory::isUseful(ProjectExplorer::Project* projec
     }
 
     return hasTests;
-}
-
-bool QMakeTestRunConfigurationFactory::canCreate(ProjectExplorer::Target *target, Core::Id id) const
-{
-    QTC_ASSERT(canHandle(target) && isReady(target->project()) && isUseful(target->project()), return false);
-    if (id == Core::Id(Constants::TestRunConfigurationId))
-        return true;
-
-    return false;
-}
-
-bool QMakeTestRunConfigurationFactory::canRestore(ProjectExplorer::Target *target, const QVariantMap &map) const
-{
-    return canHandle(target) && (ProjectExplorer::idFromMap(map) == Core::Id(Constants::TestRunConfigurationId));
-}
-
-bool QMakeTestRunConfigurationFactory::canClone(ProjectExplorer::Target *target, ProjectExplorer::RunConfiguration *product) const
-{
-    return canHandle(target) && (qobject_cast<TestRunConfiguration *>(product) != NULL);
-}
-
-ProjectExplorer::RunConfiguration *QMakeTestRunConfigurationFactory::clone(ProjectExplorer::Target *target, ProjectExplorer::RunConfiguration *product)
-{
-    QTC_ASSERT(canHandle(target), return NULL);
-    QTC_ASSERT(qobject_cast<TestRunConfiguration *>(product) != NULL, return NULL);
-
-    qDebug() << "Cloning run configuration for target:" << target->displayName();
-    TestRunConfiguration* runConfig = new TestRunConfiguration(target);
-    runConfig->initialize(Core::Id(Constants::TestRunConfigurationId));
-    runConfig->fromMap(product->toMap());
-
-    QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(target->project());
-    QMetaObject::Connection updateConnection = connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
-            this, [runConfig, qMakeProject] () {
-        updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
-    });
-    connect(target, &ProjectExplorer::Target::removedRunConfiguration,
-            this, [updateConnection] (ProjectExplorer::RunConfiguration* rc) {
-        qDebug() << "QTC run configuration removed: " << rc;
-        disconnect(updateConnection);
-    });
-    if (isReady(target->project()))
-        updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
-
-    return runConfig;
-}
-
-ProjectExplorer::RunConfiguration* QMakeTestRunConfigurationFactory::doCreate(ProjectExplorer::Target* target, Core::Id id)
-{
-    qDebug() << "Creating run configuration for target:" << target->displayName();
-    TestRunConfiguration* runConfig = new TestRunConfiguration(target);
-    runConfig->initialize(id);
-
-    QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(target->project());
-    QMetaObject::Connection updateConnection = connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
-            this, [runConfig, qMakeProject] () {
-        updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
-    });
-    connect(target, &ProjectExplorer::Target::removedRunConfiguration,
-            this, [updateConnection] (ProjectExplorer::RunConfiguration* rc) {
-        qDebug() << "QTC run configuration removed: " << rc;
-        disconnect(updateConnection);
-    });
-    updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
-
-    return runConfig;
-}
-
-ProjectExplorer::RunConfiguration* QMakeTestRunConfigurationFactory::doRestore(ProjectExplorer::Target* target, const QVariantMap& map)
-{
-    qDebug() << "Restoring run configuration for target:" << target->displayName();
-    TestRunConfiguration* runConfig = new TestRunConfiguration(target);
-    runConfig->initialize(ProjectExplorer::idFromMap(map));
-
-    QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(target->project());
-    QMetaObject::Connection updateConnection = connect(qMakeProject, &QmakeProjectManager::QmakeProject::proFilesEvaluated,
-            this, [runConfig, qMakeProject] () {
-        updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
-    });
-    connect(target, &ProjectExplorer::Target::removedRunConfiguration,
-            this, [updateConnection] (ProjectExplorer::RunConfiguration* rc) {
-        qDebug() << "QTC run configuration removed: " << rc;
-        disconnect(updateConnection);
-    });
-    if (isReady(target->project()))
-        updateRunConfiguration(runConfig, qMakeProject->rootProjectNode());
-
-    return runConfig;
 }
 
 } // Internal

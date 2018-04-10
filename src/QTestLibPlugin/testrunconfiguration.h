@@ -20,6 +20,7 @@
 #define TESTRUNCONFIGURATION_H
 
 #include "qtestlibargsparser.h"
+#include "qtestlibpluginconstants.h"
 
 #include <utils/fileutils.h>
 
@@ -432,6 +433,16 @@ class TestRunConfiguration : public ProjectExplorer::RunConfiguration
     Q_OBJECT
 public:
     /*!
+     * \brief Constructor
+     *
+     * Creates a new instance with parent target.
+     * \param parent The parent target
+     * \param id The id for this run configuration
+     * \sa initialize()
+     */
+    TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id = Constants::TestRunConfigurationId);
+
+    /*!
      * \brief Creates a configuration widget
      *
      * Creates an instance of the configuration widget TestRunConfigurationWidget
@@ -498,24 +509,15 @@ private slots:
      * It updates the internal toolchain ID in TestRunConfigurationData
      */
     void handleTargetKitChange(void);
-protected:
-    /*!
-     * \brief Constructor
-     *
-     * Creates a new instance with parent target.
-     * \param parent The parent target
-     * \sa initialize()
-     */
-    TestRunConfiguration(ProjectExplorer::Target *parent);
-    /*!
-     * \brief Initialize run configuration
-     *
-     * Initializes a new instance and set run configuration ID.
-     * \param id The ID of this instance
-     */
-    inline void initialize(Core::Id id) {ProjectExplorer::RunConfiguration::initialize(id);}
-
 private:
+    /*!
+     * \brief Updates the run configuration
+     *
+     * This function updates the path to the project \c Makefile
+     * in the run configuration.
+     */
+    bool update(void);
+
     TestRunConfigurationData* mData;    /*!< TestRunConfigurationData to hold internal data. */
 
     friend class QMakeTestRunConfigurationFactory;
