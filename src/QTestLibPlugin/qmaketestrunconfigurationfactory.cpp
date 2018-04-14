@@ -42,6 +42,12 @@ QMakeTestRunConfigurationFactory::QMakeTestRunConfigurationFactory(QObject *pare
 
 bool QMakeTestRunConfigurationFactory::canHandle(ProjectExplorer::Target* target) const
 {
+    return IRunConfigurationFactory::canHandle(target) && (!isReady(target->project()) || isUseful(target->project()));
+}
+
+bool QMakeTestRunConfigurationFactory::canCreateHelper(ProjectExplorer::Target* target, const QString& extra) const
+{
+    Q_UNUSED(extra);
     return IRunConfigurationFactory::canHandle(target) && isReady(target->project()) && isUseful(target->project());
 }
 

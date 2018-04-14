@@ -64,13 +64,25 @@ public:
      * \brief Whether the factory handles the given target
      *
      * Returns \c true if the factory handles the given target,
-     * i.e. if the associated project is a \c qMake project and
-     * if the associated kit is a desktop kit.
+     * i.e. if the associated project is a non-parsed \c qMake project
+     * or it includes test sub-projects.
      * \param target A target
      * \return \c true if the factory can handle the target, \c false otherwise.
-     * \sa isUseful(), canCreate(), canRestore(), canClone()
+     * \sa canCreateHelper(), isReady(), isUseful()
      */
     bool canHandle(ProjectExplorer::Target* target) const override;
+    /*!
+     * \brief Whether the factory should create for the given target
+     *
+     * Returns \c true if the factory should create a run configuration for the
+     * given target, i.e. if the associated project is a parsed \c qMake project
+     * and it includes test sub-projects.
+     * \param target A target
+     * \param extra Extra information (unused)
+     * \return \c true if the factory should create a run configuration, \c false otherwise.
+     * \sa canHandle(), isReady(), isUseful()
+     */
+    bool canCreateHelper(ProjectExplorer::Target* target, const QString& extra) const override;
     /*!
      * \brief Whether the project is ready for examination
      *
