@@ -28,15 +28,43 @@
     </message>
     <message>
         <source>Got &quot;%1&quot; where unsigned integer was expected.</source>
-        <translation>Got &quot;%1&quot; where unsigned integer was expected.</translation>
+        <translation type="vanished">Got &quot;%1&quot; where unsigned integer was expected.</translation>
     </message>
     <message>
         <source>Got &quot;%1&quot; where integer was expected.</source>
-        <translation>Got &quot;%1&quot; where integer was expected.</translation>
+        <translation type="vanished">Got &quot;%1&quot; where integer was expected.</translation>
     </message>
     <message>
         <source>The given argument &quot;%1&quot; is neither a flag nor a test case</source>
-        <translation>The given argument &quot;%1&quot; is neither a flag nor a test case</translation>
+        <translation type="vanished">The given argument &quot;%1&quot; is neither a flag nor a test case</translation>
+    </message>
+    <message>
+        <source>Empty flag</source>
+        <translation>Empty flag</translation>
+    </message>
+    <message>
+        <source>The given argument &quot;%1&quot; is neither a flag nor a test specification (bad test class)</source>
+        <translation>The given argument &quot;%1&quot; is neither a flag nor a test specification (bad test class)</translation>
+    </message>
+    <message>
+        <source>The given argument &quot;%1&quot; is neither a flag nor a test specification (bad test case)</source>
+        <translation>The given argument &quot;%1&quot; is neither a flag nor a test specification (bad test case)</translation>
+    </message>
+    <message>
+        <source>Given test specification is badly terminated (escape)</source>
+        <translation>Given test specification is badly terminated (escape)</translation>
+    </message>
+    <message>
+        <source>Given test specification is badly terminated (missing quote)</source>
+        <translation>Given test specification is badly terminated (missing quote)</translation>
+    </message>
+    <message>
+        <source>Got &quot;%1&quot; where unsigned integer was expected (command &quot;%2&quot;).</source>
+        <translation>Got &quot;%1&quot; where unsigned integer was expected (command &quot;%2&quot;).</translation>
+    </message>
+    <message>
+        <source>Got &quot;%1&quot; where integer was expected (command &quot;%2&quot;).</source>
+        <translation>Got &quot;%1&quot; where integer was expected (command &quot;%2&quot;).</translation>
     </message>
 </context>
 <context>
@@ -162,6 +190,13 @@
         <oldsource>Fail    </oldsource>
         <translatorcomment>Put in preterite form</translatorcomment>
         <translation>Test failed</translation>
+    </message>
+</context>
+<context>
+    <name>QTestLibPlugin::Internal::TestExtraAspect</name>
+    <message>
+        <source>Test settings</source>
+        <translation>Test settings</translation>
     </message>
 </context>
 <context>
@@ -353,7 +388,7 @@
     <name>QTestLibPlugin::Internal::TestRunConfigurationExtraAspect</name>
     <message>
         <source>Test settings</source>
-        <translation>Test settings</translation>
+        <translation type="vanished">Test settings</translation>
     </message>
 </context>
 <context>

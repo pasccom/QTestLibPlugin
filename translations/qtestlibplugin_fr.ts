@@ -28,15 +28,43 @@
     </message>
     <message>
         <source>Got &quot;%1&quot; where unsigned integer was expected.</source>
-        <translation>A trouvé &quot;%1&quot; au lieu d&apos;un entier non signé.</translation>
+        <translation type="vanished">A trouvé &quot;%1&quot; au lieu d&apos;un entier non signé.</translation>
     </message>
     <message>
         <source>Got &quot;%1&quot; where integer was expected.</source>
-        <translation>A trouvé &quot;%1&quot; au lieu d&apos;un entier signé.</translation>
+        <translation type="vanished">A trouvé &quot;%1&quot; au lieu d&apos;un entier signé.</translation>
     </message>
     <message>
         <source>The given argument &quot;%1&quot; is neither a flag nor a test case</source>
-        <translation>L&apos;argument &quot;%1&quot; n&apos;est ni un flag ni un item de test</translation>
+        <translation type="vanished">L&apos;argument &quot;%1&quot; n&apos;est ni un flag ni un item de test</translation>
+    </message>
+    <message>
+        <source>Empty flag</source>
+        <translation>Flag vide</translation>
+    </message>
+    <message>
+        <source>The given argument &quot;%1&quot; is neither a flag nor a test specification (bad test class)</source>
+        <translation>L&apos;argument &quot;%1&quot; n&apos;est ni un flag ni la spécification d&apos;un test (mauvaise classe de test)</translation>
+    </message>
+    <message>
+        <source>The given argument &quot;%1&quot; is neither a flag nor a test specification (bad test case)</source>
+        <translation>L&apos;argument &quot;%1&quot; n&apos;est ni un flag ni la spécification d&apos;un test (mauvaise cas de test)</translation>
+    </message>
+    <message>
+        <source>Given test specification is badly terminated (escape)</source>
+        <translation>La spécification de test est mal terminée (echappement)</translation>
+    </message>
+    <message>
+        <source>Given test specification is badly terminated (missing quote)</source>
+        <translation>La spécification de test est mal terminée (guillemet manquant)</translation>
+    </message>
+    <message>
+        <source>Got &quot;%1&quot; where unsigned integer was expected (command &quot;%2&quot;).</source>
+        <translation>A trouvé &quot;%1&quot; au lieu d&apos;un entier non signé (commande &quot;%2&quot;).</translation>
+    </message>
+    <message>
+        <source>Got &quot;%1&quot; where integer was expected (command &quot;%2&quot;).</source>
+        <translation>A trouvé &quot;%1&quot; au lieu d&apos;un entier (commande &quot;%2&quot;).</translation>
     </message>
 </context>
 <context>
@@ -155,6 +183,13 @@
         <source>Fail</source>
         <oldsource>Fail    </oldsource>
         <translation>Test échoué</translation>
+    </message>
+</context>
+<context>
+    <name>QTestLibPlugin::Internal::TestExtraAspect</name>
+    <message>
+        <source>Test settings</source>
+        <translation>Paramètres des tests</translation>
     </message>
 </context>
 <context>
@@ -346,7 +381,7 @@
     <name>QTestLibPlugin::Internal::TestRunConfigurationExtraAspect</name>
     <message>
         <source>Test settings</source>
-        <translation>Paramètres des tests</translation>
+        <translation type="vanished">Paramètres des tests</translation>
     </message>
 </context>
 <context>
