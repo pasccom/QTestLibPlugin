@@ -128,7 +128,16 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core
     connect(parent, SIGNAL(kitChanged()),
             this, SLOT(handleTargetKitChange()));
     handleTargetKitChange();
-    update();
+
+    QMetaObject::Connection updateConnection = connect(parent->project(), SIGNAL(parsingFinished(bool)), this, SLOT(update()));
+    connect(parent, &ProjectExplorer::Target::removedRunConfiguration,
+            this, [this, updateConnection] (ProjectExplorer::RunConfiguration* rc) {
+        qDebug() << "QTC run configuration removed: " << rc;
+        if (rc == this)
+            disconnect(updateConnection);
+    });
+    if (!target()->project()->isParsing())
+        update();
 }
 
 bool TestRunConfiguration::update(void)

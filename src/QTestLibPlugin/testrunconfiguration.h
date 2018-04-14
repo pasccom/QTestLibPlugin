@@ -509,7 +509,6 @@ private slots:
      * It updates the internal toolchain ID in TestRunConfigurationData
      */
     void handleTargetKitChange(void);
-private:
     /*!
      * \brief Updates the run configuration
      *
@@ -517,7 +516,7 @@ private:
      * in the run configuration.
      */
     bool update(void);
-
+private:
     TestRunConfigurationData* mData;    /*!< TestRunConfigurationData to hold internal data. */
 
     friend class QMakeTestRunConfigurationFactory;
