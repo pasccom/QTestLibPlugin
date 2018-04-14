@@ -105,13 +105,15 @@ void TestModelFactoryTest::data(void)
 
     QTest::addColumn<Internal::QTestLibArgsParser::TestOutputFormat>("format");
     QTest::addColumn<Internal::QTestLibArgsParser::TestVerbosity>("verbosity");
+    QTest::addColumn<Core::Id>("runMode");
 
     foreach (Internal::QTestLibArgsParser::TestOutputFormat format, formats) {
         foreach (Internal::QTestLibArgsParser::TestVerbosity verbosity, verbosities) {
             Internal::QTestLibArgsParser args;
             args.setVerbosity(verbosity);
             args.setOutputFormat(format);
-            QTest::newRow(qPrintable(args.toString())) << format << verbosity;
+            QTest::newRow(qPrintable(QString("Normal %1").arg(args.toString()))) << format << verbosity << Core::Id(ProjectExplorer::Constants::NORMAL_RUN_MODE);
+            QTest::newRow(qPrintable(QString("Debug %1").arg(args.toString()))) << format << verbosity << Core::Id(ProjectExplorer::Constants::DEBUG_RUN_MODE);
         }
     }
 }
@@ -120,56 +122,73 @@ void TestModelFactoryTest::testOneClass(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(Core::Id, runMode);
 
-    runTest("OneClassTest", format, verbosity);
+    if ((runMode == ProjectExplorer::Constants::DEBUG_RUN_MODE) && (verbosity == Internal::QTestLibArgsParser::VerboseSignal))
+        QSKIP("Debugging with signals changes test output");
+    runTest("OneClassTest", format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::testAllMessages(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(Core::Id, runMode);
 
-    runTest("AllMessagesTest", format, verbosity);
+    if (runMode == ProjectExplorer::Constants::DEBUG_RUN_MODE)
+        QSKIP("Debugging AllMessagesTest is not supported due to OS error signal");
+    runTest("AllMessagesTest", format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::testMultipleClasses(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(Core::Id, runMode);
 
-    runTest("MultipleClassesTest", format, verbosity);
+    if ((runMode == ProjectExplorer::Constants::DEBUG_RUN_MODE) && (verbosity == Internal::QTestLibArgsParser::VerboseSignal))
+        QSKIP("Debugging with signals changes test output");
+    runTest("MultipleClassesTest", format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::testSignalsTest(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(Core::Id, runMode);
 
-    runTest("SignalsTest", format, verbosity);
+    if ((runMode == ProjectExplorer::Constants::DEBUG_RUN_MODE) && (verbosity == Internal::QTestLibArgsParser::VerboseSignal))
+        QSKIP("Debugging with signals changes test output");
+    runTest("SignalsTest", format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::testLimits(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(Core::Id, runMode);
 
-    runTest("LimitsTest", format, verbosity);
+    if ((runMode == ProjectExplorer::Constants::DEBUG_RUN_MODE) && (verbosity == Internal::QTestLibArgsParser::VerboseSignal))
+        QSKIP("Debugging with signals changes test output");
+    runTest("LimitsTest", format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::testOneSubTest(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(Core::Id, runMode);
 
-    runMakeCheck("OneSubTest", format, verbosity);
+    runMakeCheck("OneSubTest", format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::testTwoSubTests(void)
 {
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
+    QFETCH(Core::Id, runMode);
 
-    runMakeCheck("TwoSubTests", format, verbosity);
+    runMakeCheck("TwoSubTests", format, verbosity, runMode);
 }
 
 QStringList TestModelFactoryTest::commandLineArguments(Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity)
@@ -266,7 +285,7 @@ QString TestModelFactoryTest::formatToString(Internal::QTestLibArgsParser::TestO
 }
 
 
-void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity)
+void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Core::Id runMode)
 {
     QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
 
@@ -304,10 +323,10 @@ void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibAr
     QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
     QCOMPARE(modifiedRunnable.workingDirectory, QString(TESTS_DIR "/" + testName));
 
-    runRunConfiguration(modifiedRunConfig, testName, format, verbosity);
+    runRunConfiguration(modifiedRunConfig, testName, format, verbosity, runMode);
 }
 
-void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity)
+void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Core::Id runMode)
 {
     QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
 
@@ -348,14 +367,14 @@ void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTest
     QCOMPARE(modifiedRunConfig->displayName(), QLatin1String("make check"));
     modifiedRunConfig->setDisplayName(testName);
 
-    runRunConfiguration(modifiedRunConfig, testName, format, verbosity);
+    runRunConfiguration(modifiedRunConfig, testName, format, verbosity, runMode);
 }
 
-void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration *runConfig, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity)
+void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration *runConfig, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Core::Id runMode)
 {
     // Create a run control and a run worker:
-    ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE);
-    ProjectExplorer::RunControl::WorkerCreator workerFactory = ProjectExplorer::RunControl::producer(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE);
+    ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(runConfig, runMode);
+    ProjectExplorer::RunControl::WorkerCreator workerFactory = ProjectExplorer::RunControl::producer(runConfig, runMode);
     ProjectExplorer::RunWorker* runWorker = workerFactory(runControl);
 
     // Create test model factory
