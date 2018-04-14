@@ -38,7 +38,7 @@ PROJECT_NAME           = "Qt Creator QTestLib Plugin"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 0.0.9
+PROJECT_NUMBER         = 0.0.10
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -2024,7 +2024,7 @@ SEARCH_INCLUDES        = YES
 # preprocessor.
 # This tag requires that the tag SEARCH_INCLUDES is set to YES.
 
-INCLUDE_PATH           = /home/pascal/Téléchargements/Logiciels/Dev/qt-creator-opensource-src-3.4.2
+INCLUDE_PATH           = /usr/include/qtcreator
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the
