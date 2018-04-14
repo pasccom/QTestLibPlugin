@@ -591,6 +591,7 @@ private:
      * error() will return QTestLibArgsParser::InvalidArgumentError.
      *
      * \param token The token to convert into an unsigned integer
+     * \param cmd The name of the flag preceeding the unsigned integer
      * \param defaultValue The default value returned when the conversion fails
      * \return The unsigned integer value contained in the given token or
      * the default value if the given token can not be converted to an unsigned integer.
@@ -605,6 +606,7 @@ private:
      * error() will return QTestLibArgsParser::InvalidArgumentError.
      *
      * \param token The token to convert into an integer
+     * \param cmd The name of the flag preceeding the integer
      * \param defaultValue The default value returned when the conversion fails
      * \return The integer value contained in the given token or
      * the default value if the given token can not be converted to an integer.
