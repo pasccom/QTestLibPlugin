@@ -34,8 +34,7 @@ include(../../QTestLibPlugin.pri)
 DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 
 # Test files
-SOURCES += testproxymodeltest.cpp                 \
-           xmlqtestlibparserfactoryfake.cpp
+SOURCES += testproxymodeltest.cpp
 HEADERS += xmlqtestlibparserfactoryfake.h
 
 # The tester libraries

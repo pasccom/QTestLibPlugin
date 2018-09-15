@@ -27,17 +27,22 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
+QList<AbstractTestParserFactory *> TestModelFactory::mParserFactories;
+
+AbstractTestParserFactory::AbstractTestParserFactory(void)
+{
+    TestModelFactory::mParserFactories.append(this);
+}
+
 TestModelFactory::TestModelFactory(ProjectExplorer::RunControl *runControl, QObject *parent)
     : QObject(parent), mModelFound(false)
 {
     qDebug() << "Run control started:" << runControl->displayName();
 
-    auto canParsePredicate = [runControl] (AbstractTestParserFactory *factory) -> bool {
-        return factory->canParse(runControl->runConfiguration());
-    };
+    foreach (AbstractTestParserFactory* factory, mParserFactories) {
+        if (!factory->canParse(runControl->runConfiguration()))
+            continue;
 
-    foreach (AbstractTestParserFactory* factory, ExtensionSystem::PluginManager::getObjects<AbstractTestParserFactory>(canParsePredicate)) {
-        qDebug() << "Found factory with class name:" << factory->metaObject()->className();
         mParsers.append(factory->getParserInstance(runControl->runConfiguration()));
         Q_ASSERT(mParsers.last() != NULL);
     }

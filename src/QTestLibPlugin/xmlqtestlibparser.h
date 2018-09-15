@@ -95,6 +95,7 @@ private:
     QString mCurrentRow; /*!< The name of the data row currently parsed */
     QString mCurrentDescription; /*!< The description of the test currently parsed */
 
+    template<class C>
     friend class XMLQTestLibParserFactory;
 };
 

@@ -25,7 +25,6 @@
 #include <projectexplorer/projecttree.h>
 #include <projectexplorer/session.h>
 #include <projectexplorer/target.h>
-#include <projectexplorer/runnables.h>
 #include <projectexplorer/kit.h>
 #include <projectexplorer/kitmanager.h>
 #include <projectexplorer/kitinformation.h>
@@ -126,6 +125,7 @@ void TestActionsTest::testOpenProjectWithoutTests(void)
     QVERIFY(openQMakeProject(projectPath, &mProject));
     QCOMPARE(mProject->projectFilePath().toString(), projectPath);
     QApplication::processEvents();
+
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject, false, false));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject, false));
     SUB_TEST_FUNCTION(checkSubMenu(0));
@@ -463,8 +463,7 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
     Utils::Environment env = project->activeTarget()->activeBuildConfiguration()->environment();
     ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(project->activeTarget()->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
     ProjectExplorer::RunControl* runControl = runControlStartedSpy.at(0).at(0).value<ProjectExplorer::RunControl*>();
-    QVERIFY(runControl->runConfiguration()->runnable().is<ProjectExplorer::StandardRunnable>());
-    ProjectExplorer::StandardRunnable runnable = runControl->runConfiguration()->runnable().as<ProjectExplorer::StandardRunnable>();
+    ProjectExplorer::Runnable runnable = runControl->runConfiguration()->runnable();
 
     QSignalSpy runControlStoppedSpy(runControl, SIGNAL(stopped()));
     //runControl->stop();

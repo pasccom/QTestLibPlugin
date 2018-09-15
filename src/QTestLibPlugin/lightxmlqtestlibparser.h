@@ -121,6 +121,7 @@ private:
     QString mCurrentDescription; /*!< The description of the test currently parsed */
     QString mDefaultClassName; /*!< Default class name, used in case run control is null (mainly in tests) */
 
+    template<class C>
     friend class LightXMLQTestLibParserFactory;
 };
 

@@ -32,7 +32,7 @@ namespace QTestLibPlugin {
 namespace Internal {
 
 TestOutputPane::TestOutputPane(TestSuiteModel* model) :
-    mModel(model), mOutputWidget(NULL)
+    Core::IOutputPane(model), mModel(model), mOutputWidget(NULL)
 {
     mColumnWidths.resize(3);
 

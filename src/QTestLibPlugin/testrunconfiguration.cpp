@@ -36,7 +36,6 @@
 #include <projectexplorer/gcctoolchain.h>
 #include <projectexplorer/customtoolchain.h>
 #include <projectexplorer/target.h>
-#include <projectexplorer/runnables.h>
 
 #include <qmakeprojectmanager/qmakeproject.h>
 
@@ -205,7 +204,7 @@ bool TestRunConfiguration::fromMap(const QVariantMap& map)
 
 ProjectExplorer::Runnable TestRunConfiguration::runnable(void) const
 {
-    ProjectExplorer::StandardRunnable runnable;
+    ProjectExplorer::Runnable runnable;
     if (macroExpander() != NULL)
         runnable.executable = macroExpander()->expand(mData->makeExe().toString());
     else

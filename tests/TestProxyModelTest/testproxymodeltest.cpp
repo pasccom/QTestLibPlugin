@@ -220,7 +220,7 @@ void TestProxyModelTest::createModel(const QString& testName)
     BEGIN_SUB_TEST_FUNCTION
 
     // Creation of parser
-    QTestLibPlugin::Internal::XMLQTestLibParserFactory factory(this);
+    QTestLibPlugin::Internal::XMLQTestLibParserFactory<Fake> factory;
     QTestLibPlugin::Internal::AbstractTestParser* parser = factory.getParserInstance(nullptr);
     QVERIFY2(parser, "Factory should return a valid parser");
 

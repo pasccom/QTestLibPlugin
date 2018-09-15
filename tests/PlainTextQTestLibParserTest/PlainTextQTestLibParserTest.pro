@@ -36,8 +36,7 @@ DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 include(../../make.pri)
 
 # Test files
-SOURCES += plaintextqtestlibparsertest.cpp \
-           plaintextqtestlibparserfactoryfake.cpp
+SOURCES += plaintextqtestlibparsertest.cpp
 HEADERS += plaintextqtestlibparserfactoryfake.h
 
 # The tester libraries

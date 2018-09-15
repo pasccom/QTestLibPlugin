@@ -101,6 +101,7 @@ private:
     QString mCurrentDescription; /*!< The description of the test currently parsed */
     QTestLibModel::MessageType mCurrentMessageType; /*!< The type of the current message */
 
+    template<class C>
     friend class XUnitXMLQTestLibParserFactory;
 };
 

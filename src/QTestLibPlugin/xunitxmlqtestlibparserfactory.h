@@ -20,6 +20,10 @@
 #define XUNITXMLQTESTLIBPARSERFACTORY_H
 
 #include "testmodelfactory.h"
+#include "xunitxmlqtestlibparser.h"
+#include "qtestlibargsparser.h"
+
+#include <projectexplorer/runconfiguration.h>
 
 namespace QTestLibPlugin {
 namespace Internal {
@@ -33,27 +37,24 @@ namespace Internal {
  * allocate instances of the associated parser if needed.
  * For this it uses the methods of a base factory injected in the constructor.
  */
+template<class B>
 class XUnitXMLQTestLibParserFactory : public AbstractTestParserFactory
 {
-    Q_OBJECT
-    Q_PROPERTY(AbstractTestParserFactory* baseFactory READ baseFactory)
 public:
     /*!
      * \brief Constructor
      *
-     * Just call the parent class constructor.
-     *
-     * \param base The base of this factory
+     * Just initializes members.
      */
-    inline XUnitXMLQTestLibParserFactory(AbstractTestParserFactory* base):
-        AbstractTestParserFactory(base), mBase(base) {}
+    inline XUnitXMLQTestLibParserFactory(void) :
+        mBase(QTestLibArgsParser::XUnitXmlFormat) {}
     /*!
      * \brief Base factory
      *
      * Returns the base factory (used by the canParse() method).
      * \return The base factory
      */
-    inline AbstractTestParserFactory* baseFactory(void) const {return mBase;}
+    inline B& base(void) {return mBase;}
     /*!
      * \brief \copybrief AbstractTestParserFactory::canParse()
      *
@@ -62,11 +63,23 @@ public:
      * \param runConfiguration he run configuration to test
      * \return true, if the associated parser may parse the test output.
      */
-    inline bool canParse(ProjectExplorer::RunConfiguration* runConfiguration) const override {return (mBase != nullptr) ? mBase->canParse(runConfiguration) : false;}
+    inline bool canParse(ProjectExplorer::RunConfiguration* runConfiguration) const override {return mBase.canParse(runConfiguration);}
     AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const override ;
 private:
-    AbstractTestParserFactory* mBase;
+    B mBase;
 };
+
+template<class B>
+AbstractTestParser* XUnitXMLQTestLibParserFactory<B>::getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const
+{
+    Q_ASSERT(runConfiguration != NULL);
+
+    if (!canParse(runConfiguration))
+        return NULL;
+    qDebug() << "XUnitXMLQTestLibParser can parse this file";
+    return new XUnitXMLQTestLibParser(runConfiguration);
+}
+
 
 } // namespace Internal
 } // namespace QTestLibPlugin

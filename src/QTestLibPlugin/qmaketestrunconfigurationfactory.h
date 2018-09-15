@@ -48,41 +48,30 @@ class TestRunConfiguration;
  *
  * \sa TestRunConfiguration
  */
-class QMakeTestRunConfigurationFactory : public ProjectExplorer::IRunConfigurationFactory
+class QMakeTestRunConfigurationFactory : public ProjectExplorer::RunConfigurationFactory
 {
-    Q_OBJECT
 public:
     /*!
      * \brief Constructor
      *
-     * The constructor currently does nothing.
-     * \param parent The parent object.
+     * Constructs an new run configuration factory instance
+     * for QMake projects with desktop target.
      */
-    QMakeTestRunConfigurationFactory(QObject *parent = NULL);
+    QMakeTestRunConfigurationFactory(void);
 
     /*!
-     * \brief Whether the factory handles the given target
+     * \brief The build targets this factory can create
      *
-     * Returns \c true if the factory handles the given target,
-     * i.e. if the associated project is a non-parsed \c qMake project
-     * or it includes test sub-projects.
-     * \param target A target
-     * \return \c true if the factory can handle the target, \c false otherwise.
-     * \sa canCreateHelper(), isReady(), isUseful()
-     */
-    bool canHandle(ProjectExplorer::Target* target) const override;
-    /*!
-     * \brief Whether the factory should create for the given target
+     * This function returns a list of the build targets this factory can create.
      *
-     * Returns \c true if the factory should create a run configuration for the
-     * given target, i.e. if the associated project is a parsed \c qMake project
-     * and it includes test sub-projects.
-     * \param target A target
-     * \param extra Extra information (unused)
-     * \return \c true if the factory should create a run configuration, \c false otherwise.
-     * \sa canHandle(), isReady(), isUseful()
+     * \note A more extensive documentation may be available in Qt Creator Developper documentation
+     *
+     * \param target The target of the future run configuration.
+     * \return A list of the build targets this factory can create.
+     * \sa canCreate()
      */
-    bool canCreateHelper(ProjectExplorer::Target* target, const QString& extra) const override;
+    QList<ProjectExplorer::RunConfigurationCreationInfo> availableCreators(ProjectExplorer::Target *target) const override;
+
     /*!
      * \brief Whether the project is ready for examination
      *

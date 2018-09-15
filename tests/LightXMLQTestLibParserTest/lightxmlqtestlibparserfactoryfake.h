@@ -20,19 +20,31 @@
 #define LIGHTXMLQTESTLIBPARSERFACTORYFAKE_H
 
 #include "testmodelfactory.h"
+#include "lightxmlqtestlibparser.h"
+
+#include <projectexplorer/runconfiguration.h>
+
+class Fake {};
 
 namespace QTestLibPlugin {
 namespace Internal {
 
+template<class B>
 class LightXMLQTestLibParserFactory : public AbstractTestParserFactory
 {
-    Q_OBJECT
 public:
-    inline LightXMLQTestLibParserFactory(QObject *parent = NULL):
-        AbstractTestParserFactory(parent) {}
+    inline LightXMLQTestLibParserFactory(void):
+        AbstractTestParserFactory() {}
     inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {Q_UNUSED(runConfiguration); return true;}
     AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const;
 };
+
+// TODO inline
+template<class B>
+AbstractTestParser* LightXMLQTestLibParserFactory<B>::getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const
+{
+    return new LightXMLQTestLibParser(runConfiguration);
+}
 
 } // namespace Internal
 } // namespace QTestLibPlugin

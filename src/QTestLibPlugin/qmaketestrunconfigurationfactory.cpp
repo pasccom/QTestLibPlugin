@@ -30,25 +30,25 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-QMakeTestRunConfigurationFactory::QMakeTestRunConfigurationFactory(QObject *parent) :
-    IRunConfigurationFactory(parent)
+QMakeTestRunConfigurationFactory::QMakeTestRunConfigurationFactory(void) :
+    RunConfigurationFactory()
 {
     addSupportedProjectType(QmakeProjectManager::Constants::QMAKEPROJECT_ID);
-    setSupportedTargetDeviceTypes({ProjectExplorer::Constants::DESKTOP_DEVICE_TYPE});
+    addSupportedTargetDeviceType({ProjectExplorer::Constants::DESKTOP_DEVICE_TYPE});
 
-    addFixedBuildTarget(QLatin1String("make check"));
     registerRunConfiguration<TestRunConfiguration>(Core::Id(Constants::TestRunConfigurationId));
 }
 
-bool QMakeTestRunConfigurationFactory::canHandle(ProjectExplorer::Target* target) const
+QList<ProjectExplorer::RunConfigurationCreationInfo> QMakeTestRunConfigurationFactory::availableCreators(ProjectExplorer::Target* target) const
 {
-    return IRunConfigurationFactory::canHandle(target) && (!isReady(target->project()) || isUseful(target->project()));
-}
+    if (isReady(target->project()) && !isUseful(target->project()))
+        return {};
 
-bool QMakeTestRunConfigurationFactory::canCreateHelper(ProjectExplorer::Target* target, const QString& extra) const
-{
-    Q_UNUSED(extra);
-    return IRunConfigurationFactory::canHandle(target) && isReady(target->project()) && isUseful(target->project());
+    ProjectExplorer::RunConfigurationCreationInfo rci;
+    rci.factory = this;
+    rci.id = runConfigurationBaseId();
+    rci.displayName = QLatin1String("make check");
+    return {rci};
 }
 
 bool QMakeTestRunConfigurationFactory::isReady(ProjectExplorer::Project* project)

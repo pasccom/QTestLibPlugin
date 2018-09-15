@@ -42,20 +42,17 @@ namespace Internal {
  *
  * These are sensible heuristics for most qMake projects.
  */
-class BaseQMakeQTestLibParserFactory : public AbstractTestParserFactory
+class BaseQMakeQTestLibParserFactory
 {
-    Q_OBJECT
 public:
     /*!
      * \brief Constructor
      *
-     * Just call the parent class constructor.
-     *
+     * Just initialize the members.
      * \param format The test output format accepted by the parser
-     * \param parent The parent object of the factory
      */
-    inline BaseQMakeQTestLibParserFactory(QTestLibArgsParser::TestOutputFormat format, QObject* parent = nullptr):
-        AbstractTestParserFactory(parent), mFormat(format) {}
+    inline BaseQMakeQTestLibParserFactory(QTestLibArgsParser::TestOutputFormat format):
+        mFormat(format) {}
     /*!
      * \brief \copybrief AbstractTestParserFactory::canParse()
      *
@@ -68,15 +65,7 @@ public:
      * \param runConfiguration The run configuration to test.
      * \return \c true, if the associated parser may parse the test output.
      */
-    inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const override {return canParseRunConfiguration(runConfiguration) || canParseModule(runConfiguration);}
-    /*!
-     * \brief \copybrief AbstractTestParserFactory::getParserInstance()
-     *
-     * Always returns \c nullptr, since this factory is a base (not associated with any parser).
-     * \param runConfiguration Unused.
-     * \return Always \c nullptr.
-     */
-    inline AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration* runConfiguration) const override {Q_UNUSED(runConfiguration); return nullptr;}
+    inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {return canParseRunConfiguration(runConfiguration) || canParseModule(runConfiguration);}
     /*!
      * \brief Set the format accepted by the parser.
      *

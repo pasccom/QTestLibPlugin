@@ -165,6 +165,7 @@ private:
     QTestLibModel *mModel; /*!< The model for the test output (it is \c NULL while TestModelFactory::MagicFound has not been returned by parseStdoutLine() or parseStderrLine()) */
     bool mParserActive; /*!< \c true when a test is being parsed */
 
+    template<class C>
     friend class PlainTextQTestLibParserFactory;
 };
 

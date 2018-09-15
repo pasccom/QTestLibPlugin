@@ -33,7 +33,7 @@ namespace ProjectExplorer {
 namespace QTestLibPlugin {
 namespace Internal {
 
-
+class AbstractTestParserFactory;
 class AbstractTestParser;
 
 /*!
@@ -62,6 +62,7 @@ public:
      * \param parent The parent object.
      */
     TestModelFactory(ProjectExplorer::RunControl *runControl, QObject *parent = NULL);
+    static inline void destroy(void) {qDeleteAll(mParserFactories);}
     /*!
      * \typedef ParseResult
      * \brief Result of the parsing of a line of \c stdout of \c stderr.
@@ -144,6 +145,9 @@ private:
     ParseResult callParser(AbstractTestParser* parser, ProjectExplorer::RunControl* runControl, const QString& line, Utils::OutputFormat format);
     QLinkedList<AbstractTestParser *> mParsers; /*!< The list of available parsers (parsers are removed when they return TestModelFactory::MagicNotFound) */
     bool mModelFound; /*!< Whether a parser succeeded in finding a model (i.e. returned TestModelFactory::MagicFound) */
+
+    friend class AbstractTestParserFactory;
+    static QList<AbstractTestParserFactory *> mParserFactories;
 };
 
 /*!
@@ -228,9 +232,8 @@ protected:
  *
  * \sa TestModelFactory
  */
-class AbstractTestParserFactory : public QObject
+class AbstractTestParserFactory
 {
-    Q_OBJECT
 public:
     /*!
      * \brief Tests whether the associated parser can be useful.
@@ -256,10 +259,10 @@ public:
 protected:
     /*!
      * \brief Constructor
-     * \param parent The parent of the parser factory.
+     *
+     * Adds the factory to the list of factories in TestModelFactory.
      */
-    AbstractTestParserFactory(QObject *parent = NULL) :
-        QObject(parent) {}
+    AbstractTestParserFactory(void);
 };
 
 } // namespace Internal

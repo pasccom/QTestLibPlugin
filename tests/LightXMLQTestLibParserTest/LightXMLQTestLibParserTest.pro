@@ -35,8 +35,7 @@ DEFINES += TESTS_DIR=\\\"$$QTESTLIBPLUGIN_TESTS\\\"
 
 include(../../make.pri)
 
-SOURCES += lightxmlqtestlibparsertest.cpp \
-           lightxmlqtestlibparserfactoryfake.cpp
+SOURCES += lightxmlqtestlibparsertest.cpp
 HEADERS += lightxmlqtestlibparserfactoryfake.h
 
 # The tester libraries

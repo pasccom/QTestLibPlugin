@@ -18,4 +18,4 @@
 TEMPLATE = subdirs
 
 # Parsers tests:
-SUBDIRS +=  ../LitmitsTest
+SUBDIRS +=  ../LimitsTest

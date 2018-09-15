@@ -203,6 +203,7 @@ QStringList TestModelFactoryTest::commandLineArguments(Internal::QTestLibArgsPar
             break;
         case 1:
             cmdArgs << "-txt";
+            break;
         case 2:
             cmdArgs << "-o" << "-,txt";
             break;
@@ -292,15 +293,13 @@ void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibAr
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, mProject->activeTarget()->runConfigurations()) {
-        if (!runConfig->runnable().is<ProjectExplorer::StandardRunnable>())
-            continue;
-
-        ProjectExplorer::StandardRunnable localRunnable = runConfig->runnable().as<ProjectExplorer::StandardRunnable>();
-        QFileInfo exeFileInfo(localRunnable.executable);
+        QFileInfo exeFileInfo(runConfig->runnable().executable);
         qDebug() << exeFileInfo.absoluteFilePath();
         QVERIFY(exeFileInfo.exists());
-        if (QString::compare(exeFileInfo.baseName(), testName, Qt::CaseSensitive) == 0)
-            testRunConfig = runConfig;
+        if (QString::compare(exeFileInfo.baseName(), testName, Qt::CaseSensitive) != 0)
+            continue;
+
+        testRunConfig = runConfig;
         break;
     }
     QVERIFY(testRunConfig != NULL);
@@ -314,12 +313,9 @@ void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibAr
     map.insert(WorkingDirectoryKey, QVariant(TESTS_DIR "/" + testName + "/"));
 
     // Restore a modified run configuration from the modified map:
-    ProjectExplorer::IRunConfigurationFactory* runConfigFactory = ProjectExplorer::IRunConfigurationFactory::find(mProject->activeTarget(), map);
-    QVERIFY(runConfigFactory != NULL);
-    QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
-    ProjectExplorer::RunConfiguration* modifiedRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
+    ProjectExplorer::RunConfiguration* modifiedRunConfig = ProjectExplorer::RunConfigurationFactory::restore(mProject->activeTarget(), map);
     QVERIFY(modifiedRunConfig != NULL);
-    ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+    ProjectExplorer::Runnable modifiedRunnable = modifiedRunConfig->runnable();
     QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
     QCOMPARE(modifiedRunnable.workingDirectory, QString(TESTS_DIR "/" + testName));
 
@@ -349,13 +345,9 @@ void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTest
     map.insert(Constants::VerbosityKey, (int) verbosity);
 
     // Restore a modified run configuration from the modified map:
-    ProjectExplorer::IRunConfigurationFactory* runConfigFactory = ProjectExplorer::IRunConfigurationFactory::find(mProject->activeTarget(), map);
-    QVERIFY(runConfigFactory != NULL);
-    QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
-    ProjectExplorer::RunConfiguration* modifiedRunConfig  = runConfigFactory->restore(mProject->activeTarget(), map);
+    ProjectExplorer::RunConfiguration* modifiedRunConfig = ProjectExplorer::RunConfigurationFactory::restore(mProject->activeTarget(), map);
     QVERIFY(modifiedRunConfig != NULL);
-    QVERIFY(modifiedRunConfig->runnable().is<ProjectExplorer::StandardRunnable>());
-    ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+    ProjectExplorer::Runnable modifiedRunnable = modifiedRunConfig->runnable();
 
     // Compare arguments to expected value:
     Internal::QTestLibArgsParser testArgsParser;

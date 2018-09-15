@@ -42,14 +42,10 @@ SOURCES += \
     qtestlibmodel.cpp \
     testmodelfactory.cpp \
     plaintextqtestlibparser.cpp \
-    plaintextqtestlibparserfactory.cpp \
     basexmlqtestlibparser.cpp \
     xmlqtestlibparser.cpp \
-    xmlqtestlibparserfactory.cpp \
     lightxmlqtestlibparser.cpp \
-    lightxmlqtestlibparserfactory.cpp \
     xunitxmlqtestlibparser.cpp \
-    xunitxmlqtestlibparserfactory.cpp \
     qtestlibargsparser.cpp \
     testproxymodel.cpp \
     testrunconfiguration.cpp \

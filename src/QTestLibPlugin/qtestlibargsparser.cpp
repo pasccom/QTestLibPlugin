@@ -267,6 +267,7 @@ void QTestLibArgsParser::parse(bool incremental)
                 mError = EmptyFlagError;
                 mErrorString = QCoreApplication::translate("QTestLibPlugin::Internal::QTestLibArgsParser", "Empty flag");
                 mUnknownFlags << token;
+                continue;
             case 0: // -o
                 continue;
             case 1: // -txt

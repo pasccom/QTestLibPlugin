@@ -40,20 +40,19 @@ namespace Internal {
  * who can thus force a parser. For that, it uses the combo box located
  * in the tool bar of TestOutputPane.
  */
-class BaseForceParserFactory : public AbstractTestParserFactory
+class BaseForceParserFactory
 {
-    Q_OBJECT
 public:
     /*!
      * \brief Constructor
      *
-     * Just call the parent class constructor.
+     * Just initalize members.
      *
      * \param format The test output format accepted by the parser
      * \param outputPane The TestOutputPane where the user can force the parsers
      */
-    inline BaseForceParserFactory(QTestLibArgsParser::TestOutputFormat format, TestOutputPane *outputPane):
-        AbstractTestParserFactory(outputPane), mOutputPane(outputPane), mFormat(format) {}
+    inline BaseForceParserFactory(QTestLibArgsParser::TestOutputFormat format, TestOutputPane *outputPane = nullptr):
+        mOutputPane(outputPane), mFormat(format) {}
     /*!
      * \brief \copybrief AbstractTestParserFactory::canParse()
      *
@@ -62,15 +61,7 @@ public:
      * \param runConfiguration The run configuration to test (unused)
      * \return \c true, if the iuser forced the activation of the parser
      */
-    bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const override;
-    /*!
-     * \brief \copybrief AbstractTestParserFactory::getParserInstance()
-     *
-     * Always returns \c nullptr, since this factory is a base (not associated with any parser).
-     * \param runConfiguration Unused.
-     * \return Always \c nullptr.
-     */
-    inline AbstractTestParser *getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const override {Q_UNUSED(runConfiguration); return nullptr;}
+    bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const;
     /*!
      * \brief Set the format accepted by the parser.
      *
@@ -80,11 +71,26 @@ public:
      * \param acceptedFormat The format accepted by the associated parser.
      */
     inline void setAcceptedFormat(QTestLibArgsParser::TestOutputFormat acceptedFormat) {mFormat = acceptedFormat;}
+    /*!
+     * \brief Set the output pane
+     *
+     * Sets the TestOutputPane where the user can force the parsers
+     * \param outputPane The TestOutputPane where the user can force the parsers
+     * \sa outputPane()
+     */
+    inline void setOutputPane(TestOutputPane* outputPane) {mOutputPane = outputPane;}
+    /*!
+     * \brief Get the output pane
+     *
+     * Get the TestOutputPane where the user can force the parsers
+     * \return The TestOutputPane where the user can force the parsers
+     * \sa setOutputPane()
+     */
+    inline TestOutputPane* outputPane(void) const {return mOutputPane;}
 private:
     TestOutputPane* mOutputPane;                    /*!< The test output pane (where the user can force parsers). */
     QTestLibArgsParser::TestOutputFormat mFormat;   /*!< The test output format accepted by the associated parser. */
 };
-
 
 } // Internal
 } // QTestLibPlugin
