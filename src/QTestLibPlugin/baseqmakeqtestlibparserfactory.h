@@ -19,8 +19,14 @@
 #ifndef BASEQMAKEQTESTLIBPARSERFACTORY_H
 #define BASEQMAKEQTESTLIBPARSERFACTORY_H
 
-#include "testmodelfactory.h"
+#include "qtestlibpluginconstants.h"
 #include "qtestlibargsparser.h"
+
+#include <coreplugin/id.h>
+
+namespace ProjectExplorer {
+    class RunConfiguration;
+}
 
 namespace QTestLibPlugin {
 namespace Internal {
@@ -53,6 +59,10 @@ public:
      */
     inline BaseQMakeQTestLibParserFactory(QTestLibArgsParser::TestOutputFormat format):
         mFormat(format) {}
+    /*!
+     * \copydoc AbstractTestParserFactory::id()
+     */
+    inline Core::Id id() const {return Core::Id(Constants::BaseQMakeQTestLibParserFactoryId);}
     /*!
      * \brief \copybrief AbstractTestParserFactory::canParse()
      *

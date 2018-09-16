@@ -199,15 +199,13 @@ void ForcePlainTextQTestLibParserFactoryTest::runTest(const QString& testName, c
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, mProject->activeTarget()->runConfigurations()) {
-        if (!runConfig->runnable().is<ProjectExplorer::StandardRunnable>())
-            continue;
-
-        ProjectExplorer::StandardRunnable runnable = runConfig->runnable().as<ProjectExplorer::StandardRunnable>();
-        QFileInfo exeFileInfo(runnable.executable);
+        QFileInfo exeFileInfo(runConfig->runnable().executable);
         qDebug() << exeFileInfo.absoluteFilePath();
         QVERIFY(exeFileInfo.exists());
-        if (QString::compare(exeFileInfo.baseName(), testName, Qt::CaseSensitive) == 0)
-            testRunConfig = runConfig;
+        if (QString::compare(exeFileInfo.baseName(), testName, Qt::CaseSensitive) != 0)
+            continue;
+
+        testRunConfig = runConfig;
         break;
     }
     QVERIFY(testRunConfig != NULL);
@@ -218,12 +216,9 @@ void ForcePlainTextQTestLibParserFactoryTest::runTest(const QString& testName, c
     map.insert(CommandLineArgumentsKey, cmdArgs.join(QLatin1Char(' ')));
 
     // Restore a modified run configuration from the modified map:
-    ProjectExplorer::IRunConfigurationFactory* runConfigFactory = ProjectExplorer::IRunConfigurationFactory::find(mProject->activeTarget(), map);
-    QVERIFY(runConfigFactory != NULL);
-    QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
-    ProjectExplorer::RunConfiguration *modifiedRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
+    ProjectExplorer::RunConfiguration *modifiedRunConfig = ProjectExplorer::RunConfigurationFactory::restore(mProject->activeTarget(), map);
     QVERIFY(modifiedRunConfig != NULL);
-    ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+    ProjectExplorer::Runnable modifiedRunnable = modifiedRunConfig->runnable();
     QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
 
     testFactory(modifiedRunConfig);
@@ -251,13 +246,9 @@ void ForcePlainTextQTestLibParserFactoryTest::runMakeCheck(const QString& testNa
     map.insert(Constants::VerbosityKey, (int) verbosity);
 
     // Restore a modified run configuration from the modified map:
-    ProjectExplorer::IRunConfigurationFactory* runConfigFactory = ProjectExplorer::IRunConfigurationFactory::find(mProject->activeTarget(), map);
-    QVERIFY(runConfigFactory != NULL);
-    QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
-    ProjectExplorer::RunConfiguration *modifiedRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
+    ProjectExplorer::RunConfiguration *modifiedRunConfig = ProjectExplorer::RunConfigurationFactory::restore(mProject->activeTarget(), map);
     QVERIFY(modifiedRunConfig != NULL);
-    QVERIFY(modifiedRunConfig->runnable().is<ProjectExplorer::StandardRunnable>());
-    ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+    ProjectExplorer::Runnable modifiedRunnable = modifiedRunConfig->runnable();
 
     // Compare arguments to expected value:
     Internal::QTestLibArgsParser testArgsParser;
@@ -273,9 +264,18 @@ void ForcePlainTextQTestLibParserFactoryTest::runMakeCheck(const QString& testNa
 
 void ForcePlainTextQTestLibParserFactoryTest::testFactory(ProjectExplorer::RunConfiguration* testRunConfig)
 {
+    // Retrieve factory:
+    QLinkedList<QTestLibPlugin::Internal::AbstractTestParserFactory*> parserFactories = QTestLibPlugin::Internal::TestModelFactory::parserFactories(Core::Id(QTestLibPlugin::Constants::PlainTextQTestLibParserFactoryId).withSuffix(QTestLibPlugin::Constants::BaseForceParserFactoryId));
+    QCOMPARE(parserFactories.size(), 1);
+    QTestLibPlugin::Internal::PlainTextQTestLibParserFactory<QTestLibPlugin::Internal::BaseForceParserFactory>* parserFactory = dynamic_cast<QTestLibPlugin::Internal::PlainTextQTestLibParserFactory<QTestLibPlugin::Internal::BaseForceParserFactory>*>(parserFactories.first());
+    QVERIFY(parserFactory != nullptr);
+
+    // Find output pane:
+    QTestLibPlugin::Internal::TestOutputPane* outputPane = parserFactory->base().outputPane();
+    QVERIFY(outputPane != NULL);
+
     // Find force combo box:
-    QTestLibPlugin::Internal::TestOutputPane* outputPane = ExtensionSystem::PluginManager::getObject<QTestLibPlugin::Internal::TestOutputPane>();
-    QComboBox *forceComboBox = NULL;
+    QComboBox* forceComboBox = NULL;
     foreach (QWidget* widget, outputPane->toolBarWidgets()) {
         forceComboBox = qobject_cast<QComboBox *>(widget);
         if (forceComboBox != NULL)
@@ -283,20 +283,7 @@ void ForcePlainTextQTestLibParserFactoryTest::testFactory(ProjectExplorer::RunCo
     }
     QVERIFY(forceComboBox != NULL);
 
-    // Retrieve factory:
-    auto isForceFactory = [] (Internal::AbstractTestParserFactory* factory) {
-        QVariant base = factory->property("baseFactory");
-        if (!base.isValid())
-            return false;
-        QObject *baseObject = qvariant_cast<QObject*>(base);
-        if (baseObject == NULL)
-            return false;
-        return (qobject_cast<Internal::BaseForceParserFactory*>(baseObject) != NULL);
-    };
-    QTestLibPlugin::Internal::PlainTextQTestLibParserFactory* parserFactory = ExtensionSystem::PluginManager::getObject<QTestLibPlugin::Internal::PlainTextQTestLibParserFactory>(isForceFactory);
     QTestLibPlugin::Internal::AbstractTestParser* parser;
-    QVERIFY(parserFactory != NULL);
-
     for (int index = 0; index < forceComboBox->count(); index++) {
         forceComboBox->setCurrentIndex(index);
 

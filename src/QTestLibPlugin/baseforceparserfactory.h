@@ -19,9 +19,15 @@
 #ifndef BASEFORCEPARSERFACTORY_H
 #define BASEFORCEPARSERFACTORY_H
 
-#include "testmodelfactory.h"
+#include "qtestlibpluginconstants.h"
 #include "qtestlibargsparser.h"
 #include "testoutputpane.h"
+
+#include <coreplugin/id.h>
+
+namespace ProjectExplorer {
+    class RunConfiguration;
+}
 
 namespace QTestLibPlugin {
 namespace Internal {
@@ -53,6 +59,10 @@ public:
      */
     inline BaseForceParserFactory(QTestLibArgsParser::TestOutputFormat format, TestOutputPane *outputPane = nullptr):
         mOutputPane(outputPane), mFormat(format) {}
+    /*!
+     * \copydoc AbstractTestParserFactory::id()
+     */
+    inline Core::Id id() const {return Core::Id(Constants::BaseForceParserFactoryId);}
     /*!
      * \brief \copybrief AbstractTestParserFactory::canParse()
      *

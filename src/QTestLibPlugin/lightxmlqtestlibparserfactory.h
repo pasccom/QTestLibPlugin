@@ -19,6 +19,7 @@
 #ifndef LIGHTXMLQTESTLIBPARSERFACTORY_H
 #define LIGHTXMLQTESTLIBPARSERFACTORY_H
 
+#include "qtestlibpluginconstants.h"
 #include "testmodelfactory.h"
 #include "lightxmlqtestlibparser.h"
 #include "qtestlibargsparser.h"
@@ -48,6 +49,10 @@ public:
      */
     inline LightXMLQTestLibParserFactory(void) :
         mBase(QTestLibArgsParser::LightXmlFormat) {}
+    /*!
+     * \copydoc AbstractTestParserFactory::id()
+     */
+    inline Core::Id id() const override {return Core::Id(Constants::LightXmlQTestLibParserFactoryId).withSuffix(mBase.id().toString());}
     /*!
      * \brief Base factory
      *

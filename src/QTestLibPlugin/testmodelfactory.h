@@ -23,6 +23,8 @@
 #include <QLinkedList>
 #include <utils/outputformat.h>
 
+#include <coreplugin/id.h>
+
 class QAbstractItemModel;
 
 namespace ProjectExplorer {
@@ -68,6 +70,16 @@ public:
      * Deletes the static members (especially the list of parser factories)
      */
     static inline void destroy(void) {qDeleteAll(mParserFactories);}
+    /*!
+     * \brief Parser factories for id
+     *
+     * Returns the list of parser factories matching the given id
+     * (either the whole id or the prefix).
+     * If id is not valid, returns the whole list of available parser factories.
+     * \param id The id to search for.
+     * \return The list of parser factories matching the given id.
+     */
+    static QLinkedList<AbstractTestParserFactory*> parserFactories(Core::Id id);
     /*!
      * \typedef ParseResult
      * \brief Result of the parsing of a line of \c stdout of \c stderr.
@@ -150,7 +162,7 @@ private:
     ParseResult callParser(AbstractTestParser* parser, ProjectExplorer::RunControl* runControl, const QString& line, Utils::OutputFormat format);
     QLinkedList<AbstractTestParser *> mParsers;                 /*!< The list of available parsers (parsers are removed when they return TestModelFactory::MagicNotFound) */
     bool mModelFound;                                           /*!< Whether a parser succeeded in finding a model (i.e. returned TestModelFactory::MagicFound) */
-    static QList<AbstractTestParserFactory *> mParserFactories; /*!< The list of parser factories */
+    static QLinkedList<AbstractTestParserFactory *> mParserFactories; /*!< The list of parser factories */
 
     friend class AbstractTestParserFactory;
 };
@@ -240,6 +252,13 @@ protected:
 class AbstractTestParserFactory
 {
 public:
+    /*!
+     * \brief Id of the factory
+     *
+     * Returns the id for the factory.
+     * \return The id for the factory.
+     */
+    virtual inline Core::Id id() const {return Core::Id();}
     /*!
      * \brief Tests whether the associated parser can be useful.
      *

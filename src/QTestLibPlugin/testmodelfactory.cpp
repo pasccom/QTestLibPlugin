@@ -27,7 +27,7 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-QList<AbstractTestParserFactory *> TestModelFactory::mParserFactories;
+QLinkedList<AbstractTestParserFactory *> TestModelFactory::mParserFactories;
 
 AbstractTestParserFactory::AbstractTestParserFactory(void)
 {
@@ -51,6 +51,27 @@ TestModelFactory::TestModelFactory(ProjectExplorer::RunControl *runControl, QObj
             this, SLOT(parseTestOutput(ProjectExplorer::RunControl*, const QString&, Utils::OutputFormat)));
     connect(runControl, SIGNAL(stopped()),
             this, SLOT(runControlStopped()));
+}
+
+QLinkedList<AbstractTestParserFactory*> TestModelFactory::parserFactories(Core::Id id)
+{
+    if (!id.isValid())
+        return mParserFactories;
+
+    QLinkedList<AbstractTestParserFactory*> parserFactories;
+    foreach (AbstractTestParserFactory* factory, mParserFactories) {
+        if (factory->id() == id)
+            parserFactories << factory;
+    }
+
+    if (parserFactories.isEmpty()) {
+        foreach (AbstractTestParserFactory* factory, mParserFactories) {
+            if (!factory->id().suffixAfter(id).isNull())
+                parserFactories << factory;
+        }
+    }
+
+    return parserFactories;
 }
 
 void TestModelFactory::parseTestOutput(ProjectExplorer::RunControl* runControl, const QString& msg, Utils::OutputFormat format)

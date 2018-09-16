@@ -211,15 +211,13 @@ void QMakeLightXMLQTestLibParserFactoryTest::runTest(const QString& testName, co
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, mProject->activeTarget()->runConfigurations()) {
-        if (!runConfig->runnable().is<ProjectExplorer::StandardRunnable>())
-            continue;
-
-        ProjectExplorer::StandardRunnable runnable = runConfig->runnable().as<ProjectExplorer::StandardRunnable>();
-        QFileInfo exeFileInfo(runnable.executable);
+        QFileInfo exeFileInfo(runConfig->runnable().executable);
         qDebug() << exeFileInfo.absoluteFilePath();
         QVERIFY(exeFileInfo.exists());
-        if (QString::compare(exeFileInfo.baseName(), testName, Qt::CaseSensitive) == 0)
-            testRunConfig = runConfig;
+        if (QString::compare(exeFileInfo.baseName(), testName, Qt::CaseSensitive) != 0)
+            continue;
+
+        testRunConfig = runConfig;
         break;
     }
     QVERIFY(testRunConfig != NULL);
@@ -230,12 +228,9 @@ void QMakeLightXMLQTestLibParserFactoryTest::runTest(const QString& testName, co
     map.insert(CommandLineArgumentsKey, cmdArgs.join(QLatin1Char(' ')));
 
     // Restore a modified run configuration from the modified map:
-    ProjectExplorer::IRunConfigurationFactory* runConfigFactory = ProjectExplorer::IRunConfigurationFactory::find(mProject->activeTarget(), map);
-    QVERIFY(runConfigFactory != NULL);
-    QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
-    ProjectExplorer::RunConfiguration *modifiedRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
+    ProjectExplorer::RunConfiguration *modifiedRunConfig = ProjectExplorer::RunConfigurationFactory::restore(mProject->activeTarget(), map);
     QVERIFY(modifiedRunConfig != NULL);
-    ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+    ProjectExplorer::Runnable modifiedRunnable = modifiedRunConfig->runnable();
     QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
 
     testFactory(modifiedRunConfig, result);
@@ -263,13 +258,9 @@ void QMakeLightXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testNam
     map.insert(Constants::VerbosityKey, (int) verbosity);
 
     // Restore a modified run configuration from the modified map:
-    ProjectExplorer::IRunConfigurationFactory* runConfigFactory = ProjectExplorer::IRunConfigurationFactory::find(mProject->activeTarget(), map);
-    QVERIFY(runConfigFactory != NULL);
-    QVERIFY(runConfigFactory->canRestore(mProject->activeTarget(), map));
-    ProjectExplorer::RunConfiguration *modifiedRunConfig = runConfigFactory->restore(mProject->activeTarget(), map);
+    ProjectExplorer::RunConfiguration *modifiedRunConfig = ProjectExplorer::RunConfigurationFactory::restore(mProject->activeTarget(), map);
     QVERIFY(modifiedRunConfig != NULL);
-    QVERIFY(modifiedRunConfig->runnable().is<ProjectExplorer::StandardRunnable>());
-    ProjectExplorer::StandardRunnable modifiedRunnable = modifiedRunConfig->runnable().as<ProjectExplorer::StandardRunnable>();
+    ProjectExplorer::Runnable modifiedRunnable = modifiedRunConfig->runnable();
 
     // Compare arguments to expected value:
     Internal::QTestLibArgsParser testArgsParser;
@@ -285,17 +276,12 @@ void QMakeLightXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testNam
 
 void QMakeLightXMLQTestLibParserFactoryTest::testFactory(ProjectExplorer::RunConfiguration* testRunConfig, bool result)
 {
-    auto isQMakeFactory = [] (Internal::AbstractTestParserFactory* factory) {
-        QVariant base = factory->property("baseFactory");
-        if (!base.isValid())
-            return false;
-        QObject *baseObject = qvariant_cast<QObject*>(base);
-        if (baseObject == NULL)
-            return false;
-        return (qobject_cast<Internal::BaseQMakeQTestLibParserFactory*>(baseObject) != NULL);
-    };
-    QTestLibPlugin::Internal::LightXMLQTestLibParserFactory* parserFactory = ExtensionSystem::PluginManager::getObject<QTestLibPlugin::Internal::LightXMLQTestLibParserFactory>(isQMakeFactory);
-    QVERIFY(parserFactory != NULL);
+    // Retrieve factory:
+    QLinkedList<QTestLibPlugin::Internal::AbstractTestParserFactory*> parserFactories = QTestLibPlugin::Internal::TestModelFactory::parserFactories(Core::Id(QTestLibPlugin::Constants::LightXmlQTestLibParserFactoryId).withSuffix(QTestLibPlugin::Constants::BaseQMakeQTestLibParserFactoryId));
+    QCOMPARE(parserFactories.size(), 1);
+    QTestLibPlugin::Internal::AbstractTestParserFactory* parserFactory = parserFactories.first();
+    QVERIFY(parserFactory != nullptr);
+
     QCOMPARE(parserFactory->canParse(testRunConfig), result);
     QTestLibPlugin::Internal::AbstractTestParser* parser = parserFactory->getParserInstance(testRunConfig);
     QCOMPARE(parser != NULL, result);

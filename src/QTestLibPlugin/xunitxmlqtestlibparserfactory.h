@@ -19,6 +19,7 @@
 #ifndef XUNITXMLQTESTLIBPARSERFACTORY_H
 #define XUNITXMLQTESTLIBPARSERFACTORY_H
 
+#include "qtestlibpluginconstants.h"
 #include "testmodelfactory.h"
 #include "xunitxmlqtestlibparser.h"
 #include "qtestlibargsparser.h"
@@ -48,6 +49,10 @@ public:
      */
     inline XUnitXMLQTestLibParserFactory(void) :
         mBase(QTestLibArgsParser::XUnitXmlFormat) {}
+    /*!
+     * \copydoc AbstractTestParserFactory::id()
+     */
+    inline Core::Id id() const override {return Core::Id(Constants::XUnitXmlQTestLibParserFactoryId).withSuffix(mBase.id().toString());}
     /*!
      * \brief Base factory
      *

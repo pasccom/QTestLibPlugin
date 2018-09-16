@@ -42,14 +42,14 @@ SOURCES +=  \
     testsuitemodeltest.cpp \
     testactionstest.cpp \
     testrunconfigurationfactorytest.cpp \
-#    qmakelightxmlqtestlibparserfactorytest.cpp \
-#    forcelightxmlqtestlibparserfactorytest.cpp \
-#    qmakeplaintextqtestlibparserfactorytest.cpp \
-#    forceplaintextqtestlibparserfactorytest.cpp \
-#    qmakexmlqtestlibparserfactorytest.cpp \
-#    forcexmlqtestlibparserfactorytest.cpp \
-#    qmakexunitxmlqtestlibparserfactorytest.cpp \
-#    forcexunitxmlqtestlibparserfactorytest.cpp \
+    qmakelightxmlqtestlibparserfactorytest.cpp \
+    forcelightxmlqtestlibparserfactorytest.cpp \
+    qmakeplaintextqtestlibparserfactorytest.cpp \
+    forceplaintextqtestlibparserfactorytest.cpp \
+    qmakexmlqtestlibparserfactorytest.cpp \
+    forcexmlqtestlibparserfactorytest.cpp \
+    qmakexunitxmlqtestlibparserfactorytest.cpp \
+    forcexunitxmlqtestlibparserfactorytest.cpp \
 
 HEADERS += \
     testhelper.h \
@@ -57,14 +57,14 @@ HEADERS += \
     testsuitemodeltest.h \
     testactionstest.h \
     testrunconfigurationfactorytest.h \
-#    qmakelightxmlqtestlibparserfactorytest.h \
-#    forcelightxmlqtestlibparserfactorytest.h \
-#    qmakeplaintextqtestlibparserfactorytest.h \
-#    forceplaintextqtestlibparserfactorytest.h \
-#    qmakexmlqtestlibparserfactorytest.h \
-#    forcexmlqtestlibparserfactorytest.h \
-#    qmakexunitxmlqtestlibparserfactorytest.h \
-#    forcexunitxmlqtestlibparserfactorytest.h \
+    qmakelightxmlqtestlibparserfactorytest.h \
+    forcelightxmlqtestlibparserfactorytest.h \
+    qmakeplaintextqtestlibparserfactorytest.h \
+    forceplaintextqtestlibparserfactorytest.h \
+    qmakexmlqtestlibparserfactorytest.h \
+    forcexmlqtestlibparserfactorytest.h \
+    qmakexunitxmlqtestlibparserfactorytest.h \
+    forcexunitxmlqtestlibparserfactorytest.h \
 
 include(../../../QTestLibPlugin.pri)
 INCLUDEPATH += $$QTESTLIBPLUGIN_SRC

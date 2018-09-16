@@ -422,14 +422,14 @@ QList<QObject *> TestLibPlugin::createTestObjects(void) const
 {
     QList<QObject *> testObjects;
 
-    //testObjects << new Test::QMakePlainTextQTestLibParserFactoryTest;
-    //testObjects << new Test::QMakeXMLQTestLibParserFactoryTest;
-    //testObjects << new Test::QMakeLightXMLQTestLibParserFactoryTest;
-    //testObjects << new Test::QMakeXUnitXMLQTestLibParserFactoryTest;
-    //testObjects << new Test::ForcePlainTextQTestLibParserFactoryTest;
-    //testObjects << new Test::ForceXMLQTestLibParserFactoryTest;
-    //testObjects << new Test::ForceLightXMLQTestLibParserFactoryTest;
-    //testObjects << new Test::ForceXUnitXMLQTestLibParserFactoryTest;
+    testObjects << new Test::QMakePlainTextQTestLibParserFactoryTest;
+    testObjects << new Test::QMakeXMLQTestLibParserFactoryTest;
+    testObjects << new Test::QMakeLightXMLQTestLibParserFactoryTest;
+    testObjects << new Test::QMakeXUnitXMLQTestLibParserFactoryTest;
+    testObjects << new Test::ForcePlainTextQTestLibParserFactoryTest;
+    testObjects << new Test::ForceXMLQTestLibParserFactoryTest;
+    testObjects << new Test::ForceLightXMLQTestLibParserFactoryTest;
+    testObjects << new Test::ForceXUnitXMLQTestLibParserFactoryTest;
     testObjects << new Test::TestModelFactoryTest;
     testObjects << new Test::TestSuiteModelTest;
     testObjects << new Test::TestActionsTest;

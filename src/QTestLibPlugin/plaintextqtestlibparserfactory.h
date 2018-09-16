@@ -19,6 +19,7 @@
 #ifndef PLAINTEXTQTESTLIBPARSERFACTORY_H
 #define PLAINTEXTQTESTLIBPARSERFACTORY_H
 
+#include "qtestlibpluginconstants.h"
 #include "testmodelfactory.h"
 #include "plaintextqtestlibparser.h"
 #include "qtestlibargsparser.h"
@@ -48,6 +49,10 @@ public:
      */
     inline PlainTextQTestLibParserFactory(void) :
         mBase(QTestLibArgsParser::TxtFormat) {}
+    /*!
+     * \copydoc AbstractTestParserFactory::id()
+     */
+    inline Core::Id id() const override {return Core::Id(Constants::PlainTextQTestLibParserFactoryId).withSuffix(mBase.id().toString());}
     /*!
      * \brief Base factory
      *
