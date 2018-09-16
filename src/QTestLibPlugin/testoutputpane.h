@@ -39,7 +39,6 @@ namespace Internal {
 class TestSuiteModel;
 class TestProxyModel;
 
-// TODO some functions will be inlined
 class TestOutputPane : public Core::IOutputPane
 {
     Q_OBJECT
@@ -57,7 +56,7 @@ public:
     QWidget* outputWidget(QWidget * parent) override;
     int priorityInStatusBar(void) const override {return 10;}
     void setFocus(void) override {}
-    QList<QWidget *> toolBarWidgets(void) const override;
+    inline QList<QWidget *> toolBarWidgets(void) const override {return mToolbarWidgets;}
     void visibilityChanged(bool visible) override {Q_UNUSED(visible);}
 
     QTestLibArgsParser::TestOutputFormat userForceParser(void) const;

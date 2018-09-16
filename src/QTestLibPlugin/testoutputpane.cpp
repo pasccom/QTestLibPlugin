@@ -105,11 +105,6 @@ QTestLibArgsParser::TestOutputFormat TestOutputPane::userForceParser(void) const
     return mUserForceParserCombo->currentData().value<QTestLibArgsParser::TestOutputFormat>();
 }
 
-QList<QWidget *> TestOutputPane::toolBarWidgets(void) const
-{
-    return mToolbarWidgets;
-}
-
 void TestOutputPane::clearContents(void)
 {
     qDebug() << "User asked to clear test output pane";
