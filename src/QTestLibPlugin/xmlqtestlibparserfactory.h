@@ -58,15 +58,18 @@ public:
     /*!
      * \brief \copybrief AbstractTestParserFactory::canParse()
      *
-     * Uses the base factory AbstractTestParserFactory::canParse() method, if available,
-     * to tell whether the associated parser can parse the test.
+     * Uses the base factory canParse() method, to tell whether the associated parser
+     * can parse the test.
      * \param runConfiguration he run configuration to test
      * \return true, if the associated parser may parse the test output.
      */
     inline bool canParse(ProjectExplorer::RunConfiguration* runConfiguration) const override {return mBase.canParse(runConfiguration);}
+    /*!
+     * \copydoc AbstractTestParserFactory::getParserInstance()
+     */
     AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const override;
 private:
-    B mBase;
+    B mBase; /*!< The base factory, which provides the implementation of canParse() method */
 };
 
 template<class B>
