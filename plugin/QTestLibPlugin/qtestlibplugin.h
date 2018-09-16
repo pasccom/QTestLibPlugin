@@ -272,7 +272,7 @@ private slots:
     void runTest(void);
 private:
     TestSuiteModel* mModel;                                         /*!< The internal model gathering all tests */
-    TestOutputPane *mOutputPane;                                    /*!< The ouput pane */ // TODO useful?
+    TestOutputPane *mOutputPane;                                    /*!< The ouput pane */
     Core::ActionContainer* mRunTestsMenu;                           /*!< The <tt>"Run tests"</tt> sub menu of <tt>"Build"</tt> menu */
     QAction* mRunTestsAction;                                       /*!< The <tt>"Run tests"</tt> action for project pane context menu */
     ProjectExplorer::Project* mTreeCurrentProject;                  /*!< The selected project in project tree */

@@ -195,8 +195,6 @@ ExtensionSystem::IPlugin::ShutdownFlag TestLibPlugin::aboutToShutdown(void)
     mOutputPane->saveSettings(settings);
     settings->endGroup();
 
-    // TODO disconnect?
-
     return SynchronousShutdown;
 }
 
