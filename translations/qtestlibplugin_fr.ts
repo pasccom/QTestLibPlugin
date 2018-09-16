@@ -298,7 +298,7 @@
     </message>
     <message>
         <source>Event simulation delay</source>
-        <translation>Delay de simulation des événements</translation>
+        <translation>Delai de simulation des événements</translation>
     </message>
     <message>
         <source> ms</source>
@@ -306,11 +306,11 @@
     </message>
     <message>
         <source>Keyboard simulation delay</source>
-        <translation>Delay de simulation du clavier</translation>
+        <translation>Delai de simulation du clavier</translation>
     </message>
     <message>
         <source>Mouse simulation delay</source>
-        <translation>Delay de simulation de la souris</translation>
+        <translation>Delai de simulation de la souris</translation>
     </message>
     <message>
         <source>Choose test output file</source>
