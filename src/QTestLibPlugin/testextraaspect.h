@@ -80,10 +80,20 @@ public:
      */
     inline QString displayName() const override {return tr("Test arguments");}
 signals:
-    // TODO comment
+    /*!
+     * \brief Test arguments changed
+     *
+     * This signal is emitted when test arguments are changed.
+     * \param newArgs The new test arguments.
+     */
     void testArgumentsChanged(const QString& newArgs);
 private slots:
-    // TODO comment
+    /*!
+     * \brief Handles change of test arguments
+     *
+     * This slot should be called when test arguments are changed.
+     * It updates the state of the widgets.
+     */
     void handleTestArgumentsChange(void);
     /*!
      * \brief Updates the summary
