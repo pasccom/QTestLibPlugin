@@ -1,7 +1,7 @@
 {
     \"Name\" : \"QTestLibPlugin\",
-    \"Version\" : \"0.0.10\",
-    \"CompatVersion\" : \"0.0.10\",
+    \"Version\" : \"0.0.11\",
+    \"CompatVersion\" : \"0.0.11\",
     \"Vendor\" : \"Pascal COMBES\",
     \"Copyright\" : \"(C) Pascal COMBES <pascom@orange.fr>\",
     \"License\" : \"GPLv3\",
