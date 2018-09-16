@@ -524,11 +524,43 @@ public:
      */
     inline TestClassList selectedTestCases(void) const {return mSelectedTestCases;}
 
-    // TODO Comment
+    /*!
+     * \brief Add a selected test class
+     *
+     * Add a class to the list of selected test classes.
+     * \param selectedTestClass The class name
+     * \param selectedTestCase The test case name
+     * \param selectedTestData The test data row name
+     * \sa addSelectedTestCase(), removeSelectedTestClass()
+     */
     void addSelectedTestClass(const QString& selectedTestClass, const QString& selectedTestCase = QString::null, const QString& selectedTestData = QString::null);
+    /*!
+     * \brief Add a selected test case
+     *
+     * Add a test case to the list of selected test cases.
+     * \param selectedTestCase The test case name
+     * \param selectedTestData The test data row name
+     * \sa addSelectedTestClass(), removeSelectedTestCase()
+     */
     inline void addSelectedTestCase(const QString& selectedTestCase, const QString& selectedTestData = QString::null) {addSelectedTestClass(QString::null, selectedTestCase, selectedTestData);}
-    // TODO Comment
+    /*!
+     * \brief Remove a selected test class
+     *
+     * Remove a class from the list of selected test classes.
+     * \param selectedTestClass The class name
+     * \param selectedTestCase The test case name
+     * \param selectedTestData The test data row name
+     * \sa addSelectedTestClass(), removeSelectedTestCase()
+     */
     void removeSelectedTestClass(const QString& selectedTestClass, const QString& selectedTestCase = QString::null, const QString& selectedTestData = QString::null);
+    /*!
+     * \brief Remove a selected test case
+     *
+     * Remove a test case from the list of selected test cases.
+     * \param selectedTestCase The test case name
+     * \param selectedTestData The test data row name
+     * \sa addSelectedTestCase(), removeSelectedTestClass()
+     */
     inline void removeSelectedTestCase(const QString& selectedTestCase, const QString& selectedTestData = QString::null) {removeSelectedTestClass(QString::null, selectedTestCase, selectedTestData);}
 private:
     /*!
