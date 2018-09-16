@@ -130,10 +130,15 @@ win32 {
         }
     }
 }
-###### Added stuff to bypass IDE_BUILD_TREE
-target.path = $$DESTDIR
+
+###### Plugin library file installation (to by pass what is done by Qt Creator)
+isEmpty(USE_USER_DESTDIR) {
+    target.path="$$IDE_PLUGIN_PATH"
+} else {
+    target.path="$$DESTDIRBASE/QtProject/$$DESTDIRAPPNAME/plugins/$$QTCREATOR_VERSION"
+}
 INSTALLS += target
-DESTDIR = $$QTESTLIBPLUGIN_BIN
+DESTDIR = ./bin
 
 win32 {
     LIBS+= -L$$IDE_BUILD_TREE/bin
