@@ -62,6 +62,11 @@ public:
      * \param parent The parent object.
      */
     TestModelFactory(ProjectExplorer::RunControl *runControl, QObject *parent = NULL);
+    /*!
+     * \brief Static destructor
+     *
+     * Deletes the static members (especially the list of parser factories)
+     */
     static inline void destroy(void) {qDeleteAll(mParserFactories);}
     /*!
      * \typedef ParseResult
@@ -143,11 +148,11 @@ private:
      * returned by the parser for each line of the message).
      */
     ParseResult callParser(AbstractTestParser* parser, ProjectExplorer::RunControl* runControl, const QString& line, Utils::OutputFormat format);
-    QLinkedList<AbstractTestParser *> mParsers; /*!< The list of available parsers (parsers are removed when they return TestModelFactory::MagicNotFound) */
-    bool mModelFound; /*!< Whether a parser succeeded in finding a model (i.e. returned TestModelFactory::MagicFound) */
+    QLinkedList<AbstractTestParser *> mParsers;                 /*!< The list of available parsers (parsers are removed when they return TestModelFactory::MagicNotFound) */
+    bool mModelFound;                                           /*!< Whether a parser succeeded in finding a model (i.e. returned TestModelFactory::MagicFound) */
+    static QList<AbstractTestParserFactory *> mParserFactories; /*!< The list of parser factories */
 
     friend class AbstractTestParserFactory;
-    static QList<AbstractTestParserFactory *> mParserFactories;
 };
 
 /*!
