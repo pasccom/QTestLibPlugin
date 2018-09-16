@@ -36,15 +36,8 @@ public:
     inline PlainTextQTestLibParserFactory(void):
         AbstractTestParserFactory() {}
     inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {Q_UNUSED(runConfiguration); return true;}
-    AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const;
+    inline AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const {return new PlainTextQTestLibParser(runConfiguration);}
 };
-
-// TODO inline
-template<class B>
-AbstractTestParser* PlainTextQTestLibParserFactory<B>::getParserInstance(ProjectExplorer::RunConfiguration* runConfiguration) const
-{
-    return new PlainTextQTestLibParser(runConfiguration);
-}
 
 } // namespace Internal
 } // namespace QTestLibPlugin

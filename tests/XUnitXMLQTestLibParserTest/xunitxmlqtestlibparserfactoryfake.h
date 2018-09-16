@@ -36,15 +36,8 @@ public:
     inline XUnitXMLQTestLibParserFactory(void):
         AbstractTestParserFactory() {}
     inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {Q_UNUSED(runConfiguration); return true;}
-    AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const;
+    inline AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const {return new XUnitXMLQTestLibParser(runConfiguration);}
 };
-
-// TODO inline
-template<class B>
-AbstractTestParser* XUnitXMLQTestLibParserFactory<B>::getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const
-{
-    return new XUnitXMLQTestLibParser(runConfiguration);
-}
 
 } // namespace Internal
 } // namespace QTestLibPlugin
