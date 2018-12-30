@@ -286,21 +286,6 @@ private:
     friend class TestRunConfigWidget;
 };
 
-/*class TestExtraAspectFactory : public ProjectExplorer::IRunControlFactory
-{
-    Q_OBJECT
-public:
-    inline TestExtraAspectFactory(QObject* parent = NULL) :
-        ProjectExplorer::IRunControlFactory(parent) {}
-
-    inline bool canRun(ProjectExplorer::RunConfiguration *runConfiguration, Core::Id mode) const override {Q_UNUSED(runConfiguration); Q_UNUSED(mode); return false;}
-    inline ProjectExplorer::RunControl* create(ProjectExplorer::RunConfiguration* runConfiguration, Core::Id mode, QString* errorMessage) override {Q_UNUSED(runConfiguration); Q_UNUSED(mode); Q_UNUSED(errorMessage); return NULL;}
-
-    ProjectExplorer::IRunConfigurationAspect* createRunConfigurationAspect(ProjectExplorer::RunConfiguration *runConfiguration) override;
-protected:
-    virtual bool isUseful(ProjectExplorer::RunConfiguration* runConfiguration) const = 0;
-};*/
-
 } // Internal
 } // QTestLibPlugin
 

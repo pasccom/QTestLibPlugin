@@ -509,25 +509,5 @@ bool TestExtraAspect::isUseful(ProjectExplorer::RunConfiguration* runConfigurati
     return false;
 }
 
-/*ProjectExplorer::IRunConfigurationAspect* TestExtraAspectFactory::createRunConfigurationAspect(ProjectExplorer::RunConfiguration *runConfiguration)
-{
-    // NOTE This strange design is caused by the fact that the factory is called from base class constructor
-    // I would be better if the method is called when the project is updated.
-    QMetaObject::Connection updateConnection = connect(runConfiguration->target()->project(), &ProjectExplorer::Project::parsingFinished,
-            this, [this, runConfiguration] () {
-        if ((runConfiguration->extraAspect<TestExtraAspect>() == NULL) && isUseful(runConfiguration))
-            runConfiguration->addExtraAspect(new TestExtraAspect(runConfiguration));
-    });
-    connect(runConfiguration, &ProjectExplorer::RunConfiguration::destroyed,
-            this, [updateConnection] () {
-        disconnect(updateConnection);
-    });
-
-    if ((runConfiguration->extraAspect<TestExtraAspect>() == NULL) && isUseful(runConfiguration))
-        runConfiguration->addExtraAspect(new TestExtraAspect(runConfiguration));
-
-    return NULL;
-}*/
-
 } // Internal
 } // QTestLibPlugin
