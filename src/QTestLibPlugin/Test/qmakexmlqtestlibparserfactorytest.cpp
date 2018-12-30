@@ -44,8 +44,8 @@ namespace Test {
  * NOTE This is extracted from QtCreator sources <qmakeprojectmanager/desktopqmakerunconfiguration.cpp>
  * I hoope this wont change in next releases otherwise these tests will be broken.
  */
-#define QMAKE_RUNCONFIG_PREFIX "Qt4ProjectManager.Qt4RunConfiguration"
-const QString CommandLineArgumentsKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".CommandLineArguments");
+#define QMAKE_RUNCONFIG_PREFIX "RunConfiguration"
+const QString CommandLineArgumentsKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".Arguments");
 
 void QMakeXMLQTestLibParserFactoryTest::initTestCase(void)
 {
@@ -80,14 +80,14 @@ void QMakeXMLQTestLibParserFactoryTest::cleanup(void)
 void QMakeXMLQTestLibParserFactoryTest::dataTest(void)
 {
     QList< QPair<QString, bool> > verbosities;
-    verbosities << qMakePair(QString::null, true);
+    verbosities << qMakePair(QString(), true);
     verbosities << qMakePair(QLatin1String("-silent"), true);
     verbosities << qMakePair(QLatin1String("-v1"), true);
     verbosities << qMakePair(QLatin1String("-v2"), true);
     verbosities << qMakePair(QLatin1String("-vs"), true);
 
     QList< QPair<QString, bool> > formats;
-    formats << qMakePair(QString::null, false);
+    formats << qMakePair(QString(), false);
     formats << qMakePair(QLatin1String("txt"), false);
     formats << qMakePair(QLatin1String("csv"), false);
     formats << qMakePair(QLatin1String("xml"), true);

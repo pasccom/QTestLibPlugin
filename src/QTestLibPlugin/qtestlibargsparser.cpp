@@ -366,7 +366,7 @@ void QTestLibArgsParser::parseSelectedTest(const QString& token)
         selectedTestClass = selectedTestClass.left(paamayimNekudotayim);
     } else {
         selectedTestCase = selectedTestClass;
-        selectedTestClass = QString::null;
+        selectedTestClass.clear();
     }
     if (!cleanTestSpecification(selectedTestCase))
         return;
@@ -513,8 +513,8 @@ void QTestLibArgsParser::parseOutput(const QString& token)
     QStringList parserFormats;
     parserFormats << QLatin1String("txt") << QLatin1String("csv") << QLatin1String("xunitxml") << QLatin1String("xml") << QLatin1String("lightxml");
 
-    QString fileName = QString::null;
-    QString format = QString::null;
+    QString fileName;
+    QString format;
 
     if (token.startsWith(QLatin1String("-,"))) {
         format = token.mid(2);
@@ -546,7 +546,7 @@ void QTestLibArgsParser::parseOutput(const QString& token)
     }
 
     if (fileName == QLatin1String("-"))
-        fileName = QString::null;
+        fileName.clear();
 
     if (!fileName.isNull())
         mOutFileName = Utils::FileName::fromString(fileName);
@@ -615,7 +615,7 @@ void QTestLibArgsParser::initDefaults(void)
     mPos = 0;
 
     mError = NoError;
-    mErrorString = QString::null;
+    mErrorString.clear();
 
     mUnknownFlags.clear();
     mSelectedTestCases.clear();
@@ -642,7 +642,7 @@ QString QTestLibArgsParser::nextToken(void)
 
     // End of string
     if (mPos == mArgs.length())
-        return QString::null;
+        return QString();
 
     int b = mPos;
     bool quoted = false;

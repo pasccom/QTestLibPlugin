@@ -441,7 +441,7 @@ void TestActionsTest::setCurrentProjectTree(ProjectExplorer::Project* project)
     SUB_TEST_FUNCTION_SKIP("Could not change the current project programatically any more.");
 
     QSignalSpy currentProjectChangedSpy(ProjectExplorer::ProjectTree::instance(), SIGNAL(currentProjectChanged(ProjectExplorer::Project*)));
-    ProjectExplorer::ProjectTree::highlightProject(project, QString::null);
+    ProjectExplorer::ProjectTree::highlightProject(project, QString());
     if (currentProjectChangedSpy.size() == 0)
         currentProjectChangedSpy.wait();
     QVERIFY(currentProjectChangedSpy.size() > 0);

@@ -49,7 +49,7 @@
     } while(false)                                                                                                                  \
 
 QTestLibModelTester::QTestLibModelTester(const QAbstractItemModel *model, Verbosity verbosity, const QString& format) :
-    mModel(model), mError(QString::null), mParserFormat(format), mVerbosity(verbosity)
+    mModel(model), mParserFormat(format), mVerbosity(verbosity)
 {
     mFilters.resize((int) QTestLibPlugin::Internal::QTestLibModel::LastMessageType);
 
@@ -59,7 +59,7 @@ QTestLibModelTester::QTestLibModelTester(const QAbstractItemModel *model, Verbos
 
 bool QTestLibModelTester::checkResults(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results)
 {
-    mError = QString::null;
+    mError.clear();
 
     checkResultsInternal(results);
 
@@ -89,7 +89,7 @@ void QTestLibModelTester::checkResultsInternal(const QLinkedList<QTestLibPlugin:
 
 bool QTestLibModelTester::checkIndex(const QModelIndex& index)
 {
-    mError = QString::null;
+    mError.clear();
 
     checkIndexInternal(index);
 
@@ -262,7 +262,7 @@ void QTestLibModelTester::isOutputType(const QDomElement& element, bool* ret)
                             "BFail   "
                             "Fail    ";
 
-    QString result = element.attribute("type", QString::null);
+    QString result = element.attribute("type");
     QVERIFY2(!result.isNull(), "Elements must have a type attribute");
 
     int t = -1;
@@ -320,7 +320,7 @@ void QTestLibModelTester::parseRoot(const QModelIndex& index, const QDomElement&
 
     qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole);
     QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for root index should be a string");
-    QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null), Qt::CaseInsensitive) == 0, "Result string for root do not match");
+    QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type"), Qt::CaseInsensitive) == 0, "Result string for root do not match");
 
     QDomElement childElement = element.firstChildElement();
     int i = 0;
@@ -353,11 +353,11 @@ void QTestLibModelTester::parseClass(const QModelIndex& index, const QDomElement
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    qDebug() << mModel->data(index, Qt::DisplayRole) << element.attribute("name", QString::null);
+    qDebug() << mModel->data(index, Qt::DisplayRole) << element.attribute("name");
     QVERIFY2(mModel->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for class index should be a string");
-    QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.attribute("name", QString::null) , Qt::CaseSensitive) == 0, "Class name do not match");
+    QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.attribute("name") , Qt::CaseSensitive) == 0, "Class name do not match");
     QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for class index should be a string");
-    QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null) , Qt::CaseInsensitive) == 0, "Result string for class do not match");
+    QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type") , Qt::CaseInsensitive) == 0, "Result string for class do not match");
 
     int i = 0;
     QDomElement childElement = element.firstChildElement();
@@ -390,13 +390,13 @@ void QTestLibModelTester::parseFunction(const QModelIndex& index, const QDomElem
     BEGIN_SUB_TEST_FUNCTION
 
     qDebug() << mModel->data(index, Qt::DisplayRole).toString()
-             << element.attribute("name", QString::null);
+             << element.attribute("name");
     QVERIFY2(mModel->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for function index should be a string");
-    QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.attribute("name", QString::null) , Qt::CaseSensitive) == 0, "Function name do not match");
+    QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.attribute("name") , Qt::CaseSensitive) == 0, "Function name do not match");
     /*qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString()
              << element.attribute("type", QString::null);*/
     QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for function index should be a string");
-    QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null) , Qt::CaseInsensitive) == 0, "Result string for function do not match");
+    QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type") , Qt::CaseInsensitive) == 0, "Result string for function do not match");
 
     int i = 0;
     QDomElement childElement = element.firstChildElement();
@@ -433,12 +433,12 @@ void QTestLibModelTester::parseRow(const QModelIndex& index, const QDomElement& 
 
     QVERIFY2(mModel->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for row index should be a string");
     qDebug() << mModel->data(index, Qt::DisplayRole).toString()
-             << element.attribute("title", QString::null);
-    QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.attribute("title", QString::null) , Qt::CaseSensitive) == 0, "Row title do not match");
+             << element.attribute("title");
+    QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.attribute("title") , Qt::CaseSensitive) == 0, "Row title do not match");
     QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for row index should be a string");
     qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString()
-             << element.attribute("type", QString::null);
-    QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null) , Qt::CaseInsensitive) == 0, "Result string for row do not match");
+             << element.attribute("type");
+    QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type") , Qt::CaseInsensitive) == 0, "Result string for row do not match");
 
     QDomElement messageElement = element.firstChildElement("message");
     int i = 0;
@@ -472,8 +472,8 @@ void QTestLibModelTester::parseMessage(const QModelIndex& index, const QDomEleme
         QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.firstChild().toText().data().trimmed() , Qt::CaseSensitive) == 0, "Message text do not match");
     QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for message index should be a string");
     qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString()
-             << element.attribute("type", QString::null);
-    QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type", QString::null) , Qt::CaseInsensitive) == 0, "Result string for message do not match");
+             << element.attribute("type");
+    QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type") , Qt::CaseInsensitive) == 0, "Result string for message do not match");
 
     QVERIFY2(mModel->rowCount(index) == 0, "The model index should have 0 rows");
     QVERIFY2(mModel->columnCount(index) == 0, "The model index should have 0 columns.");

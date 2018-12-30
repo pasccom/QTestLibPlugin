@@ -35,9 +35,9 @@
  * NOTE This is extracted from QtCreator sources <qmakeprojectmanager/desktopqmakerunconfiguration.cpp>
  * I hoope this wont change in next releases otherwise these tests will be broken.
  */
-#define QMAKE_RUNCONFIG_PREFIX "Qt4ProjectManager.Qt4RunConfiguration"
-const QString CommandLineArgumentsKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".CommandLineArguments");
-const QString WorkingDirectoryKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".UserWorkingDirectory");
+#define QMAKE_RUNCONFIG_PREFIX "RunConfiguration"
+const QString CommandLineArgumentsKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".Arguments");
+const QString WorkingDirectoryKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".WorkingDirectory");
 
 namespace QTestLibPlugin {
 namespace Test {

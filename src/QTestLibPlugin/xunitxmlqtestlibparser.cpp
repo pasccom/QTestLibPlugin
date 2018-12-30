@@ -53,7 +53,7 @@ TestModelFactory::ParseResult XUnitXMLQTestLibParser::startElementParsed(Project
             if (mReader->attributes().hasAttribute(QLatin1String("tag")))
                 mModel->addTestItem(runControl, currentMessageType(), mCurrentClass, mCurrentFunction, mReader->attributes().value(QLatin1String("tag")).toString(), decodeXMLEntities(mReader->attributes().value(QLatin1String("message")).toString()));
             else
-                mModel->addTestItem(runControl, currentMessageType(), mCurrentClass, mCurrentFunction, QString::null, decodeXMLEntities(mReader->attributes().value(QLatin1String("message")).toString()));
+                mModel->addTestItem(runControl, currentMessageType(), mCurrentClass, mCurrentFunction, QString(), decodeXMLEntities(mReader->attributes().value(QLatin1String("message")).toString()));
         }
         if (mCurrentMessageType == currentMessageType())
             mCurrentMessageType = QTestLibModel::Unknown;
@@ -76,11 +76,11 @@ TestModelFactory::ParseResult XUnitXMLQTestLibParser::endElementParsed(ProjectEx
     }
 
     if (QStringRef::compare(tag, QLatin1String("testsuite"), Qt::CaseSensitive) == 0)
-        mCurrentClass = QString::null;
+        mCurrentClass.clear();
     if (QStringRef::compare(tag, QLatin1String("testcase"), Qt::CaseSensitive) == 0) {
         if ((mCurrentMessageType != QTestLibModel::Unknown) && (mModel != NULL))
-            mModel->addTestItem(runControl, mCurrentMessageType, mCurrentClass, mCurrentFunction, QString::null, QString::null);
-        mCurrentFunction = QString::null;
+            mModel->addTestItem(runControl, mCurrentMessageType, mCurrentClass, mCurrentFunction, QString(), QString());
+        mCurrentFunction.clear();
         mCurrentMessageType = QTestLibModel::Unknown;
     }
 
@@ -89,8 +89,8 @@ TestModelFactory::ParseResult XUnitXMLQTestLibParser::endElementParsed(ProjectEx
 
 TestModelFactory::ParseResult XUnitXMLQTestLibParser::commentParsed(ProjectExplorer::RunControl* runControl)
 {
-    QString message = QString::null;
-    QString tag = QString::null;
+    QString message;
+    QString tag;
     QTestLibModel::MessageType type = QTestLibModel::Unknown;
 
     QRegExp messageRegExp(QLatin1String("message=\"([^\"]*)\""), Qt::CaseSensitive);

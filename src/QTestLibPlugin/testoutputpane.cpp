@@ -97,7 +97,7 @@ QString TestOutputPane::formatToString(QTestLibArgsParser::TestOutputFormat form
         break;
     }
 
-    QTC_ASSERT(false, return QString::null);
+    QTC_ASSERT(false, return QString());
 }
 
 QTestLibArgsParser::TestOutputFormat TestOutputPane::userForceParser(void) const

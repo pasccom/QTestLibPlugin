@@ -54,7 +54,7 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectEx
     }
 
     bool ok = false;
-    QString file = QString::null;
+    QString file;
     unsigned int fileLine = 0;
     QRegExp stdoutLocationRegexp1(QLatin1String("   Loc: \\[(.*)\\(([1-9][0-9]+)\\)\\]"));
     QRegExp stdoutLocationRegexp2(QLatin1String("(.*)\\(([1-9][0-9]+)\\) : failure location"));

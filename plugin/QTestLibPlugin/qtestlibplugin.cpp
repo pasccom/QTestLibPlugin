@@ -295,8 +295,8 @@ void TestLibPlugin::handleProjectParsingFinished(void)
 
     foreach (ProjectExplorer::Target* target, project->targets()) {
         foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations()) {
-            if ((runConfig->extraAspect<TestExtraAspect>() == NULL) && TestExtraAspect::isUseful(runConfig))
-                runConfig->addExtraAspect(new TestExtraAspect(runConfig));
+            if ((runConfig->aspect<TestExtraAspect>() == NULL) && TestExtraAspect::isUseful(runConfig))
+                runConfig->addAspect<TestExtraAspect>();
         }
     }
 }
@@ -380,7 +380,7 @@ void TestLibPlugin::handleDeleteRunConfiguration(ProjectExplorer::RunConfigurati
  */
 void TestLibPlugin::handleCurrentProjectTreeChange(ProjectExplorer::Project* project)
 {
-    qDebug() << __func__ << (project != NULL ? project->displayName() : QString::null);
+    qDebug() << __func__ << (project != NULL ? project->displayName() : QString());
 
     mTreeCurrentProject = project;
     if (project == NULL)

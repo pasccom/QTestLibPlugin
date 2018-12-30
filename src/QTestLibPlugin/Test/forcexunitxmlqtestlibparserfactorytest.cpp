@@ -45,8 +45,8 @@ namespace Test {
  * NOTE This is extracted from QtCreator sources <qmakeprojectmanager/desktopqmakerunconfiguration.cpp>
  * I hoope this wont change in next releases otherwise these tests will be broken.
  */
-#define QMAKE_RUNCONFIG_PREFIX "Qt4ProjectManager.Qt4RunConfiguration"
-const QString CommandLineArgumentsKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".CommandLineArguments");
+#define QMAKE_RUNCONFIG_PREFIX "RunConfiguration"
+const QString CommandLineArgumentsKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".Arguments");
 
 void ForceXUnitXMLQTestLibParserFactoryTest::initTestCase(void)
 {
@@ -80,14 +80,14 @@ void ForceXUnitXMLQTestLibParserFactoryTest::cleanup(void)
 void ForceXUnitXMLQTestLibParserFactoryTest::dataTest(void)
 {
     QStringList verbosities;
-    verbosities << QString::null;
+    verbosities << QString();
     verbosities << QLatin1String("-silent");
     verbosities << QLatin1String("-v1");
     verbosities << QLatin1String("-v2");
     verbosities << QLatin1String("-vs");
 
     QStringList formats;
-    formats << QString::null;
+    formats << QString();
     formats << QLatin1String("txt");
     formats << QLatin1String("csv");
     formats << QLatin1String("xml");

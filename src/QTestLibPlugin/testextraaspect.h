@@ -60,7 +60,7 @@ class TestExtraAspect;
  *
  * \sa TestRunConfigurationExtraAspect
  */
-class TestRunConfigWidget : public ProjectExplorer::RunConfigWidget
+class TestRunConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -72,13 +72,6 @@ public:
      * \param aspect The extra aspect to configure with this form widget
      */
     TestRunConfigWidget(TestExtraAspect* aspect);
-    /*!
-     * \brief Title of the widget
-     *
-     * Returns the title of the widget, used in the project run configuration page.
-     * \return The title of the widget.
-     */
-    inline QString displayName() const override {return tr("Test arguments");}
 signals:
     /*!
      * \brief Test arguments changed
@@ -88,13 +81,13 @@ signals:
      */
     void testArgumentsChanged(const QString& newArgs);
 private slots:
-    /*!
+    /*
      * \brief Handles change of test arguments
      *
      * This slot should be called when test arguments are changed.
      * It updates the state of the widgets.
      */
-    void handleTestArgumentsChange(void);
+    //void handleTestArgumentsChange(void);
     /*!
      * \brief Updates the summary
      *
@@ -226,7 +219,7 @@ private:
  *
  * \sa TestRunConfigWidget, QTestLibArgsParser
  */
-class TestExtraAspect : public ProjectExplorer::IRunConfigurationAspect
+class TestExtraAspect : public ProjectExplorer::ProjectConfigurationAspect
 {
     Q_OBJECT
 public:
@@ -239,7 +232,7 @@ public:
      * \param argParser An \c testlib argument parser which will be copied in this instance.
      * \sa create()
      */
-    TestExtraAspect(ProjectExplorer::RunConfiguration* parent, QTestLibArgsParser* argParser = nullptr);
+    TestExtraAspect(QTestLibArgsParser* argParser = nullptr);
     /*!
      * \brief Destructor
      *
@@ -282,11 +275,11 @@ protected:
      * \sa toMap()
      */
     inline void fromMap(const QVariantMap& map) override {mTestArgsParser->fromMap(map);}
-signals:
+/*signals:
     void testArgumentsChanged(void);
 private slots:
     void handleTestArgumentsChange(const QString& newArgs);
-    void handleArgumentsChange(const QString& newArgs);
+    void handleArgumentsChange(const QString& newArgs);*/
 private:
     QTestLibArgsParser *mTestArgsParser;    /*!< The internal QTestLibArgsParser used to store data */
     QString mOtherArgs;                     /*!< Arguments which are not managed by this extra aspect */

@@ -111,14 +111,14 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core
 {
     setDefaultDisplayName(QLatin1String("make check"));
 
-    addExtraAspect(new TestExtraAspect(this));
+    addAspect<TestExtraAspect>();
     /* TODO ensure this run configuration cannot be run with valgrind...
      * To do this, the code of the Valgrind plugin should be altered:
      * 1.ValgrindRunControlFactory should check the type of the given RunConfiguration (e.g. in canRun())
      * and addAspects() should only add aspects provided bu runnable RunControl factories.
      * 2.Alternatively, ValgrindPlugin, should ensure the extra aspects are added to
      * sensible RunConfiguration and RunConfiguration::addExtraAspects() should be removed. */
-    addExtraAspect(new ProjectExplorer::LocalEnvironmentAspect(this, ProjectExplorer::LocalEnvironmentAspect::BaseEnvironmentModifier()));  
+    addAspect<ProjectExplorer::LocalEnvironmentAspect>(parent, ProjectExplorer::LocalEnvironmentAspect::BaseEnvironmentModifier());
 
     QTC_ASSERT(parent != NULL, return);
 
@@ -211,8 +211,7 @@ ProjectExplorer::Runnable TestRunConfiguration::runnable(void) const
         runnable.executable = mData->makeExe().toString();
     runnable.commandLineArguments = commandLineArguments();
     runnable.workingDirectory = workingDirectory();
-    runnable.environment = extraAspect<ProjectExplorer::LocalEnvironmentAspect>()->environment();
-    runnable.runMode = ProjectExplorer::ApplicationLauncher::Gui;
+    runnable.environment = aspect<ProjectExplorer::LocalEnvironmentAspect>()->environment();
     runnable.device = ProjectExplorer::DeviceManager::instance()->defaultDevice(ProjectExplorer::Constants::DESKTOP_DEVICE_TYPE);
     return runnable;
 }
@@ -267,8 +266,8 @@ QString TestRunConfiguration::commandLineArguments(void) const
     }
 
     // Test arguments:
-    Q_ASSERT(extraAspect<TestExtraAspect>() != NULL);
-    QString testCmdArgs = extraAspect<TestExtraAspect>()->commandLineArguments().join(QLatin1Char(' '));
+    Q_ASSERT(aspect<TestExtraAspect>() != NULL);
+    QString testCmdArgs = aspect<TestExtraAspect>()->commandLineArguments().join(QLatin1Char(' '));
     if (macroExpander() != NULL)
         testCmdArgs = macroExpander()->expandProcessArgs(testCmdArgs);
     if (!testCmdArgs.isEmpty())

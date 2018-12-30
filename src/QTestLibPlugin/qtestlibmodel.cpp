@@ -410,7 +410,7 @@ QString defaultMessage(QTestLibModel::MessageType type)
     default:
         qWarning() << "Sentinel value used in" << __func__;
     }
-    return QString::null;
+    return QString();
 }
 
 QString QTestLibModel::resultString(QTestLibModel::MessageType type)
@@ -438,7 +438,7 @@ QString QTestLibModel::resultString(QTestLibModel::MessageType type)
         return str.mid((int) type * 8, 8).trimmed();
 
     qWarning() << "Sentinel value used in" << __func__;
-    return QString::null;
+    return QString();
 }
 
 QString QTestLibModel::resultStringTr(QTestLibModel::MessageType type)
@@ -466,7 +466,7 @@ QString QTestLibModel::resultStringTr(QTestLibModel::MessageType type)
 }
 
 QTestLibModel::TestItem::TestItem(QTestLibModel* model, TestItem *parent) :
-    mResult(QTestLibModel::Unknown), mChildrenCount(0), mParent(NULL), mModel(model), mFile(QString::null), mLine(0)
+    mResult(QTestLibModel::Unknown), mChildrenCount(0), mParent(NULL), mModel(model), mLine(0)
 {
     if (parent != NULL)
         parent->appendChild(this);

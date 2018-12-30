@@ -37,6 +37,7 @@ QMakeTestRunConfigurationFactory::QMakeTestRunConfigurationFactory(void) :
     addSupportedTargetDeviceType({ProjectExplorer::Constants::DESKTOP_DEVICE_TYPE});
 
     registerRunConfiguration<TestRunConfiguration>(Core::Id(Constants::TestRunConfigurationId));
+    addRunWorkerFactory<ProjectExplorer::SimpleTargetRunner>(ProjectExplorer::Constants::NORMAL_RUN_MODE);
 }
 
 QList<ProjectExplorer::RunConfigurationCreationInfo> QMakeTestRunConfigurationFactory::availableCreators(ProjectExplorer::Target* target) const

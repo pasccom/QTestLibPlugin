@@ -185,7 +185,7 @@ public:
      * \param cmdArgs Command line arguments as a string (must not include the name of the program <tt>argv[0]</tt>)
      * \sa QTestLibArgsParser(const QStringList&)
      */
-    inline QTestLibArgsParser(const QString& cmdArgs = QString::null) :
+    inline QTestLibArgsParser(const QString& cmdArgs = QString()) :
         mArgs(cmdArgs.trimmed()) {parse();}
     /*!
      * \brief Constructor from a string list .
@@ -533,7 +533,7 @@ public:
      * \param selectedTestData The test data row name
      * \sa addSelectedTestCase(), removeSelectedTestClass()
      */
-    void addSelectedTestClass(const QString& selectedTestClass, const QString& selectedTestCase = QString::null, const QString& selectedTestData = QString::null);
+    void addSelectedTestClass(const QString& selectedTestClass, const QString& selectedTestCase = QString(), const QString& selectedTestData = QString());
     /*!
      * \brief Add a selected test case
      *
@@ -542,7 +542,7 @@ public:
      * \param selectedTestData The test data row name
      * \sa addSelectedTestClass(), removeSelectedTestCase()
      */
-    inline void addSelectedTestCase(const QString& selectedTestCase, const QString& selectedTestData = QString::null) {addSelectedTestClass(QString::null, selectedTestCase, selectedTestData);}
+    inline void addSelectedTestCase(const QString& selectedTestCase, const QString& selectedTestData = QString()) {addSelectedTestClass(QString(), selectedTestCase, selectedTestData);}
     /*!
      * \brief Remove a selected test class
      *
@@ -552,7 +552,7 @@ public:
      * \param selectedTestData The test data row name
      * \sa addSelectedTestClass(), removeSelectedTestCase()
      */
-    void removeSelectedTestClass(const QString& selectedTestClass, const QString& selectedTestCase = QString::null, const QString& selectedTestData = QString::null);
+    void removeSelectedTestClass(const QString& selectedTestClass, const QString& selectedTestCase = QString(), const QString& selectedTestData = QString());
     /*!
      * \brief Remove a selected test case
      *
@@ -561,7 +561,7 @@ public:
      * \param selectedTestData The test data row name
      * \sa addSelectedTestCase(), removeSelectedTestClass()
      */
-    inline void removeSelectedTestCase(const QString& selectedTestCase, const QString& selectedTestData = QString::null) {removeSelectedTestClass(QString::null, selectedTestCase, selectedTestData);}
+    inline void removeSelectedTestCase(const QString& selectedTestCase, const QString& selectedTestData = QString()) {removeSelectedTestClass(QString(), selectedTestCase, selectedTestData);}
 private:
     /*!
      * \brief Clean test specification

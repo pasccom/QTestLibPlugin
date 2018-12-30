@@ -79,7 +79,7 @@ TestModelFactory::ParseResult LightXMLQTestLibParser::endElementParsed(ProjectEx
     /*if (QStringRef::compare(tag, QLatin1String("TestCase"), Qt::CaseSensitive) == 0)
         mCurrentClass = QString::null;*/
     if (QStringRef::compare(tag, QLatin1String("TestFunction"), Qt::CaseSensitive) == 0)
-        mCurrentFunction = QString::null;
+        mCurrentFunction.clear();
 
     if ((QStringRef::compare(tag, QLatin1String("Incident"), Qt::CaseInsensitive) == 0)
      || (QStringRef::compare(tag, QLatin1String("Message"), Qt::CaseInsensitive) == 0)) {
@@ -94,8 +94,8 @@ TestModelFactory::ParseResult LightXMLQTestLibParser::endElementParsed(ProjectEx
         if ((mModel != NULL) && !file.isEmpty() && (fileLine != 0))
             mModel->appendTestLocation(runControl, file, fileLine);
 
-        mCurrentRow = QString::null;
-        mCurrentDescription = QString::null;
+        mCurrentRow.clear();
+        mCurrentDescription.clear();
         mCurrentAttributes.clear();
     }
     if (QStringRef::compare(tag, QLatin1String("Duration"), Qt::CaseInsensitive) == 0) {

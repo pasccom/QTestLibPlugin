@@ -144,15 +144,15 @@ void QTestLibModelTest::addTestItem(void)
     while (!testItem.isNull()) {
         QVERIFY2(testItem.firstChild().isText(), "Child of item element should be text");
         QVERIFY2(testItem.firstChild().nextSibling().isNull(), "item element should have only one child");
-        qDebug() << testItem.attribute("class", QString::null)
-                 << testItem.attribute("function", QString::null)
-                 << testItem.attribute("row", QString::null)
+        qDebug() << testItem.attribute("class")
+                 << testItem.attribute("function")
+                 << testItem.attribute("row")
                  << testItem.firstChild().toText().data();
         model.addTestItem(NULL,
                           QTestLibModel::Unknown,
-                          testItem.attribute("class", QString::null),
-                          testItem.attribute("function", QString::null),
-                          testItem.attribute("row", QString::null),
+                          testItem.attribute("class"),
+                          testItem.attribute("function"),
+                          testItem.attribute("row"),
                           testItem.firstChild().toText().data());
         testItem = testItem.nextSiblingElement("item");
     }
@@ -183,37 +183,37 @@ void QTestLibModelTest::appendTestItemMessage(void)
     QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)));
 
     QDomElement testItem = testItems.firstChildElement("item");
-    QString root = QString::null;
+    QString root;
     while (!testItem.isNull()) {
         QVERIFY2(testItem.firstChild().isText(), "Child of item element should be text");
         QVERIFY2(testItem.firstChild().nextSibling().isNull(), "item element should have only one child");
-        qDebug() << testItem.attribute("class", QString::null)
-                 << testItem.attribute("function", QString::null)
-                 << testItem.attribute("row", QString::null)
+        qDebug() << testItem.attribute("class")
+                 << testItem.attribute("function")
+                 << testItem.attribute("row")
                  << testItem.firstChild().toText().data();
 
         if (root.isNull()) {
-            if (testItem.attribute("class", QString::null).isNull())
+            if (testItem.attribute("class").isNull())
                 root = "root";
             else
-                root = "class:" + testItem.attribute("class", QString::null);
+                root = "class:" + testItem.attribute("class");
         } else if (root.startsWith("class:", Qt::CaseSensitive)) {
-            if (QString::compare(testItem.attribute("class", QString::null), root.mid(6)) != 0)
+            if (QString::compare(testItem.attribute("class"), root.mid(6)) != 0)
                 root = "root";
         }
 
         model.addTestItem(NULL,
                           QTestLibModel::Unknown,
-                          testItem.attribute("class", QString::null),
-                          testItem.attribute("function", QString::null),
-                          testItem.attribute("row", QString::null),
+                          testItem.attribute("class"),
+                          testItem.attribute("function"),
+                          testItem.attribute("row"),
                           testItem.firstChild().toText().data());
 
         QStringList list;
         if (QString::compare(root, "root", Qt::CaseSensitive) == 0)
-            list << testItem.attribute("class", QString::null);
-        list << testItem.attribute("function", QString::null);
-        list << testItem.attribute("row", QString::null);
+            list << testItem.attribute("class");
+        list << testItem.attribute("function");
+        list << testItem.attribute("row");
 
         QModelIndex currentIndex = index(&model, list, 0);
         qDebug() << currentIndex;
@@ -247,37 +247,37 @@ void QTestLibModelTest::appendTestLocation(void)
     QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)));
 
     QDomElement testItem = testItems.firstChildElement("item");
-    QString root = QString::null;
+    QString root;
     while (!testItem.isNull()) {
         QVERIFY2(testItem.firstChild().isText(), "Child of item element should be text");
         QVERIFY2(testItem.firstChild().nextSibling().isNull(), "item element should have only one child");
-        qDebug() << testItem.attribute("class", QString::null)
-                 << testItem.attribute("function", QString::null)
-                 << testItem.attribute("row", QString::null)
+        qDebug() << testItem.attribute("class")
+                 << testItem.attribute("function")
+                 << testItem.attribute("row")
                  << testItem.firstChild().toText().data();
 
         if (root.isNull()) {
-            if (testItem.attribute("class", QString::null).isNull())
+            if (testItem.attribute("class").isNull())
                 root = "root";
             else
-                root = "class:" + testItem.attribute("class", QString::null);
+                root = "class:" + testItem.attribute("class");
         } else if (root.startsWith("class:", Qt::CaseSensitive)) {
-            if (QString::compare(testItem.attribute("class", QString::null), root.mid(6)) != 0)
+            if (QString::compare(testItem.attribute("class"), root.mid(6)) != 0)
                 root = "root";
         }
 
         model.addTestItem(NULL,
                           QTestLibModel::Unknown,
-                          testItem.attribute("class", QString::null),
-                          testItem.attribute("function", QString::null),
-                          testItem.attribute("row", QString::null),
+                          testItem.attribute("class"),
+                          testItem.attribute("function"),
+                          testItem.attribute("row"),
                           testItem.firstChild().toText().data());
 
         QStringList list;
         if (QString::compare(root, "root", Qt::CaseSensitive) == 0)
-            list << testItem.attribute("class", QString::null);
-        list << testItem.attribute("function", QString::null);
-        list << testItem.attribute("row", QString::null);
+            list << testItem.attribute("class");
+        list << testItem.attribute("function");
+        list << testItem.attribute("row");
 
         QModelIndex firstIndex = index(&model, list, 1);
         QModelIndex lastIndex = index(&model, list, 2);
@@ -435,7 +435,7 @@ void QTestLibModelTest::checkSignal(const QAbstractItemModel* model, const QVari
 
 QModelIndex QTestLibModelTest::index(const QString& id, const QDomElement& element, const QAbstractItemModel* model, const QModelIndex& idx)
 {
-    if (element.hasAttribute("id") && (QString::compare(element.attribute("id", QString::null), id, Qt::CaseSensitive) == 0))
+    if (element.hasAttribute("id") && (QString::compare(element.attribute("id"), id, Qt::CaseSensitive) == 0))
         return idx;
 
     int childRow = 0;

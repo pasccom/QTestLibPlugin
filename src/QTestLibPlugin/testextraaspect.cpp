@@ -22,7 +22,6 @@
 #include "Widgets/filetypevalidatinglineedit.h"
 
 #include <projectexplorer/project.h>
-#include <projectexplorer/runconfigurationaspects.h>
 #include <projectexplorer/target.h>
 
 #include <qmakeprojectmanager/qmakeproject.h>
@@ -35,7 +34,7 @@ namespace QTestLibPlugin {
 namespace Internal {
 
 TestRunConfigWidget::TestRunConfigWidget(TestExtraAspect* aspect) :
-    ProjectExplorer::RunConfigWidget(), mAspect(aspect)
+    QWidget(), mAspect(aspect)
 {
     QVariantMap map;
     mAspect->mTestArgsParser->toMap(map);
@@ -152,8 +151,8 @@ TestRunConfigWidget::TestRunConfigWidget(TestExtraAspect* aspect) :
     extLayout->addWidget(mDetailWidget, 1);
     setLayout(extLayout);
 
-    connect(mAspect, SIGNAL(testArgumentsChanged()),
-            this, SLOT(handleTestArgumentsChange()));
+    /*connect(mAspect, SIGNAL(testArgumentsChanged()),
+            this, SLOT(handleTestArgumentsChange()));*/
 
     connect(mFormatCombo, SIGNAL(currentIndexChanged(int)),
             this, SLOT(updateFormat(int)));
@@ -271,7 +270,7 @@ void TestRunConfigWidget::updateSummary(void)
         emit testArgumentsChanged(mDetailWidget->additionalSummaryText());
 }
 
-void TestRunConfigWidget::handleTestArgumentsChange(void)
+/*void TestRunConfigWidget::handleTestArgumentsChange(void)
 {
     int index;
 
@@ -322,7 +321,7 @@ void TestRunConfigWidget::handleTestArgumentsChange(void)
 
     mDetailWidget->setAdditionalSummaryText(mAspect->mTestArgsParser->toString());
     updateSummary();
-}
+}*/
 
 void TestRunConfigWidget::updateFormat(int index)
 {
@@ -428,8 +427,8 @@ void TestRunConfigWidget::updateMouseDelay(bool enabled)
     updateSummary();
 }
 
-TestExtraAspect::TestExtraAspect(ProjectExplorer::RunConfiguration* parent, QTestLibArgsParser* argParser) :
-  ProjectExplorer::IRunConfigurationAspect(parent)
+TestExtraAspect::TestExtraAspect(QTestLibArgsParser* argParser) :
+  ProjectExplorer::ProjectConfigurationAspect()
 {
     if (argParser != nullptr)
         mTestArgsParser = new QTestLibArgsParser(*argParser);
@@ -438,19 +437,19 @@ TestExtraAspect::TestExtraAspect(ProjectExplorer::RunConfiguration* parent, QTes
 
     setId(Core::Id(Constants::TestRunConfigurationExtraAspectId));
     setDisplayName(tr("Test settings"));
-    setRunConfigWidgetCreator([this] {
+    setConfigWidgetCreator([this] {
         TestRunConfigWidget* runConfigWidget = new TestRunConfigWidget(this);
-        connect(runConfigWidget, SIGNAL(testArgumentsChanged(const QString&)),
-                this, SLOT(handleTestArgumentsChange(const QString&)));
+        /*connect(runConfigWidget, SIGNAL(testArgumentsChanged(const QString&)),
+                this, SLOT(handleTestArgumentsChange(const QString&)));*/
         return runConfigWidget;
     });
 
-    ProjectExplorer::ArgumentsAspect* argAspect = runConfiguration()->extraAspect<ProjectExplorer::ArgumentsAspect>();
+    /*ProjectExplorer::ArgumentsAspect* argAspect = runConfiguration()->extraAspect<ProjectExplorer::ArgumentsAspect>();
     if (argAspect != NULL) {
         connect(argAspect, SIGNAL(argumentsChanged(const QString&)),
                 this, SLOT(handleArgumentsChange(const QString&)));
         handleArgumentsChange(argAspect->arguments());
-    }
+    }*/
 }
 
 TestExtraAspect::~TestExtraAspect()
@@ -458,7 +457,7 @@ TestExtraAspect::~TestExtraAspect()
     delete mTestArgsParser;
 }
 
-void TestExtraAspect::handleTestArgumentsChange(const QString& newArgs)
+/*void TestExtraAspect::handleTestArgumentsChange(const QString& newArgs)
 {
     ProjectExplorer::ArgumentsAspect* argAspect = runConfiguration()->extraAspect<ProjectExplorer::ArgumentsAspect>();
     if (argAspect != NULL) {
@@ -474,7 +473,7 @@ void TestExtraAspect::handleArgumentsChange(const QString& newArgs)
 {
     mTestArgsParser->setArgs(newArgs);
     emit testArgumentsChanged();
-}
+}*/
 
 bool TestExtraAspect::isUseful(ProjectExplorer::RunConfiguration* runConfiguration)
 {
