@@ -74,10 +74,11 @@ bool QMakeTestRunConfigurationFactory::isUseful(ProjectExplorer::Project* projec
     //qDebug() << "    Parse in progress:" << qMakeProject->rootQmakeProjectNode()->parseInProgress();
 
     if (qMakeProject->rootProFile()->projectType() == QmakeProjectManager::ProjectType::SubDirsTemplate) {
-        foreach (QmakeProjectManager::QmakeProFile *pro, qMakeProject->applicationProFiles()) {
+        foreach (QmakeProjectManager::QmakeProFile *pro, qMakeProject->rootProFile()->allProFiles()) {
             //qDebug() << "    Pro file:" << pro->displayName();
             //qDebug() << "        Config:" << pro->variableValue(QmakeProjectManager::ConfigVar);
-            if (!pro->variableValue(QmakeProjectManager::Variable::Config).contains(QLatin1String("testcase"), Qt::CaseSensitive))
+            if ((pro->projectType() != QmakeProjectManager::ProjectType::ApplicationTemplate) ||
+                (!pro->variableValue(QmakeProjectManager::Variable::Config).contains(QLatin1String("testcase"), Qt::CaseSensitive)))
                 continue;
 
             hasTests = true;

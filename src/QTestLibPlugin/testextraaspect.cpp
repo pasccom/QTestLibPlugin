@@ -486,7 +486,7 @@ bool TestExtraAspect::isUseful(ProjectExplorer::RunConfiguration* runConfigurati
     if (qMakeProject == NULL)
         return false;
 
-    foreach(QmakeProjectManager::QmakeProFile *pro, qMakeProject->allProFiles()) {
+    foreach(QmakeProjectManager::QmakeProFile *pro, qMakeProject->rootProFile()->allProFiles()) {
         qDebug() << "Project name:" << pro->displayName();
 
         if (!pro->validParse())

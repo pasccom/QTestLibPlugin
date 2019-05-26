@@ -58,7 +58,7 @@ bool BaseQMakeQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfigur
         return false;
     ProjectExplorer::Runnable runnable = runConfiguration->runnable();
 
-    foreach(QmakeProjectManager::QmakeProFile *pro, qMakeProject->allProFiles()) {
+    foreach(QmakeProjectManager::QmakeProFile *pro, qMakeProject->rootProFile()->allProFiles()) {
         qDebug() << "Project name:" << pro->displayName();
         // Check the executable matches the target:
         QDir destDir(pro->targetInformation().destDir.toString());
