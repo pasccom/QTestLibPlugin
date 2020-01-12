@@ -122,7 +122,7 @@ private slots:
      * \param msg The message
      * \param format The format
      */
-    void parseTestOutput(ProjectExplorer::RunControl* runControl, const QString& msg, Utils::OutputFormat format);
+    void parseTestOutput(const QString& msg, Utils::OutputFormat format);
     /*!
      * \brief Called when a run control stops.
      *

@@ -32,6 +32,7 @@
 #include <projectexplorer/buildinfo.h>
 #include <projectexplorer/toolchain.h>
 #include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 
 #include <qmakeprojectmanager/qmakeproject.h>
 
@@ -461,7 +462,7 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
     QCOMPARE(runControlStartedSpy.size(), 1);
     qDebug() << runControlStartedSpy.at(0);
     Utils::Environment env = project->activeTarget()->activeBuildConfiguration()->environment();
-    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(project->activeTarget()->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
+    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitAspect::toolChain(project->activeTarget()->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
     ProjectExplorer::RunControl* runControl = runControlStartedSpy.at(0).at(0).value<ProjectExplorer::RunControl*>();
     ProjectExplorer::Runnable runnable = runControl->runConfiguration()->runnable();
 
@@ -471,7 +472,7 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
     runControlStoppedSpy.wait(1000);
     QCOMPARE(runControlStoppedSpy.size(), 1);
 
-    QCOMPARE(runnable.executable, toolChain->makeCommand(env));
+    QCOMPARE(runnable.executable, toolChain->makeCommand(env).toString());
     QVERIFY(runnable.commandLineArguments.endsWith(QLatin1String("check")));
 
     END_SUB_TEST_FUNCTION

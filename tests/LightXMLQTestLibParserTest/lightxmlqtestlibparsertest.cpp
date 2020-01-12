@@ -22,6 +22,7 @@
 #include "../common/qtestlibmodeltester.h"
 
 #include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 
 #include <utils/hostosinfo.h>
 
@@ -155,6 +156,7 @@ void LightXMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelT
     runnable.workingDirectory = TESTS_DIR "/" + testName + "/";
     runnable.executable = Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName);
     runnable.commandLineArguments = commandLineArguments(verbosity).join(' ');
+    qDebug() << runnable.commandLineArguments;
 
     // Creation of parser
     QTestLibPlugin::Internal::LightXMLQTestLibParserFactory<Fake> factory;

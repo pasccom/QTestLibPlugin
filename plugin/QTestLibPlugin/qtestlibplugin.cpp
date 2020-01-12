@@ -418,9 +418,9 @@ void TestLibPlugin::runTest(void)
 }
 
 #ifdef BUILD_TESTS
-QList<QObject *> TestLibPlugin::createTestObjects(void) const
+QVector<QObject *> TestLibPlugin::createTestObjects(void) const
 {
-    QList<QObject *> testObjects;
+    QVector<QObject *> testObjects;
 
     testObjects << new Test::QMakePlainTextQTestLibParserFactoryTest;
     testObjects << new Test::QMakeXMLQTestLibParserFactoryTest;

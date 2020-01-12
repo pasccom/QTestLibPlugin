@@ -19,6 +19,7 @@
 #include "lightxmlqtestlibparser.h"
 
 #include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 
 #include <QXmlStreamReader>
 #include <QtDebug>

@@ -26,6 +26,7 @@
 #include <projectexplorer/project.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 
 #include <extensionsystem/pluginmanager.h>
 
@@ -483,19 +484,19 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     QCOMPARE(modifiedRunnable.workingDirectory, QString(TESTS_DIR "/" + test));
 
     // Create a run control and a run worker:
-    ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(modifiedRunConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE);
-    ProjectExplorer::RunControl::WorkerCreator workerFactory = ProjectExplorer::RunControl::producer(modifiedRunConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE);
-    ProjectExplorer::RunWorker* runWorker = workerFactory(runControl);
+    ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(ProjectExplorer::Constants::NORMAL_RUN_MODE);
+    runControl->setRunConfiguration(modifiedRunConfig);
+    QVERIFY2(runControl->createMainWorker(), "Could not create main worker");
 
     // Run run control
     model->appendTestRun(runControl);
-    QSignalSpy runWorkerStartedSpy(runWorker, SIGNAL(started()));
-    QSignalSpy runWorkerStoppedSpy(runWorker, SIGNAL(stopped()));
+    QSignalSpy runControlStartedSpy(runControl, SIGNAL(started()));
+    QSignalSpy runControlStoppedSpy(runControl, SIGNAL(stopped()));
     ProjectExplorer::ProjectExplorerPlugin::startRunControl(runControl);
-    QVERIFY((runWorkerStartedSpy.count() == 1) || runWorkerStartedSpy.wait());
-    if (!runWorkerStoppedSpy.wait()) {
+    QVERIFY((runControlStartedSpy.count() == 1) || runControlStartedSpy.wait());
+    if (!runControlStoppedSpy.wait()) {
         runControl->initiateStop();
-        QVERIFY((runWorkerStoppedSpy.count() == 1) || runWorkerStoppedSpy.wait());
+        QVERIFY((runControlStoppedSpy.count() == 1) || runControlStoppedSpy.wait());
         QSKIP("Computer is too slow for this test.");
     }
 

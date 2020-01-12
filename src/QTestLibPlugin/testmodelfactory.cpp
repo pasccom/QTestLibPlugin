@@ -19,6 +19,7 @@
 #include "testmodelfactory.h"
 
 #include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 
 #include <extensionsystem/pluginmanager.h>
 
@@ -47,8 +48,8 @@ TestModelFactory::TestModelFactory(ProjectExplorer::RunControl *runControl, QObj
         Q_ASSERT(mParsers.last() != NULL);
     }
 
-    connect(runControl, SIGNAL(appendMessageRequested(ProjectExplorer::RunControl*, const QString&, Utils::OutputFormat)),
-            this, SLOT(parseTestOutput(ProjectExplorer::RunControl*, const QString&, Utils::OutputFormat)));
+    connect(runControl, SIGNAL(appendMessage(const QString&, Utils::OutputFormat)),
+            this, SLOT(parseTestOutput(const QString&, Utils::OutputFormat)));
     connect(runControl, SIGNAL(stopped()),
             this, SLOT(runControlStopped()));
 }
@@ -74,13 +75,13 @@ QLinkedList<AbstractTestParserFactory*> TestModelFactory::parserFactories(Core::
     return parserFactories;
 }
 
-void TestModelFactory::parseTestOutput(ProjectExplorer::RunControl* runControl, const QString& msg, Utils::OutputFormat format)
+void TestModelFactory::parseTestOutput(const QString& msg, Utils::OutputFormat format)
 {
     foreach (QString line, msg.split(QRegExp(QLatin1String("[\n\r]")))) {
         if (line.isEmpty())
             continue;
 
-        callParsers(runControl, line, format);
+        callParsers(qobject_cast<ProjectExplorer::RunControl*>(sender()), line, format);
     }
 }
 

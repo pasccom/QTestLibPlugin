@@ -21,6 +21,7 @@
 #include "testrunconfiguration.h"
 
 #include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 #include <projectexplorer/target.h>
 #include <qmakeprojectmanager/qmakeproject.h>
 #include <qmakeprojectmanager/qmakenodes.h>
@@ -63,7 +64,7 @@ bool BaseQMakeQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfigur
         // Check the executable matches the target:
         QDir destDir(pro->targetInformation().destDir.toString());
         if (!destDir.isAbsolute())
-            destDir.setPath(pro->targetInformation().buildDir.appendPath(pro->targetInformation().destDir.toString()).toString());
+            destDir.setPath(pro->targetInformation().buildDir.pathAppended(pro->targetInformation().destDir.toString()).toString());
         qDebug() << "TARGET:" << destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target));
         qDebug() << "Executable:" << runnable.executable;
         if (QDir(destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target))) != QDir(runnable.executable))

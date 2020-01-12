@@ -36,6 +36,7 @@
 #include <projectexplorer/gcctoolchain.h>
 #include <projectexplorer/customtoolchain.h>
 #include <projectexplorer/target.h>
+#include <projectexplorer/runcontrol.h>
 
 #include <qmakeprojectmanager/qmakeproject.h>
 
@@ -84,9 +85,9 @@ QVariantMap TestRunConfigurationData::toMap(QVariantMap& map) const
 {
     if (workingDirectory.toString() != QLatin1String("%{buildDir}"))
         map.insert(Constants::WorkingDirectoryKey, workingDirectory.toString());
-    if (!mMakeExe.isNull())
+    if (!mMakeExe.isEmpty())
         map.insert(Constants::MakeExeKey, mMakeExe.toString());
-    if (!mMakefile.isNull())
+    if (!mMakefile.isEmpty())
         map.insert(Constants::MakefileKey, mMakefile.toString());
     if (!testRunner.isEmpty())
         map.insert(Constants::TestRunnerKey, testRunner);
@@ -118,7 +119,7 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core
      * and addAspects() should only add aspects provided bu runnable RunControl factories.
      * 2.Alternatively, ValgrindPlugin, should ensure the extra aspects are added to
      * sensible RunConfiguration and RunConfiguration::addExtraAspects() should be removed. */
-    addAspect<ProjectExplorer::LocalEnvironmentAspect>(parent, ProjectExplorer::LocalEnvironmentAspect::BaseEnvironmentModifier());
+    addAspect<ProjectExplorer::LocalEnvironmentAspect>(parent);
 
     QTC_ASSERT(parent != NULL, return);
 
@@ -150,7 +151,7 @@ bool TestRunConfiguration::update(void)
         setMakefile(Utils::FileName());
     } else {
         QTC_ASSERT(makefile.size() == 1, );
-        setMakefile(qMakeRoot->targetInformation().buildDir.appendPath(makefile.first()));
+        setMakefile(qMakeRoot->targetInformation().buildDir.pathAppended(makefile.first()));
     }
 
     return true;
@@ -162,10 +163,10 @@ void TestRunConfiguration::handleTargetKitChange(void)
     QTC_ASSERT(target()->kit() != NULL, return);
     QTC_ASSERT(target()->activeBuildConfiguration() != NULL, return);
 
-    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target()->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
+    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitAspect::toolChain(target()->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
 
     Utils::Environment env = target()->activeBuildConfiguration()->environment();
-    mData->setAutoMakeExe(Utils::FileName::fromString(toolChain->makeCommand(env)));
+    mData->setAutoMakeExe(toolChain->makeCommand(env));
 
     if (dynamic_cast<ProjectExplorer::GccToolChain*>(toolChain) != NULL) {
         mData->setTargetToolChain(GCC_BASED_TOOL_CHAIN);
@@ -183,10 +184,10 @@ void TestRunConfiguration::setMakefile(const Utils::FileName& makefile)
 {
     qDebug() << __func__ << makefile;
 
-    if (!makefile.isNull())
+    if (!makefile.isEmpty())
         mData->setAutoMakefile(makefile);
     else if ((target() != NULL) && (target()->activeBuildConfiguration() != NULL))
-        mData->setAutoMakefile(target()->activeBuildConfiguration()->buildDirectory().appendPath("Makefile"));
+        mData->setAutoMakefile(target()->activeBuildConfiguration()->buildDirectory().pathAppended("Makefile"));
 }
 
 QVariantMap TestRunConfiguration::toMap(void) const

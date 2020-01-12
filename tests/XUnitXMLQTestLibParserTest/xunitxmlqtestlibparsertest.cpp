@@ -21,6 +21,7 @@
 #include "../common/qtestlibmodeltester.h"
 
 #include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 
 #include <utils/hostosinfo.h>
 

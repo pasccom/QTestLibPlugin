@@ -20,6 +20,7 @@
 #define QMAKETESTRUNCONFIGURATIONFACTORY_H
 
 #include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 
 namespace ProjectExplorer {
     class Project;

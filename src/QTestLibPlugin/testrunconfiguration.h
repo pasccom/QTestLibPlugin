@@ -73,7 +73,7 @@ public:
      * Returns the path to \c make executable.
      * \return The path to \c make executable
      */
-    inline Utils::FileName makeExe(void) const {return mMakeExe.isNull() ? mAutoMakeExe : mMakeExe;}
+    inline Utils::FileName makeExe(void) const {return mMakeExe.isEmpty() ? mAutoMakeExe : mMakeExe;}
     /*!
      * \brief Whether default \c make path is used
      *
@@ -81,7 +81,7 @@ public:
      * \return Whether auto-detected \c make path is used.
      * \sa useDefaultMakeExe()
      */
-    inline bool usesDefaultMakeExe(void) const {return mMakeExe.isNull();}
+    inline bool usesDefaultMakeExe(void) const {return mMakeExe.isEmpty();}
     /*!
      * \brief Use default \c make path
      *
@@ -120,7 +120,7 @@ public:
      * Returns the path to the \c Makefile.
      * \return The path to the \c Makefile
      */
-    inline Utils::FileName makefile(void) const {return mMakefile.isNull() ? mAutoMakefile : mMakefile;}
+    inline Utils::FileName makefile(void) const {return mMakefile.isEmpty() ? mAutoMakefile : mMakefile;}
     /*!
      * \brief Whether default \c Makefile path is used
      *
@@ -128,7 +128,7 @@ public:
      * \return Whether auto-detected \c Makefile path is used.
      * \sa useDefaultMakefile()
      */
-    inline bool usesDefaultMakefile(void) const {return mMakefile.isNull();}
+    inline bool usesDefaultMakefile(void) const {return mMakefile.isEmpty();}
     /*!
      * \brief Use default \c Makefile path
      *

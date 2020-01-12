@@ -30,6 +30,7 @@
 #include <projectexplorer/project.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 
 #include <qmakeprojectmanager/desktopqmakerunconfiguration.h>
 
@@ -365,16 +366,16 @@ void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTest
 void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration *runConfig, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Core::Id runMode)
 {
     // Create a run control and a run worker:
-    ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(runConfig, runMode);
-    ProjectExplorer::RunControl::WorkerCreator workerFactory = ProjectExplorer::RunControl::producer(runConfig, runMode);
-    ProjectExplorer::RunWorker* runWorker = workerFactory(runControl);
+    ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(runMode);
+    runControl->setRunConfiguration(runConfig);
+    QVERIFY2(runControl->createMainWorker(), "Could not create main worker");
 
     // Create test model factory
     Internal::TestModelFactory* modelFactory = new Internal::TestModelFactory(runControl, this);
 
     // Signal spies
-    QSignalSpy runWorkerStartedSpy(runWorker, SIGNAL(started()));
-    QSignalSpy runWorkerStoppedSpy(runWorker, SIGNAL(stopped()));
+    QSignalSpy runControlStartedSpy(runControl, SIGNAL(started()));
+    QSignalSpy runControlStoppedSpy(runControl, SIGNAL(stopped()));
     connect(modelFactory, &Internal::TestModelFactory::modelFound,
             this, [this] (QAbstractItemModel *model) {
         mFoundModel = model;
@@ -391,10 +392,10 @@ void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration
 
     // Run the test
     ProjectExplorer::ProjectExplorerPlugin::startRunControl(runControl);
-    QVERIFY((runWorkerStartedSpy.count() == 1) || runWorkerStartedSpy.wait());
-    if (!runWorkerStoppedSpy.wait()) {
+    QVERIFY((runControlStartedSpy.count() == 1) || runControlStartedSpy.wait());
+    if (!runControlStoppedSpy.wait()) {
         runControl->initiateStop();
-        QVERIFY((runWorkerStoppedSpy.count() == 1) || runWorkerStoppedSpy.wait());
+        QVERIFY((runControlStoppedSpy.count() == 1) || runControlStoppedSpy.wait());
         QSKIP("Computer is too slow for this test.");
     }
 

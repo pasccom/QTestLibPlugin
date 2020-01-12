@@ -30,6 +30,7 @@
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/buildinfo.h>
 #include <projectexplorer/toolchain.h>
+#include <projectexplorer/runcontrol.h>
 
 #include <qmakeprojectmanager/qmakeproject.h>
 
@@ -100,10 +101,10 @@ void TestRunConfigurationFactoryTest::testOpenProjectWithTests(void)
         QVERIFY(testRunConfig->id() == Core::Id(Constants::TestRunConfigurationId));
 
         Utils::Environment env = target->activeBuildConfiguration()->environment();
-        ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitInformation::toolChain(target->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
+        ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitAspect::toolChain(target->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
 
         ProjectExplorer::Runnable runnable = testRunConfig->runnable();
-        QCOMPARE(runnable.executable, toolChain->makeCommand(env));
+        QCOMPARE(runnable.executable, toolChain->makeCommand(env).toString());
         QCOMPARE(runnable.commandLineArguments, QString(QLatin1String("-f %1 check")).arg(makefile));
     }
 }
