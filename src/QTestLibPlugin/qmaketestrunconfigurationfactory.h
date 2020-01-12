@@ -93,6 +93,8 @@ public:
      * \sa canHandle(), canCreate(), canRestore(), canClone()
      */
     static bool isUseful(ProjectExplorer::Project* project);
+private:
+    ProjectExplorer::SimpleRunWorkerFactory<ProjectExplorer::SimpleTargetRunner, TestRunConfiguration> runWorkerFactory;
 };
 
 } // Internal
