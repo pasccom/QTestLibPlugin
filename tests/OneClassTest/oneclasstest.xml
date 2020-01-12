@@ -45,8 +45,11 @@
         <unsure />
         <unsure />
         <unsure />
+        <unsure level="verboses" qtmin="5.13.0" />
+        <unsure level="verboses" qtmin="5.13.0" />
         <unsure level="verboses" qtmin="5.6.0" />
         <unsure level="verboses" qtmin="5.6.0" />
+        <unsure level="verboses" qtmin="5.13.0" />
         <unsure level="verbose2" />
         <unsure level="verbose2" />
         <unsure level="verbose2" />
@@ -124,6 +127,9 @@
         <unsure />
         <unsure />
         <unsure />
+        <unsure level="verboses" qtmin="5.13.0" />
+        <unsure level="verboses" qtmin="5.13.0" />
+        <unsure level="verboses" qtmin="5.13.0" />
         <unsure />
     </results>
     <results format="xml">
@@ -196,6 +202,9 @@
         <unsure />
         <unsure />
         <unsure />
+        <unsure level="verboses" qtmin="5.13.0" />
+        <unsure level="verboses" qtmin="5.13.0" />
+        <unsure level="verboses" qtmin="5.13.0" />
         <unsure />
         <unsure />
     </results>
@@ -230,6 +239,7 @@
         <unsure level="silent" />
         <unsure level="verbose1" />
         <unsure/>
+        <unsure level="verboses" qtmin="5.13.0" />
         <unsure level="silent" />
         <unsure/>
     </results>
@@ -334,6 +344,9 @@
             <message type="Info" strict="true" level="verbose1" format="txt">
                 entering
             </message>
+            <message type="Signal" strict="false" level="verboses" qtmin="5.13.0" format="xunitxml">
+                QThread(29ec6f0) finished ()
+            </message>
             <message type="Pass" strict="true">
                 Test passed
             </message>
@@ -341,6 +354,14 @@
                 0.00ms
             </message>
         </function>
+        <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.13.0" format="txt">
+            <message type="Signal" strict="false" >
+                QThread(29ec6f0) finished ()
+            </message>
+        </function>
+        <message type="Signal" strict="false" level="verboses" qtmin="5.13.0" format="xml">
+            QThread(29ec6f0) finished ()
+        </message>
         <message type="Duration" strict="false" format="xml,lightxml" >
             0.00ms
         </message>
