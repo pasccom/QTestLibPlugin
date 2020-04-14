@@ -30,8 +30,6 @@
 #include <projectexplorer/runconfiguration.h>
 #include <projectexplorer/runcontrol.h>
 
-#include <qmakeprojectmanager/desktopqmakerunconfiguration.h>
-
 #include <extensionsystem/pluginmanager.h>
 
 #include <utils/hostosinfo.h>
@@ -212,7 +210,7 @@ void QMakeXMLQTestLibParserFactoryTest::runTest(const QString& testName, const Q
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, mProject->activeTarget()->runConfigurations()) {
-        QFileInfo exeFileInfo(runConfig->runnable().executable);
+        QFileInfo exeFileInfo = runConfig->runnable().executable.toFileInfo();
         qDebug() << exeFileInfo.absoluteFilePath();
         QVERIFY(exeFileInfo.exists());
         if (QString::compare(exeFileInfo.baseName(), testName, Qt::CaseSensitive) != 0)

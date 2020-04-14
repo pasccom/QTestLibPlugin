@@ -472,7 +472,7 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
     runControlStoppedSpy.wait(1000);
     QCOMPARE(runControlStoppedSpy.size(), 1);
 
-    QCOMPARE(runnable.executable, toolChain->makeCommand(env).toString());
+    QCOMPARE(runnable.executable, toolChain->makeCommand(env));
     QVERIFY(runnable.commandLineArguments.endsWith(QLatin1String("check")));
 
     END_SUB_TEST_FUNCTION

@@ -54,7 +54,7 @@ namespace Internal {
 TestRunConfigurationData::TestRunConfigurationData(QObject* parent)
     : QObject(parent), jobNumber(1), testRunner(), mTargetToolChain(UNSUPPORTED_TOOL_CHAIN), mAutoMakeExe(), mMakeExe(), mAutoMakefile(), mMakefile()
 {
-    workingDirectory = Utils::FileName::fromString(QLatin1String("%{buildDir}"));
+    workingDirectory = Utils::FilePath::fromString(QLatin1String("%{buildDir}"));
 }
 
 void TestRunConfigurationData::setTargetToolChain(unsigned char newToolChain)
@@ -98,9 +98,9 @@ QVariantMap TestRunConfigurationData::toMap(QVariantMap& map) const
 
 bool TestRunConfigurationData::fromMap(const QVariantMap& map)
 {
-    workingDirectory = Utils::FileName::fromString(map.value(Constants::WorkingDirectoryKey, QLatin1String("%{buildDir}")).toString());
-    mMakeExe = Utils::FileName::fromString(map.value(Constants::MakeExeKey, QString()).toString());
-    mMakefile = Utils::FileName::fromString(map.value(Constants::MakefileKey, QString()).toString());
+    workingDirectory = Utils::FilePath::fromString(map.value(Constants::WorkingDirectoryKey, QLatin1String("%{buildDir}")).toString());
+    mMakeExe = Utils::FilePath::fromString(map.value(Constants::MakeExeKey, QString()).toString());
+    mMakefile = Utils::FilePath::fromString(map.value(Constants::MakefileKey, QString()).toString());
     testRunner = map.value(Constants::TestRunnerKey, QString()).toString();
     jobNumber = map.value(Constants::MakeJobNumberKey, 1).toInt();
 
@@ -148,7 +148,7 @@ bool TestRunConfiguration::update(void)
     QmakeProjectManager::QmakeProFile* qMakeRoot = qMakeRootNode->rootProFile();
     QStringList makefile = qMakeRoot->variableValue(QmakeProjectManager::Variable::Makefile);
     if (makefile.size() == 0) {
-        setMakefile(Utils::FileName());
+        setMakefile(Utils::FilePath());
     } else {
         QTC_ASSERT(makefile.size() == 1, );
         setMakefile(qMakeRoot->targetInformation().buildDir.pathAppended(makefile.first()));
@@ -180,7 +180,7 @@ void TestRunConfiguration::handleTargetKitChange(void)
     }
 }
 
-void TestRunConfiguration::setMakefile(const Utils::FileName& makefile)
+void TestRunConfiguration::setMakefile(const Utils::FilePath& makefile)
 {
     qDebug() << __func__ << makefile;
 
@@ -207,9 +207,9 @@ ProjectExplorer::Runnable TestRunConfiguration::runnable(void) const
 {
     ProjectExplorer::Runnable runnable;
     if (macroExpander() != NULL)
-        runnable.executable = macroExpander()->expand(mData->makeExe().toString());
+        runnable.executable = Utils::FilePath::fromString(macroExpander()->expand(mData->makeExe().toString()));
     else
-        runnable.executable = mData->makeExe().toString();
+        runnable.executable = mData->makeExe();
     runnable.commandLineArguments = commandLineArguments();
     runnable.workingDirectory = workingDirectory();
     runnable.environment = aspect<ProjectExplorer::LocalEnvironmentAspect>()->environment();
@@ -410,13 +410,13 @@ void TestRunConfigurationWidget::handleTargetToolChainChange(unsigned char targe
 void TestRunConfigurationWidget::updateWorkingDirectory(bool valid)
 {
     if (valid)
-        mData->workingDirectory = Utils::FileName::fromUserInput(mWorkingDirectoryEdit->text());
+        mData->workingDirectory = Utils::FilePath::fromUserInput(mWorkingDirectoryEdit->text());
 }
 
 void TestRunConfigurationWidget::updateWorkingDirectory(void)
 {
     if (mWorkingDirectoryEdit->isValid())
-        mData->workingDirectory = Utils::FileName::fromUserInput(mWorkingDirectoryEdit->text());
+        mData->workingDirectory = Utils::FilePath::fromUserInput(mWorkingDirectoryEdit->text());
     mWorkingDirectoryEdit->setText(mData->workingDirectory.toString());
 }
 
@@ -425,7 +425,7 @@ void TestRunConfigurationWidget::browseWorkingDirectory(void)
     QString wd = QFileDialog::getExistingDirectory(this, tr("Choose working directory"), mData->workingDirectory.toString());
 
     if (!wd.isNull())
-        mData->workingDirectory = Utils::FileName::fromString(wd);
+        mData->workingDirectory = Utils::FilePath::fromString(wd);
     mWorkingDirectoryEdit->setText(mData->workingDirectory.toString());
 }
 

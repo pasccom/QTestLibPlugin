@@ -104,7 +104,7 @@ void TestRunConfigurationFactoryTest::testOpenProjectWithTests(void)
         ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitAspect::toolChain(target->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
 
         ProjectExplorer::Runnable runnable = testRunConfig->runnable();
-        QCOMPARE(runnable.executable, toolChain->makeCommand(env).toString());
+        QCOMPARE(runnable.executable, toolChain->makeCommand(env));
         QCOMPARE(runnable.commandLineArguments, QString(QLatin1String("-f %1 check")).arg(makefile));
     }
 }

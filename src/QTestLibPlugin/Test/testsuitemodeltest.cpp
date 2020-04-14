@@ -457,7 +457,7 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, project->activeTarget()->runConfigurations()) {
-        QFileInfo exeFileInfo(runConfig->runnable().executable);
+        QFileInfo exeFileInfo = runConfig->runnable().executable.toFileInfo();
         qDebug() << exeFileInfo.absoluteFilePath();
         QVERIFY(exeFileInfo.exists());
         if (QString::compare(exeFileInfo.baseName(), test, Qt::CaseSensitive) != 0)

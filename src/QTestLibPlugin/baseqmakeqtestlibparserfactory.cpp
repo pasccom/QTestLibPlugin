@@ -67,7 +67,7 @@ bool BaseQMakeQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfigur
             destDir.setPath(pro->targetInformation().buildDir.pathAppended(pro->targetInformation().destDir.toString()).toString());
         qDebug() << "TARGET:" << destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target));
         qDebug() << "Executable:" << runnable.executable;
-        if (QDir(destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target))) != QDir(runnable.executable))
+        if (QDir(destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target))) != QDir(runnable.executable.toString()))
             continue;
         // Check the testlib is included:
         qDebug() << "QT variable:" << pro->variableValue(QmakeProjectManager::Variable::Qt);

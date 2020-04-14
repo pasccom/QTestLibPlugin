@@ -328,7 +328,7 @@ public:
      * \return The name of the output file
      * \sa setOutFileName()
      */
-    inline Utils::FileName outFileName(void) const {return mOutFileName;}
+    inline Utils::FilePath outFileName(void) const {return mOutFileName;}
     /*!
      * \brief Set the name of the output file.
      *
@@ -337,7 +337,7 @@ public:
      * \param fileName The name of the output file
      * \sa outFileName()
      */
-    inline void setOutFileName(const Utils::FileName& fileName) {mOutFileName = fileName;}
+    inline void setOutFileName(const Utils::FilePath& fileName) {mOutFileName = fileName;}
     /*!
      * \brief The output format
      *
@@ -685,7 +685,7 @@ private:
 
     TestClassList mSelectedTestCases; /*!< List of selected test cases (see selectedTestCases()) */
 
-    Utils::FileName mOutFileName; /*!< Output file name (currently only one output file is supported (see outFileName()) */
+    Utils::FilePath mOutFileName; /*!< Output file name (currently only one output file is supported (see outFileName()) */
     TestOutputFormat mParser; /*!< The output format of the test (see outputFormat()) */
     TestVerbosity mVerbosity; /*!< The output verbosity of the test (see verbosity()) */
     Output mOutput; /*!< What will be output by the executable (see isTestOutput(), isHelpOutput(), areFunctionsOutput(), areDatatagsOutput()) */

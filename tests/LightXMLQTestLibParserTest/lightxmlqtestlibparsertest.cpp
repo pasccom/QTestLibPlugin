@@ -154,7 +154,7 @@ void LightXMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelT
     // Creation of Runnable
     ProjectExplorer::Runnable runnable;
     runnable.workingDirectory = TESTS_DIR "/" + testName + "/";
-    runnable.executable = Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName);
+    runnable.executable = Utils::FilePath::fromString(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName));
     runnable.commandLineArguments = commandLineArguments(verbosity).join(' ');
     qDebug() << runnable.commandLineArguments;
 
@@ -180,7 +180,7 @@ void LightXMLQTestLibParserTest::runMakeCheck(const QString& testName, QTestLibM
     // Creation of Runnable
     ProjectExplorer::Runnable runnable;
     runnable.workingDirectory = TESTS_DIR "/" + testName + "/";
-    runnable.executable = MAKE_EXECUATBLE;
+    runnable.executable = Utils::FilePath::fromString(MAKE_EXECUATBLE);
     runnable.commandLineArguments = "-s check";
     QLinkedList<EnvironmentVariable> addToEnv;
     addToEnv << EnvironmentVariable("TESTARGS", commandLineArguments(verbosity).join(' '));
@@ -220,7 +220,7 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> LightXMLQTe
     QProcess testProc(this);
     testProc.setWorkingDirectory(runnable.workingDirectory);
     testProc.setProcessEnvironment(env);
-    testProc.start(runnable.executable + " " + runnable.commandLineArguments, QIODevice::ReadOnly);
+    testProc.start(runnable.executable.toString() + ' ' + runnable.commandLineArguments, QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
         qCritical() << "Test timed out";

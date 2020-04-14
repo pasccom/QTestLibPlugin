@@ -2333,7 +2333,7 @@ void QTestLibArgsParserTest::toStringOutFileV1(void)
     QFETCH(QStringList, args);
 
     QTestLibArgsParser parser;
-    parser.setOutFileName(Utils::FileName::fromString(filename));
+    parser.setOutFileName(Utils::FilePath::fromString(filename));
 
     SUB_TEST_FUNCTION(checkError(parser));
     SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
@@ -2397,7 +2397,7 @@ void QTestLibArgsParserTest::toStringOutFileV2(void)
     QFETCH(QStringList, args);
 
     QTestLibArgsParser parser;
-    parser.setOutFileName(Utils::FileName::fromString(filename));
+    parser.setOutFileName(Utils::FilePath::fromString(filename));
 
     SUB_TEST_FUNCTION(checkError(parser));
     SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
@@ -2461,7 +2461,7 @@ void QTestLibArgsParserTest::toStringOutFile(void)
     QFETCH(QStringList, args);
 
     QTestLibArgsParser parser;
-    parser.setOutFileName(Utils::FileName::fromString(filename));
+    parser.setOutFileName(Utils::FilePath::fromString(filename));
 
     SUB_TEST_FUNCTION(checkError(parser));
     SUB_TEST_FUNCTION(checkUnknownArguments(parser.unknownArgs()));
@@ -3040,7 +3040,7 @@ void QTestLibArgsParserTest::mapOutFile(void)
     args << "-o" << fileName + ",txt";
 
     QTestLibArgsParser parserTo;
-    parserTo.setOutFileName(Utils::FileName::fromString(fileName));
+    parserTo.setOutFileName(Utils::FilePath::fromString(fileName));
 
     QVariantMap parserToMap;
     parserTo.toMap(parserToMap);

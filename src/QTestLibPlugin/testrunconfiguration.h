@@ -73,7 +73,7 @@ public:
      * Returns the path to \c make executable.
      * \return The path to \c make executable
      */
-    inline Utils::FileName makeExe(void) const {return mMakeExe.isEmpty() ? mAutoMakeExe : mMakeExe;}
+    inline Utils::FilePath makeExe(void) const {return mMakeExe.isEmpty() ? mAutoMakeExe : mMakeExe;}
     /*!
      * \brief Whether default \c make path is used
      *
@@ -89,22 +89,22 @@ public:
      *
      * \sa usesDefaultMakeExe()
      */
-    inline void useDefaultMakeExe(void) {mMakeExe = Utils::FileName();}
+    inline void useDefaultMakeExe(void) {mMakeExe = Utils::FilePath();}
     /*!
      * \brief Set auto-detected \c make path
      *
      * Sets the auto-detected path to \c make executable.
      * \param makeExe The auto-detected path to \c make executable
-     * \sa setMakeExe(const Utils::FileName&), setMakeExe(const QString&)
+     * \sa setMakeExe(const Utils::FilePath&), setMakeExe(const QString&)
      */
-    inline void setAutoMakeExe(const Utils::FileName& makeExe) {mAutoMakeExe = makeExe;}
+    inline void setAutoMakeExe(const Utils::FilePath& makeExe) {mAutoMakeExe = makeExe;}
     /*!
-     * \brief \copybrief setMakeExe(const Utils::FileName&)
+     * \brief \copybrief setMakeExe(const Utils::FilePath&)
      *
      * \overload
-     * \param path The used-defined path to \c make executable (converted with <tt>Utils::FileName::fromUserInput()</tt>)
+     * \param path The used-defined path to \c make executable (converted with <tt>Utils::FilePath::fromUserInput()</tt>)
      */
-    inline void setMakeExe(const QString& path) {setMakeExe(Utils::FileName::fromUserInput(path));}
+    inline void setMakeExe(const QString& path) {setMakeExe(Utils::FilePath::fromUserInput(path));}
     /*!
      * \brief Set \c make path
      *
@@ -112,7 +112,7 @@ public:
      * \param makeExe The used-defined path to \c make executable
      * \sa setAutoMakeExe()
      */
-    inline void setMakeExe(const Utils::FileName& makeExe) {mMakeExe = (mAutoMakeExe == makeExe ? Utils::FileName() : makeExe);}
+    inline void setMakeExe(const Utils::FilePath& makeExe) {mMakeExe = (mAutoMakeExe == makeExe ? Utils::FilePath() : makeExe);}
 
     /*!
      * \brief Path to \c Makefile
@@ -120,7 +120,7 @@ public:
      * Returns the path to the \c Makefile.
      * \return The path to the \c Makefile
      */
-    inline Utils::FileName makefile(void) const {return mMakefile.isEmpty() ? mAutoMakefile : mMakefile;}
+    inline Utils::FilePath makefile(void) const {return mMakefile.isEmpty() ? mAutoMakefile : mMakefile;}
     /*!
      * \brief Whether default \c Makefile path is used
      *
@@ -136,22 +136,22 @@ public:
      *
      * \sa usesDefaultMakefile()
      */
-    inline void useDefaultMakefile(void) {mMakefile = Utils::FileName();}
+    inline void useDefaultMakefile(void) {mMakefile = Utils::FilePath();}
     /*!
      * \brief Set auto-detected \c Makefile path
      *
      * Sets the auto-detected path to \c Makefile.
      * \param path The auto-detected path to \c Makefile
-     * \sa setMakefile(const Utils::FileName&), setMakefile(const QString&)
+     * \sa setMakefile(const Utils::FilePath&), setMakefile(const QString&)
      */
-    inline void setAutoMakefile(const Utils::FileName& path) {mAutoMakefile = path;}
+    inline void setAutoMakefile(const Utils::FilePath& path) {mAutoMakefile = path;}
     /*!
-     * \brief \copybrief setMakefile(const Utils::FileName&)
+     * \brief \copybrief setMakefile(const Utils::FilePath&)
      *
      * \overload
-     * \param path The user-defined path to \c Makefile (converted to <tt>Utils::FileName::fromUserInput()</tt>)
+     * \param path The user-defined path to \c Makefile (converted to <tt>Utils::FilePath::fromUserInput()</tt>)
      */
-    inline void setMakefile(const QString& path) {setMakefile(Utils::FileName::fromUserInput(path));}
+    inline void setMakefile(const QString& path) {setMakefile(Utils::FilePath::fromUserInput(path));}
     /*!
      * \brief Set \c Makefile path
      *
@@ -159,7 +159,7 @@ public:
      * \param makefile The user-defined path to \c Makefile
      * \sa setAutoMakefile()
      */
-    inline void setMakefile(const Utils::FileName& makefile) {mMakefile = (mAutoMakefile == makefile  ? Utils::FileName() : makefile);}
+    inline void setMakefile(const Utils::FilePath& makefile) {mMakefile = (mAutoMakefile == makefile  ? Utils::FilePath() : makefile);}
 
     /*!
      * \brief Conversion to map
@@ -211,7 +211,7 @@ public:
 
     int jobNumber;                      /*!< The number of jobs \c make should use when running <tt>make check</tt>. */
     QString testRunner;                 /*!< The path to the test runner. */
-    Utils::FileName workingDirectory;   /*!< The path to working directory. */
+    Utils::FilePath workingDirectory;   /*!< The path to working directory. */
 signals:
     /*!
      * \internal
@@ -224,10 +224,10 @@ signals:
     void targetToolChainChanged(unsigned char newToolChain);
 private:
     unsigned char mTargetToolChain;     /*!< The internal ID of the current toolchain. */
-    Utils::FileName mAutoMakeExe;       /*!< The auto-detected path to \c make executable. */
-    Utils::FileName mMakeExe;           /*!< The user-defined path to \c make executable. */
-    Utils::FileName mAutoMakefile;      /*!< The auto-detected path to \c Makefile. */
-    Utils::FileName mMakefile;          /*!< The user-defined path to \c Makefile. */
+    Utils::FilePath mAutoMakeExe;       /*!< The auto-detected path to \c make executable. */
+    Utils::FilePath mMakeExe;           /*!< The user-defined path to \c make executable. */
+    Utils::FilePath mAutoMakefile;      /*!< The auto-detected path to \c Makefile. */
+    Utils::FilePath mMakefile;          /*!< The user-defined path to \c Makefile. */
 };
 
 /*!
@@ -475,14 +475,14 @@ public:
      * \param makefile The auto-detected path to the \c Makefile
      * \sa makefile()
      */
-    void setMakefile(const Utils::FileName& makefile);
+    void setMakefile(const Utils::FilePath& makefile);
     /*!
      * \brief Path to \c Makefile
      *
      * Returns the current path to \c Makefile (see TestRunConfigurationData::makefile())
      * \return
      */
-    inline Utils::FileName makefile(void) const {return mData->makefile();}
+    inline Utils::FilePath makefile(void) const {return mData->makefile();}
 
     /*!
      * \brief Conversion to map

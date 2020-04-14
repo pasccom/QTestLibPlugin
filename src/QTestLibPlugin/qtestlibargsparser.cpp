@@ -161,7 +161,7 @@ void QTestLibArgsParser::fromMap(const QVariantMap& map)
 
     mParser = (TestOutputFormat) map.value(Constants::FormatKey, (int) TxtFormat).toInt();
     mVerbosity = (TestVerbosity) map.value(Constants::VerbosityKey, (int) NormalVerbosity).toInt();
-    mOutFileName = Utils::FileName::fromString(map.value(Constants::OutputFileKey).toString());
+    mOutFileName = Utils::FilePath::fromString(map.value(Constants::OutputFileKey).toString());
     mMaxWarnings = map.value(Constants::MaxWarningKey, 2000).toUInt();
     mEventDelay = map.value(Constants::EventDelayKey, -1).toInt();
     mKeyDelay = map.value(Constants::KeyDelayKey, -1).toInt();
@@ -549,7 +549,7 @@ void QTestLibArgsParser::parseOutput(const QString& token)
         fileName.clear();
 
     if (!fileName.isNull())
-        mOutFileName = Utils::FileName::fromString(fileName);
+        mOutFileName = Utils::FilePath::fromString(fileName);
     if (!format.isNull()) {
         mParser = (TestOutputFormat) (parserFormats.indexOf(format) + 1);
         if (mParser == NoneFormat) {
@@ -620,7 +620,7 @@ void QTestLibArgsParser::initDefaults(void)
     mUnknownFlags.clear();
     mSelectedTestCases.clear();
 
-    mOutFileName = Utils::FileName();
+    mOutFileName = Utils::FilePath();
     mParser = TxtFormat;
     mVerbosity = NormalVerbosity;
     mOutput = NormalOutput;

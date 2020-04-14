@@ -154,7 +154,7 @@ void PlainTextQTestLibParserTest::runTest(const QString& testName, QTestLibModel
     // Creation of Runnable
     ProjectExplorer::Runnable runnable;
     runnable.workingDirectory = TESTS_DIR "/" + testName + "/";
-    runnable.executable = Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName);
+    runnable.executable = Utils::FilePath::fromString(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName));
     runnable.commandLineArguments = commandLineArguments(verbosity).join(' ');
 
     // Creation of parser
@@ -176,7 +176,7 @@ void PlainTextQTestLibParserTest::runMakeCheck(const QString& testName, QTestLib
     // Creation of Runnable
     ProjectExplorer::Runnable runnable;
     runnable.workingDirectory = TESTS_DIR "/" + testName + "/";
-    runnable.executable = MAKE_EXECUATBLE;
+    runnable.executable = Utils::FilePath::fromString(MAKE_EXECUATBLE);
     runnable.commandLineArguments = "-s check";
     QLinkedList<EnvironmentVariable> addToEnv;
     addToEnv << EnvironmentVariable("TESTARGS", commandLineArguments(verbosity).join(' '));
@@ -215,7 +215,7 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQT
     testProc.setWorkingDirectory(runnable.workingDirectory);
     testProc.setProcessEnvironment(env);
     qDebug() << testProc.processEnvironment().toStringList() << testProc.environment();
-    testProc.start(runnable.executable + ' ' + runnable.commandLineArguments, QIODevice::ReadOnly);
+    testProc.start(runnable.executable.toString() + ' ' + runnable.commandLineArguments, QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
         qCritical() << "Test timed out";
