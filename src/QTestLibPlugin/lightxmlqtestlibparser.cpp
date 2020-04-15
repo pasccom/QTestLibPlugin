@@ -106,7 +106,7 @@ TestModelFactory::ParseResult LightXMLQTestLibParser::endElementParsed(ProjectEx
                                 mCurrentClass,
                                 mCurrentFunction,
                                 mCurrentRow,
-                                trUtf8("%1ms").arg(mCurrentAttributes.value(QLatin1String("msecs"))));
+                                tr("%1ms").arg(mCurrentAttributes.value(QLatin1String("msecs"))));
         mCurrentAttributes.clear();
     }
     if (QStringRef::compare(tag, QLatin1String("BenchmarkResult"), Qt::CaseInsensitive) == 0) {
@@ -116,8 +116,8 @@ TestModelFactory::ParseResult LightXMLQTestLibParser::endElementParsed(ProjectEx
                                 mCurrentClass,
                                 mCurrentFunction,
                                 mCurrentRow,
-                                trUtf8("%1 msecs per iteration (iterations: %2)").arg(mCurrentAttributes.value(QLatin1String("value")))
-                                                                                 .arg(mCurrentAttributes.value(QLatin1String("iterations"))));
+                                tr("%1 msecs per iteration (iterations: %2)").arg(mCurrentAttributes.value(QLatin1String("value")))
+                                                                             .arg(mCurrentAttributes.value(QLatin1String("iterations"))));
         mCurrentAttributes.clear();
     }
 

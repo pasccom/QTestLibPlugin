@@ -394,19 +394,19 @@ QString defaultMessage(QTestLibModel::MessageType type)
     case QTestLibModel::Slot:
         break;
     case QTestLibModel::Skip:
-        return QTestLibModel::trUtf8("Test skipped");
+        return QTestLibModel::tr("Test skipped");
     case QTestLibModel::Pass:
-        return QTestLibModel::trUtf8("Test passed");
+        return QTestLibModel::tr("Test passed");
     case QTestLibModel::XPass:
-        return QTestLibModel::trUtf8("Test passed unexpectedly");
+        return QTestLibModel::tr("Test passed unexpectedly");
     case QTestLibModel::BlackListedPass:
-        return QTestLibModel::trUtf8("Blacklisted test passed");
+        return QTestLibModel::tr("Blacklisted test passed");
     case QTestLibModel::Fail:
-        return QTestLibModel::trUtf8("Test failed");
+        return QTestLibModel::tr("Test failed");
     case QTestLibModel::XFail:
-        return QTestLibModel::trUtf8("Test failed unexpectedly");
+        return QTestLibModel::tr("Test failed unexpectedly");
     case QTestLibModel::BlackListedFail:
-        return QTestLibModel::trUtf8("Blacklisted test failed");
+        return QTestLibModel::tr("Blacklisted test failed");
     default:
         qWarning() << "Sentinel value used in" << __func__;
     }

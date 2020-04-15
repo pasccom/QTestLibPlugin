@@ -49,7 +49,7 @@ public:
     bool canNext(void) const override {return false;}
     bool canPrevious(void) const override {return false;}
     void clearContents(void) override;
-    QString displayName(void) const override {return trUtf8("Test output");}
+    QString displayName(void) const override {return tr("Test output");}
     void goToNext(void) override {}
     void goToPrev(void) override {}
     bool hasFocus(void) const override {return false;}
