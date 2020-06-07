@@ -53,7 +53,8 @@ SOURCES += \
     Widgets/filetypevalidatinglineedit.cpp \
     baseqmakeqtestlibparserfactory.cpp \
     baseforceparserfactory.cpp \
-    testextraaspect.cpp
+    pathaspect.cpp \
+    testextraaspect.cpp \
 #    qmaketestextraaspectfactory.cpp
 
 HEADERS += \
@@ -79,7 +80,8 @@ HEADERS += \
     Widgets/filetypevalidatinglineedit.h \
     baseqmakeqtestlibparserfactory.h \
     baseforceparserfactory.h \
-    testextraaspect.h
+    pathaspect.h \
+    testextraaspect.h \
 #    qmaketestextraaspectfactory.h
 
 include(../../QTestLibPlugin.pri)
