@@ -240,6 +240,44 @@ public:
     ~TestExtraAspect() override;
 
     /*!
+     * \brief Set the output format
+     *
+     * Sets the format of the output.
+     *
+     * \param format The output format
+     * \sa outputFormat(), TestLibArgsParser::setOutputFormat()
+     */
+    inline void setOutputFormat(QTestLibArgsParser::TestOutputFormat format) {mTestArgsParser->setOutputFormat(format);}
+    /*!
+     * \brief The output format
+     *
+     * Returns the format of the output.
+     *
+     * \return The output format
+     * \sa setOutputFormat(), QTestLibArgsParser::outputFormat()
+     */
+    inline QTestLibArgsParser::TestOutputFormat outputFormat(void) const {return mTestArgsParser->outputFormat();}
+
+    /*!
+     * \brief Set the verbosity
+     *
+     * Sets the verbosity of the test output.
+     *
+     * \param verbosity The verbosity of the test output.
+     * \sa verbosity(), QTestLibArgsParser::setVerbosity()
+     */
+    inline void setVerbosity(QTestLibArgsParser::TestVerbosity verbosity) {mTestArgsParser->setVerbosity(verbosity);}
+    /*!
+     * \brief The verbosity
+     *
+     * Returns the verbosity of the test output.
+     *
+     * \return The verbosity of the test output.
+     * \sa setVerbosity(), QTestLibArgsParser::verbosity()
+     */
+    inline QTestLibArgsParser::TestVerbosity verbosity(void) const {return mTestArgsParser->verbosity();}
+
+    /*!
      * \brief Test command-line arguments
      *
      * Returns the command-line arguments which should be passed to the test
