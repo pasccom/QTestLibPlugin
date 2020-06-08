@@ -23,11 +23,13 @@
 #include <baseqmakeqtestlibparserfactory.h>
 #include <qtestlibpluginconstants.h>
 #include <testrunconfiguration.h>
+#include <testextraaspect.h>
 
 #include <projectexplorer/session.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runconfigurationaspects.h>
 #include <projectexplorer/runcontrol.h>
 
 #include <extensionsystem/pluginmanager.h>
@@ -38,13 +40,6 @@
 
 namespace QTestLibPlugin {
 namespace Test {
-
-/*
- * NOTE This is extracted from QtCreator sources <qmakeprojectmanager/desktopqmakerunconfiguration.cpp>
- * I hoope this wont change in next releases otherwise these tests will be broken.
- */
-#define QMAKE_RUNCONFIG_PREFIX "RunConfiguration"
-const QString CommandLineArgumentsKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".Arguments");
 
 void QMakeXUnitXMLQTestLibParserFactoryTest::initTestCase(void)
 {
@@ -220,18 +215,11 @@ void QMakeXUnitXMLQTestLibParserFactoryTest::runTest(const QString& testName, co
     }
     QVERIFY(testRunConfig != NULL);
 
-    // Change the run configuration map:
-    QVariantMap map = testRunConfig->toMap();
-    map.remove(CommandLineArgumentsKey);
-    map.insert(CommandLineArgumentsKey, cmdArgs.join(QLatin1Char(' ')));
-
-    // Restore a modified run configuration from the modified map:
-    ProjectExplorer::RunConfiguration *modifiedRunConfig = ProjectExplorer::RunConfigurationFactory::restore(mProject->activeTarget(), map);
-    QVERIFY(modifiedRunConfig != NULL);
-    ProjectExplorer::Runnable modifiedRunnable = modifiedRunConfig->runnable();
-    QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
-
-    testFactory(modifiedRunConfig, result);
+    // Change the argument aspect:
+    ProjectExplorer::ArgumentsAspect* argsAspect = testRunConfig->aspect<ProjectExplorer::ArgumentsAspect>();
+    QVERIFY(argsAspect != nullptr);
+    argsAspect->setArguments(cmdArgs.join(QLatin1Char(' ')));
+    testFactory(testRunConfig, result);
 }
 
 void QMakeXUnitXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result)
@@ -248,19 +236,14 @@ void QMakeXUnitXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testNam
     }
     QVERIFY(testRunConfig != NULL);
 
-    // Change the run configuration map:
-    QVariantMap map = testRunConfig->toMap();
-    map.remove(Constants::FormatKey);
-    map.remove(Constants::VerbosityKey);
-    map.insert(Constants::FormatKey, (int) format);
-    map.insert(Constants::VerbosityKey, (int) verbosity);
-
-    // Restore a modified run configuration from the modified map:
-    ProjectExplorer::RunConfiguration *modifiedRunConfig = ProjectExplorer::RunConfigurationFactory::restore(mProject->activeTarget(), map);
-    QVERIFY(modifiedRunConfig != NULL);
-    ProjectExplorer::Runnable modifiedRunnable = modifiedRunConfig->runnable();
+    // Change the text extra aspect:
+    QTestLibPlugin::Internal::TestExtraAspect* testAspect = testRunConfig->aspect<QTestLibPlugin::Internal::TestExtraAspect>();
+    QVERIFY(testAspect != nullptr);
+    testAspect->setOutputFormat(format);
+    testAspect->setVerbosity(verbosity);
 
     // Compare arguments to expected value:
+    ProjectExplorer::Runnable modifiedRunnable = testRunConfig->runnable();
     Internal::QTestLibArgsParser testArgsParser;
     testArgsParser.setOutputFormat(format);
     testArgsParser.setVerbosity(verbosity);
@@ -269,7 +252,7 @@ void QMakeXUnitXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testNam
         expectedCmdArgs.append(QString(QLatin1String(" TESTARGS=\"%1\"")).arg(testArgsParser.toString()));
     QCOMPARE(modifiedRunnable.commandLineArguments, expectedCmdArgs);
 
-    testFactory(modifiedRunConfig, result);
+    testFactory(testRunConfig, result);
 }
 
 void QMakeXUnitXMLQTestLibParserFactoryTest::testFactory(ProjectExplorer::RunConfiguration* testRunConfig, bool result)

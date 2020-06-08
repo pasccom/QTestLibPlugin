@@ -212,7 +212,6 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLib
     QProcess testProc(this);
     testProc.setWorkingDirectory(runnable.workingDirectory);
     testProc.setProcessEnvironment(env);
-    qDebug() << testProc.processEnvironment().toStringList() << testProc.environment();
     testProc.start(runnable.executable.toString() + ' ' + runnable.commandLineArguments, QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
@@ -230,7 +229,7 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLib
             continue;
         if (line.startsWith("make[") || line.startsWith("mingw32-make["))
             continue;
-        qDebug() << "stdout:" << line;
+        //qDebug() << "stdout:" << line;
         results << parser->parseStdoutLine(nullptr, line);
     }
 
@@ -251,8 +250,10 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLib
             continue;
         if (line.startsWith("make[") || line.startsWith("mingw32-make["))
             continue;
-        qDebug() << "stderr:" << line;
-        results << parser->parseStderrLine(nullptr, line);
+        //qDebug() << "stderr:" << line;
+        // FIXME nothing goes in stderr the test is executed in debug mode.
+        // For the moment, I will not care on stderr.
+        //results << parser->parseStderrLine(nullptr, line);
     }
 
     return results;

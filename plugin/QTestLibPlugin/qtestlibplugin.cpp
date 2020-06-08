@@ -217,8 +217,6 @@ void TestLibPlugin::handleProjectOpen(ProjectExplorer::Project* project)
 
     connect(project, SIGNAL(activeTargetChanged(ProjectExplorer::Target*)),
             this, SLOT(handleActiveTargetChange(ProjectExplorer::Target*)));
-    connect(project, SIGNAL(parsingFinished(bool)),
-            this, SLOT(handleProjectParsingFinished()));
     handleActiveTargetChange(project->activeTarget(), false);
 }
 
@@ -271,6 +269,8 @@ void TestLibPlugin::handleActiveTargetChange(ProjectExplorer::Target* target, bo
     ProjectExplorer::Project* project = qobject_cast<ProjectExplorer::Project*>(sender());
     if (clean && (project != NULL)) {
         foreach (ProjectExplorer::Target* t, project->targets()) {
+            disconnect(t, SIGNAL(parsingFinished(bool)),
+                       this, SLOT(handleProjectParsingFinished()));
             disconnect(t, SIGNAL(addedRunConfiguration(ProjectExplorer::RunConfiguration*)),
                        this, SLOT(handleNewRunConfiguration(ProjectExplorer::RunConfiguration*)));
             disconnect(t, SIGNAL(removedRunConfiguration(ProjectExplorer::RunConfiguration*)),
@@ -280,6 +280,8 @@ void TestLibPlugin::handleActiveTargetChange(ProjectExplorer::Target* target, bo
         }
     }
 
+    connect(target, SIGNAL(parsingFinished(bool)),
+            this, SLOT(handleProjectParsingFinished()));
     connect(target, SIGNAL(addedRunConfiguration(ProjectExplorer::RunConfiguration*)),
             this, SLOT(handleNewRunConfiguration(ProjectExplorer::RunConfiguration*)));
     connect(target, SIGNAL(removedRunConfiguration(ProjectExplorer::RunConfiguration*)),
@@ -290,14 +292,12 @@ void TestLibPlugin::handleActiveTargetChange(ProjectExplorer::Target* target, bo
 
 void TestLibPlugin::handleProjectParsingFinished(void)
 {
-    ProjectExplorer::Project* project = qobject_cast<ProjectExplorer::Project*>(sender());
-    QTC_ASSERT(project != NULL, return);
+    ProjectExplorer::Target* target = qobject_cast<ProjectExplorer::Target*>(sender());
+    QTC_ASSERT(target != NULL, return);
 
-    foreach (ProjectExplorer::Target* target, project->targets()) {
-        foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations()) {
-            if ((runConfig->aspect<TestExtraAspect>() == NULL) && TestExtraAspect::isUseful(runConfig))
-                runConfig->addAspect<TestExtraAspect>();
-        }
+    foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations()) {
+        if ((runConfig->aspect<TestExtraAspect>() == NULL) && TestExtraAspect::isUseful(runConfig))
+            runConfig->addAspect<TestExtraAspect>();
     }
 }
 

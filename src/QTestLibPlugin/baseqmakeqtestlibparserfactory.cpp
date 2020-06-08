@@ -54,12 +54,12 @@ bool BaseQMakeQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfigur
     Q_ASSERT(runConfiguration != NULL);
 
     // Only accept qMake projects:
-    QmakeProjectManager::QmakeProject *qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject *>(runConfiguration->target()->project());
-    if (qMakeProject == NULL)
+    QmakeProjectManager::QmakePriFileNode* qMakeRootNode = dynamic_cast<QmakeProjectManager::QmakePriFileNode*>(runConfiguration->target()->project()->rootProjectNode());
+    if (qMakeRootNode == nullptr)
         return false;
     ProjectExplorer::Runnable runnable = runConfiguration->runnable();
 
-    foreach(QmakeProjectManager::QmakeProFile *pro, qMakeProject->rootProFile()->allProFiles()) {
+    foreach(QmakeProjectManager::QmakeProFile *pro, qMakeRootNode->proFileNode()->proFile()->allProFiles()) {
         qDebug() << "Project name:" << pro->displayName();
         // Check the executable matches the target:
         QDir destDir(pro->targetInformation().destDir.toString());

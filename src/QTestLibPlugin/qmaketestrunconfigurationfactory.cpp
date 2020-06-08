@@ -53,27 +53,29 @@ QList<ProjectExplorer::RunConfigurationCreationInfo> QMakeTestRunConfigurationFa
 
 bool QMakeTestRunConfigurationFactory::isReady(ProjectExplorer::Project* project)
 {
-    QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(project);
-    if (qMakeProject == NULL)
+    QmakeProjectManager::QmakePriFileNode* qMakeRootNode = dynamic_cast<QmakeProjectManager::QmakePriFileNode*>(project->rootProjectNode());
+    if (qMakeRootNode == nullptr)
         return false;
-    return qMakeProject->rootProFile()->validParse();
+
+    QTC_ASSERT(qMakeRootNode->proFileNode() != nullptr, return false);
+    return qMakeRootNode->proFileNode()->validParse();
 }
 
 bool QMakeTestRunConfigurationFactory::isUseful(ProjectExplorer::Project* project)
 {
     bool hasTests = false;
-    QmakeProjectManager::QmakeProject* qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject*>(project);
+    QmakeProjectManager::QmakePriFileNode* qMakeRootNode = dynamic_cast<QmakeProjectManager::QmakePriFileNode*>(project->rootProjectNode());
 
-    QTC_ASSERT(qMakeProject != NULL, return false);
-    QTC_ASSERT(qMakeProject->rootProFile() != NULL, return false);
-    QTC_ASSERT(qMakeProject->rootProFile()->validParse(), return false);
+    QTC_ASSERT(qMakeRootNode != nullptr, return false);
+    QTC_ASSERT(qMakeRootNode->proFileNode() != nullptr, return false);
+    QTC_ASSERT(qMakeRootNode->proFileNode()->validParse(), return false);
 
     //qDebug() << "QMake project:" << qMakeProject->displayName();
     //qDebug() << "    Valid parse:" << qMakeProject->rootQmakeProjectNode()->validParse();
     //qDebug() << "    Parse in progress:" << qMakeProject->rootQmakeProjectNode()->parseInProgress();
 
-    if (qMakeProject->rootProFile()->projectType() == QmakeProjectManager::ProjectType::SubDirsTemplate) {
-        foreach (QmakeProjectManager::QmakeProFile *pro, qMakeProject->rootProFile()->allProFiles()) {
+    if (qMakeRootNode->proFileNode()->projectType() == QmakeProjectManager::ProjectType::SubDirsTemplate) {
+        foreach (QmakeProjectManager::QmakeProFile *pro, qMakeRootNode->proFileNode()->proFile()->allProFiles()) {
             //qDebug() << "    Pro file:" << pro->displayName();
             //qDebug() << "        Config:" << pro->variableValue(QmakeProjectManager::ConfigVar);
             if ((pro->projectType() != QmakeProjectManager::ProjectType::ApplicationTemplate) ||

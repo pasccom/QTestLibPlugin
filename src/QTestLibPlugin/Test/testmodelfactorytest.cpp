@@ -24,12 +24,14 @@
 #include <testmodelfactory.h>
 #include <qtestlibpluginconstants.h>
 #include <testrunconfiguration.h>
+#include <testextraaspect.h>
 
 #include <projectexplorer/projectexplorer.h>
 #include <projectexplorer/session.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runconfigurationaspects.h>
 #include <projectexplorer/runcontrol.h>
 
 #include <extensionsystem/pluginmanager.h>
@@ -40,14 +42,6 @@
 
 namespace QTestLibPlugin {
 namespace Test {
-
-/*
- * NOTE This is extracted from QtCreator sources <qmakeprojectmanager/desktopqmakerunconfiguration.cpp>
- * I hoope this wont change in next releases otherwise these tests will be broken.
- */
-#define QMAKE_RUNCONFIG_PREFIX "RunConfiguration"
-const QString CommandLineArgumentsKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".Arguments");
-const QString WorkingDirectoryKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".WorkingDirectory");
 
 void TestModelFactoryTest::initTestCase(void)
 {
@@ -303,22 +297,23 @@ void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibAr
     }
     QVERIFY(testRunConfig != NULL);
 
-    // Change the run configuration map:
+    // Change the argument aspect:
     QStringList cmdArgs = commandLineArguments(format, verbosity);
-    QVariantMap map = testRunConfig->toMap();
-    map.remove(CommandLineArgumentsKey);
-    map.insert(CommandLineArgumentsKey, cmdArgs.join(QLatin1Char(' ')));
-    map.remove(WorkingDirectoryKey);
-    map.insert(WorkingDirectoryKey, QVariant(TESTS_DIR "/" + testName + "/"));
+    ProjectExplorer::ArgumentsAspect* argsAspect = testRunConfig->aspect<ProjectExplorer::ArgumentsAspect>();
+    QVERIFY(argsAspect != nullptr);
+    argsAspect->setArguments(cmdArgs.join(QLatin1Char(' ')));
 
-    // Restore a modified run configuration from the modified map:
-    ProjectExplorer::RunConfiguration* modifiedRunConfig = ProjectExplorer::RunConfigurationFactory::restore(mProject->activeTarget(), map);
-    QVERIFY(modifiedRunConfig != NULL);
-    ProjectExplorer::Runnable modifiedRunnable = modifiedRunConfig->runnable();
+    // Change the working directory aspect
+    ProjectExplorer::WorkingDirectoryAspect* workingDirectoryAspect = testRunConfig->aspect<ProjectExplorer::WorkingDirectoryAspect>();
+    QVERIFY(workingDirectoryAspect != nullptr);
+    workingDirectoryAspect->setDefaultWorkingDirectory(Utils::FilePath::fromString(TESTS_DIR).pathAppended(testName));
+
+    // Check the modifications were applied:
+    ProjectExplorer::Runnable modifiedRunnable = testRunConfig->runnable();
     QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
     QCOMPARE(modifiedRunnable.workingDirectory, QString(TESTS_DIR "/" + testName));
 
-    runRunConfiguration(modifiedRunConfig, testName, format, verbosity, runMode);
+    runRunConfiguration(testRunConfig, testName, format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Core::Id runMode)
@@ -336,29 +331,23 @@ void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTest
     QVERIFY(testRunConfig != NULL);
     qDebug() << testRunConfig->displayName();
 
-    // Change the run configuration map:
-    QVariantMap map = testRunConfig->toMap();
-    map.remove(Constants::FormatKey);
-    map.remove(Constants::VerbosityKey);
-    map.insert(Constants::FormatKey, (int) format);
-    map.insert(Constants::VerbosityKey, (int) verbosity);
-
-    // Restore a modified run configuration from the modified map:
-    ProjectExplorer::RunConfiguration* modifiedRunConfig = ProjectExplorer::RunConfigurationFactory::restore(mProject->activeTarget(), map);
-    QVERIFY(modifiedRunConfig != NULL);
-    ProjectExplorer::Runnable modifiedRunnable = modifiedRunConfig->runnable();
+    // Change the text extra aspect:
+    QTestLibPlugin::Internal::TestExtraAspect* testAspect = testRunConfig->aspect<QTestLibPlugin::Internal::TestExtraAspect>();
+    QVERIFY(testAspect != nullptr);
+    testAspect->setOutputFormat(format);
+    testAspect->setVerbosity(verbosity);
 
     // Compare arguments to expected value:
+    ProjectExplorer::Runnable modifiedRunnable = testRunConfig->runnable();
     Internal::QTestLibArgsParser testArgsParser;
     testArgsParser.setOutputFormat(format);
     testArgsParser.setVerbosity(verbosity);QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR "/") + testName + QLatin1String("/Makefile check"));
     if (!testArgsParser.toString().isEmpty())
         expectedCmdArgs.append(QString(QLatin1String(" TESTARGS=\"%1\"")).arg(testArgsParser.toString()));
     QCOMPARE(modifiedRunnable.commandLineArguments, expectedCmdArgs);
-    QCOMPARE(modifiedRunConfig->displayName(), QLatin1String("make check"));
-    modifiedRunConfig->setDisplayName(testName);
 
-    runRunConfiguration(modifiedRunConfig, testName, format, verbosity, runMode);
+    testRunConfig->setDisplayName(testName);
+    runRunConfiguration(testRunConfig, testName, format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration *runConfig, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Core::Id runMode)

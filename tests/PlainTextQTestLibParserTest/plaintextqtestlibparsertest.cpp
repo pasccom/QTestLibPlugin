@@ -211,10 +211,8 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQT
     foreach(EnvironmentVariable var, addToEnv)
         env.insert(var.first, var.second);
     QProcess testProc(this);
-    qDebug() << runnable.workingDirectory << runnable.executable << runnable.commandLineArguments;
     testProc.setWorkingDirectory(runnable.workingDirectory);
     testProc.setProcessEnvironment(env);
-    qDebug() << testProc.processEnvironment().toStringList() << testProc.environment();
     testProc.start(runnable.executable.toString() + ' ' + runnable.commandLineArguments, QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
@@ -254,7 +252,9 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> PlainTextQT
         if (line.startsWith("make[") || line.startsWith("mingw32-make["))
             continue;
         //qDebug() << "stderr:" << line;
-        results << parser->parseStderrLine(nullptr, line);
+        // FIXME nothing goes in stderr the test is executed in debug mode.
+        // For the moment, I will not care on stderr.
+        //results << parser->parseStderrLine(nullptr, line);
     }
 
     return results;

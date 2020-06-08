@@ -74,6 +74,11 @@ const QString CrashHandlerEnabledKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTR
  */
 const char TestRunConfigurationId [] = TEST_RUN_CONFIGURATION_ID;                                                       /*!< Id for Internal::TestRunConfiguration */
 const char TestRunConfigurationExtraAspectId [] = TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID;                               /*!< Id for Internal::TestRunConfigurationExtraAspect */
+const char WorkingDirectoryId [] = TEST_RUN_CONFIGURATION_ID ".WorkingDirectory";                                       /*!< Id for working directory path aspect in Internal::TestRunConfiguration */
+const char MakeExeId [] = TEST_RUN_CONFIGURATION_ID ".MakeExe";                                                         /*!< Id for path aspect for \c make in Internal::TestRunConfiguration */
+const char MakefileId [] = TEST_RUN_CONFIGURATION_ID ".Makefile";                                                       /*!< Id for \c Makefile path aspect in Internal::TestRunConfiguration */
+const char TestRunnerId [] = TEST_RUN_CONFIGURATION_ID ".TestRunner";                                                   /*!< Id for test runner path aspect in Internal::TestRunConfiguration */
+const char MakeJobNumberId [] = TEST_RUN_CONFIGURATION_ID ".JobNumber";                                                 /*!< Id for \c make job number aspect in Internal::TestRunConfiguration */
 const char BaseQMakeQTestLibParserFactoryId [] = "QTestLibPlugin.ParserFactory.QMake";                                  /*!< Id for Internal::BaseQMakeQTestLibParserFactory */
 const char BaseForceParserFactoryId [] = "QTestLibPlugin.ParserFactory.User";                                           /*!< Id for Internal::BaseForceParserFactory */
 const char LightXmlQTestLibParserFactoryId [] = "QTestLibPlugin.ParserFactory.LightXml";                                /*!< Id for Internal::LightXMLQTestLibParserFactory */

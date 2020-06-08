@@ -249,7 +249,9 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XUnitXMLQTe
         if (line.startsWith("make[") || line.startsWith("mingw32-make["))
             continue;
         //qDebug() << "stderr:" << line;
-        results << parser->parseStderrLine(nullptr, line);
+        // FIXME nothing goes in stderr the test is executed in debug mode.
+        // For the moment, I will not care on stderr.
+        //results << parser->parseStderrLine(nullptr, line);
     }
 
     return results;

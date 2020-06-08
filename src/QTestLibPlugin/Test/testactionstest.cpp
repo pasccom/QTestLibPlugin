@@ -150,8 +150,8 @@ void TestActionsTest::testChangeTarget(void)
     foreach (ProjectExplorer::Target* target, mProject->targets()) {
         ProjectExplorer::SessionManager::setActiveTarget(mProject, target, ProjectExplorer::SetActive::Cascade);
         QApplication::processEvents();
-        if (mProject->isParsing()) {
-            QSignalSpy parsingFinishedSpy(mProject, SIGNAL(parsingFinished(bool)));
+        if (mProject->activeTarget()->buildSystem()->isParsing()) {
+            QSignalSpy parsingFinishedSpy(mProject->activeTarget(), SIGNAL(parsingFinished(bool)));
             parsingFinishedSpy.wait(5000);
         }
         SUB_TEST_FUNCTION(checkSubMenuAction(mProject, true, true));

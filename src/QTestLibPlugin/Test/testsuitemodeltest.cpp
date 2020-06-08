@@ -26,19 +26,12 @@
 #include <projectexplorer/project.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runconfigurationaspects.h>
 #include <projectexplorer/runcontrol.h>
 
 #include <extensionsystem/pluginmanager.h>
 
 #include <QtTest>
-
-/*
- * NOTE This is extracted from QtCreator sources <qmakeprojectmanager/desktopqmakerunconfiguration.cpp>
- * I hoope this wont change in next releases otherwise these tests will be broken.
- */
-#define QMAKE_RUNCONFIG_PREFIX "RunConfiguration"
-const QString CommandLineArgumentsKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".Arguments");
-const QString WorkingDirectoryKey = QLatin1String(QMAKE_RUNCONFIG_PREFIX ".WorkingDirectory");
 
 namespace QTestLibPlugin {
 namespace Test {
@@ -468,24 +461,25 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     }
     QVERIFY(testRunConfig != NULL);
 
-    // Change the run configuration map:
+    // Change the argument aspect:
     QStringList cmdArgs = commandLineArguments(format, verbosity);
-    QVariantMap map = testRunConfig->toMap();
-    map.remove(CommandLineArgumentsKey);
-    map.insert(CommandLineArgumentsKey, cmdArgs.join(QLatin1Char(' ')));
-    map.remove(WorkingDirectoryKey);
-    map.insert(WorkingDirectoryKey, QVariant(TESTS_DIR "/" + test + "/"));
+    ProjectExplorer::ArgumentsAspect* argsAspect = testRunConfig->aspect<ProjectExplorer::ArgumentsAspect>();
+    QVERIFY(argsAspect != nullptr);
+    argsAspect->setArguments(cmdArgs.join(QLatin1Char(' ')));
 
-    // Restore a modified run configuration from the modified map:
-    ProjectExplorer::RunConfiguration* modifiedRunConfig = ProjectExplorer::RunConfigurationFactory::restore(project->activeTarget(), map);
-    QVERIFY(modifiedRunConfig != NULL);
-    ProjectExplorer::Runnable modifiedRunnable = modifiedRunConfig->runnable();
+    // Change the working directory aspect
+    ProjectExplorer::WorkingDirectoryAspect* workingDirectoryAspect = testRunConfig->aspect<ProjectExplorer::WorkingDirectoryAspect>();
+    QVERIFY(workingDirectoryAspect != nullptr);
+    workingDirectoryAspect->setDefaultWorkingDirectory(Utils::FilePath::fromString(TESTS_DIR).pathAppended(test));
+
+    // Check the modifications were applied:
+    ProjectExplorer::Runnable modifiedRunnable = testRunConfig->runnable();
     QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
     QCOMPARE(modifiedRunnable.workingDirectory, QString(TESTS_DIR "/" + test));
 
     // Create a run control and a run worker:
     ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(ProjectExplorer::Constants::NORMAL_RUN_MODE);
-    runControl->setRunConfiguration(modifiedRunConfig);
+    runControl->setRunConfiguration(testRunConfig);
     QVERIFY2(runControl->createMainWorker(), "Could not create main worker");
 
     // Run run control

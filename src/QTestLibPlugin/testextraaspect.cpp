@@ -483,11 +483,11 @@ bool TestExtraAspect::isUseful(ProjectExplorer::RunConfiguration* runConfigurati
     ProjectExplorer::Runnable runnable = runConfiguration->runnable();
 
     // Only accept qMake projects:
-    QmakeProjectManager::QmakeProject *qMakeProject = qobject_cast<QmakeProjectManager::QmakeProject *>(runConfiguration->target()->project());
-    if (qMakeProject == NULL)
+    QmakeProjectManager::QmakePriFileNode* qMakeRootNode = dynamic_cast<QmakeProjectManager::QmakePriFileNode*>(runConfiguration->target()->project()->rootProjectNode());
+    if (qMakeRootNode == nullptr)
         return false;
 
-    foreach(QmakeProjectManager::QmakeProFile *pro, qMakeProject->rootProFile()->allProFiles()) {
+    foreach(QmakeProjectManager::QmakeProFile *pro, qMakeRootNode->proFileNode()->proFile()->allProFiles()) {
         qDebug() << "Project name:" << pro->displayName();
 
         if (!pro->validParse())
