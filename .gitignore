@@ -7,6 +7,12 @@ release/
 doc/
 gcov/
 
+# Ideas:
+/ideas/
+
+# Test configurations:
+/testConfig-*/
+
 # The output and makefiles :
 Makefile
 Makefile.*
