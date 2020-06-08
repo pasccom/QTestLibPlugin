@@ -314,10 +314,10 @@ private:
     bool mCheckable;                                        /*!< Whether this aspect is optional. */
     Utils::MacroExpanderProvider mMacroExpanderProvider;    /*!< The provider for the macro expander. */
     QStringList mRequiredExtensions;                        /*!< The internal list of required extensions */
-    Widgets::FileTypeValidatingLineEdit::Accepts mAccepted;                                      /*!< Accept flags */
+    Widgets::FileTypeValidatingLineEdit::Accepts mAccepted; /*!< Accept flags */
 };
 
 } // Internal
-} // QtcDevPlugin
+} // QTestLibPlugin
 
 #endif // PATHASPECT_H

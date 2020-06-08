@@ -129,4 +129,4 @@ void PathAspect::browse(void)
 }
 
 } // Internal
-} // QtcDevPlugin
+} // QTestLibPlugin
