@@ -13,27 +13,27 @@ namespace Internal {
 void PathAspect::fromMap(const QVariantMap& map)
 {
     QTC_ASSERT(!settingsKey().isEmpty(), return);
-    mValue = Utils::FilePath::fromString(map.value(settingsKey(), mDefaultValue).toString());
+    mValue = Utils::FilePath::fromString(map.value(settingsKey(), mDefaultValue.toString()).toString());
     qDebug() << __func__ << settingsKey()  << "value:" << mValue;
 }
 
 void PathAspect::toMap(QVariantMap& map) const
 {
     QTC_ASSERT(!settingsKey().isEmpty(), return);
-    if (QString::compare(mValue.toString(), mDefaultValue, Utils::HostOsInfo::fileNameCaseSensitivity()) != 0)
+    if (QString::compare(mValue.toString(), mDefaultValue.toString(), Utils::HostOsInfo::fileNameCaseSensitivity()) != 0)
         map.insert(settingsKey(), mValue.toString());
 }
 
-void PathAspect::setDefaultValue(const QString& defaultValue)
+void PathAspect::setDefaultValue(const Utils::FilePath& defaultValue)
 {
-    bool isDefault = (QString::compare(mValue.toString(), mDefaultValue, Utils::HostOsInfo::fileNameCaseSensitivity()) == 0);
+    bool isDefault = (QString::compare(mValue.toString(), mDefaultValue.toString(), Utils::HostOsInfo::fileNameCaseSensitivity()) == 0);
     mDefaultValue = defaultValue;
 
     if (isDefault)
-        mValue = Utils::FilePath::fromString(defaultValue);
+        mValue = defaultValue;
 }
 
-void PathAspect::setValue(Utils::FilePath value)
+void PathAspect::setValue(const Utils::FilePath& value)
 {
     bool same = (mValue == value);
     mValue = value;
@@ -68,7 +68,7 @@ void PathAspect::addToLayout(ProjectExplorer::LayoutBuilder &builder)
 
     if (mCheckable) {
         mCheckbox = new QCheckBox(displayName() + ":");
-        mCheckbox->setChecked(QString::compare(mValue.toString(), mDefaultValue, Utils::HostOsInfo::fileNameCaseSensitivity()) != 0);
+        mCheckbox->setChecked(QString::compare(mValue.toString(), mDefaultValue.toString(), Utils::HostOsInfo::fileNameCaseSensitivity()) != 0);
         mEdit->setEnabled(mCheckbox->isChecked());
         mButton->setEnabled(mCheckbox->isChecked());
 

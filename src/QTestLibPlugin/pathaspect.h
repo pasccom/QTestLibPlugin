@@ -63,23 +63,31 @@ public:
      *
      * Sets the default value for this aspect and initize value if it is the default.
      * \param defaultValue The new default value for this aspect
-     * \sa setValue()
+     * \sa defaultValue(), setValue()
      */
-    void setDefaultValue(const QString& defaultValue);
+    void setDefaultValue(const Utils::FilePath& defaultValue);
+    /*!
+     * \brief Get the default value
+     *
+     * Gets the default value of this aspect.
+     * \return The default value of this aspect.
+     * \sa setDefaultValue(), value()
+     */
+    inline Utils::FilePath defaultValue() const {return mDefaultValue;}
     /*!
      * \brief Set the value
      *
      * Sets the value for this aspect and emit changed() signal if needed.
      * \param value The new value for this aspect
-     * \sa setDefaultValue(), value()
+     * \sa value(), setDefaultValue()
      */
-    void setValue(Utils::FilePath value);
+    void setValue(const Utils::FilePath& value);
     /*!
      * \brief Get the value
      *
      * Gets the current value of this aspect.
      * \return The current value of this aspect.
-     * \sa setValue()
+     * \sa setValue(), defaultValue()
      */
     inline Utils::FilePath value() const {return mValue;}
 
@@ -302,7 +310,7 @@ private:
     QCheckBox* mCheckbox;                                   /*!< A QCheckBox to activate or deactivate this aspect. */
 
     Utils::FilePath mValue;                                 /*!< The current value for this aspect. */
-    QString mDefaultValue;                                  /*!< The default value for this aspect. */
+    Utils::FilePath mDefaultValue;                          /*!< The default value for this aspect. */
     bool mCheckable;                                        /*!< Whether this aspect is optional. */
     Utils::MacroExpanderProvider mMacroExpanderProvider;    /*!< The provider for the macro expander. */
     QStringList mRequiredExtensions;                        /*!< The internal list of required extensions */
