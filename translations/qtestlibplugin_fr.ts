@@ -13,6 +13,13 @@
     </message>
 </context>
 <context>
+    <name>QTestLibPlugin::Internal::PathAspect</name>
+    <message>
+        <source>Browse...</source>
+        <translation>Parcourir...</translation>
+    </message>
+</context>
+<context>
     <name>QTestLibPlugin::Internal::QTestLibArgsParser</name>
     <message>
         <source>Unknown flag &quot;%1&quot;</source>
@@ -318,7 +325,7 @@
     </message>
     <message>
         <source>Test arguments</source>
-        <translation>Arguments du test</translation>
+        <translation type="vanished">Arguments du test</translation>
     </message>
     <message>
         <source>Use default settings</source>
@@ -378,6 +385,29 @@
     </message>
 </context>
 <context>
+    <name>QTestLibPlugin::Internal::TestRunConfiguration</name>
+    <message>
+        <source>Working directory</source>
+        <translation>Répertoire de travail</translation>
+    </message>
+    <message>
+        <source>Makefile</source>
+        <translation>Makefile</translation>
+    </message>
+    <message>
+        <source>Path to alternative &quot;make&quot;</source>
+        <translation>&quot;make&quot; alternatif</translation>
+    </message>
+    <message>
+        <source>Test runner</source>
+        <translation>Test runner</translation>
+    </message>
+    <message>
+        <source>Number of jobs (for &quot;make&quot;)</source>
+        <translation>Nombre de threads (de &quot;make&quot;)</translation>
+    </message>
+</context>
+<context>
     <name>QTestLibPlugin::Internal::TestRunConfigurationExtraAspect</name>
     <message>
         <source>Test settings</source>
@@ -388,51 +418,51 @@
     <name>QTestLibPlugin::Internal::TestRunConfigurationWidget</name>
     <message>
         <source>Working directory:</source>
-        <translation>Répertoire de travail:</translation>
+        <translation type="vanished">Répertoire de travail:</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation>Parcourir...</translation>
+        <translation type="vanished">Parcourir...</translation>
     </message>
     <message>
         <source>Path to &quot;make&quot;:</source>
-        <translation>Chemin vers &quot;make&quot;:</translation>
+        <translation type="vanished">Chemin vers &quot;make&quot;:</translation>
     </message>
     <message>
         <source>Auto-detect</source>
-        <translation>Auto</translation>
+        <translation type="vanished">Auto</translation>
     </message>
     <message>
         <source>Test runner:</source>
-        <translation>Test runner:</translation>
+        <translation type="vanished">Test runner:</translation>
     </message>
     <message>
         <source>Number of jobs (for &quot;make&quot;):</source>
-        <translation>Nombre de threads (de &quot;make&quot;):</translation>
+        <translation type="vanished">Nombre de threads (de &quot;make&quot;):</translation>
     </message>
     <message>
         <source>Choose working directory</source>
-        <translation>Choisissez le répertoire de travail</translation>
+        <translation type="vanished">Choisissez le répertoire de travail</translation>
     </message>
     <message>
         <source>Choose &quot;make&quot;</source>
-        <translation>Choisissez &quot;make&quot;</translation>
+        <translation type="vanished">Choisissez &quot;make&quot;</translation>
     </message>
     <message>
         <source>Choose test runner</source>
-        <translation>Choisissez le test runner</translation>
+        <translation type="vanished">Choisissez le test runner</translation>
     </message>
     <message>
         <source>Makefile:</source>
-        <translation>Makefile:</translation>
+        <translation type="vanished">Makefile:</translation>
     </message>
     <message>
         <source>Choose &quot;Makefile&quot;</source>
-        <translation>Choisissez le &quot;Makefile&quot;</translation>
+        <translation type="vanished">Choisissez le &quot;Makefile&quot;</translation>
     </message>
     <message>
         <source>Executable files *.exe</source>
-        <translation>Exécutables *.exe</translation>
+        <translation type="vanished">Exécutables *.exe</translation>
     </message>
 </context>
 <context>
