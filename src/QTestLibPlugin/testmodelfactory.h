@@ -113,12 +113,11 @@ signals:
     void modelPopulated(QAbstractItemModel *model);
 private slots:
     /*!
-     * \brief Parses run control output.
+     * \brief Parses test output.
      *
      * This slots receives the output from the ProjectExplorer::RunControl being run.
      * It splits the message into line and call callParser() on each one.
      *
-     * \param runControl The run control from which this message originates.
      * \param msg The message
      * \param format The format
      */
