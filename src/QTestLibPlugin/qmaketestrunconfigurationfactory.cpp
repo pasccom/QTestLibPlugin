@@ -46,7 +46,6 @@ QList<ProjectExplorer::RunConfigurationCreationInfo> QMakeTestRunConfigurationFa
 
     ProjectExplorer::RunConfigurationCreationInfo rci;
     rci.factory = this;
-    rci.id = runConfigurationBaseId();
     rci.displayName = QLatin1String("make check");
     return {rci};
 }
