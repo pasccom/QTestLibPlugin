@@ -46,6 +46,7 @@ COMPATIBILITY TABLE
 | 0.0.14         | 4.10.0     |  `P`  |   `P`   |  `?`   |
 | 0.0.15         | 4.11.0     |  `P`  |   `P`   |  `?`   |
 | 0.0.16         | 4.12.0     |  `P`  |   `P`   |  `?`   |
+| 0.0.17         | 4.13.0     |  `P`  |   `P`   |  `?`   |
 
 A `Y` means that QTestLibPlugin was tested against this Qt Creator version
 under the given operating system. A `N` means that the version of the plugin
