@@ -42,6 +42,8 @@
 
 #include <qmakeprojectmanager/qmakeproject.h>
 
+#include <utils/macroexpander.h>
+
 #include <QThread>
 
 #define UNSUPPORTED_TOOL_CHAIN  0
@@ -53,29 +55,29 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id) :
+TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Utils::Id id) :
     ProjectExplorer::RunConfiguration(parent, id)
 {
     setDefaultDisplayName(QLatin1String("make check"));
 
     auto workingDirectoryAspect = addAspect<PathAspect>();
-    workingDirectoryAspect->setId(Core::Id(Constants::WorkingDirectoryId));
+    workingDirectoryAspect->setId(Utils::Id(Constants::WorkingDirectoryId));
     workingDirectoryAspect->setSettingsKey(Constants::WorkingDirectoryKey);
     workingDirectoryAspect->setDisplayName(tr("Working directory"));
-    workingDirectoryAspect->setMacroExpanderProvider([this] {return macroExpander();});
+    workingDirectoryAspect->setMacroExpanderProvider([this] {return const_cast<Utils::MacroExpander*>(macroExpander());});
     workingDirectoryAspect->setAcceptDirectories(true);
     workingDirectoryAspect->setDefaultValue(Utils::FilePath::fromString("%{buildDir}"));
 
     auto makefileAspect = addAspect<PathAspect>();
-    makefileAspect->setId(Core::Id(Constants::MakefileId));
+    makefileAspect->setId(Utils::Id(Constants::MakefileId));
     makefileAspect->setSettingsKey(Constants::MakefileKey);
     makefileAspect->setDisplayName(tr("Makefile"));
     makefileAspect->setAcceptFiles(true);
     makefileAspect->setAcceptEmpty(true);
-    makefileAspect->setMacroExpanderProvider([this] {return macroExpander();});
+    makefileAspect->setMacroExpanderProvider([this] {return const_cast<Utils::MacroExpander*>(macroExpander());});
 
     auto makeExeAspect = addAspect<PathAspect>();
-    makeExeAspect->setId(Core::Id(Constants::MakeExeId));
+    makeExeAspect->setId(Utils::Id(Constants::MakeExeId));
     makeExeAspect->setSettingsKey(Constants::MakeExeKey);
     makeExeAspect->setDisplayName(tr("Path to alternative \"make\""));
     makeExeAspect->setAcceptFiles(true);
@@ -85,20 +87,20 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Core
         makeExeAspect->setRequiredExtensions(QStringList() << QLatin1String("exe"));
     else
         makeExeAspect->setRequiredExtensions(QStringList());
-    makeExeAspect->setMacroExpanderProvider([this] {return macroExpander();});
+    makeExeAspect->setMacroExpanderProvider([this] {return const_cast<Utils::MacroExpander*>(macroExpander());});
     makeExeAspect->setCheckable(true);
 
     auto testRunnerAspect = addAspect<PathAspect>();
-    testRunnerAspect->setId(Core::Id(Constants::TestRunnerId));
+    testRunnerAspect->setId(Utils::Id(Constants::TestRunnerId));
     testRunnerAspect->setSettingsKey(Constants::TestRunnerKey);
     testRunnerAspect->setDisplayName(tr("Test runner"));
     testRunnerAspect->setAcceptFiles(true);
     testRunnerAspect->setAcceptEmpty(true);
     testRunnerAspect->setRequireExecutable(true);
-    testRunnerAspect->setMacroExpanderProvider([this] {return macroExpander();});
+    testRunnerAspect->setMacroExpanderProvider([this] {return const_cast<Utils::MacroExpander*>(macroExpander());});
 
     auto makeJobNumberAspect = addAspect<ProjectExplorer::BaseIntegerAspect>();
-    makeJobNumberAspect->setId(Core::Id(Constants::MakeJobNumberId));
+    makeJobNumberAspect->setId(Utils::Id(Constants::MakeJobNumberId));
     makeJobNumberAspect->setSettingsKey(Constants::MakeJobNumberKey);
     makeJobNumberAspect->setLabel(tr("Number of jobs (for \"make\")"));
     makeJobNumberAspect->setRange(1, QThread::idealThreadCount());
@@ -155,7 +157,7 @@ void TestRunConfiguration::handleTargetKitChange(void)
     ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitAspect::toolChain(target()->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
 
     Utils::Environment env = target()->activeBuildConfiguration()->environment();
-    static_cast<PathAspect*>(aspect(Core::Id(Constants::MakeExeId)))->setDefaultValue(toolChain->makeCommand(env));
+    static_cast<PathAspect*>(aspect(Utils::Id(Constants::MakeExeId)))->setDefaultValue(toolChain->makeCommand(env));
 
     if (dynamic_cast<ProjectExplorer::GccToolChain*>(toolChain) != NULL) {
         setTargetToolChain(GCC_BASED_TOOL_CHAIN);
@@ -170,11 +172,11 @@ void TestRunConfiguration::handleTargetKitChange(void)
 }
 Utils::FilePath TestRunConfiguration::makefile(void) const
 {
-    Utils::FilePath makefilePath = static_cast<PathAspect*>(aspect(Core::Id(Constants::MakefileId)))->value();
+    Utils::FilePath makefilePath = static_cast<PathAspect*>(aspect(Utils::Id(Constants::MakefileId)))->value();
     if (macroExpander() != NULL)
         makefilePath = Utils::FilePath::fromString(macroExpander()->expand(makefilePath.toString()));
     if (makefilePath.isEmpty())
-        makefilePath = static_cast<PathAspect*>(aspect(Core::Id(Constants::MakefileId)))->defaultValue();
+        makefilePath = static_cast<PathAspect*>(aspect(Utils::Id(Constants::MakefileId)))->defaultValue();
     return makefilePath;
 }
 
@@ -183,29 +185,29 @@ void TestRunConfiguration::setMakefile(const Utils::FilePath& makefile)
     qDebug() << __func__ << makefile;
 
     if (!makefile.isEmpty())
-        static_cast<PathAspect*>(aspect(Core::Id(Constants::MakefileId)))->setDefaultValue(makefile);
+        static_cast<PathAspect*>(aspect(Utils::Id(Constants::MakefileId)))->setDefaultValue(makefile);
     else if ((target() != NULL) && (target()->activeBuildConfiguration() != NULL))
-        static_cast<PathAspect*>(aspect(Core::Id(Constants::MakefileId)))->setDefaultValue(target()->activeBuildConfiguration()->buildDirectory().pathAppended("Makefile"));
+        static_cast<PathAspect*>(aspect(Utils::Id(Constants::MakefileId)))->setDefaultValue(target()->activeBuildConfiguration()->buildDirectory().pathAppended("Makefile"));
 }
 
 void TestRunConfiguration::setTargetToolChain(unsigned char newToolChain)
 {
     mTargetToolChain = newToolChain;
 
-    aspect(Core::Id(Constants::WorkingDirectoryId))->setVisible((mTargetToolChain == GCC_BASED_TOOL_CHAIN) || (mTargetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (mTargetToolChain == JOM_MSVC_TOOL_CHAIN));
-    aspect(Core::Id(Constants::MakefileId))->setVisible((mTargetToolChain == GCC_BASED_TOOL_CHAIN) || (mTargetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (mTargetToolChain == JOM_MSVC_TOOL_CHAIN));
-    aspect(Core::Id(Constants::MakeJobNumberId))->setVisible((mTargetToolChain == GCC_BASED_TOOL_CHAIN) || (mTargetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (mTargetToolChain == JOM_MSVC_TOOL_CHAIN));
+    aspect(Utils::Id(Constants::WorkingDirectoryId))->setVisible((mTargetToolChain == GCC_BASED_TOOL_CHAIN) || (mTargetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (mTargetToolChain == JOM_MSVC_TOOL_CHAIN));
+    aspect(Utils::Id(Constants::MakefileId))->setVisible((mTargetToolChain == GCC_BASED_TOOL_CHAIN) || (mTargetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (mTargetToolChain == JOM_MSVC_TOOL_CHAIN));
+    aspect(Utils::Id(Constants::MakeJobNumberId))->setVisible((mTargetToolChain == GCC_BASED_TOOL_CHAIN) || (mTargetToolChain == NMMAKE_MSVC_TOOL_CHAIN) || (mTargetToolChain == JOM_MSVC_TOOL_CHAIN));
 }
 
 ProjectExplorer::Runnable TestRunConfiguration::runnable(void) const
 {
     ProjectExplorer::Runnable runnable;
 
-    Utils::FilePath makeExe = static_cast<PathAspect*>(aspect(Core::Id(Constants::MakeExeId)))->value();
+    Utils::FilePath makeExe = static_cast<PathAspect*>(aspect(Utils::Id(Constants::MakeExeId)))->value();
     if (macroExpander() != nullptr)
         makeExe = Utils::FilePath::fromString(macroExpander()->expand(makeExe.toString()));
     if (makeExe.isEmpty())
-        makeExe = static_cast<PathAspect*>(aspect(Core::Id(Constants::MakeExeId)))->defaultValue();
+        makeExe = static_cast<PathAspect*>(aspect(Utils::Id(Constants::MakeExeId)))->defaultValue();
 
     runnable.executable = makeExe;
     runnable.commandLineArguments = commandLineArguments();
@@ -225,7 +227,7 @@ Utils::FilePath TestRunConfiguration::workingDirectory(void) const
         return target()->activeBuildConfiguration()->buildDirectory();
     }
 
-    Utils::FilePath wd = static_cast<PathAspect*>(aspect(Core::Id(Constants::WorkingDirectoryId)))->value();
+    Utils::FilePath wd = static_cast<PathAspect*>(aspect(Utils::Id(Constants::WorkingDirectoryId)))->value();
     if (macroExpander() != NULL)
         wd = Utils::FilePath::fromString(macroExpander()->expand(wd.toString()));
 
@@ -248,7 +250,7 @@ QString TestRunConfiguration::commandLineArguments(void) const
         cmdArgs << QLatin1String("-f") << makefilePath;
 
     // Number of jobs for make and jom
-    int jobNumber = static_cast<ProjectExplorer::BaseIntegerAspect*>(aspect(Core::Id(Constants::MakeJobNumberId)))->value();
+    int jobNumber = static_cast<ProjectExplorer::BaseIntegerAspect*>(aspect(Utils::Id(Constants::MakeJobNumberId)))->value();
     if (jobNumber > 1) {
         if (mTargetToolChain == JOM_MSVC_TOOL_CHAIN)
             cmdArgs << QString(QLatin1String("/J %1")).arg(jobNumber);
@@ -260,7 +262,7 @@ QString TestRunConfiguration::commandLineArguments(void) const
     cmdArgs << QLatin1String("check");
 
     // Test runner:
-    QString testRunner = static_cast<PathAspect*>(aspect(Core::Id(Constants::TestRunnerId)))->value().toString();
+    QString testRunner = static_cast<PathAspect*>(aspect(Utils::Id(Constants::TestRunnerId)))->value().toString();
     if (macroExpander() != NULL)
         testRunner = macroExpander()->expand(testRunner);
     if (!testRunner.isEmpty()) {

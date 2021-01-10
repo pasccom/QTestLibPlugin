@@ -93,12 +93,12 @@ void TestRunConfigurationFactoryTest::testOpenProjectWithTests(void)
         Internal::TestRunConfiguration* testRunConfig = NULL;
         foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations()) {
             if (testRunConfig != NULL)
-                QVERIFY(runConfig->id() != Core::Id(Constants::TestRunConfigurationId));
+                QVERIFY(runConfig->id() != Utils::Id(Constants::TestRunConfigurationId));
             else
                 testRunConfig = qobject_cast<Internal::TestRunConfiguration*>(runConfig);
         }
         QVERIFY(testRunConfig != NULL);
-        QVERIFY(testRunConfig->id() == Core::Id(Constants::TestRunConfigurationId));
+        QVERIFY(testRunConfig->id() == Utils::Id(Constants::TestRunConfigurationId));
 
         Utils::Environment env = target->activeBuildConfiguration()->environment();
         ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitAspect::toolChain(target->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
@@ -126,7 +126,7 @@ void TestRunConfigurationFactoryTest::testOpenProjectWithoutTests(void)
 
     foreach (ProjectExplorer::Target* target, mProject->targets()) {
         foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations())
-            QVERIFY(runConfig->id() != Core::Id(Constants::TestRunConfigurationId));
+            QVERIFY(runConfig->id() != Utils::Id(Constants::TestRunConfigurationId));
      }
 }
 

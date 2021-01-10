@@ -369,7 +369,7 @@ void TestActionsTest::checkSubMenuAction(const QString& projectPath)
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    Core::Id runProjectTestsCommandId(Constants::TestRunActionId);
+    Utils::Id runProjectTestsCommandId(Constants::TestRunActionId);
     runProjectTestsCommandId = runProjectTestsCommandId.withSuffix(projectPath);
 
     Core::Command* runProjectTestsCommand = Core::ActionManager::command(runProjectTestsCommandId);
@@ -382,7 +382,7 @@ void TestActionsTest::checkSubMenuAction(ProjectExplorer::Project* project, bool
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    Core::Id runProjectTestsCommandId(Constants::TestRunActionId);
+    Utils::Id runProjectTestsCommandId(Constants::TestRunActionId);
     runProjectTestsCommandId = runProjectTestsCommandId.withSuffix(project->projectFilePath().toString());
 
     Core::Command* runProjectTestsCommand = Core::ActionManager::command(runProjectTestsCommandId);
@@ -456,7 +456,7 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    QSignalSpy runControlStartedSpy(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(aboutToExecuteRunControl(ProjectExplorer::RunControl*,Core::Id)));
+    QSignalSpy runControlStartedSpy(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(aboutToExecuteRunControl(ProjectExplorer::RunControl*, Utils::Id)));
     runControlAction->trigger();
 
     QCOMPARE(runControlStartedSpy.size(), 1);

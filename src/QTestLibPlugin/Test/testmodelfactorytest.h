@@ -26,7 +26,7 @@
 
 class QAbstractItemModel;
 
-namespace Core {
+namespace Utils {
     class Id;
 }
 
@@ -65,9 +65,9 @@ private:
     void data(void);
     QStringList commandLineArguments(Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity);
     QString formatToString(Internal::QTestLibArgsParser::TestOutputFormat format);
-    void runTest(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Core::Id runMode);
-    void runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Core::Id runMode);
-    void runRunConfiguration(ProjectExplorer::RunConfiguration* runConfig, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Core::Id runMode);
+    void runTest(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Utils::Id runMode);
+    void runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Utils::Id runMode);
+    void runRunConfiguration(ProjectExplorer::RunConfiguration* runConfig, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Utils::Id runMode);
 
     ProjectExplorer::Project* mProject;
     QAbstractItemModel *mFoundModel;

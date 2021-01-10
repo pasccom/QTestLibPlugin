@@ -162,7 +162,7 @@ bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorStrin
     settings->endGroup();
 
     // Connections
-    connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(aboutToExecuteRunControl(ProjectExplorer::RunControl*, Core::Id)),
+    connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(aboutToExecuteRunControl(ProjectExplorer::RunControl*, Utils::Id)),
             mModel, SLOT(appendTestRun(ProjectExplorer::RunControl*)));
     connect(ProjectExplorer::SessionManager::instance(), SIGNAL(projectAdded(ProjectExplorer::Project*)),
             this, SLOT(handleProjectOpen(ProjectExplorer::Project*)));

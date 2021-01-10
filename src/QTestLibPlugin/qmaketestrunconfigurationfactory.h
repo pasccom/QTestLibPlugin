@@ -100,7 +100,7 @@ private:
     ProjectExplorer::RunWorkerFactory mRunWorkerFactory {
         ProjectExplorer::RunWorkerFactory::make<ProjectExplorer::SimpleTargetRunner>(),
         {ProjectExplorer::Constants::NORMAL_RUN_MODE, ProjectExplorer::Constants::DEBUG_RUN_MODE},
-        {Core::Id(Constants::TestRunConfigurationId)}
+        {Utils::Id(Constants::TestRunConfigurationId)}
     };
 };
 

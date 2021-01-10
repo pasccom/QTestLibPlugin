@@ -58,7 +58,7 @@ public:
      * \param id The id for this run configuration
      * \sa initialize()
      */
-    TestRunConfiguration(ProjectExplorer::Target *parent, Core::Id id = Constants::TestRunConfigurationId);
+    TestRunConfiguration(ProjectExplorer::Target *parent, Utils::Id id = Constants::TestRunConfigurationId);
 
     /*!
      * \brief Path to the working directory

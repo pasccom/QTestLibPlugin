@@ -436,7 +436,7 @@ TestExtraAspect::TestExtraAspect(QTestLibArgsParser* argParser) :
     else
         mTestArgsParser = new QTestLibArgsParser;
 
-    setId(Core::Id(Constants::TestRunConfigurationExtraAspectId));
+    setId(Utils::Id(Constants::TestRunConfigurationExtraAspectId));
     setDisplayName(tr("Test settings"));
     setConfigWidgetCreator([this] {
         TestRunConfigWidget* runConfigWidget = new TestRunConfigWidget(this);
