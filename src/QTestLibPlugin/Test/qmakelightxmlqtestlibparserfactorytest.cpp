@@ -67,7 +67,8 @@ void QMakeLightXMLQTestLibParserFactoryTest::init(void)
 
 void QMakeLightXMLQTestLibParserFactoryTest::cleanup(void)
 {
-    closeProject(mProject);
+    if (mProject != nullptr)
+        QVERIFY(closeProject(mProject));
 }
 
 

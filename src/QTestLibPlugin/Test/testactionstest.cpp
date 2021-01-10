@@ -77,9 +77,12 @@ void TestActionsTest::init(void)
 
 void TestActionsTest::cleanup(void)
 {
-    closeProject(mProject);
-    closeProject(mProject1);
-    closeProject(mProject2);
+    if (mProject != nullptr)
+        QVERIFY(closeProject(mProject));
+    if (mProject1 != nullptr)
+        QVERIFY(closeProject(mProject1));
+    if (mProject2 != nullptr)
+        QVERIFY(closeProject(mProject2));
 
     Core::Context projectTreeContext(ProjectExplorer::Constants::C_PROJECT_TREE);
     Core::ICore::removeAdditionalContext(projectTreeContext);

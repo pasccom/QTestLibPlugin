@@ -67,7 +67,8 @@ void QMakePlainTextQTestLibParserFactoryTest::init(void)
 
 void QMakePlainTextQTestLibParserFactoryTest::cleanup(void)
 {
-    closeProject(mProject);
+    if (mProject != nullptr)
+        QVERIFY(closeProject(mProject));
 }
 
 

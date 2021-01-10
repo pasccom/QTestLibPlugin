@@ -67,7 +67,8 @@ void QMakeXMLQTestLibParserFactoryTest::init(void)
 
 void QMakeXMLQTestLibParserFactoryTest::cleanup(void)
 {
-    closeProject(mProject);
+    if (mProject != nullptr)
+        QVERIFY(closeProject(mProject));
 }
 
 

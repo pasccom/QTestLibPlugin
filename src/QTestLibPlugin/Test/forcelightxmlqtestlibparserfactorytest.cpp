@@ -68,7 +68,8 @@ void ForceLightXMLQTestLibParserFactoryTest::init(void)
 
 void ForceLightXMLQTestLibParserFactoryTest::cleanup(void)
 {
-    closeProject(mProject);
+    if (mProject != nullptr)
+        QVERIFY(closeProject(mProject));
 }
 
 void ForceLightXMLQTestLibParserFactoryTest::dataTest(void)

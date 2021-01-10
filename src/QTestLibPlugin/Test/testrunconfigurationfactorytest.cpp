@@ -67,7 +67,8 @@ void TestRunConfigurationFactoryTest::init(void)
 
 void TestRunConfigurationFactoryTest::cleanup(void)
 {
-    closeProject(mProject);
+    if (mProject != nullptr)
+        QVERIFY(closeProject(mProject));
 }
 
 void TestRunConfigurationFactoryTest::testOpenProjectWithTests_data(void)

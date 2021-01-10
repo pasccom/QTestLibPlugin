@@ -74,7 +74,8 @@ void TestModelFactoryTest::init(void)
 
 void TestModelFactoryTest::cleanup(void)
 {
-    closeProject(mProject);
+    if (mProject != nullptr)
+        QVERIFY(closeProject(mProject));
     if ((mFoundModel != NULL) && (mFoundModel != mPopulatedModel))
         delete mFoundModel;
     if (mPopulatedModel != NULL)

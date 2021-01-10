@@ -62,7 +62,8 @@ void TestSuiteModelTest::init(void)
 void TestSuiteModelTest::cleanup(void)
 {
     foreach (ProjectExplorer::Project* project, mOpenProjects) {
-        closeProject(project);
+        if (project != nullptr)
+            QVERIFY(closeProject(project));
     }
 }
 
