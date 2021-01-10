@@ -139,16 +139,15 @@ TestModelFactory::ParseResult TestModelFactory::callParser(AbstractTestParser* p
     case Utils::OutputFormat::ErrorMessageFormat:
         qDebug() << "Error message" << line;
         break;
+    case Utils::OutputFormat::LogMessageFormat:
+        qDebug() << "Log message" << line;
+        break;
     case Utils::OutputFormat::DebugFormat:
         return parser->parseStdoutLine(runControl, line);
         break;
     case Utils::OutputFormat::StdOutFormat:
         return parser->parseStdoutLine(runControl, line);
     case Utils::OutputFormat::StdErrFormat:
-        return parser->parseStderrLine(runControl, line);
-    case Utils::OutputFormat::StdOutFormatSameLine:
-        return parser->parseStdoutLine(runControl, line);
-    case Utils::OutputFormat::StdErrFormatSameLine:
         return parser->parseStderrLine(runControl, line);
     default:
         break;
