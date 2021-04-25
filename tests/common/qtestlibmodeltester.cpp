@@ -477,7 +477,7 @@ void QTestLibModelTester::parseMessage(const QModelIndex& index, const QDomEleme
 
     qDebug() << mModel->data(index, Qt::DisplayRole).toString()
              << textElement.firstChild().toText().data().trimmed();
-    if (QString::compare(element.attribute("strict", "false"), "true", Qt::CaseInsensitive) == 0)
+    if (QString::compare(textElement.attribute("strict", "false"), "true", Qt::CaseInsensitive) == 0)
         QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), textElement.firstChild().toText().data().trimmed() , Qt::CaseSensitive) == 0, "Message text do not match");
     QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for message index should be a string");
     qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString()

@@ -35,7 +35,8 @@
 <!ATTLIST row id ID #IMPLIED>
 
 <!ATTLIST message type CDATA "Unknown">
-<!ATTLIST message strict>
 <!ATTLIST message level (silent|normal|verbose1|verbose2|verboses) "normal">
 <!ATTLIST message format (all|txt|xml) "all">
 <!ATTLIST message id ID #IMPLIED>
+
+<!ATTLIST text strict>

@@ -430,398 +430,398 @@
     <root type="Fail">
         <class name="FirstClassTest" type="Pass" format="!lightxml">
             <function name="initTestCase" type="Pass">
-                <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
-                    <text>QThread(29ec6f0) started ()</text>
+                <message type="Signal" level="verboses" qtmin="5.6.0">
+                    <text strict="false">QThread(29ec6f0) started ()</text>
                 </message>
-                <message type="Info" strict="true" level="verbose1" format="txt">
-                    <text>entering</text>
+                <message type="Info" level="verbose1" format="txt">
+                    <text strict="true">entering</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false" format="xml">
-                    <text>0ms</text>
+                <message type="Duration" format="xml">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="firstPass" type="Pass">
-                <message type="Info" strict="true" level="verbose1" format="txt">
-                    <text>entering</text>
+                <message type="Info" level="verbose1" format="txt">
+                    <text strict="true">entering</text>
                 </message>
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="60">
-                    <text>QVERIFY(true)</text>
+                <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="60">
+                    <text strict="true">QVERIFY(true)</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false" format="xml">
-                    <text>0ms</text>
+                <message type="Duration" format="xml">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="secondPass" type="Pass">
-                <message type="Info" strict="true" level="verbose1" format="txt">
-                    <text>entering</text>
+                <message type="Info" level="verbose1" format="txt">
+                    <text strict="true">entering</text>
                 </message>
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="65">
-                    <text>QVERIFY(true)</text>
+                <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="65">
+                    <text strict="true">QVERIFY(true)</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false" format="xml">
-                    <text>0ms</text>
+                <message type="Duration" format="xml">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
-                <message type="Info" strict="true" level="verbose1" format="txt">
-                    <text>entering</text>
+                <message type="Info" level="verbose1" format="txt">
+                    <text strict="true">entering</text>
                 </message>
-                <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xunitxml">
-                    <text>QThread(29ec6f0) finished ()</text>
+                <message type="Signal" level="verboses" qtmin="5.12.0" format="xunitxml">
+                    <text strict="false">QThread(29ec6f0) finished ()</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false" format="xml">
-                    <text>0ms</text>
+                <message type="Duration" format="xml">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
-                <message type="Signal" strict="false" >
-                    <text>QThread(29ec6f0) finished ()</text>
+                <message type="Signal">
+                    <text strict="false">QThread(29ec6f0) finished ()</text>
                 </message>
             </function>
-            <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xml">
-                <text>QThread(29ec6f0) finished ()</text>
+            <message type="Signal" level="verboses" qtmin="5.12.0" format="xml">
+                <text strict="false">QThread(29ec6f0) finished ()</text>
             </message>
-            <message type="Duration" strict="false" format="xml">
-                <text>0ms</text>
+            <message type="Duration" format="xml">
+                <text strict="false">0ms</text>
             </message>
         </class>
         <class name="MultipleClassesTest#1" type="Pass" format="lightxml">
             <function name="initTestCase" type="Pass">
-                <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
-                    <text>QThread(29ec6f0) started ()</text>
+                <message type="Signal" level="verboses" qtmin="5.6.0">
+                    <text strict="false">QThread(29ec6f0) started ()</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false">
-                    <text>0ms</text>
+                <message type="Duration">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="firstPass" type="Pass">
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="60">
-                    <text>QVERIFY(true)</text>
+                <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="60">
+                    <text strict="true">QVERIFY(true)</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false">
-                    <text>0ms</text>
+                <message type="Duration">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="secondPass" type="Pass">
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="65">
-                    <text>QVERIFY(true)</text>
+                <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="65">
+                    <text strict="true">QVERIFY(true)</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false">
-                    <text>0ms</text>
+                <message type="Duration">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false">
-                    <text>0ms</text>
+                <message type="Duration">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
-            <message type="Duration" strict="false">
-                <text>0ms</text>
+            <message type="Duration">
+                <text strict="false">0ms</text>
             </message>
         </class>
         <class name="SecondClassTest" type="Pass" format="!lightxml">
             <function name="initTestCase" type="Pass">
-                <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
-                    <text>QThread(29ec6f0) started ()</text>
+                <message type="Signal" level="verboses" qtmin="5.6.0">
+                    <text strict="false">QThread(29ec6f0) started ()</text>
                 </message>
-                <message type="Info" strict="true" level="verbose1" format="txt">
-                    <text>entering</text>
+                <message type="Info" level="verbose1" format="txt">
+                    <text strict="true">entering</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false" format="xml">
-                    <text>0ms</text>
+                <message type="Duration" format="xml">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="firstPass" type="Pass">
-                <message type="Info" strict="true" level="verbose1" format="txt">
-                    <text>entering</text>
+                <message type="Info" level="verbose1" format="txt">
+                    <text strict="true">entering</text>
                 </message>
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="70">
-                    <text>QVERIFY(true)</text>
+                <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="70">
+                    <text strict="true">QVERIFY(true)</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false" format="xml">
-                    <text>0ms</text>
+                <message type="Duration" format="xml">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="secondPass" type="Pass">
-                <message type="Info" strict="true" level="verbose1" format="txt">
-                    <text>entering</text>
+                <message type="Info" level="verbose1" format="txt">
+                    <text strict="true">entering</text>
                 </message>
                 <row title="firstData" type="Pass" format="!xunitxml">
-                    <message type="QDebug" strict="true">
-                        <text>"firstData"</text>
+                    <message type="QDebug">
+                        <text strict="true">"firstData"</text>
                     </message>
-                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="85">
-                        <text>QVERIFY(data.endsWith("Data"))</text>
+                    <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="85">
+                        <text strict="true">QVERIFY(data.endsWith("Data"))</text>
                     </message>
-                    <message type="Pass" strict="true">
-                        <text>Test passed</text>
+                    <message type="Pass">
+                        <text strict="true">Test passed</text>
                     </message>
                 </row>
                 <row title="firstData" type="Unknown" format="xunitxml">
-                    <message type="QDebug" strict="true">
-                        <text>"firstData"</text>
+                    <message type="QDebug">
+                        <text strict="true">"firstData"</text>
                     </message>
-                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="85">
-                        <text>QVERIFY(data.endsWith("Data"))</text>
+                    <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="85">
+                        <text strict="true">QVERIFY(data.endsWith("Data"))</text>
                     </message>
                 </row>
                 <row title="secondData" type="Pass" format="!xunitxml">
-                    <message type="QDebug" strict="true">
-                        <text>"secondData"</text>
+                    <message type="QDebug">
+                        <text strict="true">"secondData"</text>
                     </message>
-                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="85">
-                        <text>QVERIFY(data.endsWith("Data"))</text>
+                    <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="85">
+                        <text strict="true">QVERIFY(data.endsWith("Data"))</text>
                     </message>
-                    <message type="Pass" strict="true">
-                        <text>Test passed</text>
+                    <message type="Pass">
+                        <text strict="true">Test passed</text>
                     </message>
                 </row>
                 <row title="secondData" type="Unknown" format="xunitxml">
-                    <message type="QDebug" strict="true">
-                        <text>"secondData"</text>
+                    <message type="QDebug">
+                        <text strict="true">"secondData"</text>
                     </message>
-                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="85">
-                        <text>QVERIFY(data.endsWith("Data"))</text>
+                    <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="85">
+                        <text strict="true">QVERIFY(data.endsWith("Data"))</text>
                     </message>
                 </row>
-                <message type="Pass" strict="true" format="xunitxml">
-                    <text>Test passed</text>
+                <message type="Pass" format="xunitxml">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false" format="xml">
-                    <text>0ms</text>
+                <message type="Duration" format="xml">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
-                <message type="Info" strict="true" level="verbose1" format="txt">
-                    <text>entering</text>
+                <message type="Info" level="verbose1" format="txt">
+                    <text strict="true">entering</text>
                 </message>
-                <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xunitxml">
-                    <text>QThread(29ec6f0) finished ()</text>
+                <message type="Signal" level="verboses" qtmin="5.12.0" format="xunitxml">
+                    <text strict="false">QThread(29ec6f0) finished ()</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false" format="xml">
-                    <text>0ms</text>
+                <message type="Duration" format="xml">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
-                <message type="Signal" strict="false" >
-                    <text>QThread(29ec6f0) finished ()</text>
+                <message type="Signal">
+                    <text strict="false">QThread(29ec6f0) finished ()</text>
                 </message>
             </function>
-            <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xml">
-                <text>QThread(29ec6f0) finished ()</text>
+            <message type="Signal" level="verboses" qtmin="5.12.0" format="xml">
+                <text strict="false">QThread(29ec6f0) finished ()</text>
             </message>
-            <message type="Duration" strict="false" format="xml">
-                <text>0ms</text>
+            <message type="Duration" format="xml">
+                <text strict="false">0ms</text>
             </message>
         </class>
         <class name="MultipleClassesTest#2" type="Pass" format="lightxml">
             <function name="initTestCase" type="Pass">
-                <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
-                    <text>QThread(29ec6f0) started ()</text>
+                <message type="Signal" level="verboses" qtmin="5.6.0">
+                    <text strict="false">QThread(29ec6f0) started ()</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false">
-                    <text>0ms</text>
+                <message type="Duration">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="firstPass" type="Pass">
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="70">
-                    <text>QVERIFY(true)</text>
+                <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="70">
+                    <text strict="true">QVERIFY(true)</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false">
-                    <text>0ms</text>
+                <message type="Duration">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="secondPass" type="Pass">
                 <row title="firstData" type="Pass">
-                    <message type="QDebug" strict="true">
-                        <text>"firstData"</text>
+                    <message type="QDebug">
+                        <text strict="true">"firstData"</text>
                     </message>
-                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="85">
-                        <text>QVERIFY(data.endsWith("Data"))</text>
+                    <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="85">
+                        <text strict="true">QVERIFY(data.endsWith("Data"))</text>
                     </message>
-                    <message type="Pass" strict="true">
-                        <text>Test passed</text>
+                    <message type="Pass">
+                        <text strict="true">Test passed</text>
                     </message>
                 </row>
                 <row title="secondData" type="Pass">
-                    <message type="QDebug" strict="true">
-                        <text>"secondData"</text>
+                    <message type="QDebug">
+                        <text strict="true">"secondData"</text>
                     </message>
-                    <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="85">
-                        <text>QVERIFY(data.endsWith("Data"))</text>
+                    <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="85">
+                        <text strict="true">QVERIFY(data.endsWith("Data"))</text>
                     </message>
-                    <message type="Pass" strict="true">
-                        <text>Test passed</text>
+                    <message type="Pass">
+                        <text strict="true">Test passed</text>
                     </message>
                 </row>
-                <message type="Duration" strict="false">
-                    <text>0ms</text>
+                <message type="Duration">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false">
-                    <text>0ms</text>
+                <message type="Duration">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
-            <message type="Duration" strict="false">
-                <text>0ms</text>
+            <message type="Duration">
+                <text strict="false">0ms</text>
             </message>
         </class>
         <class name="ThirdClassTest" type="Fail" level="silent" format="!lightxml">
             <function name="initTestCase" type="Pass">
-                <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
-                    <text>QThread(29ec6f0) started ()</text>
+                <message type="Signal" level="verboses" qtmin="5.6.0">
+                    <text strict="false">QThread(29ec6f0) started ()</text>
                 </message>
-                <message type="Info" strict="true" level="verbose1" format="txt">
-                    <text>entering</text>
+                <message type="Info" level="verbose1" format="txt">
+                    <text strict="true">entering</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false" format="xml">
-                    <text>0ms</text>
+                <message type="Duration" format="xml">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="firstFail" type="Fail" level="silent">
-                <message type="Info" strict="true" level="verbose1" format="txt">
-                    <text>entering</text>
+                <message type="Info" level="verbose1" format="txt">
+                    <text strict="true">entering</text>
                 </message>
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="90">
-                    <text>QVERIFY(false)</text>
+                <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="90">
+                    <text strict="true">QVERIFY(false)</text>
                 </message>
-                <message type="Fail" strict="true" level="silent" file="multipleclassestest.cpp" line="90">
-                    <text>'false' returned FALSE. (Test should fail)</text>
+                <message type="Fail" level="silent" file="multipleclassestest.cpp" line="90">
+                    <text strict="true">'false' returned FALSE. (Test should fail)</text>
                 </message>
-                <message type="Duration" strict="false" format="xml">
-                    <text>0ms</text>
+                <message type="Duration" format="xml">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="secondPass" type="Pass">
-                <message type="Info" strict="true" level="verbose1" format="txt">
-                    <text>entering</text>
+                <message type="Info" level="verbose1" format="txt">
+                    <text strict="true">entering</text>
                 </message>
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="95">
-                    <text>QVERIFY(true)</text>
+                <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="95">
+                    <text strict="true">QVERIFY(true)</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false" format="xml">
-                    <text>0ms</text>
+                <message type="Duration" format="xml">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
-                <message type="Info" strict="true" level="verbose1" format="txt">
-                    <text>entering</text>
+                <message type="Info" level="verbose1" format="txt">
+                    <text strict="true">entering</text>
                 </message>
-                <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xunitxml">
-                    <text>QThread(29ec6f0) finished ()</text>
+                <message type="Signal" level="verboses" qtmin="5.12.0" format="xunitxml">
+                    <text strict="false">QThread(29ec6f0) finished ()</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false" format="xml">
-                    <text>0ms</text>
+                <message type="Duration" format="xml">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
-                <message type="Signal" strict="false" >
-                    <text>QThread(29ec6f0) finished ()</text>
+                <message type="Signal">
+                    <text strict="false">QThread(29ec6f0) finished ()</text>
                 </message>
             </function>
-            <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xml">
-                <text>QThread(29ec6f0) finished ()</text>
+            <message type="Signal" level="verboses" qtmin="5.12.0" format="xml">
+                <text strict="false">QThread(29ec6f0) finished ()</text>
             </message>
-            <message type="Duration" strict="false" format="xml">
-                <text>0ms</text>
+            <message type="Duration" format="xml">
+                <text strict="false">0ms</text>
             </message>
         </class>
         <class name="MultipleClassesTest#3" type="Fail" level="silent" format="lightxml">
             <function name="initTestCase" type="Pass">
-                <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
-                    <text>QThread(29ec6f0) started ()</text>
+                <message type="Signal" level="verboses" qtmin="5.6.0">
+                    <text strict="false">QThread(29ec6f0) started ()</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false">
-                    <text>0ms</text>
+                <message type="Duration">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="firstFail" type="Fail" level="silent">
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="90">
-                    <text>QVERIFY(false)</text>
+                <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="90">
+                    <text strict="true">QVERIFY(false)</text>
                 </message>
-                <message type="Fail" strict="true" level="silent" file="multipleclassestest.cpp" line="90">
-                    <text>'false' returned FALSE. (Test should fail)</text>
+                <message type="Fail" level="silent" file="multipleclassestest.cpp" line="90">
+                    <text strict="true">'false' returned FALSE. (Test should fail)</text>
                 </message>
-                <message type="Duration" strict="false">
-                    <text>0ms</text>
+                <message type="Duration">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="secondPass" type="Pass">
-                <message type="Info" strict="true" level="verbose2" file="multipleclassestest.cpp" line="95">
-                    <text>QVERIFY(true)</text>
+                <message type="Info" level="verbose2" file="multipleclassestest.cpp" line="95">
+                    <text strict="true">QVERIFY(true)</text>
                 </message>
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false">
-                    <text>0ms</text>
+                <message type="Duration">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
             <function name="cleanupTestCase" type="Pass">
-                <message type="Pass" strict="true">
-                    <text>Test passed</text>
+                <message type="Pass">
+                    <text strict="true">Test passed</text>
                 </message>
-                <message type="Duration" strict="false">
-                    <text>0ms</text>
+                <message type="Duration">
+                    <text strict="false">0ms</text>
                 </message>
             </function>
-            <message type="Duration" strict="false">
-                <text>0ms</text>
+            <message type="Duration">
+                <text strict="false">0ms</text>
             </message>
         </class>
     </root>
