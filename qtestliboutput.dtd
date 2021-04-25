@@ -3,7 +3,8 @@
 <!ELEMENT class (function+)>
 <!ELEMENT function (row+|message+)>
 <!ELEMENT row (message+)>
-<!ELEMENT message (#PCDATA)>
+<!ELEMENT message (text)>
+<!ELEMENT text (#PCDATA)>
 <!ELEMENT results (unsure+|magicfound+|magicnotfound+)>
 <!ELEMENT unsure EMPTY>
 <!ELEMENT magicfound EMPTY>

@@ -246,124 +246,124 @@
     <class name="OneClassTest" type="Fail" level="silent">
         <function name="initTestCase" type="Pass">
             <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
-                QThread(29ec6f0) started ()
+                <text>QThread(29ec6f0) started ()</text>
             </message>
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="firstFunction" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <row title="firstData" type="Pass" format="!xunitxml">
                 <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="48">
-                    QVERIFY(data.endsWith("Data of firstFunction"))
+                    <text>QVERIFY(data.endsWith("Data of firstFunction"))</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="firstData" type="Unknown" level="verbose2" format="xunitxml" >
                 <message type="Info" strict="true" file="oneclasstest.cpp" line="48">
-                    QVERIFY(data.endsWith("Data of firstFunction"))
+                    <text>QVERIFY(data.endsWith("Data of firstFunction"))</text>
                 </message>
             </row>
             <row title="secondData" type="Pass" format="!xunitxml">
                 <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="48">
-                    QVERIFY(data.endsWith("Data of firstFunction"))
+                    <text>QVERIFY(data.endsWith("Data of firstFunction"))</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="secondData" type="Unknown" level="verbose2" format="xunitxml">
                 <message type="Info" strict="true" file="oneclasstest.cpp" line="48">
-                    QVERIFY(data.endsWith("Data of firstFunction"))
+                    <text>QVERIFY(data.endsWith("Data of firstFunction"))</text>
                 </message>
             </row>
             <row title="thirdData" type="Pass" format="!xunitxml">
                 <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="48">
-                    QVERIFY(data.endsWith("Data of firstFunction"))
+                    <text>QVERIFY(data.endsWith("Data of firstFunction"))</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="thirdData" type="Unknown" level="verbose2" format="xunitxml">
                 <message type="Info" strict="true" file="oneclasstest.cpp" line="48">
-                    QVERIFY(data.endsWith("Data of firstFunction"))
+                    <text>QVERIFY(data.endsWith("Data of firstFunction"))</text>
                 </message>
             </row>
             <message type="Pass" strict="true" format="xunitxml">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="secondFunction" type="Fail" level="silent">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <row title="firstData" type="Fail" level="silent">
                 <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="63">
-                    QVERIFY(data.endsWith("Data of firstFunction"))
+                    <text>QVERIFY(data.endsWith("Data of firstFunction"))</text>
                 </message>
                 <message type="Fail" strict="true" level="silent" file="oneclasstest.cpp" line="63">
-                    'data.endsWith("Data of firstFunction")' returned FALSE. ()
+                    <text>'data.endsWith("Data of firstFunction")' returned FALSE. ()</text>
                 </message>
             </row>
             <row title="secondData" type="Fail" level="silent">
                 <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="63">
-                    QVERIFY(data.endsWith("Data of firstFunction"))
+                    <text>QVERIFY(data.endsWith("Data of firstFunction"))</text>
                 </message>
                 <message type="Fail" strict="true" level="silent" file="oneclasstest.cpp" line="63">
-                    'data.endsWith("Data of firstFunction")' returned FALSE. ()
+                    <text>'data.endsWith("Data of firstFunction")' returned FALSE. ()</text>
                 </message>
             </row>
             <row title="thirdData" type="Fail" level="silent">
                 <message type="Info" strict="true" level="verbose2" file="oneclasstest.cpp" line="63">
-                    QVERIFY(data.endsWith("Data of firstFunction"))
+                    <text>QVERIFY(data.endsWith("Data of firstFunction"))</text>
                 </message>
                 <message type="Fail" strict="true" level="silent" file="oneclasstest.cpp" line="63">
-                    'data.endsWith("Data of firstFunction")' returned FALSE. ()
+                    <text>'data.endsWith("Data of firstFunction")' returned FALSE. ()</text>
                 </message>
             </row>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="cleanupTestCase" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xunitxml">
-                QThread(29ec6f0) finished ()
+                <text>QThread(29ec6f0) finished ()</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
             <message type="Signal" strict="false" >
-                QThread(29ec6f0) finished ()
+                <text>QThread(29ec6f0) finished ()</text>
             </message>
         </function>
         <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xml">
-            QThread(29ec6f0) finished ()
+            <text>QThread(29ec6f0) finished ()</text>
         </message>
         <message type="Duration" strict="false" format="xml,lightxml" >
-            0.00ms
+            <text>0.00ms</text>
         </message>
     </class>
 </qtestliboutput>

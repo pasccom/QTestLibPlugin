@@ -412,225 +412,225 @@
     <class name="AllMessagesTest" type="Fail" level="silent">
         <function name="initTestCase" type="Pass">
             <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
-                QThread(29ec6f0) started ()
+                <text>QThread(29ec6f0) started ()</text>
             </message>
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="result" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Result" strict="false" format="!xunitxml">
-                0.00050 msecs per iteration (total: 66, iterations: 131072)
+                <text>0.00050 msecs per iteration (total: 66, iterations: 131072)</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="pass" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="55">
-                QVERIFY(true)
+                <text>QVERIFY(true)</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="bpass" type="BPass" level="silent">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="60">
-                QVERIFY(true)
+                <text>QVERIFY(true)</text>
             </message>
             <message type="BPass" strict="true" level="silent">
-                Blacklisted test passed
+                <text>Blacklisted test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="xpass" type="XPass" level="silent">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="66">
-                QVERIFY(true)
+                <text>QVERIFY(true)</text>
             </message>
             <message type="XPass" strict="true" level="silent" file="allmessagestest.cpp" line="66">
-                'true' returned TRUE unexpectedly. (This test should succeed)
+                <text>'true' returned TRUE unexpectedly. (This test should succeed)</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="fail" type="Fail" level="silent">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="71">
-                QVERIFY(false)
+                <text>QVERIFY(false)</text>
             </message>
             <message type="Fail" strict="true" level="silent" file="allmessagestest.cpp" line="71">
-                'false' returned FALSE. (This test should fail)
+                <text>'false' returned FALSE. (This test should fail)</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="bfail" type="BFail" level="silent">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="76">
-                QVERIFY(false)
+                <text>QVERIFY(false)</text>
             </message>
             <message type="BFail" strict="true" level="silent" file="allmessagestest.cpp" line="76" format="!xunitxml">
-                'false' returned FALSE. (This test is blacklisted but it should fail)
+                <text>'false' returned FALSE. (This test is blacklisted but it should fail)</text>
             </message>
             <message type="BFail" strict="true" level="silent" file="allmessagestest.cpp" line="76" format="xunitxml">
-                Blacklisted test failed
+                <text>Blacklisted test failed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="xfail" type="XFail">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Info" strict="true" level="verbose2" file="allmessagestest.cpp" line="82">
-                QVERIFY(false)
+                <text>QVERIFY(false)</text>
             </message>
             <message type="XFail" strict="true" file="allmessagestest.cpp" line="82" format="!xunitxml">
-                This test should fail as it is marked as expecting failure.
+                <text>This test should fail as it is marked as expecting failure.</text>
             </message>
             <message type="Info" strict="true" file="allmessagestest.cpp" line="82" format="xunitxml">
-                This test should fail as it is marked as expecting failure.
+                <text>This test should fail as it is marked as expecting failure.</text>
             </message>
             <message type="Pass" strict="true" format="!xunitxml">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="XFail" strict="true" format="xunitxml">
-                Test failed unexpectedly
+                <text>Test failed unexpectedly</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="skip" type="Skip">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Skip" strict="true" file="allmessagestest.cpp" line="87">
-                This test should be skipped
+                <text>This test should be skipped</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="qdebug" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="QDebug" strict="true">
-                qDebug message
+                <text>qDebug message</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="info" type="Fail" level="silent">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Info" strict="true">
-                Did not receive message: "pascal COMBES"
+                <text>Did not receive message: "pascal COMBES"</text>
             </message>
             <message type="Fail" strict="true" level="silent">
-                Not all expected messages were received
+                <text>Not all expected messages were received</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="qsystem" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="QSystem" strict="true">
-                qCritical message
+                <text>qCritical message</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="warning" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Warning" strict="true" file="allmessagestest.cpp" line="108">
-                QWARN message
+                <text>QWARN message</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="qwarning" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="QWarning" strict="true">
-                qWarning message
+                <text>qWarning message</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="qfatal" type="Fail" level="silent">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="QFatal" strict="true" level="silent">
-                qFatal message
+                <text>qFatal message</text>
             </message>
             <message type="Fail" strict="false" level="silent">
-                Received a fatal error.
+                <text>Received a fatal error.</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <message type="Duration" strict="false" format="xml,lightxml" >
-            0.00ms
+            <text>0.00ms</text>
         </message>
     </class>
 </qtestliboutput>

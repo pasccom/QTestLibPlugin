@@ -124,91 +124,91 @@
     <class name="OnePassTest" type="Pass" format="!lightxml" level="normal">
         <function name="initTestCase" type="Pass">
             <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
-                QThread(29ec6f0) started ()
+                <text>QThread(29ec6f0) started ()</text>
             </message>
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml" >
-                0.00ms
+               <text> 0.00ms</text>
             </message>
         </function>
         <function name="testPass" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Info" strict="true" level="verbose2" file="onepasstest.cpp" line="34">
-                QVERIFY(true)
+                <text>QVERIFY(true)</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="cleanupTestCase" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xunitxml">
-                QThread(29ec6f0) finished ()
+                <text>QThread(29ec6f0) finished ()</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
             <message type="Signal" strict="false" >
-                QThread(29ec6f0) finished ()
+                <text>QThread(29ec6f0) finished ()</text>
             </message>
         </function>
         <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xml">
-            QThread(29ec6f0) finished ()
+            <text>QThread(29ec6f0) finished ()</text>
         </message>
         <message type="Duration" strict="false" format="xml" >
-            0.00ms
+            <text>0.00ms</text>
         </message>
     </class>
     <class name="OneSubTest" type="Pass" format="lightxml" level="normal">
         <function name="initTestCase" type="Pass">
             <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
-                QThread(29ec6f0) started ()
+                <text>QThread(29ec6f0) started ()</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false">
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="testPass" type="Pass">
             <message type="Info" strict="true" level="verbose2" file="onepasstest.cpp" line="34">
-                QVERIFY(true)
+                <text>QVERIFY(true)</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false">
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="cleanupTestCase" type="Pass">
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false">
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <message type="Duration" strict="false">
-            0.00ms
+            <text>0.00ms</text>
         </message>
     </class>
 </qtestliboutput>

@@ -597,290 +597,292 @@
     <class name="SignalsTest" type="Pass" level="normal">
         <function name="initTestCase" type="Pass">
             <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
-                QThread(29ec6f0) started ()
+                <text>QThread(29ec6f0) started ()</text>
             </message>
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="firstFunction" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                SignalsTest(7ffe244a1c30) signal1 ()
+                <text>SignalsTest(7ffe244a1c30) signal1 ()</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                SignalsTest(7ffe244a1c30) signal2 (QString(firstFunction))
+                <text>SignalsTest(7ffe244a1c30) signal2 (QString(firstFunction))</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                SignalsTest(7ffe244a1c30) signal3 (int(18), int(36))
+                <text>SignalsTest(7ffe244a1c30) signal3 (int(18), int(36))</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="secondFunction" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                SignalsTest(7ffe244a1c30) signal2 (QString(secondFunction))
+                <text>SignalsTest(7ffe244a1c30) signal2 (QString(secondFunction))</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                SignalsTest(7ffe244a1c30) signal3 (int(54), int(72))
+                <text>SignalsTest(7ffe244a1c30) signal3 (int(54), int(72))</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                SignalsTest(7ffe244a1c30) signal1 ()
+                <text>SignalsTest(7ffe244a1c30) signal1 ()</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="thirdFunction" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                SignalsTest(7ffe244a1c30) signal3 (int(90), int(108))
+                <text>SignalsTest(7ffe244a1c30) signal3 (int(90), int(108))</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                SignalsTest(7ffe244a1c30) signal1 ()
+                <text>SignalsTest(7ffe244a1c30) signal1 ()</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                SignalsTest(7ffe244a1c30) signal2 (QString(thirdFunction))
+                <text>SignalsTest(7ffe244a1c30) signal2 (QString(thirdFunction))</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="multiline" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                SignalsTest(7ffececad870) signal2 (QString(Multiline message test:
+                <text>
+SignalsTest(7ffececad870) signal2 (QString(Multiline message test:
 PASS   : fun()
 FAIL!  : other_fun(test)))
+                </text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="emitterStack" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                Emitter(7ffececacbc0) objectConstructed ()
+                <text>Emitter(7ffececacbc0) objectConstructed ()</text>
             </message>
             <message type="QDebug" strict="false">
-                Emitter(0x7ffececacbc0)
+                <text>Emitter(0x7ffececacbc0)</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                Emitter(7ffececacbc0) objectDestroyed ()
+                <text>Emitter(7ffececacbc0) objectDestroyed ()</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="emitterHeap" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                Emitter(7ffececacbc0) objectConstructed ()
+                <text>Emitter(7ffececacbc0) objectConstructed ()</text>
             </message>
             <message type="QDebug" strict="false">
-                Emitter(0x7ffececacbc0)
+                <text>Emitter(0x7ffececacbc0)</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                Emitter(7ffececacbc0) objectDestroyed ()
+                <text>Emitter(7ffececacbc0) objectDestroyed ()</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="emitterInNameSpaceStack" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()
+                <text>NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()</text>
             </message>
             <message type="QDebug" strict="false">
-                NameSpace::EmitterInNameSpace(0x7ffececacbc0)
+                <text>NameSpace::EmitterInNameSpace(0x7ffececacbc0)</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()
+                <text>NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="emitterInNameSpaceHeap" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()
+                <text>NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()</text>
             </message>
             <message type="QDebug" strict="false">
-                NameSpace::EmitterInNameSpace(0x7ffececacbc0)
+                <text>NameSpace::EmitterInNameSpace(0x7ffececacbc0)</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()
+                <text>NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="receiverStack" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                Emitter(7ffececacbc0) objectConstructed ()
+                <text>Emitter(7ffececacbc0) objectConstructed ()</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                Emitter(7ffececacbc0) objectDestroyed ()
+                <text>Emitter(7ffececacbc0) objectDestroyed ()</text>
             </message>
             <message type="Slot" strict="false" level="verboses">
-                Receiver(7ffececacbc0) objectDestroyed ()
+                <text>Receiver(7ffececacbc0) objectDestroyed ()</text>
             </message>
             <message type="QDebug" strict="false">
-                Emitter(0x7ffececacbc0) destroyed
+                <text>Emitter(0x7ffececacbc0) destroyed</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="receiverHeap" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                Emitter(7ffececacbc0) objectConstructed ()
+                <text>Emitter(7ffececacbc0) objectConstructed ()</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                Emitter(7ffececacbc0) objectDestroyed ()
+                <text>Emitter(7ffececacbc0) objectDestroyed ()</text>
             </message>
             <message type="Slot" strict="false" level="verboses">
-                Receiver(7ffececacbc0) objectDestroyed ()
+                <text>Receiver(7ffececacbc0) objectDestroyed ()</text>
             </message>
             <message type="QDebug" strict="false">
-                Emitter(0x7ffececacbc0) destroyed
+                <text>Emitter(0x7ffececacbc0) destroyed</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="receiverInNameSpaceStack" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()
+                <text>NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()
+                <text>NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()</text>
             </message>
             <message type="Slot" strict="false" level="verboses">
-                NameSpace::ReceiverInNameSpace(7ffececacbc0) objectDestroyed ()
+                <text>NameSpace::ReceiverInNameSpace(7ffececacbc0) objectDestroyed ()</text>
             </message>
             <message type="QDebug" strict="false">
-                NameSpace::EmitterInNameSpace(0x7ffececacbc0) destroyed
+                <text>NameSpace::EmitterInNameSpace(0x7ffececacbc0) destroyed</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="receiverInNameSpaceHeap" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()
+                <text>NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()</text>
             </message>
             <message type="Signal" strict="false" level="verboses">
-                NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()
+                <text>NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()</text>
             </message>
             <message type="Slot" strict="false" level="verboses">
-                NameSpace::ReceiverInNameSpace(7ffececacbc0) objectDestroyed ()
+                <text>NameSpace::ReceiverInNameSpace(7ffececacbc0) objectDestroyed ()</text>
             </message>
             <message type="QDebug" strict="false">
-                NameSpace::EmitterInNameSpace(0x7ffececacbc0) destroyed
+                <text>NameSpace::EmitterInNameSpace(0x7ffececacbc0) destroyed</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="cleanupTestCase" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xunitxml">
-                QThread(29ec6f0) finished ()
+                <text>QThread(29ec6f0) finished ()</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0ms
+                <text>0ms</text>
             </message>
         </function>
         <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
             <message type="Signal" strict="false" >
-                QThread(29ec6f0) finished ()
+                <text>QThread(29ec6f0) finished ()</text>
             </message>
         </function>
         <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xml">
-            QThread(29ec6f0) finished ()
+            <text>QThread(29ec6f0) finished ()</text>
         </message>
         <message type="Duration" strict="false" format="xml,lightxml">
-            0ms
+            <text>0ms</text>
         </message>
     </class>
 </qtestliboutput>

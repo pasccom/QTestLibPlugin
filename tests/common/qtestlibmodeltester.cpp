@@ -467,12 +467,18 @@ void QTestLibModelTester::parseMessage(const QModelIndex& index, const QDomEleme
     BEGIN_SUB_TEST_FUNCTION
 
     QVERIFY2(mModel->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for message index should be a string");
-    QVERIFY2(element.firstChild().isText(), "Child node should be a text node.");
-    QVERIFY2(element.firstChild().nextSibling().isNull(), "The element should have only one child");
+    QVERIFY2(!element.firstChildElement("text").isNull(), "Message element should have a children text element");
+    QVERIFY2(element.firstChildElement("text").nextSiblingElement("text").isNull(), "Message element should have a children text element");
+
+    QDomElement textElement = element.firstChildElement();
+    QVERIFY2(textElement.firstChild().isText(), "Child node should be a text node.");
+    QVERIFY2(textElement.firstChild().nextSibling().isNull(), "The text element should have only one child");
+
+
     qDebug() << mModel->data(index, Qt::DisplayRole).toString()
-             << element.firstChild().toText().data().trimmed();
+             << textElement.firstChild().toText().data().trimmed();
     if (QString::compare(element.attribute("strict", "false"), "true", Qt::CaseInsensitive) == 0)
-        QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.firstChild().toText().data().trimmed() , Qt::CaseSensitive) == 0, "Message text do not match");
+        QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), textElement.firstChild().toText().data().trimmed() , Qt::CaseSensitive) == 0, "Message text do not match");
     QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for message index should be a string");
     qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString()
              << element.attribute("type");

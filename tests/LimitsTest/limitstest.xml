@@ -472,288 +472,300 @@
     <class name="LimitsTest" type="Fail" level="silent">
         <function name="initTestCase" type="Pass">
             <message type="Signal" strict="false" level="verboses" qtmin="5.6.0">
-                QThread(29ec6f0) started ()
+                <text>QThread(29ec6f0) started ()</text>
             </message>
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="p" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="55">
-                QVERIFY(true)
+                <text>QVERIFY(true)</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="f" type="Fail" level="silent">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Info" strict="true" level="verbose2" file="limitstest.cpp" line="60">
-                QVERIFY(false)
+                <text>QVERIFY(false)</text>
             </message>
             <message type="Fail" strict="true" level="silent" file="limitstest.cpp" line="60">
-                'false' returned FALSE. (This test should fail.)
+                <text>'false' returned FALSE. (This test should fail.)</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="multiline" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <row title="simple" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                Multiline message test:
+                    <text>
+Multiline message test:
 First line
 Second line
+                    </text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="simple" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                Multiline message test:
+                    <text>
+Multiline message test:
 First line
 Second line
+                    </text>
                 </message>
             </row>
             <row title="with keys" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                Multiline message test:
+                    <text>
+Multiline message test:
 PASS   : fun()
 FAIL!  : other_fun(test)
+                    </text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="with keys" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                Multiline message test:
+                    <text>
+Multiline message test:
 PASS   : fun()
 FAIL!  : other_fun(test)
+                    </text>
                 </message>
             </row>
             <row title="short line" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                QList(
+                    <text>
+QList(
     -item1
     -item2
 )
+                    </text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="short line" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                QList(
+                    <text>
+QList(
     -item1
     -item2
 )
+                    </text>
                 </message>
             </row>
             <message type="Pass" strict="true" format="xunitxml">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="testRowNames" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <row title="simple" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                    "simple"
+                    <text>"simple"</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="simple" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                    "simple"
+                    <text>"simple"</text>
                 </message>
             </row>
             <row title="a)" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                    "a)"
+                    <text>"a)"</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="a)" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                    "a)"
+                    <text>"a)"</text>
                 </message>
             </row>
             <row title="fun()" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                    "fun()"
+                    <text>"fun()"</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="fun()" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                    "fun()"
+                    <text>"fun()"</text>
                 </message>
             </row>
             <row title="fun(int test)" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                    "fun(int test)"
+                    <text>"fun(int test)"</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="fun(int test)" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                    "fun(int test)"
+                    <text>"fun(int test)"</text>
                 </message>
             </row>
             <row title="str.at().unicode()" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                    "str.at().unicode()"
+                    <text>"str.at().unicode()"</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="str.at().unicode()" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                    "str.at().unicode()"
+                    <text>"str.at().unicode()"</text>
                 </message>
             </row>
             <row title="( (a + b) + (c + d) ) + ( (e +f) + (g + h) )" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                    "( (a + b) + (c + d) ) + ( (e +f) + (g + h) )"
+                    <text>"( (a + b) + (c + d) ) + ( (e +f) + (g + h) )"</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="( (a + b) + (c + d) ) + ( (e +f) + (g + h) )" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                    "( (a + b) + (c + d) ) + ( (e +f) + (g + h) )"
+                    <text>"( (a + b) + (c + d) ) + ( (e +f) + (g + h) )"</text>
                 </message>
             </row>
             <row title="a)( (a + b) + (c + d) ) + ( (e +f) + (g + h) )" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                    "a)( (a + b) + (c + d) ) + ( (e +f) + (g + h) )"
+                    <text>"a)( (a + b) + (c + d) ) + ( (e +f) + (g + h) )"</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="a)( (a + b) + (c + d) ) + ( (e +f) + (g + h) )" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                    "a)( (a + b) + (c + d) ) + ( (e +f) + (g + h) )"
+                    <text>"a)( (a + b) + (c + d) ) + ( (e +f) + (g + h) )"</text>
                 </message>
             </row>
             <row title="( ( (nested) ) )" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                    "( ( (nested) ) )"
+                    <text>"( ( (nested) ) )"</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="( ( (nested) ) )" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                    "( ( (nested) ) )"
+                    <text>"( ( (nested) ) )"</text>
                 </message>
             </row>
             <row title="a)( ( (nested) ) )" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                    "a)( ( (nested) ) )"
+                    <text>"a)( ( (nested) ) )"</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="a)( ( (nested) ) )" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                    "a)( ( (nested) ) )"
+                    <text>"a)( ( (nested) ) )"</text>
                 </message>
             </row>
             <row title="( ( (double) ) ).( ( (nested) ) )" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                    "( ( (double) ) ).( ( (nested) ) )"
+                    <text>"( ( (double) ) ).( ( (nested) ) )"</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="( ( (double) ) ).( ( (nested) ) )" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                    "( ( (double) ) ).( ( (nested) ) )"
+                    <text>"( ( (double) ) ).( ( (nested) ) )"</text>
                 </message>
             </row>
             <row title="a)( ( (double) ) ).( ( (nested) ) )" type="Pass" format="!xunitxml">
                 <message type="QDebug" strict="true">
-                    "a)( ( (double) ) ).( ( (nested) ) )"
+                    <text>"a)( ( (double) ) ).( ( (nested) ) )"</text>
                 </message>
                 <message type="Pass" strict="true">
-                    Test passed
+                    <text>Test passed</text>
                 </message>
             </row>
             <row title="a)( ( (double) ) ).( ( (nested) ) )" type="Unknown" format="xunitxml">
                 <message type="QDebug" strict="true">
-                    "a)( ( (double) ) ).( ( (nested) ) )"
+                    <text>"a)( ( (double) ) ).( ( (nested) ) )"</text>
                 </message>
             </row>
             <message type="Pass" strict="true" format="xunitxml">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml">
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="cleanupTestCase" type="Pass">
             <message type="Info" strict="true" level="verbose1" format="txt">
-                entering
+                <text>entering</text>
             </message>
             <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xunitxml">
-                QThread(29ec6f0) finished ()
+                <text>QThread(29ec6f0) finished ()</text>
             </message>
             <message type="Pass" strict="true">
-                Test passed
+                <text>Test passed</text>
             </message>
             <message type="Duration" strict="false" format="xml,lightxml" >
-                0.00ms
+                <text>0.00ms</text>
             </message>
         </function>
         <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
             <message type="Signal" strict="false" >
-                QThread(29ec6f0) finished ()
+                <text>QThread(29ec6f0) finished ()</text>
             </message>
         </function>
         <message type="Signal" strict="false" level="verboses" qtmin="5.12.0" format="xml">
-            QThread(29ec6f0) finished ()
+            <text>QThread(29ec6f0) finished ()</text>
         </message>
         <message type="Duration" strict="false" format="xml,lightxml" >
-            0.00ms
+            <text>0.00ms</text>
         </message>
     </class>
 </qtestliboutput>

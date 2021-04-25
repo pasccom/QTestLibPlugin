@@ -445,7 +445,7 @@ function outputResultRow()
     while [[ $i -lt $RESULTITEMNUMBER ]]; do
         debug "$i: $1 \"${RESULTCLASSES[$i]}\" \"${RESULTFUNCTIONS[$i]}\" \"${RESULTROWS[$i]}\""
         if [[ "${RESULTCLASSES[$i]}" == "$1" && "${RESULTFUNCTIONS[$i]}" == "$2" && "${RESULTROWS[$i]}" == "$3" ]]; then
-            echo "$RESULTINDENT<message type=\"Unknown\" strict=\"true\" id=\"m${RESULTMESSAGECOUNT[$i]}\">Message ${RESULTMESSAGECOUNT[$i]}</message>" >> "$TESTNAME/$RESULTFILENAME"
+            echo "$RESULTINDENT<message type=\"Unknown\" strict=\"true\" id=\"m${RESULTMESSAGECOUNT[$i]}\"><text>Message ${RESULTMESSAGECOUNT[$i]}</text></message>" >> "$TESTNAME/$RESULTFILENAME"
             removeResultItem $i
         else
             local i=$((i + 1))
@@ -473,7 +473,7 @@ function outputResultFunction()
         debug "$i: $1 \"${RESULTCLASSES[$i]}\" \"${RESULTFUNCTIONS[$i]}\" \"${RESULTROWS[$i]}\""
         if [[ "${RESULTCLASSES[$i]}" == "$1" && "${RESULTFUNCTIONS[$i]}" == "$2" ]]; then
             if [[ -z "${RESULTROWS[$i]}" ]]; then
-                echo "$RESULTINDENT<message type=\"Unknown\" strict=\"true\" id=\"m${RESULTMESSAGECOUNT[$i]}\">Message ${RESULTMESSAGECOUNT[$i]}</message>" >> "$TESTNAME/$RESULTFILENAME"
+                echo "$RESULTINDENT<message type=\"Unknown\" strict=\"true\" id=\"m${RESULTMESSAGECOUNT[$i]}\"><text>Message ${RESULTMESSAGECOUNT[$i]}</text></message>" >> "$TESTNAME/$RESULTFILENAME"
                 removeResultItem $i
             else
                 outputResultRow "$1" "$2" "${RESULTROWS[$i]}"
@@ -503,7 +503,7 @@ function outputResultClass()
         debug "$i: $1 \"${RESULTCLASSES[$i]}\" \"${RESULTFUNCTIONS[$i]}\""
         if [[ "${RESULTCLASSES[$i]}" == "$1" ]]; then
             if [[ -z "${RESULTFUNCTIONS[$i]}" ]]; then
-                echo "$RESULTINDENT<message type=\"Unknown\" strict=\"true\" id=\"m${RESULTMESSAGECOUNT[$i]}\">Message ${RESULTMESSAGECOUNT[$i]}</message>" >> "$TESTNAME/$RESULTFILENAME"
+                echo "$RESULTINDENT<message type=\"Unknown\" strict=\"true\" id=\"m${RESULTMESSAGECOUNT[$i]}\"><text>Message ${RESULTMESSAGECOUNT[$i]}</text></message>" >> "$TESTNAME/$RESULTFILENAME"
                 removeResultItem $i
             else
                 outputResultFunction "$1" "${RESULTFUNCTIONS[$i]}"
@@ -529,7 +529,7 @@ fi
 while [[ $RESULTITEMNUMBER -gt 0 ]]; do
     debug "Classes: (${RESULTCLASSES[*]})"
     if [[ -z "${RESULTCLASSES[0]}" ]]; then
-        echo "$RESULTINDENT<message type=\"Unknown\" strict=\"true\" id=\"m${RESULTMESSAGECOUNT[0]}\">Message ${RESULTMESSAGECOUNT[0]}</message>" >> "$TESTNAME/$RESULTFILENAME"
+        echo "$RESULTINDENT<message type=\"Unknown\" strict=\"true\" id=\"m${RESULTMESSAGECOUNT[0]}\"><text>Message ${RESULTMESSAGECOUNT[0]}</text></message>" >> "$TESTNAME/$RESULTFILENAME"
         removeResultItem 0
     else
         outputResultClass "${RESULTCLASSES[0]}"
