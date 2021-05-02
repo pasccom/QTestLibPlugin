@@ -243,127 +243,225 @@
         <unsure level="silent" />
         <unsure/>
     </results>
-    <class name="OneClassTest" type="Fail" level="silent">
+    <class name="OneClassTest" type="Fail">
+        <unsure/>
+        <unsure format="xml,xunitxml" />
+        <unsure format="xml,xunitxml" />
+        <unsure format="xml,lightxml,xunitxml" />
+        <unsure format="xml,lightxml,xunitxml" />
+        <unsure format="xml,lightxml,xunitxml" />
+        <magicfound level="silent" />
         <function name="initTestCase" type="Pass">
+            <unsure format="xml,lightxml" />
             <message type="Signal" level="verboses" qtmin="5.6.0">
                 <text strict="false">QThread(29ec6f0) started ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml,xunitxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true" >entering</text>
+                <unsure/>
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml" >
                 <text strict="false">0.00ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="firstFunction" type="Pass">
+            <unsure format="xml,lightxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <row title="firstData" type="Pass" format="!xunitxml">
                 <message type="Info" level="verbose2" file="oneclasstest.cpp" line="48">
                     <text strict="true">QVERIFY(data.endsWith("Data of firstFunction"))</text>
+                    <unsure/>
+                    <unsure/>
+                    <unsure format="xml,lightxml" />
+                    <unsure format="xml,lightxml" />
                 </message>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
+                    <unsure format="xml,lightxml" />
+                    <unsure format="xml,lightxml" />
                 </message>
             </row>
             <row title="firstData" type="Unknown" level="verbose2" format="xunitxml" >
                 <message type="Info" file="oneclasstest.cpp" line="48">
                     <text strict="true">QVERIFY(data.endsWith("Data of firstFunction"))</text>
+                    <unsure/>
+                    <unsure/>
                 </message>
             </row>
             <row title="secondData" type="Pass" format="!xunitxml">
-                <message type="Info"level="verbose2" file="oneclasstest.cpp" line="48">
+                <message type="Info" level="verbose2" file="oneclasstest.cpp" line="48">
                     <text strict="true">QVERIFY(data.endsWith("Data of firstFunction"))</text>
+                    <unsure/>
+                    <unsure/>
+                    <unsure format="xml,lightxml" />
+                    <unsure format="xml,lightxml" />
                 </message>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
+                    <unsure format="xml,lightxml" />
+                    <unsure format="xml,lightxml" />
                 </message>
             </row>
             <row title="secondData" type="Unknown" level="verbose2" format="xunitxml">
                 <message type="Info" file="oneclasstest.cpp" line="48">
                     <text strict="true">QVERIFY(data.endsWith("Data of firstFunction"))</text>
+                    <unsure/>
                 </message>
             </row>
             <row title="thirdData" type="Pass" format="!xunitxml">
                 <message type="Info" level="verbose2" file="oneclasstest.cpp" line="48">
                     <text strict="true">QVERIFY(data.endsWith("Data of firstFunction"))</text>
+                    <unsure/>
+                    <unsure/>
+                    <unsure format="xml,lightxml" />
+                    <unsure format="xml,lightxml" />
                 </message>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
+                    <unsure format="xml,lightxml" />
+                    <unsure format="xml,lightxml" />
                 </message>
             </row>
             <row title="thirdData" type="Unknown" level="verbose2" format="xunitxml">
                 <message type="Info" file="oneclasstest.cpp" line="48">
                     <text strict="true">QVERIFY(data.endsWith("Data of firstFunction"))</text>
+                    <unsure/>
                 </message>
             </row>
             <message type="Pass" format="xunitxml">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml" >
                 <text strict="false">0.00ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="secondFunction" type="Fail" level="silent">
+            <unsure format="xml,lightxml,xunitxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <row title="firstData" type="Fail" level="silent">
                 <message type="Info" level="verbose2" file="oneclasstest.cpp" line="63">
                     <text strict="true">QVERIFY(data.endsWith("Data of firstFunction"))</text>
+                    <unsure/>
+                    <unsure format="txt,xml,lightxml" />
+                    <unsure format="xml,lightxml" />
+                    <unsure format="xml,lightxml" />
                 </message>
                 <message type="Fail" level="silent" file="oneclasstest.cpp" line="63">
                     <text strict="true">'data.endsWith("Data of firstFunction")' returned FALSE. ()</text>
+                    <unsure level="silent" />
+                    <unsure level="silent" format="txt,xml,lightxml" />
+                    <unsure format="xml,lightxml" />
+                    <unsure format="xml,lightxml" />
                 </message>
             </row>
             <row title="secondData" type="Fail" level="silent">
                 <message type="Info" level="verbose2" file="oneclasstest.cpp" line="63">
                     <text strict="true">QVERIFY(data.endsWith("Data of firstFunction"))</text>
+                    <unsure/>
+                    <unsure format="txt,xml,lightxml" />
+                    <unsure format="xml,lightxml" />
+                    <unsure format="xml,lightxml" />
                 </message>
                 <message type="Fail" level="silent" file="oneclasstest.cpp" line="63">
                     <text strict="true">'data.endsWith("Data of firstFunction")' returned FALSE. ()</text>
+                    <unsure level="silent"/>
+                    <unsure level="silent" format="txt,xml,lightxml" />
+                    <unsure format="xml,lightxml" />
+                    <unsure format="xml,lightxml" />
                 </message>
             </row>
             <row title="thirdData" type="Fail" level="silent">
                 <message type="Info" level="verbose2" file="oneclasstest.cpp" line="63">
                     <text strict="true">QVERIFY(data.endsWith("Data of firstFunction"))</text>
+                    <unsure/>
+                    <unsure format="txt,xml,lightxml" />
+                    <unsure format="xml,lightxml" />
+                    <unsure format="xml,lightxml" />
                 </message>
                 <message type="Fail" level="silent" file="oneclasstest.cpp" line="63">
                     <text strict="true">'data.endsWith("Data of firstFunction")' returned FALSE. ()</text>
+                    <unsure level="silent"/>
+                    <unsure level="silent" format="txt,xml,lightxml" />
+                    <unsure format="xml,lightxml" />
+                    <unsure format="xml,lightxml" />
                 </message>
             </row>
             <message type="Duration" format="xml,lightxml" >
                 <text strict="false">0.00ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml,xunitxml" />
         </function>
         <function name="cleanupTestCase" type="Pass">
+            <unsure format="xml,lightxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses" qtmin="5.12.0" format="xunitxml">
                 <text strict="false">QThread(29ec6f0) finished ()</text>
+                <unsure/>
+                <unsure/>
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml" >
                 <text strict="false">0.00ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
-            <message type="Signal">
+            <message type="Signal" level="verboses">
                 <text strict="false">QThread(29ec6f0) finished ()</text>
+                <unsure/>
             </message>
         </function>
-        <message type="Signal" level="verboses" qtmin="5.12.0" format="xml">
+        <message type="Signal" level="verboses" qtmin="5.12.0" format="xml,lightxml">
             <text strict="false">QThread(29ec6f0) finished ()</text>
+            <unsure/>
+            <unsure/>
+            <unsure/>
         </message>
         <message type="Duration" format="xml,lightxml" >
             <text strict="false">0.00ms</text>
+            <unsure/>
         </message>
+        <unsure format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" qtmin="5.6.0" />
+        <unsure level="verboses" format="xunitxml" qtmin="5.12.0" />
+        <unsure level="verboses" format="xunitxml" qtmin="5.6.0" />
+        <unsure level="verbose2" format="xunitxml" />
+        <unsure level="verbose2" format="xunitxml" />
+        <unsure level="verbose2" format="xunitxml" />
+        <unsure level="verbose2" format="xunitxml" />
+        <unsure level="verbose2" format="xunitxml" />
+        <unsure level="verbose2" format="xunitxml" />
+        <unsure level="verbose2" format="xunitxml" />
+        <unsure level="silent" format="txt" />
+        <unsure format="txt,xml,xunitxml" />
     </class>
 </qtestliboutput>

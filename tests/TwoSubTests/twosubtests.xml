@@ -223,183 +223,333 @@
     </results>
     <root type="Fail">
         <class name="OnePassTest" type="Pass" format="!lightxml">
+            <unsure/>
+            <unsure format="xml,xunitxml" />
+            <unsure format="xml,xunitxml" />
+            <unsure format="xml,xunitxml" />
+            <unsure format="xml,xunitxml" />
+            <unsure format="xml,xunitxml" />
+            <magicfound level="silent" />
             <function name="initTestCase" type="Pass">
+                <unsure format="xml" />
                 <message type="Signal" level="verboses" qtmin="5.6.0">
                     <text strict="false">QThread(29ec6f0) started ()</text>
+                    <unsure/>
+                    <unsure format="xml,xunitxml" />
+                    <unsure format="xml" />
                 </message>
                 <message type="Info" level="verbose1" format="txt">
                     <text strict="true">entering</text>
+                    <unsure/>
                 </message>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
                 </message>
                 <message type="Duration" format="xml">
                     <text strict="false">0ms</text>
+                    <unsure/>
                 </message>
+                <unsure format="xml" />
             </function>
             <function name="testPass" type="Pass">
+                <unsure format="xml" />
                 <message type="Info" level="verbose1" format="txt">
                     <text strict="true">entering</text>
+                    <unsure/>
                 </message>
                 <message type="Info" level="verbose2" file="onepasstest.cpp" line="34">
                     <text strict="true">QVERIFY(true)</text>
+                    <unsure/>
+                    <unsure/>
+                    <unsure format="xml" />
                 </message>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
                 </message>
                 <message type="Duration" format="xml">
                     <text strict="false">0ms</text>
+                    <unsure/>
                 </message>
+                <unsure format="xml" />
             </function>
             <function name="cleanupTestCase" type="Pass">
+                <unsure format="xml" />
                 <message type="Info" level="verbose1" format="txt">
                     <text strict="true">entering</text>
+                    <unsure/>
                 </message>
                 <message type="Signal" level="verboses" qtmin="5.12.0" format="xunitxml">
                     <text strict="false">QThread(29ec6f0) finished ()</text>
+                    <unsure/>
+                    <unsure/>
                 </message>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
                 </message>
                 <message type="Duration" format="xml">
                     <text strict="false">0ms</text>
+                    <unsure/>
                 </message>
+                <unsure format="xml" />
             </function>
             <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
                 <message type="Signal">
                     <text strict="false">QThread(29ec6f0) finished ()</text>
+                    <unsure/>
                 </message>
             </function>
             <message type="Signal" level="verboses" qtmin="5.12.0" format="xml">
                 <text strict="false">QThread(29ec6f0) finished ()</text>
+                <unsure/>
+                <unsure/>
+                <unsure/>
             </message>
             <message type="Duration" format="xml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xunitxml" />
+            <unsure level="verboses" format="xunitxml" qtmin="5.6.0" />
+            <unsure level="verboses" format="xunitxml" qtmin="5.6.0" />
+            <unsure level="verboses" format="xunitxml" qtmin="5.12.0" />
+            <unsure level="verbose2" format="xunitxml" />
+            <unsure level="verbose2" format="xunitxml" />
+            <unsure level="silent" format="txt" />
+            <unsure format="txt,xml,xunitxml" />
         </class>
         <class name="TwoSubTests#1" type="Pass" format="lightxml">
+            <unsure/>
+            <unsure/>
+            <unsure/>
+            <unsure/>
+            <magicfound/>
             <function name="initTestCase" type="Pass">
+                <unsure/>
                 <message type="Signal" level="verboses" qtmin="5.6.0">
                     <text strict="false">QThread(29ec6f0) started ()</text>
+                    <unsure/>
+                    <unsure/>
+                    <unsure/>
                 </message>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
                 </message>
                 <message type="Duration">
                     <text strict="false">0ms</text>
+                    <unsure/>
                 </message>
+                <unsure/>
             </function>
             <function name="testPass" type="Pass">
+                <unsure/>
                 <message type="Info" level="verbose2" file="onepasstest.cpp" line="34">
                     <text strict="true">QVERIFY(true)</text>
+                    <unsure/>
+                    <unsure/>
+                    <unsure/>
                 </message>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
                 </message>
                 <message type="Duration">
                     <text strict="false">0ms</text>
+                    <unsure/>
                 </message>
+                <unsure/>
             </function>
             <function name="cleanupTestCase" type="Pass">
+                <unsure/>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
                 </message>
                 <message type="Duration">
                     <text strict="false">0ms</text>
+                    <unsure/>
                 </message>
+                <unsure/>
             </function>
+            <message type="Signal" level="verboses" qtmin="5.12.0">
+                <text strict="false">QThread(29ec6f0) finished ()</text>
+                <unsure/>
+                <unsure/>
+                <unsure/>
+            </message>
             <message type="Duration">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
         </class>
         <class name="OneFailTest" type="Fail" format="!lightxml">
+            <unsure/>
+            <unsure format="xml,xunitxml" />
+            <unsure format="xml,xunitxml" />
+            <unsure format="xml,xunitxml" />
+            <unsure format="xml,xunitxml" />
+            <unsure format="xml,xunitxml" />
+            <magicfound level="silent" />
             <function name="initTestCase" type="Pass">
+                <unsure format="xml" />
                 <message type="Signal" level="verboses" qtmin="5.6.0">
                     <text strict="false">QThread(29ec6f0) started ()</text>
+                    <unsure/>
+                    <unsure format="xml,xunitxml" />
+                    <unsure format="xml" />
                 </message>
                 <message type="Info" level="verbose1" format="txt">
                     <text strict="true">entering</text>
+                    <unsure/>
                 </message>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
                 </message>
                 <message type="Duration" format="xml">
                     <text strict="false">0ms</text>
+                    <unsure/>
                 </message>
+                <unsure format="xml" />
             </function>
-            <function name="testFail" type="Fail">
+            <function name="testFail" type="Fail" level="silent">
+                <unsure format="xml" />
                 <message type="Info" level="verbose1" format="txt">
                     <text strict="true">entering</text>
+                    <unsure/>
                 </message>
                 <message type="Info" level="verbose2" file="onefailtest.cpp" line="34">
                     <text strict="true">QVERIFY(false)</text>
+                    <unsure/>
+                    <unsure format= "txt,xml" />
+                    <unsure format="xml" />
                 </message>
                 <message type="Fail" level="silent" file="onefailtest.cpp" line="34">
                     <text strict="true">'false' returned FALSE. ()</text>
+                    <unsure level="silent" />
+                    <unsure level="silent" />
+                    <unsure format="xml,xunitxml" />
                 </message>
                 <message type="Duration" format="xml">
                     <text strict="false">0ms</text>
+                    <unsure/>
                 </message>
+                <unsure format="xml" />
             </function>
             <function name="cleanupTestCase" type="Pass">
+                <unsure format="xml" />
                 <message type="Info" level="verbose1" format="txt">
                     <text strict="true">entering</text>
+                    <unsure/>
                 </message>
                 <message type="Signal" level="verboses" qtmin="5.12.0" format="xunitxml">
                     <text strict="false">QThread(29ec6f0) finished ()</text>
+                    <unsure/>
+                    <unsure/>
                 </message>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
                 </message>
                 <message type="Duration" format="xml">
                     <text strict="false">0ms</text>
+                    <unsure/>
                 </message>
+                <unsure format="xml" />
             </function>
             <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
                 <message type="Signal">
                     <text strict="false">QThread(29ec6f0) finished ()</text>
+                    <unsure/>
                 </message>
             </function>
             <message type="Signal" level="verboses" qtmin="5.12.0" format="xml">
                 <text strict="false">QThread(29ec6f0) finished ()</text>
+                <unsure/>
+                <unsure/>
+                <unsure/>
             </message>
             <message type="Duration" format="xml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xunitxml" />
+            <unsure level="verboses" format="xunitxml" qtmin="5.6.0" />
+            <unsure level="verboses" format="xunitxml" qtmin="5.6.0" />
+            <unsure level="verboses" format="xunitxml" qtmin="5.12.0" />
+            <unsure level="verbose2" format="xunitxml" />
+            <unsure level="verbose2" format="xunitxml" />
+            <unsure level="silent" format="txt" />
+            <unsure format="txt,xml,xunitxml" />
         </class>
         <class name="TwoSubTests#2" type="Fail" format="lightxml">
+            <unsure/>
+            <unsure/>
+            <unsure/>
+            <unsure/>
+            <magicfound/>
             <function name="initTestCase" type="Pass">
+                <unsure/>
                 <message type="Signal" level="verboses" qtmin="5.6.0">
                     <text strict="false">QThread(29ec6f0) started ()</text>
+                    <unsure/>
+                    <unsure/>
+                    <unsure/>
                 </message>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
                 </message>
                 <message type="Duration">
                     <text strict="false">0ms</text>
+                    <unsure/>
                 </message>
+                <unsure/>
             </function>
             <function name="testFail" type="Fail">
+                <unsure/>
                 <message type="Info" level="verbose2" file="onefailtest.cpp" line="34">
                     <text strict="true">QVERIFY(false)</text>
+                    <unsure/>
+                    <unsure/>
+                    <unsure/>
                 </message>
                 <message type="Fail" level="silent" file="onefailtest.cpp" line="34">
                     <text strict="true">'false' returned FALSE. ()</text>
+                    <unsure/>
+                    <unsure/>
+                    <unsure/>
                 </message>
                 <message type="Duration">
                     <text strict="false">0ms</text>
+                    <unsure/>
                 </message>
+                <unsure/>
             </function>
             <function name="cleanupTestCase" type="Pass">
+                <unsure/>
                 <message type="Pass">
                     <text strict="true">Test passed</text>
+                    <unsure/>
                 </message>
                 <message type="Duration">
                     <text strict="false">0ms</text>
+                    <unsure/>
                 </message>
+                <unsure/>
             </function>
+            <message type="Signal" level="verboses" qtmin="5.12.0">
+                <text strict="false">QThread(29ec6f0) finished ()</text>
+                <unsure/>
+                <unsure/>
+                <unsure/>
+            </message>
             <message type="Duration">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
         </class>
     </root>

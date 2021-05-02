@@ -594,84 +594,143 @@
         <unsure level="silent" />
         <unsure/>
     </results>
-    <class name="SignalsTest" type="Pass" level="normal">
+    <class name="SignalsTest" type="Pass">
+        <unsure/>
+        <unsure format="xml,xunitxml" />
+        <unsure format="xml,xunitxml" />
+        <unsure format="xml,lightxml,xunitxml" />
+        <unsure format="xml,lightxml,xunitxml" />
+        <unsure format="xml,lightxml,xunitxml" />
+        <magicfound level="silent" />
         <function name="initTestCase" type="Pass">
+            <unsure format="xml,lightxml" />
             <message type="Signal" level="verboses" qtmin="5.6.0">
                 <text strict="false">QThread(29ec6f0) started ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml,xunitxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="firstFunction" type="Pass">
+            <unsure format="xml,lightxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">SignalsTest(7ffe244a1c30) signal1 ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml,xunitxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">SignalsTest(7ffe244a1c30) signal2 (QString(firstFunction))</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">SignalsTest(7ffe244a1c30) signal3 (int(18), int(36))</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="secondFunction" type="Pass">
+            <unsure format="xml,lightxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">SignalsTest(7ffe244a1c30) signal2 (QString(secondFunction))</text>
+                <unsure/>
+                <unsure format="xml,lightxml,xunitxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">SignalsTest(7ffe244a1c30) signal3 (int(54), int(72))</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">SignalsTest(7ffe244a1c30) signal1 ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="thirdFunction" type="Pass">
+            <unsure format="xml,lightxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">SignalsTest(7ffe244a1c30) signal3 (int(90), int(108))</text>
+                <unsure/>
+                <unsure format="xml,lightxml,xunitxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">SignalsTest(7ffe244a1c30) signal1 ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">SignalsTest(7ffe244a1c30) signal2 (QString(thirdFunction))</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="multiline" type="Pass">
+            <unsure format="xml,lightxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">
@@ -679,210 +738,400 @@ SignalsTest(7ffececad870) signal2 (QString(Multiline message test:
 PASS   : fun()
 FAIL!  : other_fun(test)))
                 </text>
+                <unsure/>
+                <unsure/>
+                <unsure/>
+                <unsure format="xml,lightxml,xunitxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="emitterStack" type="Pass">
+            <unsure format="xml,lightxml,xunitxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">Emitter(7ffececacbc0) objectConstructed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="QDebug">
                 <text strict="false">Emitter(0x7ffececacbc0)</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">Emitter(7ffececacbc0) objectDestroyed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="emitterHeap" type="Pass">
+            <unsure format="xml,lightxml,xunitxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">Emitter(7ffececacbc0) objectConstructed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="QDebug">
                 <text strict="false">Emitter(0x7ffececacbc0)</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">Emitter(7ffececacbc0) objectDestroyed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="emitterInNameSpaceStack" type="Pass">
+            <unsure format="xml,lightxml,xunitxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="QDebug">
                 <text strict="false">NameSpace::EmitterInNameSpace(0x7ffececacbc0)</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="emitterInNameSpaceHeap" type="Pass">
+            <unsure format="xml,lightxml,xunitxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="QDebug">
                 <text strict="false">NameSpace::EmitterInNameSpace(0x7ffececacbc0)</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="receiverStack" type="Pass">
+            <unsure format="xml,lightxml,xunitxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">Emitter(7ffececacbc0) objectConstructed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">Emitter(7ffececacbc0) objectDestroyed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Slot" level="verboses">
                 <text strict="false">Receiver(7ffececacbc0) objectDestroyed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="QDebug">
                 <text strict="false">Emitter(0x7ffececacbc0) destroyed</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="receiverHeap" type="Pass">
+            <unsure format="xml,lightxml,xunitxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">Emitter(7ffececacbc0) objectConstructed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">Emitter(7ffececacbc0) objectDestroyed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Slot" level="verboses">
                 <text strict="false">Receiver(7ffececacbc0) objectDestroyed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="QDebug">
                 <text strict="false">Emitter(0x7ffececacbc0) destroyed</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="receiverInNameSpaceStack" type="Pass">
+            <unsure format="xml,lightxml,xunitxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Slot" level="verboses">
                 <text strict="false">NameSpace::ReceiverInNameSpace(7ffececacbc0) objectDestroyed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="QDebug">
                 <text strict="false">NameSpace::EmitterInNameSpace(0x7ffececacbc0) destroyed</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="receiverInNameSpaceHeap" type="Pass">
+            <unsure format="xml,lightxml,xunitxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">NameSpace::EmitterInNameSpace(7ffececacbc0) objectConstructed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Signal" level="verboses">
                 <text strict="false">NameSpace::EmitterInNameSpace(7ffececacbc0) objectDestroyed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Slot" level="verboses">
                 <text strict="false">NameSpace::ReceiverInNameSpace(7ffececacbc0) objectDestroyed ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="QDebug">
                 <text strict="false">NameSpace::EmitterInNameSpace(0x7ffececacbc0) destroyed</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="cleanupTestCase" type="Pass">
+            <unsure format="xml,lightxml" />
             <message type="Info" level="verbose1" format="txt">
                 <text strict="true">entering</text>
+                <unsure/>
             </message>
             <message type="Signal" level="verboses" qtmin="5.12.0" format="xunitxml">
                 <text strict="false">QThread(29ec6f0) finished ()</text>
+                <unsure/>
+                <unsure/>
             </message>
             <message type="Pass">
                 <text strict="true">Test passed</text>
+                <unsure/>
             </message>
             <message type="Duration" format="xml,lightxml">
                 <text strict="false">0ms</text>
+                <unsure/>
             </message>
+            <unsure format="xml,lightxml" />
         </function>
         <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
             <message type="Signal" >
                 <text strict="false">QThread(29ec6f0) finished ()</text>
+                <unsure/>
             </message>
         </function>
-        <message type="Signal" level="verboses" qtmin="5.12.0" format="xml">
+        <message type="Signal" level="verboses" qtmin="5.12.0" format="xml,lightxml">
             <text strict="false">QThread(29ec6f0) finished ()</text>
+            <unsure/>
+            <unsure/>
+            <unsure/>
         </message>
         <message type="Duration" format="xml,lightxml">
             <text strict="false">0ms</text>
+            <unsure/>
         </message>
+        <unsure format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" qtmin="5.6.0" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" />
+        <unsure format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" qtmin="5.12.0" />
+        <unsure format="xunitxml" />
+        <unsure level="silent" format="txt" />
+        <unsure format="txt,xml,xunitxml" />
     </class>
 </qtestliboutput>
