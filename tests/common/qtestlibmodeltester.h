@@ -76,6 +76,7 @@ private:
     void isOutputType(const QDomElement& element, bool* ret);
 
     void checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected);
+    void parseResults(const QDomElement& element, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results);
 
     void parseRoot(const QModelIndex& index, const QDomElement& element);
     void parseClass(const QModelIndex& index, const QDomElement& element);
@@ -92,6 +93,7 @@ private:
     QVector<bool> mFilters;
 };
 
+QDebug operator<<(QDebug dbg, const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results);
 
 Q_DECLARE_METATYPE(QTestLibModelTester::Verbosity)
 

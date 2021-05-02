@@ -23,6 +23,12 @@
 #include <QtXml>
 #include <QtTest>
 
+#include <algorithm>
+
+using std::cbegin;
+using std::cend;
+using std::equal;
+
 #undef QVERIFY
 #define QVERIFY(_expr_)                                                                                                                 \
     do {                                                                                                                                \
@@ -60,6 +66,16 @@ QTestLibModelTester::QTestLibModelTester(const QAbstractItemModel *model, Verbos
         mFilters[i] = true;
 }
 
+QDebug operator<<(QDebug dbg, const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results)
+{
+    QDebugStateSaver saver(dbg);
+
+    for (auto result: results)
+        dbg.space() << result;
+
+    return dbg;
+}
+
 bool QTestLibModelTester::checkResults(const QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results)
 {
     mError.clear();
@@ -86,6 +102,13 @@ void QTestLibModelTester::checkResultsInternal(const QLinkedList<QTestLibPlugin:
     if (!expectedResults.isNull()) {
         SUB_TEST_FUNCTION(checkResults(results, expectedResults));
     }
+
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> expectedResults2;
+    SUB_TEST_FUNCTION(parseResults(dom.documentElement(), expectedResults2));
+    qDebug() << "Expected:" << expectedResults2;
+    qDebug() << "Actual     :" << results;
+    QVERIFY2(results.size() == expectedResults2.size(), "Number of results mismatch");
+    QVERIFY2(equal(cbegin(results), cend(results), cbegin(expectedResults2)), "Results mismatch");
 
     END_SUB_TEST_FUNCTION
 }
@@ -322,6 +345,33 @@ void QTestLibModelTester::checkResults(QLinkedList<QTestLibPlugin::Internal::Tes
     }
 
     QVERIFY2((currentResult == results.constEnd()) && (currentExpected.isNull()), "Number of results mismatch");
+
+    END_SUB_TEST_FUNCTION
+}
+
+void QTestLibModelTester::parseResults(const QDomElement& element, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results)
+{
+    BEGIN_SUB_TEST_FUNCTION
+
+    QDomElement childElement = element.firstChildElement();
+
+    while (!childElement.isNull()) {
+        bool isElementOutput = false;
+        if (QString::compare(childElement.tagName(), "results", Qt::CaseInsensitive) != 0) // FIXME remove when it becomes useless
+            SUB_TEST_FUNCTION(isOutput(childElement, &isElementOutput));
+        if (isElementOutput) {
+            if (QString::compare(childElement.tagName(), "unsure", Qt::CaseInsensitive) == 0)
+                results.append(QTestLibPlugin::Internal::TestModelFactory::Unsure);
+            else if (QString::compare(childElement.tagName(), "magicfound", Qt::CaseInsensitive) == 0)
+                results.append(QTestLibPlugin::Internal::TestModelFactory::MagicFound);
+            else if (QString::compare(childElement.tagName(), "magicnotfound", Qt::CaseInsensitive) == 0)
+                results.append(QTestLibPlugin::Internal::TestModelFactory::MagicNotFound);
+            else
+                parseResults(childElement, results);
+        }
+
+        childElement = childElement.nextSiblingElement();
+    }
 
     END_SUB_TEST_FUNCTION
 }
