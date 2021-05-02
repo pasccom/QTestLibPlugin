@@ -194,7 +194,13 @@ void QTestLibModelTester::isOutputVerbosity(const QDomElement& element, bool *re
                                  "verbose1"
                                  "verbose2"
                                  "verboses";
-    QString resultLevelString = element.attribute("level", "normal");
+    QString resultLevelString;
+    if ((QString::compare(element.tagName(), "root", Qt::CaseSensitive) == 0) ||
+        (QString::compare(element.tagName(), "class", Qt::CaseSensitive) == 0))
+        resultLevelString = element.attribute("level", "silent");
+    else
+        resultLevelString = element.attribute("level", "normal");
+
     int resultLevel = resultLevels.indexOf(resultLevelString, 0, Qt::CaseSensitive);
     QVERIFY2(resultLevel != -1, qPrintable(QString("Unknown level: %1").arg(resultLevelString)));
     resultLevel = resultLevel/8 - 1;
