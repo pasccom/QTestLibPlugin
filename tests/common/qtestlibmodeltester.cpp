@@ -272,14 +272,17 @@ void QTestLibModelTester::isOutputType(const QDomElement& element, bool* ret)
                             "Fail    ";
 
     QString result = element.attribute("type");
-    QVERIFY2(!result.isNull(), "Elements must have a type attribute");
 
-    int t = -1;
-    do {
-       t = results.indexOf(result, t + 1);
-    } while((t != -1) && (t % 8 != 0));
-    QVERIFY2(t != -1, qPrintable(QString("Unknown type \"%1\"").arg(result)));
-    *ret = mFilters.at(t / 8);
+    if (result.isNull()) {
+        *ret = true;
+    } else {
+        int t = -1;
+        do {
+           t = results.indexOf(result, t + 1);
+        } while((t != -1) && (t % 8 != 0));
+        QVERIFY2(t != -1, qPrintable(QString("Unknown type \"%1\"").arg(result)));
+        *ret = mFilters.at(t / 8);
+    }
 
     END_SUB_TEST_FUNCTION
 }
