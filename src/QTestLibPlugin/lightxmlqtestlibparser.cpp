@@ -33,6 +33,7 @@ LightXMLQTestLibParser::LightXMLQTestLibParser(QObject *parent) :
     mXmlStarts.clear();
     mXmlStarts << QLatin1String("<Environment>");
     mXmlStarts << QLatin1String("<TestFunction");
+    mXmlStarts << QLatin1String("<Message");
     mXmlStarts << QLatin1String("<Duration");
 }
 
