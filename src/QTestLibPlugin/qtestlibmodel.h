@@ -213,12 +213,22 @@ public slots:
      */
     void clear(void) {if (mRoot != NULL) mRoot->removeChildren();}
     /*!
+     * \brief Adds a class item
+     *
+     * Add a new class item in the model with the given name.
+     * No children is added to the class.
+     *
+     * \param className The name of the new class
+     * \sa addTestItem()
+     */
+    void addClass(const QString& className);
+    /*!
      * \brief Adds a test item
      *
      * Add a new test item in the model with the given data.
      * The item is appended to the given class and the given function.
      *
-     * \note If the class, the function of the data row do not exist,
+     * \note If the class, the function or the data row do not exist,
      * they are created automatically.
      *
      * \param runControl The run control from which the item originates.
@@ -228,7 +238,7 @@ public slots:
      * \param functionName The function being tested
      * \param rowTitle The title of the data row being used
      * \param message The message from the test
-     * \sa appendTestItemMessage() appendTestLocation()
+     * \sa addClass(), appendTestItemMessage(), appendTestLocation()
      */
     void addTestItem(ProjectExplorer::RunControl* runControl,
                      MessageType type,

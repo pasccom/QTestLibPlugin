@@ -196,6 +196,35 @@ void QTestLibModel::appendTestLocation(ProjectExplorer::RunControl* runControl, 
     }
 }
 
+void QTestLibModel::addClass(const QString& className)
+{
+    if (mRoot == NULL) {
+        mRoot = new TestClassItem(className, this);
+        emit dataChanged(index(mRoot, 0), index(mRoot, 2));
+    } else if (mRoot->type() == TestClass) {
+        TestItem *oldRoot = mRoot;
+        mRoot = new TestRootItem(this);
+        mRoot->replace(oldRoot);
+        emit dataChanged(index(mRoot, 0), index(mRoot, 2));
+
+        beginInsertRows(QModelIndex(), mRoot->childrenCount(), mRoot->childrenCount());
+        mRoot->appendChild(oldRoot);
+        endInsertRows();
+
+        beginMoveRows(QModelIndex(), 0, mRoot->childrenCount() - 2, createIndex(mRoot->childrenCount(), 0, oldRoot), 0);
+        oldRoot->replace(mRoot, 0, -2);
+        endMoveRows();
+
+        beginInsertRows(QModelIndex(), 1, 1);
+        new TestClassItem(className, this, mRoot);
+        endInsertRows();
+    } else {
+        beginInsertRows(QModelIndex(), mRoot->childrenCount(), mRoot->childrenCount());
+        new TestClassItem(className, this, mRoot);
+        endInsertRows();
+    }
+}
+
 bool QTestLibModel::renameClass(const QString& oldName, const QString& newName)
 {
     if (mRoot == NULL)
@@ -600,6 +629,14 @@ QVariant QTestLibModel::TestItem::data(int column, int role) const
 
 QVariant QTestLibModel::TestClassItem::data(int column, int role) const
 {
+    // NOTE a class without children is assumed to have passed successfully
+    if ((column == 0) && (childrenCount() == 0) && (role ==  Qt::DecorationRole))
+        return QVariant(QTestLibModel::messageIcon(Pass));
+    if ((column == 0) && (childrenCount() == 0) && (role == ResultRole))
+        return QVariant::fromValue<MessageType>(Pass);
+    if ((column == 0) && (childrenCount() == 0) && (role == ResultStringRole))
+        return QVariant(QTestLibModel::resultString(Pass));
+
     if ((column == 0) && ((role == Qt::DisplayRole) || (role == Qt::ToolTipRole)))
         return QVariant(mClassName);
     return TestItem::data(column, role);
@@ -621,8 +658,6 @@ QVariant QTestLibModel::TestRowItem::data(int column, int role) const
 
 QVariant QTestLibModel::TestMessageItem::data(int column, int role) const
 {
-    if ((column == 0) && (role ==  Qt::DecorationRole))
-        return QVariant(QTestLibModel::messageIcon(mResult));
     if ((column == 0) && ((role == Qt::DisplayRole) || (role == Qt::ToolTipRole)))
         return mMessage.isEmpty() ? QVariant(defaultMessage(mResult)) : QVariant(mMessage.trimmed());
     return TestItem::data(column, role);
