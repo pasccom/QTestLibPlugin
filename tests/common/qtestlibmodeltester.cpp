@@ -412,9 +412,6 @@ void QTestLibModelTester::parseFunction(const QModelIndex& index, const QDomElem
     int i = 0;
     QDomElement childElement = element.firstChildElement();
     while(!childElement.isNull()) {
-        QVERIFY2((QString::compare(childElement.tagName(), "row", Qt::CaseSensitive) == 0)
-              || (QString::compare(childElement.tagName(), "message", Qt::CaseSensitive) == 0),
-                 "A function child should be a row or a message.");
         bool isElementOutput = false;
         SUB_TEST_FUNCTION(isOutput(childElement, &isElementOutput));
         if (isElementOutput) {
