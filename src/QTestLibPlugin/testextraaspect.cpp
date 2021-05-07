@@ -429,7 +429,7 @@ void TestRunConfigWidget::updateMouseDelay(bool enabled)
 }
 
 TestExtraAspect::TestExtraAspect(QTestLibArgsParser* argParser) :
-  ProjectExplorer::ProjectConfigurationAspect()
+  Utils::BaseAspect()
 {
     if (argParser != nullptr)
         mTestArgsParser = new QTestLibArgsParser(*argParser);

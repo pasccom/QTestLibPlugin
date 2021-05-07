@@ -24,12 +24,11 @@
 
 #include "Widgets/filetypevalidatinglineedit.h"
 
-#include <coreplugin/variablechooser.h>
+#include <utils/variablechooser.h>
 
 #include <projectexplorer/projectexplorer.h>
 #include <projectexplorer/projectexplorersettings.h>
 #include <projectexplorer/projectexplorerconstants.h>
-#include <projectexplorer/projectconfigurationaspects.h>
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/kitinformation.h>
 #include <projectexplorer/devicesupport/devicemanager.h>
@@ -99,7 +98,7 @@ TestRunConfiguration::TestRunConfiguration(ProjectExplorer::Target *parent, Util
     testRunnerAspect->setRequireExecutable(true);
     testRunnerAspect->setMacroExpanderProvider([this] {return const_cast<Utils::MacroExpander*>(macroExpander());});
 
-    auto makeJobNumberAspect = addAspect<ProjectExplorer::BaseIntegerAspect>();
+    auto makeJobNumberAspect = addAspect<Utils::IntegerAspect>();
     makeJobNumberAspect->setId(Utils::Id(Constants::MakeJobNumberId));
     makeJobNumberAspect->setSettingsKey(Constants::MakeJobNumberKey);
     makeJobNumberAspect->setLabel(tr("Number of jobs (for \"make\")"));
@@ -250,7 +249,7 @@ QString TestRunConfiguration::commandLineArguments(void) const
         cmdArgs << QLatin1String("-f") << makefilePath;
 
     // Number of jobs for make and jom
-    int jobNumber = static_cast<ProjectExplorer::BaseIntegerAspect*>(aspect(Utils::Id(Constants::MakeJobNumberId)))->value();
+    int jobNumber = static_cast<Utils::IntegerAspect*>(aspect(Utils::Id(Constants::MakeJobNumberId)))->value();
     if (jobNumber > 1) {
         if (mTargetToolChain == JOM_MSVC_TOOL_CHAIN)
             cmdArgs << QString(QLatin1String("/J %1")).arg(jobNumber);

@@ -219,7 +219,7 @@ private:
  *
  * \sa TestRunConfigWidget, QTestLibArgsParser
  */
-class TestExtraAspect : public ProjectExplorer::ProjectConfigurationAspect
+class TestExtraAspect : public Utils::BaseAspect
 {
     Q_OBJECT
 public:
