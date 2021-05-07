@@ -34,7 +34,7 @@ TestModelFactory::ParseResult PlainTextQTestLibParser::parseStdoutLine(ProjectEx
 
     if (!mParserActive) {
         // Test for begin magic line
-        QRegExp stdoutMagicRegexp1(QLatin1String("Config: Using Qt?Test library (\\d+\\.\\d+\\.\\d+), Qt (\\d+\\.\\d+\\.\\d+)(?: \\((.*)\\))?"));
+        QRegExp stdoutMagicRegexp1(QLatin1String("Config: Using Qt?Test library (\\d+\\.\\d+\\.\\d+), Qt (\\d+\\.\\d+\\.\\d+).*"));
         QRegExp stdoutMagicRegexp2(QLatin1String("Testing ([A-Za-z_][A-Za-z0-9_]*)"));
         if (stdoutMagicRegexp1.exactMatch(line)) {
             if (mModel == NULL)
