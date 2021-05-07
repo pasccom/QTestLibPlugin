@@ -219,7 +219,7 @@ void ForceXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, In
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, mProject->activeTarget()->runConfigurations()) {
-        if (runConfig->id() != Core::Id(Constants::TestRunConfigurationId))
+        if (runConfig->id() != Utils::Id(Constants::TestRunConfigurationId))
             continue;
         testRunConfig = runConfig;
         break;
@@ -248,7 +248,7 @@ void ForceXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, In
 void ForceXMLQTestLibParserFactoryTest::testFactory(ProjectExplorer::RunConfiguration* testRunConfig)
 {
     // Retrieve factory:
-    QLinkedList<QTestLibPlugin::Internal::AbstractTestParserFactory*> parserFactories = QTestLibPlugin::Internal::TestModelFactory::parserFactories(Core::Id(QTestLibPlugin::Constants::XmlQTestLibParserFactoryId).withSuffix(QTestLibPlugin::Constants::BaseForceParserFactoryId));
+    QLinkedList<QTestLibPlugin::Internal::AbstractTestParserFactory*> parserFactories = QTestLibPlugin::Internal::TestModelFactory::parserFactories(Utils::Id(QTestLibPlugin::Constants::XmlQTestLibParserFactoryId).withSuffix(QTestLibPlugin::Constants::BaseForceParserFactoryId));
     QCOMPARE(parserFactories.size(), 1);
     QTestLibPlugin::Internal::XMLQTestLibParserFactory<QTestLibPlugin::Internal::BaseForceParserFactory>* parserFactory = dynamic_cast<QTestLibPlugin::Internal::XMLQTestLibParserFactory<QTestLibPlugin::Internal::BaseForceParserFactory>*>(parserFactories.first());
     QVERIFY(parserFactory != nullptr);

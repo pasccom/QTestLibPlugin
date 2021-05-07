@@ -52,7 +52,7 @@ public:
     /*!
      * \copydoc AbstractTestParserFactory::id()
      */
-    inline Core::Id id() const override {return Core::Id(Constants::LightXmlQTestLibParserFactoryId).withSuffix(mBase.id().toString());}
+    inline Utils::Id id() const override {return Utils::Id(Constants::LightXmlQTestLibParserFactoryId).withSuffix(mBase.id().toString());}
     /*!
      * \brief Base factory
      *

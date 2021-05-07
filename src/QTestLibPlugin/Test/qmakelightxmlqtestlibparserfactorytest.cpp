@@ -231,7 +231,7 @@ void QMakeLightXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testNam
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, mProject->activeTarget()->runConfigurations()) {
-        if (runConfig->id() != Core::Id(Constants::TestRunConfigurationId))
+        if (runConfig->id() != Utils::Id(Constants::TestRunConfigurationId))
             continue;
         testRunConfig = runConfig;
         break;
@@ -260,7 +260,7 @@ void QMakeLightXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testNam
 void QMakeLightXMLQTestLibParserFactoryTest::testFactory(ProjectExplorer::RunConfiguration* testRunConfig, bool result)
 {
     // Retrieve factory:
-    QLinkedList<QTestLibPlugin::Internal::AbstractTestParserFactory*> parserFactories = QTestLibPlugin::Internal::TestModelFactory::parserFactories(Core::Id(QTestLibPlugin::Constants::LightXmlQTestLibParserFactoryId).withSuffix(QTestLibPlugin::Constants::BaseQMakeQTestLibParserFactoryId));
+    QLinkedList<QTestLibPlugin::Internal::AbstractTestParserFactory*> parserFactories = QTestLibPlugin::Internal::TestModelFactory::parserFactories(Utils::Id(QTestLibPlugin::Constants::LightXmlQTestLibParserFactoryId).withSuffix(QTestLibPlugin::Constants::BaseQMakeQTestLibParserFactoryId));
     QCOMPARE(parserFactories.size(), 1);
     QTestLibPlugin::Internal::AbstractTestParserFactory* parserFactory = parserFactories.first();
     QVERIFY(parserFactory != nullptr);

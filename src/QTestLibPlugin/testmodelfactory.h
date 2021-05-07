@@ -21,9 +21,9 @@
 
 #include <QObject>
 #include <QLinkedList>
-#include <utils/outputformat.h>
 
-#include <coreplugin/id.h>
+#include <utils/outputformat.h>
+#include <utils/id.h>
 
 class QAbstractItemModel;
 
@@ -79,7 +79,7 @@ public:
      * \param id The id to search for.
      * \return The list of parser factories matching the given id.
      */
-    static QLinkedList<AbstractTestParserFactory*> parserFactories(Core::Id id);
+    static QLinkedList<AbstractTestParserFactory*> parserFactories(Utils::Id id);
     /*!
      * \typedef ParseResult
      * \brief Result of the parsing of a line of \c stdout of \c stderr.
@@ -257,7 +257,7 @@ public:
      * Returns the id for the factory.
      * \return The id for the factory.
      */
-    virtual inline Core::Id id() const {return Core::Id();}
+    virtual inline Utils::Id id() const {return Utils::Id();}
     /*!
      * \brief Tests whether the associated parser can be useful.
      *

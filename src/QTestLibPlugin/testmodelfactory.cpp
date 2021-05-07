@@ -54,7 +54,7 @@ TestModelFactory::TestModelFactory(ProjectExplorer::RunControl *runControl, QObj
             this, SLOT(runControlStopped()));
 }
 
-QLinkedList<AbstractTestParserFactory*> TestModelFactory::parserFactories(Core::Id id)
+QLinkedList<AbstractTestParserFactory*> TestModelFactory::parserFactories(Utils::Id id)
 {
     if (!id.isValid())
         return mParserFactories;

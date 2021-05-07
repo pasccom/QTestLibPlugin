@@ -22,7 +22,7 @@
 #include "qtestlibpluginconstants.h"
 #include "qtestlibargsparser.h"
 
-#include <coreplugin/id.h>
+#include <utils/id.h>
 
 namespace ProjectExplorer {
     class RunConfiguration;
@@ -62,7 +62,7 @@ public:
     /*!
      * \copydoc AbstractTestParserFactory::id()
      */
-    inline Core::Id id() const {return Core::Id(Constants::BaseQMakeQTestLibParserFactoryId);}
+    inline Utils::Id id() const {return Utils::Id(Constants::BaseQMakeQTestLibParserFactoryId);}
     /*!
      * \brief \copybrief AbstractTestParserFactory::canParse()
      *

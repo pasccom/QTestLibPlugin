@@ -231,14 +231,14 @@ void TestLibPlugin::handleProjectClose(ProjectExplorer::Project* project)
         }
     }*/
 
-    Core::Command* cmd = Core::ActionManager::command(Core::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+    Core::Command* cmd = Core::ActionManager::command(Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
     if (cmd != NULL) {
         QAction* action = cmd->action();
         if (qobject_cast<Utils::ProxyAction*>(action) != NULL)
             action = qobject_cast<Utils::ProxyAction*>(action)->action();
 
         mRunTestsMenu->menu()->removeAction(cmd->action());
-        Core::ActionManager::unregisterAction(action, Core::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+        Core::ActionManager::unregisterAction(action, Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
         delete action;
     }
 
@@ -303,7 +303,7 @@ void TestLibPlugin::handleProjectParsingFinished(void)
 
 void TestLibPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfiguration* runConfig)
 {
-    if (runConfig->id() != Core::Id(Constants::TestRunConfigurationId))
+    if (runConfig->id() != Utils::Id(Constants::TestRunConfigurationId))
         return;
 
     qDebug() << "Added a test run configuration:" << runConfig << "to target:" << runConfig->target()->displayName();
@@ -312,7 +312,7 @@ void TestLibPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfiguration*
     ProjectExplorer::Project* project = target->project();
     Q_ASSERT(project != NULL);
 
-    Core::Command* cmd = Core::ActionManager::command(Core::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+    Core::Command* cmd = Core::ActionManager::command(Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
     if (cmd == NULL) {
         QAction *action = new QAction(tr("Run tests for \"%1\"").arg(project->displayName()), cmd);
         connect(action, &QAction::triggered,
@@ -320,7 +320,7 @@ void TestLibPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfiguration*
             ProjectExplorer::ProjectExplorerPlugin::runRunConfiguration(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE, true);
         });
 
-        cmd = Core::ActionManager::registerAction(action, Core::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+        cmd = Core::ActionManager::registerAction(action, Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
         cmd->setAttribute(Core::Command::CA_UpdateText);
         cmd->setAttribute(Core::Command::CA_Hide);
         cmd->setAttribute(Core::Command::CA_NonConfigurable);
@@ -339,7 +339,7 @@ void TestLibPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfiguration*
 
 void TestLibPlugin::handleDeleteRunConfiguration(ProjectExplorer::RunConfiguration* runConfig)
 {
-    if (runConfig->id() != Core::Id(Constants::TestRunConfigurationId))
+    if (runConfig->id() != Utils::Id(Constants::TestRunConfigurationId))
         return;
 
     qDebug() << "Removed a test run configuration:" << runConfig << "to target:" << runConfig->target()->displayName();
@@ -348,14 +348,14 @@ void TestLibPlugin::handleDeleteRunConfiguration(ProjectExplorer::RunConfigurati
     ProjectExplorer::Project* project = target->project();
     Q_ASSERT(project != NULL);
 
-    Core::Command* cmd = Core::ActionManager::command(Core::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+    Core::Command* cmd = Core::ActionManager::command(Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
     if (cmd != NULL) {
         QAction* action = cmd->action();
         if (qobject_cast<Utils::ProxyAction*>(action) != NULL)
             action = qobject_cast<Utils::ProxyAction*>(action)->action();
 
         mRunTestsMenu->menu()->removeAction(cmd->action());
-        Core::ActionManager::unregisterAction(action, Core::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+        Core::ActionManager::unregisterAction(action, Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
         delete action;
     }
 
@@ -406,7 +406,7 @@ void TestLibPlugin::runTest(void)
 
     ProjectExplorer::RunConfiguration* runConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* rc, mTreeCurrentProject->activeTarget()->runConfigurations()) {
-        if (rc->id() == Core::Id(Constants::TestRunConfigurationId))
+        if (rc->id() == Utils::Id(Constants::TestRunConfigurationId))
             runConfig = rc;
     }
 
