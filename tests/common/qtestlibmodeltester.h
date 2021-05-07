@@ -75,9 +75,7 @@ private:
     bool isOutputMaxQt(const QtVersion& qt);
     void isOutputType(const QDomElement& element, bool* ret);
 
-    void checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected);
     void parseResults(const QDomElement& element, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results);
-
     void parseRoot(const QModelIndex& index, const QDomElement& element);
     void parseClass(const QModelIndex& index, const QDomElement& element);
     void parseFunction(const QModelIndex& index, const QDomElement& element);

@@ -92,23 +92,12 @@ void QTestLibModelTester::checkResultsInternal(const QLinkedList<QTestLibPlugin:
     QDomDocument dom;
     SUB_TEST_FUNCTION(loadTestResult(dom));
 
-    QDomElement expectedResults = dom.documentElement().firstChildElement("results");
-    while (!expectedResults.isNull()) {
-        QVERIFY2(expectedResults.hasAttribute("format"), "results elements must have a format attribute.");
-        if (QString::compare(mParserFormat, expectedResults.attribute("format"), Qt::CaseSensitive) == 0)
-            break;
-        expectedResults = expectedResults.nextSiblingElement("results");
-    }
-    if (!expectedResults.isNull()) {
-        SUB_TEST_FUNCTION(checkResults(results, expectedResults));
-    }
-
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> expectedResults2;
-    SUB_TEST_FUNCTION(parseResults(dom.documentElement(), expectedResults2));
-    qDebug() << "Expected:" << expectedResults2;
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> expectedResults;
+    SUB_TEST_FUNCTION(parseResults(dom.documentElement(), expectedResults));
+    qDebug() << "Expected:" << expectedResults;
     qDebug() << "Actual     :" << results;
-    QVERIFY2(results.size() == expectedResults2.size(), "Number of results mismatch");
-    QVERIFY2(equal(cbegin(results), cend(results), cbegin(expectedResults2)), "Results mismatch");
+    QVERIFY2(results.size() == expectedResults.size(), "Number of results mismatch");
+    QVERIFY2(equal(cbegin(results), cend(results), cbegin(expectedResults)), "Results mismatch");
 
     END_SUB_TEST_FUNCTION
 }
@@ -306,45 +295,6 @@ void QTestLibModelTester::isOutputType(const QDomElement& element, bool* ret)
         QVERIFY2(t != -1, qPrintable(QString("Unknown type \"%1\"").arg(result)));
         *ret = mFilters.at(t / 8);
     }
-
-    END_SUB_TEST_FUNCTION
-}
-
-void QTestLibModelTester::checkResults(QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QDomElement& expected)
-{
-    BEGIN_SUB_TEST_FUNCTION
-
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>::const_iterator currentResult = results.constBegin();
-    QDomElement currentExpected = expected.firstChildElement();
-
-    while ((currentResult != results.constEnd()) && (!currentExpected.isNull())) {
-        bool isPrinted = false;
-        SUB_TEST_FUNCTION(isOutput(currentExpected, &isPrinted, false));
-        if (isPrinted) {
-            switch (*currentResult) {
-            case QTestLibPlugin::Internal::TestModelFactory::Unsure:
-                QVERIFY(QString::compare(currentExpected.tagName(), "unsure", Qt::CaseInsensitive) == 0);
-                break;
-            case QTestLibPlugin::Internal::TestModelFactory::MagicFound:
-                QVERIFY(QString::compare(currentExpected.tagName(), "magicfound", Qt::CaseInsensitive) == 0);
-                break;
-            case QTestLibPlugin::Internal::TestModelFactory::MagicNotFound:
-                QVERIFY(QString::compare(currentExpected.tagName(), "magicnotfound", Qt::CaseInsensitive) == 0);
-                break;
-            }
-            currentResult++;
-        }
-        currentExpected = currentExpected.nextSiblingElement();
-    }
-
-    while (!currentExpected.isNull()) {
-        bool isPrinted = false;
-        SUB_TEST_FUNCTION(isOutput(currentExpected, &isPrinted, false));
-        QVERIFY2(!isPrinted, "Number of printed results mismatch");
-        currentExpected = currentExpected.nextSiblingElement();
-    }
-
-    QVERIFY2((currentResult == results.constEnd()) && (currentExpected.isNull()), "Number of results mismatch");
 
     END_SUB_TEST_FUNCTION
 }
