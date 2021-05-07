@@ -766,6 +766,12 @@ FAIL!  : other_fun(test)))
                 <unsure format="xml,lightxml" />
                 <unsure format="xml,lightxml" />
             </message>
+            <message type="Signal" level="verboses" qtmin="5.15.0">
+                <text strict="false">QFileDevice(7ffe7ee1c0d0) aboutToClose ()</text>
+                <unsure/>
+                <unsure format="xml,lightxml" />
+                <unsure format="xml,lightxml" />
+            </message>
             <message type="QDebug">
                 <text strict="false">Emitter(0x7ffececacbc0)</text>
                 <unsure/>
@@ -1102,6 +1108,7 @@ FAIL!  : other_fun(test)))
         <unsure level="verboses" format="xunitxml" />
         <unsure level="verboses" format="xunitxml" />
         <unsure level="verboses" format="xunitxml" />
+        <unsure level="verboses" format="xunitxml" qtmin="5.15.0" />
         <unsure format="xunitxml" />
         <unsure level="verboses" format="xunitxml" />
         <unsure level="verboses" format="xunitxml" />

@@ -691,6 +691,13 @@
                     <unsure/>
                 </message>
                 <row title="firstData" type="Pass" format="!xunitxml">
+                    <message type="Signal" level="verboses" qtmin="5.15.0">
+                        <text strict="false">QFileDevice(7ffe7ee1c0d0) aboutToClose ()</text>
+                        <unsure/>
+                        <unsure format="xml" />
+                        <unsure format="xml" />
+                        <unsure format="xml" />
+                    </message>
                     <message type="QDebug">
                         <text strict="true">"firstData"</text>
                         <unsure/>
@@ -713,6 +720,10 @@
                     </message>
                 </row>
                 <row title="firstData" type="Unknown" format="xunitxml">
+                    <message type="Signal" level="verboses" qtmin="5.15.0">
+                        <text strict="false">QFileDevice(7ffe7ee1c0d0) aboutToClose ()</text>
+                        <unsure/>
+                    </message>
                     <message type="QDebug">
                         <text strict="true">"firstData"</text>
                         <unsure/>
@@ -804,6 +815,7 @@
             <unsure format="xunitxml" />
             <unsure level="verboses" format="xunitxml" qtmin="5.6.0" />
             <unsure level="verbose2" format="xunitxml" />
+            <unsure level="verboses" format="xunitxml" qtmin="5.15.0" />
             <unsure format="xunitxml" />
             <unsure level="verbose2" format="xunitxml" />
             <unsure format="xunitxml" />
@@ -858,6 +870,13 @@
             <function name="secondPass" type="Pass">
                 <unsure/>
                 <row title="firstData" type="Pass">
+                    <message type="Signal" level="verboses" qtmin="5.15.0">
+                        <text strict="false">QFileDevice(7ffe7ee1c0d0) aboutToClose ()</text>
+                        <unsure/>
+                        <unsure/>
+                        <unsure/>
+                        <unsure/>
+                    </message>
                     <message type="QDebug">
                         <text strict="true">"firstData"</text>
                         <unsure/>
