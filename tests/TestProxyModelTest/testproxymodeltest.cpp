@@ -53,7 +53,7 @@ private Q_SLOTS:
 private:
     void data(void);
     void addRow(const QString& row);
-    QString commandLineArguments(void);
+    QStringList commandLineArguments(void);
     void createModel(const QString& testName);
     void testProxy(const QString& testName, QVector<bool> filter);
 
@@ -194,25 +194,25 @@ void TestProxyModelTest::limits(void)
     testProxy("LimitsTest", filter);
 }
 
-QString TestProxyModelTest::commandLineArguments(void)
+QStringList TestProxyModelTest::commandLineArguments(void)
 {
     switch(mVerbosity) {
     case QTestLibModelTester::Silent:
-        return "-xml -silent";
+        return {"-xml", "-silent"};
     case QTestLibModelTester::Normal:
         break;
     case QTestLibModelTester::Verbose1:
-        return "-xml -v1";
+        return {"-xml", "-v1"};
     case QTestLibModelTester::Verbose2:
-        return "-xml -v2";
+        return {"-xml", "-v2"};
     case QTestLibModelTester::VerboseSignal:
-        return "-xml -vs";
+        return {"-xml", "-vs"};
     default:
         qWarning() << "Sentinel value VerbosityCountMinusOne must not be used as verbosity.";
         break;
     }
 
-    return "-xml";
+    return {"-xml"};
 }
 
 void TestProxyModelTest::createModel(const QString& testName)
@@ -227,7 +227,7 @@ void TestProxyModelTest::createModel(const QString& testName)
     // Execute test
     QProcess testProc(this);
     testProc.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
-    testProc.start(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName) + " " + commandLineArguments(), QIODevice::ReadOnly);
+    testProc.start(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName), commandLineArguments(), QIODevice::ReadOnly);
     if (!testProc.waitForFinished(30000)) {
         testProc.terminate();
         QVERIFY(testProc.waitForFinished());

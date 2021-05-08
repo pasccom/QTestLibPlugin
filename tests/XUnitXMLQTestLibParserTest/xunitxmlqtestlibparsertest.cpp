@@ -212,7 +212,7 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XUnitXMLQTe
     QProcess testProc(this);
     testProc.setWorkingDirectory(runnable.workingDirectory);
     testProc.setProcessEnvironment(env);
-    testProc.start(runnable.executable.toString() + ' ' + runnable.commandLineArguments, QIODevice::ReadOnly);
+    testProc.start(runnable.executable.toString(), runnable.commandLine().splitArguments(), QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
         qCritical() << "Test timed out";
