@@ -181,6 +181,14 @@ class AbstractTestParser : public QObject
     Q_OBJECT
 public:
     /*!
+     * \brief Destructor
+     *
+     * Destructor for AbstractTestParser.
+     *
+     * \note It does nothing, but it is required to avoid warnings as the class has virtual members
+     */
+    virtual ~AbstractTestParser(void) {}
+    /*!
      * \brief Parses a line of \c stdout
      *
      * Parses a line of \c stdout coming from the given ProjectExplorer::RunControl.
@@ -251,6 +259,14 @@ protected:
 class AbstractTestParserFactory
 {
 public:
+    /*!
+     * \brief Destructor
+     *
+     * Destructor for AbstractTestParserFactory.
+     *
+     * \note It does nothing, but it is required to avoid warnings as the class has virtual members.
+     */
+    virtual ~AbstractTestParserFactory(void) {}
     /*!
      * \brief Id of the factory
      *
