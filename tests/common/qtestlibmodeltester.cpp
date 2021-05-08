@@ -307,8 +307,7 @@ void QTestLibModelTester::parseResults(const QDomElement& element, QLinkedList<Q
 
     while (!childElement.isNull()) {
         bool isElementOutput = false;
-        if (QString::compare(childElement.tagName(), "results", Qt::CaseInsensitive) != 0) // FIXME remove when it becomes useless
-            SUB_TEST_FUNCTION(isOutput(childElement, &isElementOutput));
+        SUB_TEST_FUNCTION(isOutput(childElement, &isElementOutput));
         if (isElementOutput) {
             if (QString::compare(childElement.tagName(), "unsure", Qt::CaseInsensitive) == 0)
                 results.append(QTestLibPlugin::Internal::TestModelFactory::Unsure);
