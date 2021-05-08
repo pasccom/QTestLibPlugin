@@ -187,10 +187,10 @@ void QTestLibModelTester::isOutputFormat(const QDomElement& element, bool *ret)
     if (QString::compare(formatString, "all", Qt::CaseSensitive) == 0) {
         *ret = true;
     } else if (formatString.startsWith('!')) {
-        QStringList formatList = formatString.mid(1).split(',', QString::SkipEmptyParts);
+        QStringList formatList = formatString.mid(1).split(',', Qt::SkipEmptyParts);
         *ret = !formatList.contains(mParserFormat);
     } else {
-        QStringList formatList = formatString.split(',', QString::SkipEmptyParts);
+        QStringList formatList = formatString.split(',', Qt::SkipEmptyParts);
         *ret = formatList.contains(mParserFormat);
     }
 
