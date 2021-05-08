@@ -93,8 +93,8 @@
                 </message>
                 <unsure format="xml" />
             </function>
-            <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
-                <message type="Signal">
+            <function name="UnknownTestFunc" type="Unknown" level="verboses" format="txt">
+                <message type="Signal" qtmin="5.12.0">
                     <text strict="false">QThread(29ec6f0) finished ()</text>
                     <unsure/>
                 </message>
@@ -258,8 +258,8 @@
                 </message>
                 <unsure format="xml" />
             </function>
-            <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
-                <message type="Signal">
+            <function name="UnknownTestFunc" type="Unknown" level="verboses" format="txt">
+                <message type="Signal" qtmin="5.12.0">
                     <text strict="false">QThread(29ec6f0) finished ()</text>
                     <unsure/>
                 </message>

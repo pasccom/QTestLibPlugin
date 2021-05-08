@@ -210,8 +210,8 @@
             </message>
             <unsure format="xml,lightxml" />
         </function>
-        <function name="UnknownTestFunc" type="Unknown" level="verboses" qtmin="5.12.0" format="txt">
-            <message type="Signal" level="verboses">
+        <function name="UnknownTestFunc" type="Unknown" level="verboses" format="txt">
+            <message type="Signal" level="verboses" qtmin="5.12.0">
                 <text strict="false">QThread(29ec6f0) finished ()</text>
                 <unsure/>
             </message>
