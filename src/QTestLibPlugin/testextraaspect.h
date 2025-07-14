@@ -228,10 +228,23 @@ public:
      *
      * Constructs a new instance of this class and allocates the internal QTestLibArgsParser
      * to store data.
+     * \param container The container for the aspect
      * \param argParser An \c testlib argument parser which will be copied in this instance.
      * \sa create()
      */
-    TestExtraAspect(QTestLibArgsParser* argParser = nullptr);
+    inline TestExtraAspect(Utils::AspectContainer* container, QTestLibArgsParser* argParser = nullptr) :
+        Utils::BaseAspect(container) {initArgParser(argParser);}
+    /*!
+     * \brief Constructor
+     *
+     * Constructs a new instance of this class and allocates the internal QTestLibArgsParser
+     * to store data.
+     * \param target The target to which the aspect should be applied.
+     * \param argParser An \c testlib argument parser which will be copied in this instance.
+     * \sa create()
+     */
+    inline TestExtraAspect(ProjectExplorer::Target* target, QTestLibArgsParser* argParser = nullptr)
+        {Q_UNUSED(target); initArgParser(argParser);}
     /*!
      * \brief Destructor
      *
@@ -303,7 +316,7 @@ protected:
      * \param map The map to be initialized with the contents of the instance
      * \sa fromMap()
      */
-    inline void toMap(QVariantMap& map) const override {mTestArgsParser->toMap(map);}
+    inline void toMap(Utils::Store& map) const override {mTestArgsParser->toMap(map);}
     /*!
      * \brief Conversion from map
      *
@@ -311,13 +324,22 @@ protected:
      * \param map The map containing the data of the instance
      * \sa toMap()
      */
-    inline void fromMap(const QVariantMap& map) override {mTestArgsParser->fromMap(map);}
+    inline void fromMap(const Utils::Store& map) override {mTestArgsParser->fromMap(map);}
 /*signals:
     void testArgumentsChanged(void);
 private slots:
     void handleTestArgumentsChange(const QString& newArgs);
     void handleArgumentsChange(const QString& newArgs);*/
 private:
+    /*!
+     * \brief Initialize argument parser
+     *
+     * Initialize the internal QTestLibArgsParser to store data.
+     * \param argParser An \c testlib argument parser which will be copied in this instance.
+     * \sa TestExtraAspect(ProjectExplorer::Target*, QTestLibArgsParser*), TestExtraAspect(Utils::AspectContainer*, QTestLibArgsParser*)
+     */
+    void initArgParser(QTestLibArgsParser* argParser);
+
     QTestLibArgsParser *mTestArgsParser;    /*!< The internal QTestLibArgsParser used to store data */
     QString mOtherArgs;                     /*!< Arguments which are not managed by this extra aspect */
     friend class TestRunConfigWidget;

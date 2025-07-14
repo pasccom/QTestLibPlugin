@@ -86,7 +86,7 @@ TestModelFactory::ParseResult BaseXMLQTestLibParser::parseStdoutLine(ProjectExpl
             result = qMax(result, startElementParsed(runControl, mReader->name()));
             break;
         case QXmlStreamReader::EndElement:
-            if (QStringRef::compare(mReader->name(), mCurrentElement.pop(), Qt::CaseSensitive) != 0)
+            if (QString::compare(mReader->name(), mCurrentElement.pop(), Qt::CaseSensitive) != 0)
                 return TestModelFactory::MagicNotFound;
             result = qMax(result, endElementParsed(runControl, mReader->name()));
             break;

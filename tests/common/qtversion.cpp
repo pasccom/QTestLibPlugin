@@ -19,6 +19,7 @@
 #include "qtversion.h"
 
 #include <QtCore>
+#include <QRegExp>
 
 QtVersion::QtVersion(const QString& qtString)
 {

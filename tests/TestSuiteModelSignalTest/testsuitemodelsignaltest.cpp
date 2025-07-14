@@ -20,8 +20,8 @@
 #include <testsuitemodel.h>
 using namespace QTestLibPlugin::Internal;
 
-#include "../common/qtestlibmodeltester.h"
-#include "../common/qttestsubfunction.h"
+#include <qtestlibmodeltester.h>
+#include <qttestsubfunction.h>
 
 #include <QtXml>
 #include <QtTest>

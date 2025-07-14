@@ -20,6 +20,7 @@
 #define TESTACTIONSTEST_H
 
 #include <QObject>
+#include <utils/filepath.h>
 #include "../../../tests/common/qttestsubfunction.h"
 
 class QAction;
@@ -71,7 +72,7 @@ private:
     void testOpenProjectWithoutTests(void);
 
     void cleanupProject(int number = 0);
-    void checkSubMenuAction(const QString& projectPath);
+    void checkSubMenuAction(const Utils::FilePath& projectPath);
     void checkSubMenuAction(ProjectExplorer::Project* project, bool present, bool enabled);
     void checkContextMenuAction(ProjectExplorer::Project* project, bool enabled);
     void checkSubMenu(int actionCount);

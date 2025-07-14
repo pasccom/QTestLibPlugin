@@ -25,7 +25,7 @@
 #include <utils/id.h>
 
 namespace ProjectExplorer {
-    class RunConfiguration;
+    class RunControl;
 }
 
 namespace QTestLibPlugin {
@@ -36,14 +36,14 @@ namespace Internal {
  *
  * As an implementation of AbstractTestParserFactory,
  * this class is in charge of checking that a parser
- * may parse the ProjectExplorer::RunConfiguration output.
+ * may parse the ProjectExplorer::RunControl output.
  * It does not implement the parser creation method,
  * as it is not associated to any particular parser.
  * It is only intended to be injected into a parser factory.
  *
  * It proposes the following heuristic:
  *   \li Accept TestRunConfiguration with the accepted test output format.
- *   \li Accpet ProjectExplorer::LocalApplicationRunconfiguration associated
+ *   \li Accept ProjectExplorer::LocalApplicationRunconfiguration associated
  * to a project using QTestLib and with the accepted test output format.
  *
  * These are sensible heuristics for most qMake projects.
@@ -69,13 +69,13 @@ public:
      * Tests whether the project can be parsed by a parser with the given output format.
      * It uses the following heuristics:
      *  \li Accept TestRunConfiguration with the accepted test output format.
-     *  \li Accpet ProjectExplorer::LocalApplicationRunconfiguration associated
+     *  \li Accept ProjectExplorer::LocalApplicationRunconfiguration associated
      * to a project using QTestLib and with the accepted test output format.
      *
-     * \param runConfiguration The run configuration to test.
+     * \param runControl The run control to test.
      * \return \c true, if the associated parser may parse the test output.
      */
-    inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {return canParseRunConfiguration(runConfiguration) || canParseModule(runConfiguration);}
+    inline bool canParse(ProjectExplorer::RunControl* runControl) const {return canParseRunConfiguration(runControl) || canParseModule(runControl);}
     /*!
      * \brief Set the format accepted by the parser.
      *
@@ -87,17 +87,17 @@ public:
     inline void setAcceptedFormat(QTestLibArgsParser::TestOutputFormat acceptedFormat) {mFormat = acceptedFormat;}
 private:
     /*!
-     * \brief Check if the run configuration is a TestRunConfiguration.
+     * \brief Check if the run control is from a TestRunConfiguration.
      *
-     * If the run configuration is a TestRunConfiguration,
+     * If the run control was created from a TestRunConfiguration,
      * then the associated parser may parse the output
      * if the arguments do not change the outut format.
      *
-     * \param runConfiguration The run configuration to check.
+     * \param runControl The run control to check.
      * \return \c true, if the parser may parse the test
      * \sa canParseModule(), canParseArguments()
      */
-    bool canParseRunConfiguration(ProjectExplorer::RunConfiguration* runConfiguration) const;
+    bool canParseRunConfiguration(ProjectExplorer::RunControl* runControl) const;
     /*!
      * \brief Check if the project uses \c testlib Qt module.
      *
@@ -105,11 +105,11 @@ private:
      * this method check that the \c testlib module is used by the project.
      * This check should avoid parsing almost all undesired projects.
      *
-     * \param runConfiguration The run configuration to check.
+     * \param runControl The run control to check.
      * \return \c true, if the parser may parse the test.
      * \sa canParseRunConfiguration(), canParseArguments()
      */
-    bool canParseModule(ProjectExplorer::RunConfiguration *runConfiguration) const;
+    bool canParseModule(ProjectExplorer::RunControl* runControl) const;
     /*!
      * \brief Check the command line arguments
      *

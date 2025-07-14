@@ -26,29 +26,29 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-TestModelFactory::ParseResult XMLQTestLibParser::startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag)
+TestModelFactory::ParseResult XMLQTestLibParser::startElementParsed(ProjectExplorer::RunControl* runControl, const QStringView &tag)
 {
     Q_UNUSED(runControl);
 
-    if (QStringRef::compare(tag, QLatin1String("TestCase"), Qt::CaseSensitive) == 0)
+    if (QString::compare(tag, QLatin1String("TestCase"), Qt::CaseSensitive) == 0)
         mCurrentClass = mReader->attributes().value(QLatin1String("name")).toString();
-    if (QStringRef::compare(tag, QLatin1String("TestFunction"), Qt::CaseSensitive) == 0)
+    if (QString::compare(tag, QLatin1String("TestFunction"), Qt::CaseSensitive) == 0)
         mCurrentFunction = mReader->attributes().value(QLatin1String("name")).toString();
 
-    if ((QStringRef::compare(tag, QLatin1String("Incident"), Qt::CaseInsensitive) == 0)
-     || (QStringRef::compare(tag, QLatin1String("Message"), Qt::CaseInsensitive) == 0))
+    if ((QString::compare(tag, QLatin1String("Incident"), Qt::CaseInsensitive) == 0)
+     || (QString::compare(tag, QLatin1String("Message"), Qt::CaseInsensitive) == 0))
         saveAttributes(mReader->attributes());
-    if (QStringRef::compare(tag, QLatin1String("Duration"), Qt::CaseInsensitive) == 0)
+    if (QString::compare(tag, QLatin1String("Duration"), Qt::CaseInsensitive) == 0)
         saveAttributes(mReader->attributes());
-    if (QStringRef::compare(tag, QLatin1String("BenchmarkResult"), Qt::CaseInsensitive) == 0)
+    if (QString::compare(tag, QLatin1String("BenchmarkResult"), Qt::CaseInsensitive) == 0)
         saveAttributes(mReader->attributes());
 
     return TestModelFactory::Unsure;
 }
 
-TestModelFactory::ParseResult XMLQTestLibParser::endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag)
+TestModelFactory::ParseResult XMLQTestLibParser::endElementParsed(ProjectExplorer::RunControl* runControl, const QStringView &tag)
 {
-    if (QStringRef::compare(tag, QLatin1String("Environment"), Qt::CaseSensitive) == 0) {
+    if (QString::compare(tag, QLatin1String("Environment"), Qt::CaseSensitive) == 0) {
         if (!mQtVersion.isNull() && !mQtBuild.isNull() && !mQTestLibVersion.isNull()) {
             qDebug() << "Create QTestLibMOdel" << mQtVersion << mQtBuild << mQTestLibVersion;
             if (mModel ==  NULL)
@@ -59,13 +59,13 @@ TestModelFactory::ParseResult XMLQTestLibParser::endElementParsed(ProjectExplore
         }
     }
 
-    if (QStringRef::compare(tag, QLatin1String("TestCase"), Qt::CaseSensitive) == 0)
+    if (QString::compare(tag, QLatin1String("TestCase"), Qt::CaseSensitive) == 0)
         mCurrentClass.clear();
-    if (QStringRef::compare(tag, QLatin1String("TestFunction"), Qt::CaseSensitive) == 0)
+    if (QString::compare(tag, QLatin1String("TestFunction"), Qt::CaseSensitive) == 0)
         mCurrentFunction.clear();
 
-    if ((QStringRef::compare(tag, QLatin1String("Incident"), Qt::CaseInsensitive) == 0)
-     || (QStringRef::compare(tag, QLatin1String("Message"), Qt::CaseInsensitive) == 0)) {
+    if ((QString::compare(tag, QLatin1String("Incident"), Qt::CaseInsensitive) == 0)
+     || (QString::compare(tag, QLatin1String("Message"), Qt::CaseInsensitive) == 0)) {
         if (mModel != NULL)
             mModel->addTestItem(runControl, currentMessageType(), mCurrentClass, mCurrentFunction, mCurrentRow, mCurrentDescription);
 
@@ -81,7 +81,7 @@ TestModelFactory::ParseResult XMLQTestLibParser::endElementParsed(ProjectExplore
         mCurrentDescription.clear();
         mCurrentAttributes.clear();
     }
-    if (QStringRef::compare(tag, QLatin1String("Duration"), Qt::CaseInsensitive) == 0) {
+    if (QString::compare(tag, QLatin1String("Duration"), Qt::CaseInsensitive) == 0) {
         if ((mModel != NULL) && mCurrentAttributes.contains(QLatin1String("msecs")))
             mModel->addTestItem(runControl,
                                 QTestLibModel::Duration,
@@ -91,7 +91,7 @@ TestModelFactory::ParseResult XMLQTestLibParser::endElementParsed(ProjectExplore
                                 tr("%1ms").arg(mCurrentAttributes.value(QLatin1String("msecs"))));
         mCurrentAttributes.clear();
     }
-    if (QStringRef::compare(tag, QLatin1String("BenchmarkResult"), Qt::CaseInsensitive) == 0) {
+    if (QString::compare(tag, QLatin1String("BenchmarkResult"), Qt::CaseInsensitive) == 0) {
         if (mModel != NULL)
             mModel->addTestItem(runControl,
                                 QTestLibModel::BenchmarkResult,

@@ -22,7 +22,7 @@
 #include <testsuitemodel.h>
 
 #include <projectexplorer/projectexplorer.h>
-#include <projectexplorer/session.h>
+#include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/runconfiguration.h>
@@ -31,6 +31,8 @@
 
 #include <extensionsystem/pluginmanager.h>
 
+#include <utils/processinterface.h>
+
 #include <QtTest>
 
 namespace QTestLibPlugin {
@@ -38,7 +40,7 @@ namespace Test {
 
 TestSuiteModelTest::TestSuiteModelTest(void)
 {
-    qsrand(QDateTime::currentMSecsSinceEpoch());
+    mRandom = QRandomGenerator::global();
 
     mTests.clear();
     mTests << "OneClassTest";
@@ -57,6 +59,13 @@ TestSuiteModelTest::TestSuiteModelTest(void)
 void TestSuiteModelTest::init(void)
 {
     mOpenProjects.clear();
+
+    // NOTE First time ProjectExplorer::ProjectExplorerPlugin::openProject()
+    // immediately calls ProjectExplorer::Target::ParsingFinished() and
+    // consequently, openQMakeProject() does not work
+    ProjectExplorer::Project* project = nullptr;
+    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "OneClassTest/OneClassTest.pro"), &project);
+    QVERIFY(closeProject(project));
 }
 
 void TestSuiteModelTest::cleanup(void)
@@ -95,7 +104,11 @@ void TestSuiteModelTest::testAppendOne(void)
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData(
+        mTests.at(mRandom->bounded(mTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -107,7 +120,11 @@ void TestSuiteModelTest::testAppendOneRemoveOne()
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData(
+        mTests.at(mRandom->bounded(mTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -129,7 +146,11 @@ void TestSuiteModelTest::testRemoveBadAppendOne(void)
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData(
+        mTests.at(mRandom->bounded(mTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -141,7 +162,11 @@ void TestSuiteModelTest::testAppendOneRemoveBad()
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData(
+        mTests.at(mRandom->bounded(mTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -158,7 +183,11 @@ void TestSuiteModelTest::testAppendOneClear()
     QList< TestRunData* > testRuns;
 
     // Append one test
-    TestRunData testData(mTests.at(qrand() % mTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData(
+        mTests.at(mRandom->bounded(mTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -176,13 +205,22 @@ void TestSuiteModelTest::testAppendTwo(void)
     QStringList localTests = mTests;
 
     // Append one test
-    TestRunData testData1(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData1(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData2(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
+
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -195,13 +233,21 @@ void TestSuiteModelTest::testAppendTwoRemoveFirst(void)
     QStringList localTests = mTests;
 
     // Append one test
-    TestRunData testData1(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData1(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData2(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -219,13 +265,22 @@ void TestSuiteModelTest::testAppendTwoRemoveSecond(void)
     QStringList localTests = mTests;
 
     // Append one test
-    TestRunData testData1(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData1(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
+
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData2(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -243,13 +298,23 @@ void TestSuiteModelTest::testAppendTwoRemoveBad(void)
     QStringList localTests = mTests;
 
     // Append one test
-    TestRunData testData1(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData1(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
+
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData2(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
+
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -267,7 +332,11 @@ void TestSuiteModelTest::testAppendOneRemoveAppendOne(void)
     QStringList localTests = mTests;
 
     // Append one test
-    TestRunData testData1(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData1(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -278,7 +347,12 @@ void TestSuiteModelTest::testAppendOneRemoveAppendOne(void)
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData2(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
+
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -292,7 +366,11 @@ void TestSuiteModelTest::testAppendOneRemoveBadAppendOne(void)
     QStringList localTests = mTests;
 
     // Append one test
-    TestRunData testData1(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData1(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -303,7 +381,11 @@ void TestSuiteModelTest::testAppendOneRemoveBadAppendOne(void)
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData2(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -316,13 +398,21 @@ void TestSuiteModelTest::testAppendTwoClear(void)
     QStringList localTests = mTests;
 
     // Append one test
-    TestRunData testData1(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData1(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData2(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -340,7 +430,11 @@ void TestSuiteModelTest::testAppendOneClearAppendOne(void)
     QStringList localTests = mTests;
 
     // Append one test
-    TestRunData testData1(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData1(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -351,7 +445,11 @@ void TestSuiteModelTest::testAppendOneClearAppendOne(void)
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
-    TestRunData testData2(localTests.takeAt(qrand() % localTests.size()), mParserFormats.at(qrand() % mParserFormats.size()), (QTestLibModelTester::Verbosity) ((qrand() % ((int) QTestLibModelTester::VerbosityCountMinusOne + 1)) - 1));
+    TestRunData testData2(
+        localTests.takeAt(mRandom->bounded(localTests.size())),
+        mParserFormats.at(mRandom->bounded(mParserFormats.size())),
+        (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
+    );
     SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
@@ -394,7 +492,7 @@ QStringList TestSuiteModelTest::commandLineArguments(const QString& format, QTes
 {
     QStringList cmdArgs;
 
-    int argsVersion = qrand() % 6;
+    int argsVersion = mRandom->bounded(6);
     if (format == "txt") {
         switch (argsVersion % 3) {
         case 0:
@@ -445,13 +543,13 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     BEGIN_SUB_TEST_FUNCTION
 
     ProjectExplorer::Project* project;
-    QVERIFY(openQMakeProject(TESTS_DIR "/" + test + "/" + test + ".pro", &project));
+    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR + test + "/" + test + ".pro"), &project));
     mOpenProjects << project;
 
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, project->activeTarget()->runConfigurations()) {
-        QFileInfo exeFileInfo = runConfig->runnable().executable.toFileInfo();
+        QFileInfo exeFileInfo = runConfig->runnable().command.executable().toFileInfo();
         qDebug() << exeFileInfo.absoluteFilePath();
         QVERIFY(exeFileInfo.exists());
         if (QString::compare(exeFileInfo.baseName(), test, Qt::CaseSensitive) != 0)
@@ -474,13 +572,13 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     workingDirectoryAspect->setDefaultWorkingDirectory(Utils::FilePath::fromString(TESTS_DIR).pathAppended(test));
 
     // Check the modifications were applied:
-    ProjectExplorer::Runnable modifiedRunnable = testRunConfig->runnable();
-    QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
-    QCOMPARE(modifiedRunnable.workingDirectory, QString(TESTS_DIR "/" + test));
+    Utils::ProcessRunData modifiedRunnable = testRunConfig->runnable();
+    QCOMPARE(modifiedRunnable.command.arguments(), cmdArgs.join(QLatin1Char(' ')));
+    QCOMPARE(modifiedRunnable.workingDirectory, Utils::FilePath::fromString(TESTS_DIR + test));
 
     // Create a run control and a run worker:
     ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(ProjectExplorer::Constants::NORMAL_RUN_MODE);
-    runControl->setRunConfiguration(testRunConfig);
+    runControl->copyDataFromRunConfiguration(testRunConfig);
     QVERIFY2(runControl->createMainWorker(), "Could not create main worker");
 
     // Run run control

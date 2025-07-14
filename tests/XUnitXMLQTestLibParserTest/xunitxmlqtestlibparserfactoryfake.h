@@ -19,10 +19,10 @@
 #ifndef XUNITXMLQTESTLIBPARSERFACTORYFAKE_H
 #define XUNITXMLQTESTLIBPARSERFACTORYFAKE_H
 
-#include "testmodelfactory.h"
-#include "xunitxmlqtestlibparser.h"
+#include <testmodelfactory.h>
+#include <xunitxmlqtestlibparser.h>
 
-#include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 
 class Fake {};
 
@@ -35,8 +35,8 @@ class XUnitXMLQTestLibParserFactory : public AbstractTestParserFactory
 public:
     inline XUnitXMLQTestLibParserFactory(void):
         AbstractTestParserFactory() {}
-    inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {Q_UNUSED(runConfiguration); return true;}
-    inline AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const {return new XUnitXMLQTestLibParser(runConfiguration);}
+    inline bool canParse(ProjectExplorer::RunControl* runControl) const {Q_UNUSED(runControl); return true;}
+    inline AbstractTestParser* getParserInstance(ProjectExplorer::RunControl* runControl) const {return new XUnitXMLQTestLibParser(runControl);}
 };
 
 } // namespace Internal

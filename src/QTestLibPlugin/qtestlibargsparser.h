@@ -20,6 +20,7 @@
 #define QTESTLIBARGSPARSER_H
 
 #include <utils/fileutils.h>
+#include <utils/store.h>
 #include <QString>
 #include <QStringList>
 #include <QPair>
@@ -283,7 +284,7 @@ public:
      * \param map The QVariant map where to save the current object.
      * \sa fromMap()
      */
-    void toMap(QVariantMap& map) const;
+    void toMap(Utils::Store& map) const;
     /*!
      * \brief Initialises from map.
      *
@@ -291,7 +292,7 @@ public:
      * \param map The map to use for initialisation.
      * \sa toMap()
      */
-    void fromMap(const QVariantMap& map);
+    void fromMap(const Utils::Store& map);
 
     /*!
      * \brief Error code

@@ -67,7 +67,7 @@ private:
      * \param tag The tag of the current element.
      * \return TestModelFactory::Unsure in all cases
      */
-    TestModelFactory::ParseResult startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag) override;
+    TestModelFactory::ParseResult startElementParsed(ProjectExplorer::RunControl* runControl, const QStringView& tag) override;
     /*!
      * \brief \copybrief BaseXMLQTestLibParser::endElementParsed()
      *
@@ -83,7 +83,7 @@ private:
      * \param tag The tag of the currently closed element.
      * \return One of TestModelFactory::ParseResult as described hereinabove.
      */
-    TestModelFactory::ParseResult endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag) override;
+    TestModelFactory::ParseResult endElementParsed(ProjectExplorer::RunControl* runControl, const QStringView& tag) override;
     /*!
      * \brief \copybrief BaseXMLQTestLibParser::textParsed()
      *

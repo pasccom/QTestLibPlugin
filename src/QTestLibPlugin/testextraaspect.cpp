@@ -28,6 +28,7 @@
 #include <qmakeprojectmanager/qmakeproject.h>
 
 #include <utils/detailswidget.h>
+#include <utils/processinterface.h>
 
 #include <QtWidgets>
 
@@ -37,7 +38,7 @@ namespace Internal {
 TestRunConfigWidget::TestRunConfigWidget(TestExtraAspect* aspect) :
     QWidget(), mAspect(aspect)
 {
-    QVariantMap map;
+    Utils::Store map;
     mAspect->mTestArgsParser->toMap(map);
 
     mDetailWidget = new Utils::DetailsWidget(this);
@@ -428,8 +429,7 @@ void TestRunConfigWidget::updateMouseDelay(bool enabled)
     updateSummary();
 }
 
-TestExtraAspect::TestExtraAspect(QTestLibArgsParser* argParser) :
-  Utils::BaseAspect()
+void TestExtraAspect::initArgParser(QTestLibArgsParser* argParser)
 {
     if (argParser != nullptr)
         mTestArgsParser = new QTestLibArgsParser(*argParser);
@@ -480,7 +480,7 @@ bool TestExtraAspect::isUseful(ProjectExplorer::RunConfiguration* runConfigurati
 {
     Q_ASSERT(runConfiguration != NULL);
 
-    ProjectExplorer::Runnable runnable = runConfiguration->runnable();
+    Utils::ProcessRunData runnable = runConfiguration->runnable();
 
     // Only accept qMake projects:
     QmakeProjectManager::QmakePriFileNode* qMakeRootNode = dynamic_cast<QmakeProjectManager::QmakePriFileNode*>(runConfiguration->target()->project()->rootProjectNode());
@@ -498,8 +498,8 @@ bool TestExtraAspect::isUseful(ProjectExplorer::RunConfiguration* runConfigurati
         if (!destDir.isAbsolute())
             destDir.setPath(pro->targetInformation().buildDir.pathAppended(pro->targetInformation().destDir.toString()).toString());
         qDebug() << "TARGET:" << destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target));
-        qDebug() << "Executable:" << runnable.executable;
-        if (QDir(destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target))) != QDir(runnable.executable.toString()))
+        qDebug() << "Executable:" << runnable.command.executable();
+        if (QDir(destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target))) != QDir(runnable.command.executable().toString()))
             continue;
         // Check the testlib is included:
         qDebug() << "QT variable:" << pro->variableValue(QmakeProjectManager::Variable::Qt);

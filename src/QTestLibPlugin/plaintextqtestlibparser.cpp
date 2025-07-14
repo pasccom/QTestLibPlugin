@@ -20,6 +20,7 @@
 
 #include <projectexplorer/runconfiguration.h>
 
+#include <QRegExp>
 #include <QtDebug>
 
 namespace QTestLibPlugin {

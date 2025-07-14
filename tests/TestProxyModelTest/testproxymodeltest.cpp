@@ -20,7 +20,7 @@
 
 #include <testproxymodel.h>
 
-#include "../common/qtestlibmodeltester.h"
+#include <qtestlibmodeltester.h>
 
 #include <utils/hostosinfo.h>
 
@@ -65,7 +65,6 @@ private:
 TestProxyModelTest::TestProxyModelTest(void) :
     mProxy(NULL)
 {
-    qsrand(QDateTime::currentMSecsSinceEpoch());
     mVerbosity = QTestLibModelTester::Verbose2;
 }
 

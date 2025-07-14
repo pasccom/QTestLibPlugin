@@ -20,7 +20,6 @@
 #define QTESTLIBMODEL_H
 
 #include <QAbstractItemModel>
-#include <QLinkedList>
 #include <utils/outputformat.h>
 
 namespace ProjectExplorer {
@@ -508,7 +507,7 @@ private:
     protected:
         MessageType mResult; /*!< The current result of the test item */
     private:
-        QLinkedList<TestItem *> mChildren; /*!< The children of the test item. */
+        std::list<TestItem *> mChildren; /*!< The children of the test item. */
         int mChildrenCount; /*!< The number of children of the test item (cached for facter access) */
         TestItem* mParent; /*!< The parent of the current item */
         QTestLibModel* mModel; /*!< The model to which the associated index belongs */

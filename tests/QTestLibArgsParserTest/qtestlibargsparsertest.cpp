@@ -22,6 +22,8 @@ using namespace QTestLibPlugin::Internal;
 
 #include "../common/qttestsubfunction.h"
 
+#include <utils/id.h>
+
 #include <QtTest>
 
 class QTestLibArgsParserTest : public QObject
@@ -29,7 +31,7 @@ class QTestLibArgsParserTest : public QObject
     Q_OBJECT
     HAS_SUB_TEST_FUNCTIONS
 public:
-    inline QTestLibArgsParserTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch());}
+    inline QTestLibArgsParserTest(void) {mRandom = QRandomGenerator::global();}
 private Q_SLOTS:
     void verbosity_data(void);
     void verbosity(void);
@@ -138,6 +140,7 @@ private:
     void checkArguments(const QStringList& args, const QStringList& expected);
 
     QTestLibArgsParser mParser;
+    QRandomGenerator* mRandom;
 };
 
 Q_DECLARE_METATYPE(QTestLibArgsParser::Output)
@@ -792,35 +795,35 @@ void QTestLibArgsParserTest::parse_data(void)
 
             switch ((QTestLibArgsParser::TestOutputFormat) f) {
             case QTestLibArgsParser::TxtFormat:
-                argsVersion = qrand() % 3;
+                argsVersion = mRandom->bounded(3);
                 if (argsVersion == 1)
                     args << "-txt";
                 else if (argsVersion == 2)
                     args << "-o" << "-,txt";
                 break;
             case QTestLibArgsParser::CsvFormat:
-                argsVersion = qrand() % 2;
+                argsVersion = mRandom->bounded(2);
                 if (argsVersion == 1)
                     args << "-csv";
                 else
                     args << "-o" << "-,csv";
                 break;
             case QTestLibArgsParser::XmlFormat:
-                argsVersion = qrand() % 2;
+                argsVersion = mRandom->bounded(2);
                 if (argsVersion == 1)
                     args << "-xml";
                 else
                     args << "-o" << "-,xml";
                 break;
             case QTestLibArgsParser::XUnitXmlFormat:
-                argsVersion = qrand() % 2;
+                argsVersion = mRandom->bounded(2);
                 if (argsVersion == 1)
                     args << "-xunitxml";
                 else
                     args << "-o" << "-,xunitxml";
                 break;
             case QTestLibArgsParser::LightXmlFormat:
-                argsVersion = qrand() % 2;
+                argsVersion = mRandom->bounded(2);
                 if (argsVersion == 1)
                     args << "-lightxml";
                 else
@@ -830,11 +833,11 @@ void QTestLibArgsParserTest::parse_data(void)
                 break;
             }
 
-            unsigned int maxWarnings = 1000*(qrand() % 1000);
-            int eventDelay = 10*(qrand() % 1000);
-            int keyDelay = 10*(qrand() % 1000);
-            int mouseDelay = 10*(qrand() % 1000);
-            bool crashHandler = qrand() % 2;
+            unsigned int maxWarnings = 1000*mRandom->bounded(1000);
+            int eventDelay = 10*mRandom->bounded(1000);
+            int keyDelay = 10*mRandom->bounded(1000);
+            int mouseDelay = 10*mRandom->bounded(1000);
+            bool crashHandler = mRandom->bounded(2);
             args << "-maxwarnings" << QString::number(maxWarnings, 10);
             args << "-eventdelay" << QString::number(eventDelay, 10);
             args << "-keydelay" << QString::number(keyDelay, 10);
@@ -937,13 +940,13 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
     QTest::addColumn<int>("mouseDelay");
     QTest::addColumn<bool>("crashHandler");
 
-    QTestLibArgsParser::TestVerbosity verbosity = (QTestLibArgsParser::TestVerbosity) ((int) QTestLibArgsParser::Silent + (qrand() % 5));
-    QTestLibArgsParser::TestOutputFormat format = (QTestLibArgsParser::TestOutputFormat) ((int) QTestLibArgsParser::TxtFormat + (qrand() % 5));
-    unsigned int maxWarnings = 1000*(qrand() % 1000);
-    int eventDelay = 10*(qrand() % 1000);
-    int keyDelay = 10*(qrand() % 1000);
-    int mouseDelay = 10*(qrand() % 1000);
-    bool crashHandler = qrand() % 2;
+    QTestLibArgsParser::TestVerbosity verbosity = (QTestLibArgsParser::TestVerbosity) ((int) QTestLibArgsParser::Silent + mRandom->bounded(5));
+    QTestLibArgsParser::TestOutputFormat format = (QTestLibArgsParser::TestOutputFormat) ((int) QTestLibArgsParser::TxtFormat + mRandom->bounded(5));
+    unsigned int maxWarnings = 1000*mRandom->bounded(1000);
+    int eventDelay = 10*mRandom->bounded(1000);
+    int keyDelay = 10*mRandom->bounded(1000);
+    int mouseDelay = 10*mRandom->bounded(1000);
+    bool crashHandler = mRandom->bounded(2);
 
     QTest::newRow("[none]") << "" << QTestLibArgsParser::NoError << QStringList() << QTestLibArgsParser::TxtFormat << QTestLibArgsParser::NormalVerbosity << 2000u << -1 << -1 << -1 << true;
     args.clear();
@@ -984,7 +987,7 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
 
     switch (format) {
     case QTestLibArgsParser::TxtFormat:
-        argsVersion = qrand() % 3;
+        argsVersion = mRandom->bounded(3);
         if (argsVersion == 1) {
             args << "-txt";
             errs << QTestLibArgsParser::NoError;
@@ -994,7 +997,7 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
         }
         break;
     case QTestLibArgsParser::CsvFormat:
-        argsVersion = qrand() % 2;
+        argsVersion = mRandom->bounded(2);
         if (argsVersion == 1) {
             args << "-csv";
             errs << QTestLibArgsParser::NoError;
@@ -1004,7 +1007,7 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
         }
         break;
     case QTestLibArgsParser::XmlFormat:
-        argsVersion = qrand() % 2;
+        argsVersion = mRandom->bounded(2);
         if (argsVersion == 1) {
             args << "-xml";
             errs << QTestLibArgsParser::NoError;
@@ -1014,7 +1017,7 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
         }
         break;
     case QTestLibArgsParser::XUnitXmlFormat:
-        argsVersion = qrand() % 2;
+        argsVersion = mRandom->bounded(2);
         if (argsVersion == 1) {
             args << "-xunitxml";
             errs << QTestLibArgsParser::NoError;
@@ -1024,7 +1027,7 @@ void QTestLibArgsParserTest::incrementalParse_data(void)
         }
         break;
     case QTestLibArgsParser::LightXmlFormat:
-        argsVersion = qrand() % 2;
+        argsVersion = mRandom->bounded(2);
         if (argsVersion == 1) {
             args << "-lightxml";
             errs << QTestLibArgsParser::NoError;
@@ -2521,22 +2524,22 @@ void QTestLibArgsParserTest::toStringOther_data(void)
     QStringList args;
     unsigned int rand;
 
-    rand = 10000*(qrand() % 100);
+    rand = 10000*mRandom->bounded(100);
     args.clear();
     args << "-maxwarnings" << QString::number(rand, 10);
     QTest::newRow("maxwarnings") << rand << -1 << -1 << -1 << true << args;
 
-    rand = 100*(1 + qrand() % 100);
+    rand = 100*mRandom->bounded(1, 101);
     args.clear();
     args << "-eventdelay" << QString::number(rand, 10);
     QTest::newRow("eventdelay") << 2000u << (int) rand << -1 << -1 << true << args;
 
-    rand = 100*(1 + qrand() % 100);
+    rand = 100*mRandom->bounded(1, 101);
     args.clear();
     args << "-keydelay" << QString::number(rand, 10);
     QTest::newRow("keydelay") << 2000u << -1 << (int) rand << -1 << true << args;
 
-    rand = 100*(1 + qrand() % 100);
+    rand = 100*mRandom->bounded(1, 101);
     args.clear();
     args << "-mousedelay" << QString::number(rand, 10);
     QTest::newRow("mousedelay") << 2000u << -1 << -1 << (int) rand << true << args;
@@ -2641,11 +2644,11 @@ void QTestLibArgsParserTest::toStringMixed_row(QTestLibArgsParser::TestOutputFor
 
     QString name = args.join(' ');
 
-    maxWarnings = (qrand() % 2 == 1) ? 1000*(qrand() % 1000) : 2000;
-    eventDelay = (qrand() % 2 == 1) ? 100*(1 + qrand() % 100) : -1;
-    keyDelay = (qrand() % 2 == 1) ? 100*(1 + qrand() % 100) : -1;
-    mouseDelay = (qrand() % 2 == 1) ? 100*(1 + qrand() % 100) : -1;
-    crashHandler = (qrand() % 2 == 1);
+    maxWarnings = (mRandom->bounded(2) == 1) ? 1000*mRandom->bounded(100) : 2000;
+    eventDelay = (mRandom->bounded(2) == 1) ? 100*mRandom->bounded(1, 101) : -1;
+    keyDelay = (mRandom->bounded(2) == 1) ? 100*mRandom->bounded(1, 101) : -1;
+    mouseDelay = (mRandom->bounded(2) == 1) ? 100*mRandom->bounded(1, 101) : -1;
+    crashHandler = (mRandom->bounded(2) == 1);
 
     if (maxWarnings != 2000)
         args << "-maxwarnings" << QString::number(maxWarnings, 10);
@@ -2923,10 +2926,10 @@ void QTestLibArgsParserTest::checkArguments(const QStringList& args, const QStri
 void QTestLibArgsParserTest::mapFormat_data(void)
 {
     QTest::addColumn<QTestLibArgsParser::TestOutputFormat>("format");
-    QTest::addColumn<QVariantMap>("map");
+    QTest::addColumn<Utils::Store>("map");
     QTest::addColumn<QStringList>("args");
 
-    QVariantMap map;
+    Utils::Store map;
     QStringList args;
 
     map.clear();
@@ -2957,13 +2960,13 @@ void QTestLibArgsParserTest::mapFormat_data(void)
 void QTestLibArgsParserTest::mapFormat(void)
 {
     QFETCH(QTestLibArgsParser::TestOutputFormat, format);
-    QFETCH(QVariantMap, map);
+    QFETCH(Utils::Store, map);
     QFETCH(QStringList, args);
 
     QTestLibArgsParser parserTo;
     parserTo.setOutputFormat(format);
 
-    QVariantMap parserToMap;
+    Utils::Store parserToMap;
     parserTo.toMap(parserToMap);
     QCOMPARE(parserToMap, map);
 
@@ -2976,10 +2979,10 @@ void QTestLibArgsParserTest::mapFormat(void)
 void QTestLibArgsParserTest::mapVerbosity_data(void)
 {
     QTest::addColumn<QTestLibArgsParser::TestVerbosity>("verbosity");
-    QTest::addColumn<QVariantMap>("map");
+    QTest::addColumn<Utils::Store>("map");
     QTest::addColumn<QStringList>("args");
 
-    QVariantMap map;
+    Utils::Store map;
     QStringList args;
 
     map.clear();
@@ -3015,13 +3018,13 @@ void QTestLibArgsParserTest::mapVerbosity_data(void)
 void QTestLibArgsParserTest::mapVerbosity(void)
 {
     QFETCH(QTestLibArgsParser::TestVerbosity, verbosity);
-    QFETCH(QVariantMap, map);
+    QFETCH(Utils::Store, map);
     QFETCH(QStringList, args);
 
     QTestLibArgsParser parserTo;
     parserTo.setVerbosity(verbosity);
 
-    QVariantMap parserToMap;
+    Utils::Store parserToMap;
     parserTo.toMap(parserToMap);
     QCOMPARE(parserToMap, map);
 
@@ -3034,7 +3037,7 @@ void QTestLibArgsParserTest::mapVerbosity(void)
 void QTestLibArgsParserTest::mapOutFile(void)
 {
     QString fileName = "testouput.log";
-    QVariantMap map;
+    Utils::Store map;
     map.insert(QTestLibPlugin::Constants::OutputFileKey, fileName);
     QStringList args;
     args << "-o" << fileName + ",txt";
@@ -3042,7 +3045,7 @@ void QTestLibArgsParserTest::mapOutFile(void)
     QTestLibArgsParser parserTo;
     parserTo.setOutFileName(Utils::FilePath::fromString(fileName));
 
-    QVariantMap parserToMap;
+    Utils::Store parserToMap;
     parserTo.toMap(parserToMap);
     QCOMPARE(parserToMap, map);
 
@@ -3059,35 +3062,35 @@ void QTestLibArgsParserTest::mapOther_data(void)
     QTest::addColumn<int>("keyDelay");
     QTest::addColumn<int>("mouseDelay");
     QTest::addColumn<bool>("crashHandler");
-    QTest::addColumn<QVariantMap>("map");
+    QTest::addColumn<Utils::Store>("map");
     QTest::addColumn<QStringList>("args");
 
-    QVariantMap map;
+    Utils::Store map;
     QStringList args;
     unsigned int rand;
 
-    rand = 10000*(qrand() % 100);
+    rand = 10000*mRandom->bounded(100);
     map.clear();
     args.clear();
     map.insert(QTestLibPlugin::Constants::MaxWarningKey, rand);
     args << "-maxwarnings" << QString::number(rand, 10);
     QTest::newRow("maxwarnings") << rand << -1 << -1 << -1 << true << map << args;
 
-    rand = 100*(1 + qrand() % 100);
+    rand = 100*mRandom->bounded(1, 101);
     map.clear();
     args.clear();
     map.insert(QTestLibPlugin::Constants::EventDelayKey, (int) rand);
     args << "-eventdelay" << QString::number(rand, 10);
     QTest::newRow("eventdelay") << 2000u << (int) rand << -1 << -1 << true << map << args;
 
-    rand = 100*(1 + qrand() % 100);
+    rand = 100*mRandom->bounded(1, 101);
     map.clear();
     args.clear();
     map.insert(QTestLibPlugin::Constants::KeyDelayKey, (int) rand);
     args << "-keydelay" << QString::number(rand, 10);
     QTest::newRow("keydelay") << 2000u << -1 << (int) rand << -1 << true << map << args;
 
-    rand = 100*(1 + qrand() % 100);
+    rand = 100*mRandom->bounded(1, 101);
     map.clear();
     args.clear();
     map.insert(QTestLibPlugin::Constants::MouseDelayKey, (int) rand);
@@ -3108,7 +3111,7 @@ void QTestLibArgsParserTest::mapOther(void)
     QFETCH(int, keyDelay);
     QFETCH(int, mouseDelay);
     QFETCH(bool, crashHandler);
-    QFETCH(QVariantMap, map);
+    QFETCH(Utils::Store, map);
     QFETCH(QStringList, args);
 
     QTestLibArgsParser parserTo;
@@ -3123,7 +3126,7 @@ void QTestLibArgsParserTest::mapOther(void)
     if (!crashHandler)
         parserTo.enableCrashHandler(false);
 
-    QVariantMap parserToMap;
+    Utils::Store parserToMap;
     parserTo.toMap(parserToMap);
     QCOMPARE(parserToMap, map);
 
@@ -3135,7 +3138,7 @@ void QTestLibArgsParserTest::mapOther(void)
 
 void QTestLibArgsParserTest::mapMixed_row(QTestLibArgsParser::TestOutputFormat format, QTestLibArgsParser::TestVerbosity verbosity)
 {
-    QVariantMap map;
+    Utils::Store map;
     QStringList args;
 
     unsigned int maxWarnings;
@@ -3196,11 +3199,11 @@ void QTestLibArgsParserTest::mapMixed_row(QTestLibArgsParser::TestOutputFormat f
 
     QString name = args.join(' ');
 
-    maxWarnings = (qrand() % 2 == 1) ? 1000*(qrand() % 1000) : 2000;
-    eventDelay = (qrand() % 2 == 1) ? 100*(1 + qrand() % 100) : -1;
-    keyDelay = (qrand() % 2 == 1) ? 100*(1 + qrand() % 100) : -1;
-    mouseDelay = (qrand() % 2 == 1) ? 100*(1 + qrand() % 100) : -1;
-    crashHandler = (qrand() % 2 == 1);
+    maxWarnings = (mRandom->bounded(2) == 1) ? 1000*mRandom->bounded(1000) : 2000;
+    eventDelay = (mRandom->bounded(2) == 1) ? 100*mRandom->bounded(1, 101) : -1;
+    keyDelay = (mRandom->bounded(2) == 1) ? 100*mRandom->bounded(1, 101) : -1;
+    mouseDelay = (mRandom->bounded(2) == 1) ? 100*mRandom->bounded(1, 101) : -1;
+    crashHandler = (mRandom->bounded(2) == 1);
 
     if (maxWarnings != 2000) {
         map.insert(QTestLibPlugin::Constants::MaxWarningKey, maxWarnings);
@@ -3235,7 +3238,7 @@ void QTestLibArgsParserTest::mapMixed_data(void)
     QTest::addColumn<int>("keyDelay");
     QTest::addColumn<int>("mouseDelay");
     QTest::addColumn<bool>("crashHandler");
-    QTest::addColumn<QVariantMap>("map");
+    QTest::addColumn<Utils::Store>("map");
     QTest::addColumn<QStringList>("args");
 
     for (int f = (int) QTestLibArgsParser::TxtFormat; f <= (int) QTestLibArgsParser::LightXmlFormat; f++)
@@ -3252,7 +3255,7 @@ void QTestLibArgsParserTest::mapMixed(void)
     QFETCH(int, keyDelay);
     QFETCH(int, mouseDelay);
     QFETCH(bool, crashHandler);
-    QFETCH(QVariantMap, map);
+    QFETCH(Utils::Store, map);
     QFETCH(QStringList, args);
 
     QTestLibArgsParser parserTo;
@@ -3269,7 +3272,7 @@ void QTestLibArgsParserTest::mapMixed(void)
     if (!crashHandler)
         parserTo.enableCrashHandler(false);
 
-    QVariantMap parserToMap;
+    Utils::Store parserToMap;
     parserTo.toMap(parserToMap);
     QCOMPARE(parserToMap, map);
 
@@ -3288,7 +3291,7 @@ void QTestLibArgsParserTest::copyMapMixed(void)
     QFETCH(int, keyDelay);
     QFETCH(int, mouseDelay);
     QFETCH(bool, crashHandler);
-    QFETCH(QVariantMap, map);
+    QFETCH(Utils::Store, map);
     QFETCH(QStringList, args);
 
     QTestLibArgsParser parserTo;
@@ -3307,7 +3310,7 @@ void QTestLibArgsParserTest::copyMapMixed(void)
 
     QTestLibArgsParser copyTo(parserTo);
 
-    QVariantMap copyToMap;
+    Utils::Store copyToMap;
     copyTo.toMap(copyToMap);
     QCOMPARE(copyToMap, map);
 }

@@ -20,7 +20,7 @@
 #define TESTRUNCONFIGURATIONFACTORYTEST_H
 
 #include <QObject>
-#include "../../../tests/common/qttestsubfunction.h"
+#include <qttestsubfunction.h>
 
 namespace ProjectExplorer {
     class Project;

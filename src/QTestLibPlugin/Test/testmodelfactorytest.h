@@ -21,8 +21,9 @@
 
 #include <QObject>
 #include <QDateTime>
+#include <QRandomGenerator>
 
-#include <qtestlibargsparser.h>
+#include "../qtestlibargsparser.h"
 
 class QAbstractItemModel;
 
@@ -42,7 +43,7 @@ class TestModelFactoryTest : public QObject
 {
     Q_OBJECT
 public:
-    inline TestModelFactoryTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch());}
+    inline TestModelFactoryTest(void) {mRandom = QRandomGenerator::global();}
 private Q_SLOTS:
     void initTestCase(void);
     void init(void);
@@ -75,6 +76,7 @@ private:
     int mFoundCount;
     int mPopulatedCount;
     bool mOrderOk;
+    QRandomGenerator* mRandom;
 };
 
 } // Test

@@ -23,9 +23,9 @@
 namespace QTestLibPlugin {
 namespace Internal {
 
-bool BaseForceParserFactory::canParse(ProjectExplorer::RunConfiguration *runConfiguration) const
+bool BaseForceParserFactory::canParse(ProjectExplorer::RunControl* runControl) const
 {
-    Q_UNUSED(runConfiguration);
+    Q_UNUSED(runControl);
 
     switch (mOutputPane->userForceParser()) {
     case QTestLibArgsParser::NoneFormat:

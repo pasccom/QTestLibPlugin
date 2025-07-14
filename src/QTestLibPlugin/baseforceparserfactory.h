@@ -68,10 +68,10 @@ public:
      *
      * Tests whether the project can be parsed by a parser with the given output format.
      * This factory just checks whether the user forced the parser in the TestOutputPane.
-     * \param runConfiguration The run configuration to test (unused)
+     * \param runControl The run control to test (unused)
      * \return \c true, if the iuser forced the activation of the parser
      */
-    bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const;
+    bool canParse(ProjectExplorer::RunControl* runControl) const;
     /*!
      * \brief Set the format accepted by the parser.
      *

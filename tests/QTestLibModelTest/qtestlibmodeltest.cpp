@@ -19,8 +19,8 @@
 #include <qtestlibmodel.h>
 using namespace QTestLibPlugin::Internal;
 
-#include "../common/qtestlibmodeltester.h"
-#include "../common/qttestsubfunction.h"
+#include <qtestlibmodeltester.h>
+#include <qttestsubfunction.h>
 
 #include <QtXml>
 #include <QtTest>
@@ -162,7 +162,7 @@ void QTestLibModelTest::addTestItem(void)
     }
 
     QTestLibModelTester tester(&model);
-    tester.setResultsFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
+    tester.setResultsFile(TESTS_DIR + testName + "/" + testName.toLower() + ".xml");
     QVERIFY2(tester.checkIndex(QModelIndex()), qPrintable(tester.error()));
 
     SUB_TEST_FUNCTION(checkSignals(&model, testSignals, testName));
@@ -302,7 +302,7 @@ void QTestLibModelTest::loadTest(QDomDocument& dom, const QString& testName)
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    QFile domFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + "test.xml");
+    QFile domFile(TESTS_DIR + testName + "/" + testName.toLower() + "test.xml");
     QVERIFY(domFile.open(QIODevice::ReadOnly));
     QString error;
     int line = 0;
@@ -317,7 +317,7 @@ void QTestLibModelTest::loadResult(QDomDocument& dom, const QString& testName)
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    QFile domFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
+    QFile domFile(TESTS_DIR + testName + "/" + testName.toLower() + ".xml");
     QVERIFY(domFile.open(QIODevice::ReadOnly));
     QString error;
     int line = 0;

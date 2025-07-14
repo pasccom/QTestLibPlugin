@@ -27,37 +27,52 @@
 #include <qmakeprojectmanager/qmakenodes.h>
 
 #include <utils/hostosinfo.h>
+#include <utils/processinterface.h>
 
+#include <QRegExp>
 #include <QtDebug>
 
 namespace QTestLibPlugin {
 namespace Internal {
 
-bool BaseQMakeQTestLibParserFactory::canParseRunConfiguration(ProjectExplorer::RunConfiguration* runConfiguration) const
+bool BaseQMakeQTestLibParserFactory::canParseRunConfiguration(ProjectExplorer::RunControl* runControl) const
 {
-    Q_ASSERT(runConfiguration != NULL);
+    Q_ASSERT(runControl != nullptr);
 
     // Only accept test run configurations:
-    TestRunConfiguration* testRunConfiguration = qobject_cast<TestRunConfiguration*>(runConfiguration);
-    if (testRunConfiguration == NULL)
+    qDebug() << "Run control build key:" << runControl->buildKey();
+    if (QString::compare(runControl->buildKey(), QLatin1String("make check"), Qt::CaseSensitive) != 0)
+        return false;
+    TestRunConfiguration* testRunConfiguration;
+    for (ProjectExplorer::RunConfiguration* runConfig : runControl->target()->runConfigurations()) {
+        testRunConfiguration = qobject_cast<TestRunConfiguration*>(runConfig);
+        if (testRunConfiguration != nullptr)
+            break;
+    }
+    if (testRunConfiguration == nullptr)
         return false;
 
     // Check test command line arguments:
     QRegExp extraTestArgsRegExp(QLatin1String("TESTARGS=\"([^\"]*)\""));
-    if (extraTestArgsRegExp.indexIn(testRunConfiguration->commandLineArguments()) == -1)
+    for (QString arg : testRunConfiguration->commandLineArguments()) {
+        if (extraTestArgsRegExp.indexIn(arg) != -1)
+            break;
+    }
+    qDebug() << "Extra test args:" << extraTestArgsRegExp.capturedTexts();
+    if (extraTestArgsRegExp.capturedTexts().isEmpty())
         return (mFormat == QTestLibArgsParser::TxtFormat);
     return canParseArguments(extraTestArgsRegExp.capturedTexts().at(1));
 }
 
-bool BaseQMakeQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfiguration *runConfiguration) const
+bool BaseQMakeQTestLibParserFactory::canParseModule(ProjectExplorer::RunControl* runControl) const
 {
-    Q_ASSERT(runConfiguration != NULL);
+    Q_ASSERT(runControl != nullptr);
 
     // Only accept qMake projects:
-    QmakeProjectManager::QmakePriFileNode* qMakeRootNode = dynamic_cast<QmakeProjectManager::QmakePriFileNode*>(runConfiguration->target()->project()->rootProjectNode());
+    QmakeProjectManager::QmakePriFileNode* qMakeRootNode = dynamic_cast<QmakeProjectManager::QmakePriFileNode*>(runControl->target()->project()->rootProjectNode());
     if (qMakeRootNode == nullptr)
         return false;
-    ProjectExplorer::Runnable runnable = runConfiguration->runnable();
+    Utils::ProcessRunData runnable = runControl->runnable();
 
     foreach(QmakeProjectManager::QmakeProFile *pro, qMakeRootNode->proFileNode()->proFile()->allProFiles()) {
         qDebug() << "Project name:" << pro->displayName();
@@ -66,13 +81,13 @@ bool BaseQMakeQTestLibParserFactory::canParseModule(ProjectExplorer::RunConfigur
         if (!destDir.isAbsolute())
             destDir.setPath(pro->targetInformation().buildDir.pathAppended(pro->targetInformation().destDir.toString()).toString());
         qDebug() << "TARGET:" << destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target));
-        qDebug() << "Executable:" << runnable.executable;
-        if (QDir(destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target))) != QDir(runnable.executable.toString()))
+        qDebug() << "Executable:" << runnable.command.executable();
+        if (QDir(destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target))) != QDir(runnable.command.executable().toString()))
             continue;
         // Check the testlib is included:
         qDebug() << "QT variable:" << pro->variableValue(QmakeProjectManager::Variable::Qt);
         if (pro->variableValue(QmakeProjectManager::Variable::Qt).contains(QLatin1String("testlib"), Qt::CaseSensitive))
-            return canParseArguments(runnable.commandLineArguments);
+            return canParseArguments(runnable.command.arguments());
     }
 
     return false;

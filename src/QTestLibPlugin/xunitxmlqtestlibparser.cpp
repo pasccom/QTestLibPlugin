@@ -21,34 +21,35 @@
 #include <projectexplorer/runconfiguration.h>
 
 #include <QXmlStreamReader>
+#include <QRegExp>
 #include <QtDebug>
 
 namespace QTestLibPlugin {
 namespace Internal {
 
-TestModelFactory::ParseResult XUnitXMLQTestLibParser::startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag)
+TestModelFactory::ParseResult XUnitXMLQTestLibParser::startElementParsed(ProjectExplorer::RunControl* runControl, const QStringView& tag)
 {
     Q_UNUSED(runControl);
 
-    if (QStringRef::compare(tag, QLatin1String("property"), Qt::CaseSensitive) == 0) {
-        if (QStringRef::compare(mReader->attributes().value(QLatin1String("name")), QLatin1String("QTestVersion"), Qt::CaseSensitive) == 0)
+    if (QString::compare(tag, QLatin1String("property"), Qt::CaseSensitive) == 0) {
+        if (QString::compare(mReader->attributes().value(QLatin1String("name")), QLatin1String("QTestVersion"), Qt::CaseSensitive) == 0)
             mQTestLibVersion = decodeXMLEntities(mReader->attributes().value(QLatin1String("value")).toString());
-        else if (QStringRef::compare(mReader->attributes().value(QLatin1String("name")), QLatin1String("QtVersion"), Qt::CaseSensitive) == 0)
+        else if (QString::compare(mReader->attributes().value(QLatin1String("name")), QLatin1String("QtVersion"), Qt::CaseSensitive) == 0)
             mQtVersion = decodeXMLEntities(mReader->attributes().value(QLatin1String("value")).toString());
-        else if (QStringRef::compare(mReader->attributes().value(QLatin1String("name")), QLatin1String("QtBuild"), Qt::CaseSensitive) == 0)
+        else if (QString::compare(mReader->attributes().value(QLatin1String("name")), QLatin1String("QtBuild"), Qt::CaseSensitive) == 0)
             mQtBuild = decodeXMLEntities(mReader->attributes().value(QLatin1String("value")).toString());
         else
             qWarning() << "Unknown build property:" << mReader->attributes().value(QLatin1String("name"));
         return TestModelFactory::Unsure;
     }
 
-    if (QStringRef::compare(tag, QLatin1String("testsuite"), Qt::CaseSensitive) == 0)
+    if (QString::compare(tag, QLatin1String("testsuite"), Qt::CaseSensitive) == 0)
         mCurrentClass = mReader->attributes().value(QLatin1String("name")).toString();
-    if (QStringRef::compare(tag, QLatin1String("testcase"), Qt::CaseSensitive) == 0) {
+    if (QString::compare(tag, QLatin1String("testcase"), Qt::CaseSensitive) == 0) {
         mCurrentFunction = mReader->attributes().value(QLatin1String("name")).toString();
         mCurrentMessageType = currentMessageType();
     }
-    if (QStringRef::compare(tag, QLatin1String("failure"), Qt::CaseInsensitive) == 0) {
+    if (QString::compare(tag, QLatin1String("failure"), Qt::CaseInsensitive) == 0) {
         if (mModel != NULL) {
             if (mReader->attributes().hasAttribute(QLatin1String("tag")))
                 mModel->addTestItem(runControl, currentMessageType(), mCurrentClass, mCurrentFunction, mReader->attributes().value(QLatin1String("tag")).toString(), decodeXMLEntities(mReader->attributes().value(QLatin1String("message")).toString()));
@@ -62,9 +63,9 @@ TestModelFactory::ParseResult XUnitXMLQTestLibParser::startElementParsed(Project
     return TestModelFactory::Unsure;
 }
 
-TestModelFactory::ParseResult XUnitXMLQTestLibParser::endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag)
+TestModelFactory::ParseResult XUnitXMLQTestLibParser::endElementParsed(ProjectExplorer::RunControl* runControl, const QStringView& tag)
 {
-    if (QStringRef::compare(tag, QLatin1String("properties"), Qt::CaseSensitive) == 0) {
+    if (QString::compare(tag, QLatin1String("properties"), Qt::CaseSensitive) == 0) {
         if (!mQtVersion.isNull() && !mQtBuild.isNull() && !mQTestLibVersion.isNull()) {
             qDebug() << "Create QTestLibModel" << mQtVersion << mQtBuild << mQTestLibVersion;
             if (mModel ==  NULL)
@@ -75,9 +76,9 @@ TestModelFactory::ParseResult XUnitXMLQTestLibParser::endElementParsed(ProjectEx
         }
     }
 
-    if (QStringRef::compare(tag, QLatin1String("testsuite"), Qt::CaseSensitive) == 0)
+    if (QString::compare(tag, QLatin1String("testsuite"), Qt::CaseSensitive) == 0)
         mCurrentClass.clear();
-    if (QStringRef::compare(tag, QLatin1String("testcase"), Qt::CaseSensitive) == 0) {
+    if (QString::compare(tag, QLatin1String("testcase"), Qt::CaseSensitive) == 0) {
         if ((mCurrentMessageType != QTestLibModel::Unknown) && (mModel != NULL))
             mModel->addTestItem(runControl, mCurrentMessageType, mCurrentClass, mCurrentFunction, QString(), QString());
         mCurrentFunction.clear();

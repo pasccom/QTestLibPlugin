@@ -23,16 +23,18 @@
 #include "../qtestlibpluginconstants.h"
 
 #include <projectexplorer/projectexplorer.h>
-#include <projectexplorer/session.h>
+#include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/kitmanager.h>
-#include <projectexplorer/kitinformation.h>
+#include <projectexplorer/toolchainkitaspect.h>
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/buildinfo.h>
 #include <projectexplorer/toolchain.h>
 #include <projectexplorer/runcontrol.h>
 
 #include <qmakeprojectmanager/qmakeproject.h>
+
+#include <utils/processinterface.h>
 
 #include <QtTest>
 
@@ -46,18 +48,24 @@ TestRunConfigurationFactoryTest::TestRunConfigurationFactoryTest(void):
 
 void TestRunConfigurationFactoryTest::initTestCase(void)
 {
-    QStringList projectPathes;
+    Utils::FilePaths projectPathes;
 
     // NOTE _data() function is not available for initTestCase()
-    projectPathes << QLatin1String(TESTS_DIR "/OneSubTest");
-    projectPathes << QLatin1String(TESTS_DIR "/TwoSubTests");
-    projectPathes << QLatin1String(TESTS_DIR "/MakefileTest");
-    projectPathes << QLatin1String(TESTS_DIR "/MakefileSpaceTest");
-    projectPathes << QLatin1String(TESTS_DIR "/NoSubTestOne");
-    projectPathes << QLatin1String(TESTS_DIR "/NoSubTestTwo");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/OneSubTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/TwoSubTests");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/MakefileTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/MakefileSpaceTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/NoSubTestOne");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/NoSubTestTwo");
 
-    foreach (QString projectPath, projectPathes)
+    foreach (Utils::FilePath projectPath, projectPathes)
         QVERIFY(removeProjectUserFiles(projectPath));
+
+    // NOTE First time ProjectExplorer::ProjectExplorerPlugin::openProject()
+    // immediately calls ProjectExplorer::Target::ParsingFinished() and
+    // consequently, openQMakeProject() does not work
+    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "OneClassTest/OneClassTest.pro"), &mProject);
+    QVERIFY(closeProject(mProject));
 }
 
 void TestRunConfigurationFactoryTest::init(void)
@@ -73,22 +81,22 @@ void TestRunConfigurationFactoryTest::cleanup(void)
 
 void TestRunConfigurationFactoryTest::testOpenProjectWithTests_data(void)
 {
-    QTest::addColumn<QString>("projectPath");
+    QTest::addColumn<Utils::FilePath>("projectPath");
     QTest::addColumn<QString>("makefile");
 
-    QTest::newRow("OneSubTest") << TESTS_DIR "/OneSubTest/OneSubTest.pro" << TESTS_DIR "/OneSubTest/Makefile";
-    QTest::newRow("TwoSubTests") << TESTS_DIR "/TwoSubTests/TwoSubTests.pro" << TESTS_DIR "/TwoSubTests/Makefile";
-    QTest::newRow("MakefileTest") << TESTS_DIR "/MakefileTest/MakefileTest.pro" << TESTS_DIR "/MakefileTest/MyMakefile";
-    QTest::newRow("MakefileSpaceTest") << TESTS_DIR "/MakefileSpaceTest/MakefileSpaceTest.pro" << "\"" TESTS_DIR "/MakefileSpaceTest/My Makefile\"";
+    QTest::newRow("OneSubTest") << Utils::FilePath::fromString(TESTS_DIR "OneSubTest/OneSubTest.pro") << TESTS_DIR "OneSubTest/Makefile";
+    QTest::newRow("TwoSubTests") << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests/TwoSubTests.pro") << TESTS_DIR "TwoSubTests/Makefile";
+    QTest::newRow("MakefileTest") << Utils::FilePath::fromString(TESTS_DIR "MakefileTest/MakefileTest.pro") << TESTS_DIR "MakefileTest/MyMakefile";
+    QTest::newRow("MakefileSpaceTest") << Utils::FilePath::fromString(TESTS_DIR "MakefileSpaceTest/MakefileSpaceTest.pro") << TESTS_DIR "MakefileSpaceTest/My Makefile";
 }
 
 void TestRunConfigurationFactoryTest::testOpenProjectWithTests(void)
 {
-    QFETCH(QString, projectPath);
+    QFETCH(Utils::FilePath, projectPath);
     QFETCH(QString, makefile);
 
     QVERIFY(openQMakeProject(projectPath, &mProject));
-    QCOMPARE(mProject->projectFilePath().toString(), projectPath);
+    QCOMPARE(mProject->projectFilePath(), projectPath);
 
     foreach (ProjectExplorer::Target* target, mProject->targets()) {
         Internal::TestRunConfiguration* testRunConfig = NULL;
@@ -102,28 +110,31 @@ void TestRunConfigurationFactoryTest::testOpenProjectWithTests(void)
         QVERIFY(testRunConfig->id() == Utils::Id(Constants::TestRunConfigurationId));
 
         Utils::Environment env = target->activeBuildConfiguration()->environment();
-        ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitAspect::toolChain(target->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
+        ProjectExplorer::Toolchain *toolChain = ProjectExplorer::ToolchainKitAspect::toolchain(target->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
 
-        ProjectExplorer::Runnable runnable = testRunConfig->runnable();
-        QCOMPARE(runnable.executable, toolChain->makeCommand(env));
-        QCOMPARE(runnable.commandLineArguments, QString(QLatin1String("-f %1 check")).arg(makefile));
+        Utils::ProcessRunData runnable = testRunConfig->runnable();
+        QCOMPARE(runnable.command.executable(), toolChain->makeCommand(env));
+        QVERIFY(runnable.command.splitArguments().size() >= 3);
+        QCOMPARE(runnable.command.splitArguments().at(0), QLatin1String("-f"));
+        QCOMPARE(runnable.command.splitArguments().at(1), makefile);
+        QCOMPARE(runnable.command.splitArguments().at(2), QLatin1String("check"));
     }
 }
 
 void TestRunConfigurationFactoryTest::testOpenProjectWithoutTests_data(void)
 {
-    QTest::addColumn<QString>("projectPath");
+    QTest::addColumn<Utils::FilePath>("projectPath");
 
-    QTest::newRow("NoSubTestOne") << TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro";
-    QTest::newRow("NoSubTestTwo") << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro";
+    QTest::newRow("NoSubTestOne") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne/NoSubTestOne.pro");
+    QTest::newRow("NoSubTestTwo") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo/NoSubTestTwo.pro");
 }
 
 void TestRunConfigurationFactoryTest::testOpenProjectWithoutTests(void)
 {
-    QFETCH(QString, projectPath);
+    QFETCH(Utils::FilePath, projectPath);
 
     QVERIFY(openQMakeProject(projectPath, &mProject));
-    QCOMPARE(mProject->projectFilePath().toString(), projectPath);
+    QCOMPARE(mProject->projectFilePath(), projectPath);
 
     foreach (ProjectExplorer::Target* target, mProject->targets()) {
         foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations())

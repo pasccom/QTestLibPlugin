@@ -24,7 +24,7 @@
 #include "lightxmlqtestlibparser.h"
 #include "qtestlibargsparser.h"
 
-#include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 
 namespace QTestLibPlugin {
 namespace Internal {
@@ -34,7 +34,7 @@ namespace Internal {
  *
  * As an implementation of AbstractTestParserFactory,
  * this class is in charge of checking that the associated parser, LightXMLQTestLibParser,
- * may parse the ProjectExplorer::RunConfiguration output and
+ * may parse the ProjectExplorer::RunControl output and
  * allocate instances of the associated parser if needed.
  * For this it uses the methods of a base factory injected in the constructor.
  */
@@ -65,27 +65,27 @@ public:
      *
      * Uses the base factory canParse() method to tell whether the associated parser
      * can parse the test.
-     * \param runConfiguration he run configuration to test
+     * \param runControl The run control to test
      * \return true, if the associated parser may parse the test output.
      */
-    inline bool canParse(ProjectExplorer::RunConfiguration* runConfiguration) const override {return mBase.canParse(runConfiguration);}
+    inline bool canParse(ProjectExplorer::RunControl* runControl) const override {return mBase.canParse(runControl);}
     /*!
      * \copydoc AbstractTestParserFactory::getParserInstance()
      */
-    AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const override;
+    AbstractTestParser* getParserInstance(ProjectExplorer::RunControl *runControl) const override;
 private:
     B mBase; /*!< The base factory, which provides the implementation of canParse() method */
 };
 
 template<class B>
-AbstractTestParser* LightXMLQTestLibParserFactory<B>::getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const
+AbstractTestParser* LightXMLQTestLibParserFactory<B>::getParserInstance(ProjectExplorer::RunControl *runControl) const
 {
-    Q_ASSERT(runConfiguration != NULL);
+    Q_ASSERT(runControl != nullptr);
 
-    if (!canParse(runConfiguration))
+    if (!canParse(runControl))
         return NULL;
     qDebug() << "LightXMLQTestLibParser can parse this file";
-    return new LightXMLQTestLibParser(runConfiguration);
+    return new LightXMLQTestLibParser(runControl);
 }
 
 } // namespace Internal

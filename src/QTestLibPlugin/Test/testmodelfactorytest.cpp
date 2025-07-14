@@ -19,15 +19,15 @@
 #include "testmodelfactorytest.h"
 #include "testhelper.h"
 
-#include <common/qtestlibmodeltester.h>
+#include "../testmodelfactory.h"
+#include "../qtestlibpluginconstants.h"
+#include "../testrunconfiguration.h"
+#include "../testextraaspect.h"
 
-#include <testmodelfactory.h>
-#include <qtestlibpluginconstants.h>
-#include <testrunconfiguration.h>
-#include <testextraaspect.h>
+#include <qtestlibmodeltester.h>
 
 #include <projectexplorer/projectexplorer.h>
-#include <projectexplorer/session.h>
+#include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/runconfiguration.h>
@@ -37,6 +37,7 @@
 #include <extensionsystem/pluginmanager.h>
 
 #include <utils/hostosinfo.h>
+#include <utils/processinterface.h>
 
 #include <QtTest>
 
@@ -45,21 +46,27 @@ namespace Test {
 
 void TestModelFactoryTest::initTestCase(void)
 {
-    QStringList projectPathes;
+    Utils::FilePaths projectPathes;
 
     // NOTE _data() function is not available for initTestCase()
-    projectPathes << QLatin1String(TESTS_DIR "/OneClassTest");
-    projectPathes << QLatin1String(TESTS_DIR "/AllMessagesTest");
-    projectPathes << QLatin1String(TESTS_DIR "/MultipleClassesTest");
-    projectPathes << QLatin1String(TESTS_DIR "/SignalsTest");
-    projectPathes << QLatin1String(TESTS_DIR "/LimitsTest");
-    projectPathes << QLatin1String(TESTS_DIR "/OneSubTest");
-    projectPathes << QLatin1String(TESTS_DIR "/TwoSubTests");
-    projectPathes << QLatin1String(TESTS_DIR "/NoSubTestOne");
-    projectPathes << QLatin1String(TESTS_DIR "/NoSubTestTwo");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/OneClassTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/AllMessagesTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/MultipleClassesTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/SignalsTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/LimitsTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/OneSubTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/TwoSubTests");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/NoSubTestOne");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/NoSubTestTwo");
 
-    foreach (QString projectPath, projectPathes)
+    foreach (Utils::FilePath projectPath, projectPathes)
         QVERIFY(removeProjectUserFiles(projectPath));
+
+    // NOTE First time ProjectExplorer::ProjectExplorerPlugin::openProject()
+    // immediately calls ProjectExplorer::Target::ParsingFinished() and
+    // consequently, openQMakeProject() does not work
+    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "OneClassTest/OneClassTest.pro"), &mProject);
+    QVERIFY(closeProject(mProject));
 }
 
 void TestModelFactoryTest::init(void)
@@ -188,7 +195,7 @@ void TestModelFactoryTest::testTwoSubTests(void)
 QStringList TestModelFactoryTest::commandLineArguments(Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity)
 {
     QStringList cmdArgs;
-    int argType = qrand() % 6;
+    int argType = mRandom->bounded(6);
 
     switch (format) {
     case Internal::QTestLibArgsParser::TxtFormat:
@@ -282,12 +289,12 @@ QString TestModelFactoryTest::formatToString(Internal::QTestLibArgsParser::TestO
 
 void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Utils::Id runMode)
 {
-    QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
+    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR + testName + "/" + testName + ".pro"), &mProject));
 
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, mProject->activeTarget()->runConfigurations()) {
-        QFileInfo exeFileInfo = runConfig->runnable().executable.toFileInfo();
+        QFileInfo exeFileInfo = runConfig->runnable().command.executable().toFileInfo();
         qDebug() << exeFileInfo.absoluteFilePath();
         QVERIFY(exeFileInfo.exists());
         if (QString::compare(exeFileInfo.baseName(), testName, Qt::CaseSensitive) != 0)
@@ -310,16 +317,16 @@ void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibAr
     workingDirectoryAspect->setDefaultWorkingDirectory(Utils::FilePath::fromString(TESTS_DIR).pathAppended(testName));
 
     // Check the modifications were applied:
-    ProjectExplorer::Runnable modifiedRunnable = testRunConfig->runnable();
-    QCOMPARE(modifiedRunnable.commandLineArguments, cmdArgs.join(QLatin1Char(' ')));
-    QCOMPARE(modifiedRunnable.workingDirectory, QString(TESTS_DIR "/" + testName));
+    Utils::ProcessRunData modifiedRunnable = testRunConfig->runnable();
+    QCOMPARE(modifiedRunnable.command.arguments(), cmdArgs.join(QLatin1Char(' ')));
+    QCOMPARE(modifiedRunnable.workingDirectory, Utils::FilePath::fromString(TESTS_DIR + testName));
 
     runRunConfiguration(testRunConfig, testName, format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Utils::Id runMode)
 {
-    QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
+    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR + testName + "/" + testName + ".pro"), &mProject));
 
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
@@ -339,13 +346,14 @@ void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTest
     testAspect->setVerbosity(verbosity);
 
     // Compare arguments to expected value:
-    ProjectExplorer::Runnable modifiedRunnable = testRunConfig->runnable();
+    Utils::ProcessRunData modifiedRunnable = testRunConfig->runnable();
     Internal::QTestLibArgsParser testArgsParser;
     testArgsParser.setOutputFormat(format);
-    testArgsParser.setVerbosity(verbosity);QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR "/") + testName + QLatin1String("/Makefile check"));
+    testArgsParser.setVerbosity(verbosity);
+    QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR) + testName + QLatin1String("/Makefile check"));
     if (!testArgsParser.toString().isEmpty())
         expectedCmdArgs.append(QString(QLatin1String(" TESTARGS=\"%1\"")).arg(testArgsParser.toString()));
-    QCOMPARE(modifiedRunnable.commandLineArguments, expectedCmdArgs);
+    QCOMPARE(modifiedRunnable.command.arguments(), expectedCmdArgs);
 
     testRunConfig->setDisplayName(testName);
     runRunConfiguration(testRunConfig, testName, format, verbosity, runMode);
@@ -355,7 +363,7 @@ void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration
 {
     // Create a run control and a run worker:
     ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(runMode);
-    runControl->setRunConfiguration(runConfig);
+    runControl->copyDataFromRunConfiguration(runConfig);
     QVERIFY2(runControl->createMainWorker(), "Could not create main worker");
 
     // Create test model factory

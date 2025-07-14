@@ -18,12 +18,13 @@
 
 #include "xmlqtestlibparserfactoryfake.h"
 
-#include "../common/qtestlibmodeltester.h"
+#include <qtestlibmodeltester.h>
 
 #include <projectexplorer/runconfiguration.h>
 #include <projectexplorer/runcontrol.h>
 
 #include <utils/hostosinfo.h>
+#include <utils/processinterface.h>
 
 #include <QtTest>
 
@@ -33,7 +34,7 @@ class XMLQTestLibParserTest : public QObject
 {
     Q_OBJECT
 public:
-    inline XMLQTestLibParserTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch());}
+    inline XMLQTestLibParserTest(void) {mRandom = QRandomGenerator::global();}
 private Q_SLOTS:
     inline void oneClass_data(void) {data();}
     void oneClass(void);
@@ -55,7 +56,9 @@ private:
     void runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
     void runMakeCheck(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
     void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, QTestLibModelTester::Verbosity verbosity);
-    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::Runnable runnable, const QLinkedList<EnvironmentVariable> &addToEnv = QLinkedList<EnvironmentVariable>());
+    QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser* parser, const Utils::ProcessRunData& runnable, const QLinkedList<EnvironmentVariable>& addToEnv = QLinkedList<EnvironmentVariable>());
+
+    QRandomGenerator* mRandom;
 };
 
 void XMLQTestLibParserTest::data(void)
@@ -140,7 +143,7 @@ QStringList XMLQTestLibParserTest::commandLineArguments(QTestLibModelTester::Ver
         qWarning() << "Sentinel value VerbosityCountMinusOne must not be used as verbosity.";
         break;
     }
-    if (qrand() % 2 == 1)
+    if (mRandom->bounded(2) == 1)
         cmdArgs << "-xml";
     else
         cmdArgs << "-o -,xml";
@@ -151,10 +154,10 @@ QStringList XMLQTestLibParserTest::commandLineArguments(QTestLibModelTester::Ver
 void XMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
     // Creation of Runnable
-    ProjectExplorer::Runnable runnable;
-    runnable.workingDirectory = TESTS_DIR "/" + testName + "/";
-    runnable.executable = Utils::FilePath::fromString(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName));
-    runnable.commandLineArguments = commandLineArguments(verbosity).join(' ');
+    Utils::ProcessRunData runnable;
+    runnable.workingDirectory = Utils::FilePath::fromString(TESTS_DIR "/" + testName + "/");
+    runnable.command = Utils::CommandLine(Utils::FilePath::fromString(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName)));
+    runnable.command.addArgs(commandLineArguments(verbosity).join(' '), Utils::CommandLine::Raw);
 
     // Creation of parser
     QTestLibPlugin::Internal::XMLQTestLibParserFactory<Fake> factory;
@@ -173,10 +176,9 @@ void XMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelTester
 void XMLQTestLibParserTest::runMakeCheck(const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
     // Creation of Runnable
-    ProjectExplorer::Runnable runnable;
-    runnable.workingDirectory = TESTS_DIR "/" + testName + "/";
-    runnable.executable = Utils::FilePath::fromString(MAKE_EXECUATBLE);
-    runnable.commandLineArguments = "-s check";
+    Utils::ProcessRunData runnable;
+    runnable.workingDirectory = Utils::FilePath::fromString(TESTS_DIR "/" + testName + "/");
+    runnable.command = Utils::CommandLine(Utils::FilePath::fromString(MAKE_EXECUATBLE), QStringList() << "-s" << "check");
     QLinkedList<EnvironmentVariable> addToEnv;
     addToEnv << EnvironmentVariable("TESTARGS", commandLineArguments(verbosity).join(' '));
 
@@ -202,7 +204,7 @@ void XMLQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedLi
     QVERIFY2(tester.checkIndex(QModelIndex()), qPrintable(tester.error()));
 }
 
-QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser *parser, ProjectExplorer::Runnable runnable, const QLinkedList<EnvironmentVariable> &addToEnv)
+QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLibParserTest::executeTest(QTestLibPlugin::Internal::AbstractTestParser* parser, const Utils::ProcessRunData& runnable, const QLinkedList<EnvironmentVariable>& addToEnv)
 {
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results;
 
@@ -210,9 +212,10 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLib
     foreach(EnvironmentVariable var, addToEnv)
         env.insert(var.first, var.second);
     QProcess testProc(this);
-    testProc.setWorkingDirectory(runnable.workingDirectory);
+    testProc.setWorkingDirectory(runnable.workingDirectory.toFSPathString());
     testProc.setProcessEnvironment(env);
-    testProc.start(runnable.executable.toString(), runnable.commandLine().splitArguments(), QIODevice::ReadOnly);
+    testProc.start(runnable.command.executable().toString(), runnable.command.splitArguments(), QIODevice::ReadOnly);
+    qDebug() << "Command line:" << runnable.command.executable() << runnable.command.splitArguments();
 
     if (!testProc.waitForFinished(30000)) {
         qCritical() << "Test timed out";

@@ -33,6 +33,10 @@ namespace ProjectExplorer {
     class RunControl;
 }
 
+namespace Utils {
+    class QtcSettings;
+}
+
 namespace QTestLibPlugin {
 namespace Internal {
 
@@ -49,22 +53,20 @@ public:
     bool canNext(void) const override {return false;}
     bool canPrevious(void) const override {return false;}
     void clearContents(void) override;
-    QString displayName(void) const override {return tr("Test output");}
     void goToNext(void) override {}
     void goToPrev(void) override {}
     bool hasFocus(void) const override {return false;}
     QWidget* outputWidget(QWidget * parent) override;
-    int priorityInStatusBar(void) const override {return 10;}
     void setFocus(void) override {}
     inline QList<QWidget *> toolBarWidgets(void) const override {return mToolbarWidgets;}
     void visibilityChanged(bool visible) override {Q_UNUSED(visible);}
 
     QTestLibArgsParser::TestOutputFormat userForceParser(void) const;
 
-    void loadSettings(QSettings* settings);
-    void saveSettings(QSettings* settings);
+    void loadSettings(Utils::QtcSettings* settings);
+    void saveSettings(Utils::QtcSettings* settings);
 private:
-    void loadColumnWidth(QSettings* settings, int column, const QString& key);
+    void loadColumnWidth(Utils::QtcSettings* settings, int column, const Utils::Key& key);
     QString formatToString(QTestLibArgsParser::TestOutputFormat format) const;
     TestProxyModel *mProxy;
     TestSuiteModel *mModel;

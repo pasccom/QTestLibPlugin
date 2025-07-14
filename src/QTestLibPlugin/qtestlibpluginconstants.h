@@ -20,6 +20,7 @@
 #define QTESTLIBPLUGINCONSTANTS_H
 
 #include <QString>
+#include <utils/store.h>
 
 #define TEST_RUN_CONFIGURATION_ID "QTestLibPlugin.TestRunConfiguration"
 #define TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID "QTestlibPlugin.TestRunConfigurationExtraAspect"
@@ -30,42 +31,42 @@ namespace Constants {
  * \defgroup QTestLibPluginConstants QTestLibPlugin constants
  * @{
  */
-const QString PluginName = QLatin1String("QTestLibPlugin");                                                             /*!< The nane of the plugin (used as root group name in the settings) */
+const Utils::Key PluginName = Utils::Key("QTestLibPlugin");                                                             /*!< The nane of the plugin (used as root group name in the settings) */
 
 /*!
   * \defgroup ViewerSettings Viewer settings
   * @{
   */
-const QString FilterProxyGroup = QLatin1String("FilterProxy");                                                          /*!< Group name for Internal::TestProxyModel settings */
-const QString ViewGroup = QLatin1String("View");                                                                        /*!< Group name for Internal::TestOutputPane tree view settings */
-const QString DescWidthKey = QLatin1String("DescWidth");                                                                /*!< Key for message field width in Internal::TestOutputPane */
-const QString FileWidthKey = QLatin1String("FileWidth");                                                                /*!< Key for file field width in Internal::TestOutputPane */
-const QString LineWidthKey = QLatin1String("LineWidth");                                                                /*!< Key for line field width in Internal::TestOutputPane */
+const Utils::Key FilterProxyGroup = Utils::Key("FilterProxy");                                                          /*!< Group name for Internal::TestProxyModel settings */
+const Utils::Key ViewGroup = Utils::Key("View");                                                                        /*!< Group name for Internal::TestOutputPane tree view settings */
+const Utils::Key DescWidthKey = Utils::Key("DescWidth");                                                                /*!< Key for message field width in Internal::TestOutputPane */
+const Utils::Key FileWidthKey = Utils::Key("FileWidth");                                                                /*!< Key for file field width in Internal::TestOutputPane */
+const Utils::Key LineWidthKey = Utils::Key("LineWidth");                                                                /*!< Key for line field width in Internal::TestOutputPane */
 /*!@}*/
 
 /*!
  * \defgroup TestRunConfigurationSettings Test run configuration settings
  * @{
  */
-const QString WorkingDirectoryKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".WorkingDirectory");                       /*!< Key for working directory path in Internal::TestRunConfiguration */
-const QString MakeExeKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".MakeExe");                                         /*!< Key for path to \c make in Internal::TestRunConfiguration */
-const QString MakefileKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".Makefile");                                       /*!< Key for \c Makefile path in Internal::TestRunConfiguration */
-const QString TestRunnerKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".TestRunner");                                   /*!< Key for test runner path in Internal::TestRunConfiguration */
-const QString MakeJobNumberKey = QLatin1String(TEST_RUN_CONFIGURATION_ID ".JobNumber");                                 /*!< Key for job number of \c make in Internal::TestRunConfiguration */
+const Utils::Key WorkingDirectoryKey = Utils::Key(TEST_RUN_CONFIGURATION_ID ".WorkingDirectory");                       /*!< Key for working directory path in Internal::TestRunConfiguration */
+const Utils::Key MakeExeKey = Utils::Key(TEST_RUN_CONFIGURATION_ID ".MakeExe");                                         /*!< Key for path to \c make in Internal::TestRunConfiguration */
+const Utils::Key MakefileKey = Utils::Key(TEST_RUN_CONFIGURATION_ID ".Makefile");                                       /*!< Key for \c Makefile path in Internal::TestRunConfiguration */
+const Utils::Key TestRunnerKey = Utils::Key(TEST_RUN_CONFIGURATION_ID ".TestRunner");                                   /*!< Key for test runner path in Internal::TestRunConfiguration */
+const Utils::Key MakeJobNumberKey = Utils::Key(TEST_RUN_CONFIGURATION_ID ".JobNumber");                                 /*!< Key for job number of \c make in Internal::TestRunConfiguration */
 /*!@}*/
 
 /*!
  * \defgroup TestRunConfigurationExtraAspectSettings Test run configuration extra aspect settings
  * @{
  */
-const QString FormatKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".Format");                              /*!< Key for test output format of Internal::TestRunConfigurationExtraAspect */
-const QString VerbosityKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".Verbosity");                        /*!< Key for test verbosity of Internal::TestRunConfigurationExtraAspect */
-const QString OutputFileKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".LogFile");                         /*!< Key for log file path in Internal::TestRunConfigurationExtraAspect */
-const QString MaxWarningKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".MaxWarnings");                     /*!< Key for maximum number of warnings field of Internal::TestRunConfigurationExtraAspect */
-const QString EventDelayKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".EventDelay");                      /*!< Key for event delay field of Internal::TestRunConfigurationExtraAspect */
-const QString KeyDelayKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".KeyDelay");                          /*!< Key for key delay field of Internal::TestRunConfigurationExtraAspect */
-const QString MouseDelayKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".MouseDelay");                      /*!< Key for mouse delay field of Internal::TestRunConfigurationExtraAspect */
-const QString CrashHandlerEnabledKey = QLatin1String(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".CrashHandlerEnabled");    /*!< Key for crash handler enabled field of Internal::TestRunConfigurationExtraAspect */
+const Utils::Key FormatKey = Utils::Key(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".Format");                              /*!< Key for test output format of Internal::TestRunConfigurationExtraAspect */
+const Utils::Key VerbosityKey = Utils::Key(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".Verbosity");                        /*!< Key for test verbosity of Internal::TestRunConfigurationExtraAspect */
+const Utils::Key OutputFileKey = Utils::Key(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".LogFile");                         /*!< Key for log file path in Internal::TestRunConfigurationExtraAspect */
+const Utils::Key MaxWarningKey = Utils::Key(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".MaxWarnings");                     /*!< Key for maximum number of warnings field of Internal::TestRunConfigurationExtraAspect */
+const Utils::Key EventDelayKey = Utils::Key(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".EventDelay");                      /*!< Key for event delay field of Internal::TestRunConfigurationExtraAspect */
+const Utils::Key KeyDelayKey = Utils::Key(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".KeyDelay");                          /*!< Key for key delay field of Internal::TestRunConfigurationExtraAspect */
+const Utils::Key MouseDelayKey = Utils::Key(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".MouseDelay");                      /*!< Key for mouse delay field of Internal::TestRunConfigurationExtraAspect */
+const Utils::Key CrashHandlerEnabledKey = Utils::Key(TEST_RUN_CONFIGURATION_EXTRA_ASPECT_ID ".CrashHandlerEnabled");    /*!< Key for crash handler enabled field of Internal::TestRunConfigurationExtraAspect */
 /*!@}*/
 
 /*!

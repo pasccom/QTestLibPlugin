@@ -34,6 +34,7 @@ namespace ProjectExplorer {
     class Target;
     class RunConfiguration;
     class RunConfigurationFactory;
+    class RunWorkerFactory;
 }
 
 namespace QTestLibPlugin {
@@ -192,16 +193,6 @@ public:
      * \return \c SynchronousShutdown in all cases.
      */
     ShutdownFlag aboutToShutdown(void) override;
-#ifdef BUILD_TESTS
-    /*!
-     * \brief Creates tests instances
-     *
-     * This method creates instances of test classes.
-     * \note This function of this method is extensively described in Qt Creator developper documentation.
-     * \return A list of instances of test classes.
-     */
-    QVector<QObject *> createTestObjects(void) const override;
-#endif
 private slots:
     /*!
      * \brief Handler for project openning
@@ -285,6 +276,7 @@ private:
     QAction* mRunTestsAction;                                       /*!< The <tt>"Run tests"</tt> action for project pane context menu */
     ProjectExplorer::Project* mTreeCurrentProject;                  /*!< The selected project in project tree */
     ProjectExplorer::RunConfigurationFactory* mRunConfigFactory;    /*!< The factory for test run configurations */
+    ProjectExplorer::RunWorkerFactory* mRunWorkerFactory;           /*!< The factory for test run workers */
 };
 
 } // namespace Internal

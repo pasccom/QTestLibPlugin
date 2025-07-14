@@ -22,15 +22,15 @@
 #include "../qtestlibpluginconstants.h"
 
 #include <projectexplorer/projectexplorer.h>
+#include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/projecttree.h>
-#include <projectexplorer/session.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/kit.h>
 #include <projectexplorer/kitmanager.h>
-#include <projectexplorer/kitinformation.h>
 #include <projectexplorer/buildconfiguration.h>
 #include <projectexplorer/buildinfo.h>
 #include <projectexplorer/toolchain.h>
+#include <projectexplorer/toolchainkitaspect.h>
 #include <projectexplorer/runconfiguration.h>
 #include <projectexplorer/runcontrol.h>
 
@@ -41,6 +41,7 @@
 #include <coreplugin/icore.h>
 
 #include <utils/proxyaction.h>
+#include <utils/processinterface.h>
 
 #include <QAction>
 #include <QMenu>
@@ -56,15 +57,15 @@ TestActionsTest::TestActionsTest(void):
 
 void TestActionsTest::initTestCase(void)
 {
-    QStringList projectPathes;
+    Utils::FilePaths projectPathes;
 
     // NOTE _data() function is not available for initTestCase()
-    projectPathes << QLatin1String(TESTS_DIR "/OneSubTest");
-    projectPathes << QLatin1String(TESTS_DIR "/TwoSubTests");
-    projectPathes << QLatin1String(TESTS_DIR "/NoSubTestOne");
-    projectPathes << QLatin1String(TESTS_DIR "/NoSubTestTwo");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "OneSubTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo");
 
-    foreach (QString projectPath, projectPathes)
+    foreach (Utils::FilePath projectPath, projectPathes)
         QVERIFY(removeProjectUserFiles(projectPath));
 }
 
@@ -90,18 +91,18 @@ void TestActionsTest::cleanup(void)
 
 void TestActionsTest::testOpenProjectWithTests_data(void)
 {
-    QTest::addColumn<QString>("projectPath");
+    QTest::addColumn<Utils::FilePath>("projectPath");
 
-    QTest::newRow("OneSubTest") << TESTS_DIR "/OneSubTest/OneSubTest.pro";
-    QTest::newRow("TwoSubTests") << TESTS_DIR "/TwoSubTests/TwoSubTests.pro";
+    QTest::newRow("OneSubTest") << Utils::FilePath::fromString(TESTS_DIR "OneSubTest/OneSubTest.pro");
+    QTest::newRow("TwoSubTests") << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests/TwoSubTests.pro");
 }
 
 void TestActionsTest::testOpenProjectWithTests(void)
 {
-    QFETCH(QString, projectPath);
+    QFETCH(Utils::FilePath, projectPath);
 
     QVERIFY(openQMakeProject(projectPath, &mProject));
-    QCOMPARE(mProject->projectFilePath().toString(), projectPath);
+    QCOMPARE(mProject->projectFilePath(), projectPath);
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject, true, true));
     SUB_TEST_FUNCTION(checkContextMenuAction(mProject, true));
@@ -116,18 +117,18 @@ void TestActionsTest::testOpenProjectWithTests(void)
 
 void TestActionsTest::testOpenProjectWithoutTests_data(void)
 {
-    QTest::addColumn<QString>("projectPath");
+    QTest::addColumn<Utils::FilePath>("projectPath");
 
-    QTest::newRow("NoSubTestOne") << TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro";
-    QTest::newRow("NoSubTestTwo") << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro";
+    QTest::newRow("NoSubTestOne") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne/NoSubTestOne.pro");
+    QTest::newRow("NoSubTestTwo") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo/NoSubTestTwo.pro");
 }
 
 void TestActionsTest::testOpenProjectWithoutTests(void)
 {
-    QFETCH(QString, projectPath);
+    QFETCH(Utils::FilePath, projectPath);
 
     QVERIFY(openQMakeProject(projectPath, &mProject));
-    QCOMPARE(mProject->projectFilePath().toString(), projectPath);
+    QCOMPARE(mProject->projectFilePath(), projectPath);
     QApplication::processEvents();
 
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject, false, false));
@@ -143,15 +144,15 @@ void TestActionsTest::testOpenProjectWithoutTests(void)
 
 void TestActionsTest::testChangeTarget(void)
 {
-    QFETCH(QString, projectPath);
+    QFETCH(Utils::FilePath, projectPath);
 
     QVERIFY(openQMakeProject(projectPath, &mProject));
-    QCOMPARE(mProject->projectFilePath().toString(), projectPath);
+    QCOMPARE(mProject->projectFilePath(), projectPath);
     if (mProject->targets().size() < 2)
         QSKIP("This test requires the project to have 2 targets.");
 
     foreach (ProjectExplorer::Target* target, mProject->targets()) {
-        ProjectExplorer::SessionManager::setActiveTarget(mProject, target, ProjectExplorer::SetActive::Cascade);
+        mProject->setActiveTarget(target, ProjectExplorer::SetActive::Cascade);
         QApplication::processEvents();
         if (mProject->activeTarget()->buildSystem()->isParsing()) {
             QSignalSpy parsingFinishedSpy(mProject->activeTarget(), SIGNAL(parsingFinished(bool)));
@@ -171,22 +172,22 @@ void TestActionsTest::testChangeTarget(void)
 
 void TestActionsTest::testTwoProjectsWithTests_data(void)
 {
-    QTest::addColumn<QString>("project1FilePath");
-    QTest::addColumn<QString>("project2FilePath");
+    QTest::addColumn<Utils::FilePath>("project1FilePath");
+    QTest::addColumn<Utils::FilePath>("project2FilePath");
 
-    QTest::newRow("OneTwo") << TESTS_DIR "/OneSubTest/OneSubTest.pro" << TESTS_DIR "/TwoSubTests/TwoSubTests.pro";
-    QTest::newRow("TwoOne") << TESTS_DIR "/TwoSubTests/TwoSubTests.pro" << TESTS_DIR "/OneSubTest/OneSubTest.pro";
+    QTest::newRow("OneTwo") << Utils::FilePath::fromString(TESTS_DIR "OneSubTest/OneSubTest.pro") << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests/TwoSubTests.pro");
+    QTest::newRow("TwoOne") << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests/TwoSubTests.pro") << Utils::FilePath::fromString(TESTS_DIR "OneSubTest/OneSubTest.pro");
 }
 
 void TestActionsTest::testTwoProjectsWithTests(void)
 {
-    QFETCH(QString, project1FilePath);
-    QFETCH(QString, project2FilePath);
+    QFETCH(Utils::FilePath, project1FilePath);
+    QFETCH(Utils::FilePath, project2FilePath);
 
     QVERIFY(openQMakeProject(project1FilePath, &mProject1));
-    QCOMPARE(mProject1->projectFilePath().toString(), project1FilePath);
+    QCOMPARE(mProject1->projectFilePath(), project1FilePath);
     QVERIFY(openQMakeProject(project2FilePath, &mProject2));
-    QCOMPARE(mProject2->projectFilePath().toString(), project2FilePath);
+    QCOMPARE(mProject2->projectFilePath(), project2FilePath);
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, true, true));
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject2, true, true));
@@ -215,22 +216,22 @@ void TestActionsTest::testTwoProjectsWithTests(void)
 
 void TestActionsTest::testTwoProjectsWithAndWithoutTests_data(void)
 {
-    QTest::addColumn<QString>("project1FilePath");
-    QTest::addColumn<QString>("project2FilePath");
+    QTest::addColumn<Utils::FilePath>("project1FilePath");
+    QTest::addColumn<Utils::FilePath>("project2FilePath");
 
-    QTest::newRow("OneTwo") << TESTS_DIR "/OneSubTest/OneSubTest.pro" << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro";
-    QTest::newRow("TwoOne") << TESTS_DIR "/TwoSubTests/TwoSubTests.pro" << TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro";
+    QTest::newRow("OneTwo") << Utils::FilePath::fromString(TESTS_DIR "OneSubTest/OneSubTest.pro") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo/NoSubTestTwo.pro");
+    QTest::newRow("TwoOne") << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests/TwoSubTests.pro") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne/NoSubTestOne.pro");
 }
 
 void TestActionsTest::testTwoProjectsWithAndWithoutTests(void)
 {
-    QFETCH(QString, project1FilePath);
-    QFETCH(QString, project2FilePath);
+    QFETCH(Utils::FilePath, project1FilePath);
+    QFETCH(Utils::FilePath, project2FilePath);
 
     QVERIFY(openQMakeProject(project1FilePath, &mProject1));
-    QCOMPARE(mProject1->projectFilePath().toString(), project1FilePath);
+    QCOMPARE(mProject1->projectFilePath(), project1FilePath);
     QVERIFY(openQMakeProject(project2FilePath, &mProject2));
-    QCOMPARE(mProject2->projectFilePath().toString(), project2FilePath);
+    QCOMPARE(mProject2->projectFilePath(), project2FilePath);
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, true, true));
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject2, false, false));
@@ -259,22 +260,22 @@ void TestActionsTest::testTwoProjectsWithAndWithoutTests(void)
 
 void TestActionsTest::testTwoProjectsWithoutAndWithTests_data(void)
 {
-    QTest::addColumn<QString>("project1FilePath");
-    QTest::addColumn<QString>("project2FilePath");
+    QTest::addColumn<Utils::FilePath>("project1FilePath");
+    QTest::addColumn<Utils::FilePath>("project2FilePath");
 
-    QTest::newRow("OneTwo") << TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro" << TESTS_DIR "/TwoSubTests/TwoSubTests.pro";
-    QTest::newRow("TwoOne") << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro" << TESTS_DIR "/OneSubTest/OneSubTest.pro";
+    QTest::newRow("OneTwo") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne/NoSubTestOne.pro") << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests/TwoSubTests.pro");
+    QTest::newRow("TwoOne") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo/NoSubTestTwo.pro") << Utils::FilePath::fromString(TESTS_DIR "OneSubTest/OneSubTest.pro");
 }
 
 void TestActionsTest::testTwoProjectsWithoutAndWithTests(void)
 {
-    QFETCH(QString, project1FilePath);
-    QFETCH(QString, project2FilePath);
+    QFETCH(Utils::FilePath, project1FilePath);
+    QFETCH(Utils::FilePath, project2FilePath);
 
     QVERIFY(openQMakeProject(project1FilePath, &mProject1));
-    QCOMPARE(mProject1->projectFilePath().toString(), project1FilePath);
+    QCOMPARE(mProject1->projectFilePath(), project1FilePath);
     QVERIFY(openQMakeProject(project2FilePath, &mProject2));
-    QCOMPARE(mProject2->projectFilePath().toString(), project2FilePath);
+    QCOMPARE(mProject2->projectFilePath(), project2FilePath);
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, false, false));
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject2, true, true));
@@ -302,22 +303,22 @@ void TestActionsTest::testTwoProjectsWithoutAndWithTests(void)
 
 void TestActionsTest::testTwoProjectsWithoutTests_data(void)
 {
-    QTest::addColumn<QString>("project1FilePath");
-    QTest::addColumn<QString>("project2FilePath");
+    QTest::addColumn<Utils::FilePath>("project1FilePath");
+    QTest::addColumn<Utils::FilePath>("project2FilePath");
 
-    QTest::newRow("OneTwo") << TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro" << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro";
-    QTest::newRow("TwoOne") << TESTS_DIR "/NoSubTestTwo/NoSubTestTwo.pro" << TESTS_DIR "/NoSubTestOne/NoSubTestOne.pro";
+    QTest::newRow("OneTwo") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne/NoSubTestOne.pro") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo/NoSubTestTwo.pro");
+    QTest::newRow("TwoOne") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo/NoSubTestTwo.pro") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne/NoSubTestOne.pro");
 }
 
 void TestActionsTest::testTwoProjectsWithoutTests(void)
 {
-    QFETCH(QString, project1FilePath);
-    QFETCH(QString, project2FilePath);
+    QFETCH(Utils::FilePath, project1FilePath);
+    QFETCH(Utils::FilePath, project2FilePath);
 
     QVERIFY(openQMakeProject(project1FilePath, &mProject1));
-    QCOMPARE(mProject1->projectFilePath().toString(), project1FilePath);
+    QCOMPARE(mProject1->projectFilePath(), project1FilePath);
     QVERIFY(openQMakeProject(project2FilePath, &mProject2));
-    QCOMPARE(mProject2->projectFilePath().toString(), project2FilePath);
+    QCOMPARE(mProject2->projectFilePath(), project2FilePath);
     QApplication::processEvents();
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject1, false, false));
     SUB_TEST_FUNCTION(checkSubMenuAction(mProject2, false, false));
@@ -368,12 +369,12 @@ void TestActionsTest::cleanupProject(int number)
     END_SUB_TEST_FUNCTION
 }
 
-void TestActionsTest::checkSubMenuAction(const QString& projectPath)
+void TestActionsTest::checkSubMenuAction(const Utils::FilePath& projectPath)
 {
     BEGIN_SUB_TEST_FUNCTION
 
     Utils::Id runProjectTestsCommandId(Constants::TestRunActionId);
-    runProjectTestsCommandId = runProjectTestsCommandId.withSuffix(projectPath);
+    runProjectTestsCommandId = runProjectTestsCommandId.withSuffix(projectPath.toFSPathString());
 
     Core::Command* runProjectTestsCommand = Core::ActionManager::command(runProjectTestsCommandId);
     QVERIFY(runProjectTestsCommand == NULL);
@@ -465,9 +466,9 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
     QCOMPARE(runControlStartedSpy.size(), 1);
     qDebug() << runControlStartedSpy.at(0);
     Utils::Environment env = project->activeTarget()->activeBuildConfiguration()->environment();
-    ProjectExplorer::ToolChain *toolChain = ProjectExplorer::ToolChainKitAspect::toolChain(project->activeTarget()->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
+    ProjectExplorer::Toolchain *toolChain = ProjectExplorer::ToolchainKitAspect::toolchain(project->activeTarget()->kit(), ProjectExplorer::Constants::CXX_LANGUAGE_ID);
     ProjectExplorer::RunControl* runControl = runControlStartedSpy.at(0).at(0).value<ProjectExplorer::RunControl*>();
-    ProjectExplorer::Runnable runnable = runControl->runConfiguration()->runnable();
+    Utils::ProcessRunData runnable = runControl->runnable();
 
     QSignalSpy runControlStoppedSpy(runControl, SIGNAL(stopped()));
     //runControl->stop();
@@ -475,8 +476,11 @@ void TestActionsTest::runMakeCheck(ProjectExplorer::Project* project, QAction* r
     runControlStoppedSpy.wait(1000);
     QCOMPARE(runControlStoppedSpy.size(), 1);
 
-    QCOMPARE(runnable.executable, toolChain->makeCommand(env));
-    QVERIFY(runnable.commandLineArguments.endsWith(QLatin1String("check")));
+    QCOMPARE(runnable.command.executable(), toolChain->makeCommand(env));
+    qDebug() << runnable.command.arguments();
+    QVERIFY(runnable.command.splitArguments().size() >= 3);
+    QCOMPARE(runnable.command.splitArguments().at(0), QLatin1String("-f"));
+    QCOMPARE(runnable.command.splitArguments().at(2), QLatin1String("check"));
 
     END_SUB_TEST_FUNCTION
 }

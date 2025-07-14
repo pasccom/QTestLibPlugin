@@ -277,24 +277,24 @@ public:
     /*!
      * \brief Tests whether the associated parser can be useful.
      *
-     * Tells whether the associated parser can potentially parse the test associated with the given ProjectExplorer::RunConfiguration.
+     * Tells whether the associated parser can potentially parse the test associated with the given ProjectExplorer::RunControl.
      *
-     * \param runConfiguration The run configuration to test.
+     * \param runControl The run control to test.
      * \return \c true, if the associated parser may parse the test output.
      */
-    virtual bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const = 0;
+    virtual bool canParse(ProjectExplorer::RunControl* runControl) const = 0;
     /*!
      * \brief Returns an associated parser instance.
      *
-     * Allocates a new associated parser instance, with the given ProjectExplorer::RunConfiguration as parent.
-     * The parser is thus deallocated when the ProjectExplorer::RunConfiguration is (but you can do this manually before).
+     * Allocates a new associated parser instance, with the given ProjectExplorer::RunControl as parent.
+     * The parser is thus deallocated when the ProjectExplorer::RunControl is (but you can do this manually before).
      * \note If canParse() returns \c false, this function retuns \c NULL.
      *
-     * \param runConfiguration The run configuation the parser will be run against.
+     * \param runControl The run control the parser will be run against.
      * \return An instance of the associated test output parser
      * or \c NULL if the parser can not possibly parse the test output.
      */
-    virtual AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const = 0;
+    virtual AbstractTestParser* getParserInstance(ProjectExplorer::RunControl* runControl) const = 0;
 protected:
     /*!
      * \brief Constructor

@@ -22,11 +22,11 @@
 #include <QObject>
 #include <QDateTime>
 
-#include <qtestlibargsparser.h>
+#include "../qtestlibargsparser.h"
 
 namespace ProjectExplorer {
     class Project;
-    class RunConfiguration;
+    class RunControl;
 }
 
 namespace QTestLibPlugin {
@@ -36,7 +36,7 @@ class QMakePlainTextQTestLibParserFactoryTest : public QObject
 {
     Q_OBJECT
 public:
-    inline QMakePlainTextQTestLibParserFactoryTest(void) {qsrand(QDateTime::currentMSecsSinceEpoch());}
+    inline QMakePlainTextQTestLibParserFactoryTest(void) {}
 private Q_SLOTS:
     void initTestCase(void);
     void init(void);
@@ -60,7 +60,7 @@ private:
     void dataMakeCheck(void);
     void runTest(const QString& testName, const QStringList &cmdArgs, bool result);
     void runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result);
-    void testFactory(ProjectExplorer::RunConfiguration* testRunConfig, bool result);
+    void testFactory(ProjectExplorer::RunControl* testRunControl, bool result);
 
     ProjectExplorer::Project* mProject;
 };

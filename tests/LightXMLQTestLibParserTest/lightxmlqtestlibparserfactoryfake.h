@@ -19,10 +19,10 @@
 #ifndef LIGHTXMLQTESTLIBPARSERFACTORYFAKE_H
 #define LIGHTXMLQTESTLIBPARSERFACTORYFAKE_H
 
-#include "testmodelfactory.h"
-#include "lightxmlqtestlibparser.h"
+#include <testmodelfactory.h>
+#include <lightxmlqtestlibparser.h>
 
-#include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 
 class Fake {};
 
@@ -35,8 +35,8 @@ class LightXMLQTestLibParserFactory : public AbstractTestParserFactory
 public:
     inline LightXMLQTestLibParserFactory(void):
         AbstractTestParserFactory() {}
-    inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {Q_UNUSED(runConfiguration); return true;}
-    inline AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const {return new LightXMLQTestLibParser(runConfiguration);}
+    inline bool canParse(ProjectExplorer::RunControl* runControl) const {Q_UNUSED(runControl); return true;}
+    inline AbstractTestParser* getParserInstance(ProjectExplorer::RunControl* runControl) const {return new LightXMLQTestLibParser(runControl);}
 };
 
 } // namespace Internal

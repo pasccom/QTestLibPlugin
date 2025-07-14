@@ -21,6 +21,7 @@
 #include "qtestlibpluginconstants.h"
 
 #include <projectexplorer/target.h>
+#include <projectexplorer/projectexplorerconstants.h>
 
 #include <qmakeprojectmanager/qmakeprojectmanagerconstants.h>
 #include <qmakeprojectmanager/qmakeproject.h>
@@ -46,6 +47,7 @@ QList<ProjectExplorer::RunConfigurationCreationInfo> QMakeTestRunConfigurationFa
 
     ProjectExplorer::RunConfigurationCreationInfo rci;
     rci.factory = this;
+    rci.buildKey = QLatin1String("make check");
     rci.displayName = QLatin1String("make check");
     return {rci};
 }

@@ -22,7 +22,7 @@
 #include <utils/qtcassert.h>
 
 #include <QCoreApplication>
-#include <QLinkedList>
+#include <QRegExp>
 #include <QtDebug>
 
 namespace QTestLibPlugin {
@@ -37,8 +37,8 @@ TestRowList::operator QString () const
     for (const_iterator it = constBegin(); it != constEnd(); it++) {
         if (it->isEmpty())
             continue;
-        if (it->contains(nonAlphaRegExp))
-            ret = ret + " \"" + QString(*it).replace(escapeRegExp, "\\\\\\1") + "\"";
+        if (nonAlphaRegExp.containedIn(*it))
+            ret = ret + " \"" + escapeRegExp.replaceIn(*it, "\\\\\\1") + "\"";
         else
             ret = ret + " " + *it;
     }
@@ -59,8 +59,8 @@ TestCaseList::operator QString () const
             ret = ret + " " + it->first;
         } else {
             for (QString testRow : it->second) {
-                if (testRow.contains(nonAlphaRegExp))
-                    ret = ret + " \"" + it->first + ":" + testRow.replace(escapeRegExp, "\\\\\\1") + "\"";
+                if (nonAlphaRegExp.containedIn(testRow))
+                    ret = ret + " \"" + it->first + ":" + escapeRegExp.replaceIn(testRow, "\\\\\\1") + "\"";
                 else
                     ret = ret + " " + it->first + ":" + testRow;
             }
@@ -96,8 +96,8 @@ TestClassList::operator QString () const
                     ret = ret + " " + prefix;
                 } else {
                     for (QString testRow : testCase.second) {
-                        if (testRow.contains(nonAlphaRegExp))
-                            ret = ret + " \"" + prefix + testRow.replace(escapeRegExp, "\\\\\\1") + "\"";
+                        if (nonAlphaRegExp.containedIn(testRow))
+                            ret = ret + " \"" + prefix + escapeRegExp.replaceIn(testRow, "\\\\\\1") + "\"";
                         else
                             ret = ret + " " + prefix + testRow;
                     }
@@ -133,7 +133,7 @@ QTestLibArgsParser::QTestLibArgsParser(const QTestLibArgsParser& other)
     }
 }
 
-void QTestLibArgsParser::toMap(QVariantMap& map) const
+void QTestLibArgsParser::toMap(Utils::Store& map) const
 {
     QTC_ASSERT(mOutput == NormalOutput, );
 
@@ -155,7 +155,7 @@ void QTestLibArgsParser::toMap(QVariantMap& map) const
         map.insert(Constants::CrashHandlerEnabledKey, false);
 }
 
-void QTestLibArgsParser::fromMap(const QVariantMap& map)
+void QTestLibArgsParser::fromMap(const Utils::Store& map)
 {
     QTC_ASSERT(mOutput == NormalOutput, );
 

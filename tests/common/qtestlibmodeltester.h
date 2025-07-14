@@ -71,8 +71,8 @@ private:
     void isOutputFormat(const QDomElement& element, bool *ret);
     void isOutputVerbosity(const QDomElement& element, bool *ret);
     void isOutputQt(const QDomElement& element, bool *ret);
-    bool isOutputMinQt(const QtVersion& qt);
-    bool isOutputMaxQt(const QtVersion& qt);
+    bool isOutputMinQt(const int qt);
+    bool isOutputMaxQt(const int qt);
     void isOutputType(const QDomElement& element, bool* ret);
 
     void parseResults(const QDomElement& element, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult>& results);
@@ -82,6 +82,8 @@ private:
     void parseRow(const QModelIndex& index, const QDomElement& element);
     void parseMessage(const QModelIndex& index, const QDomElement& element);
     void checkLocation(const QModelIndex& index, const QDomElement& element);
+
+    unsigned int qtVersionStrToInt(const QString& qtVersionStr);
 
     const QAbstractItemModel *mModel;
     QString mResultFilePath;

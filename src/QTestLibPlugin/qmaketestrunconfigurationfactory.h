@@ -95,13 +95,6 @@ public:
      * \sa canHandle(), canCreate(), canRestore(), canClone()
      */
     static bool isUseful(ProjectExplorer::Project* project);
-private:
-    //ProjectExplorer::SimpleRunWorkerFactory<ProjectExplorer::SimpleTargetRunner, TestRunConfiguration> runWorkerFactory;
-    ProjectExplorer::RunWorkerFactory mRunWorkerFactory {
-        ProjectExplorer::RunWorkerFactory::make<ProjectExplorer::SimpleTargetRunner>(),
-        {ProjectExplorer::Constants::NORMAL_RUN_MODE, ProjectExplorer::Constants::DEBUG_RUN_MODE},
-        {Utils::Id(Constants::TestRunConfigurationId)}
-    };
 };
 
 } // Internal

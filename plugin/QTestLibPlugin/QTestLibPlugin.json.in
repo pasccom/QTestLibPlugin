@@ -1,12 +1,14 @@
 {
-    \"Name\" : \"QTestLibPlugin\",
-    \"Version\" : \"0.0.18\",
-    \"CompatVersion\" : \"0.0.18\",
-    \"Vendor\" : \"Pascal COMBES\",
-    \"Copyright\" : \"(C) Pascal COMBES <pascom@orange.fr>\",
-    \"License\" : \"GPLv3\",
-    \"Description\" : \"This plugin parses the output of a test using QTestLib and format its in a more usable way.\",
-    \"Url\" : \"https://github.com/pasccom/QTestLibPlugin\",
-    $$dependencyList
+    "Id" : "qtestlibplugin",
+    "Name" : "QTestLibPlugin",
+    "Version" : "0.0.18",
+    "CompatVersion" : "0.0.18",
+    "Vendor" : "Pascal COMBES",
+    "VendorId": "pasccom",
+    "Copyright" : "(C) Pascal COMBES <pascom@orange.fr>",
+    "License" : "GPLv3",
+    "Description" : "This plugin parses the output of a test using QTestLib and format its in a more usable way.",
+    "Url" : "https://github.com/pasccom/QTestLibPlugin",
+    ${IDE_PLUGIN_DEPENDENCIES}
 }
 

@@ -514,15 +514,15 @@ void QTestLibModel::TestItem::appendChild(TestItem *item)
     if (item->mParent != NULL)
         return;
 
-    mChildren.append(item);
+    mChildren.push_back(item);
     item->mParent = this;
     mChildrenCount++;
 }
 
 void QTestLibModel::TestItem::replace(TestItem *item, int first, int last)
 {
-    QLinkedList<TestItem*>::iterator firstIt = item->mChildren.begin();
-    QLinkedList<TestItem*>::iterator lastIt = (last < 0) ? item->mChildren.end() : item->mChildren.begin();
+    std::list<TestItem*>::iterator firstIt = item->mChildren.begin();
+    std::list<TestItem*>::iterator lastIt = (last < 0) ? item->mChildren.end() : item->mChildren.begin();
 
     while (first-- > 0)
         firstIt++;
@@ -537,7 +537,7 @@ void QTestLibModel::TestItem::replace(TestItem *item, int first, int last)
         firstIt = item->mChildren.erase(firstIt);
         item->mChildrenCount--;
 
-        mChildren.append(child);
+        mChildren.push_back(child);
         child->mParent = this;
         mChildrenCount++;
     }
@@ -558,9 +558,9 @@ void QTestLibModel::TestItem::updateResult(MessageType result)
 
 QTestLibModel::TestItem* QTestLibModel::TestItem::findChild(const QString& name) const
 {
-    QLinkedList<TestItem *>::const_iterator it = mChildren.end();
+    std::list<TestItem *>::const_iterator it = mChildren.end();
 
-    if (mChildren.isEmpty())
+    if (mChildren.empty())
         return NULL;
 
     do {
@@ -586,7 +586,7 @@ int QTestLibModel::TestItem::findChid(TestItem *item) const
 
 QTestLibModel::TestItem* QTestLibModel::TestItem::child(int row) const
 {
-    QLinkedList<TestItem *>::const_iterator it = mChildren.begin();
+    std::list<TestItem *>::const_iterator it = mChildren.begin();
 
     while ((it != mChildren.end()) && row--)
         it++;
@@ -598,7 +598,7 @@ QTestLibModel::TestItem* QTestLibModel::TestItem::child(int row) const
 
 bool QTestLibModel::TestItem::removeChild(TestItem *item)
 {
-    int removed = mChildren.removeAll(item);
+    int removed = mChildren.remove(item);
 
     if (removed == 0)
         return false;

@@ -101,7 +101,7 @@ protected:
      * \param tag The tag of the current element.
      * \return TestModelFactory::Unsure in all cases
      */
-    virtual inline TestModelFactory::ParseResult startElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag) {Q_UNUSED(runControl); Q_UNUSED(tag); return TestModelFactory::Unsure;}
+    virtual inline TestModelFactory::ParseResult startElementParsed(ProjectExplorer::RunControl* runControl, const QStringView& tag) {Q_UNUSED(runControl); Q_UNUSED(tag); return TestModelFactory::Unsure;}
     /*!
      * \brief Handles end of elements
      *
@@ -111,7 +111,7 @@ protected:
      * \param tag The tag of the currently closed element.
      * \return One of TestModelFactory::ParseResult as described hereinabove.
      */
-    virtual inline TestModelFactory::ParseResult endElementParsed(ProjectExplorer::RunControl* runControl, const QStringRef& tag) {Q_UNUSED(runControl); Q_UNUSED(tag); return TestModelFactory::Unsure;}
+    virtual inline TestModelFactory::ParseResult endElementParsed(ProjectExplorer::RunControl* runControl, const QStringView& tag) {Q_UNUSED(runControl); Q_UNUSED(tag); return TestModelFactory::Unsure;}
     /*!
      * \brief Handles CDATA sections
      *

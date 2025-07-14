@@ -32,6 +32,7 @@
 
 #include <testextraaspect.h>
 #include <qmaketestrunconfigurationfactory.h>
+#include <testrunworkerfactory.h>
 
 #ifdef BUILD_TESTS
 #   include <Test/qmakeplaintextqtestlibparserfactorytest.h>
@@ -56,8 +57,9 @@
 #include <coreplugin/coreconstants.h>
 
 #include <projectexplorer/projectexplorer.h>
+#include <projectexplorer/projectexplorerconstants.h>
+#include <projectexplorer/projectmanager.h>
 #include <projectexplorer/projecttree.h>
-#include <projectexplorer/session.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/runconfiguration.h>
@@ -109,8 +111,8 @@ bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorStrin
     qmFile = QString(QLatin1String("qtestlibplugin_%1.qm")).arg(qmFile);
 
     QTranslator *translator = new QTranslator(this);
-    if (translator->load(qmFile, Core::ICore::resourcePath() + QDir::separator() + QLatin1String("translations")) ||
-        translator->load(qmFile, Core::ICore::userResourcePath() + QDir::separator() + QLatin1String("translations")))
+    if (translator->load(qmFile, Core::ICore::resourcePath("translations").nativePath()) ||
+        translator->load(qmFile, Core::ICore::userResourcePath("translations").nativePath()))
         qApp->installTranslator(translator);
     else
         qWarning() << qPrintable(QString(QLatin1String("Translator file \"%1\" not found")).arg(qmFile));
@@ -135,6 +137,7 @@ bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorStrin
 
     // Run configuration factories
     mRunConfigFactory = new QMakeTestRunConfigurationFactory;
+    mRunWorkerFactory = new TestRunWorkerFactory;
 
     // New sub-menu in build menu and action in project tree context menu
     mRunTestsMenu = Core::ActionManager::createMenu(Constants::TestRunMenuId);
@@ -156,7 +159,7 @@ bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorStrin
     projectContextMenu->addAction(cmd, ProjectExplorer::Constants::G_PROJECT_RUN);
 
     // Load plugin settings
-    QSettings *settings = Core::ICore::settings(QSettings::UserScope);
+    Utils::QtcSettings *settings = Core::ICore::settings(QSettings::UserScope);
     settings->beginGroup(QTestLibPlugin::Constants::PluginName);
     mOutputPane->loadSettings(settings);
     settings->endGroup();
@@ -164,14 +167,29 @@ bool TestLibPlugin::initialize(const QStringList &arguments, QString *errorStrin
     // Connections
     connect(ProjectExplorer::ProjectExplorerPlugin::instance(), SIGNAL(aboutToExecuteRunControl(ProjectExplorer::RunControl*, Utils::Id)),
             mModel, SLOT(appendTestRun(ProjectExplorer::RunControl*)));
-    connect(ProjectExplorer::SessionManager::instance(), SIGNAL(projectAdded(ProjectExplorer::Project*)),
+    connect(ProjectExplorer::ProjectManager::instance(), SIGNAL(projectAdded(ProjectExplorer::Project*)),
             this, SLOT(handleProjectOpen(ProjectExplorer::Project*)));
-    connect(ProjectExplorer::SessionManager::instance(), SIGNAL(aboutToRemoveProject(ProjectExplorer::Project*)),
+    connect(ProjectExplorer::ProjectManager::instance(), SIGNAL(aboutToRemoveProject(ProjectExplorer::Project*)),
             this, SLOT(handleProjectClose(ProjectExplorer::Project*)));
     connect(ProjectExplorer::ProjectTree::instance(), SIGNAL(currentProjectChanged(ProjectExplorer::Project*)),
             this, SLOT(handleCurrentProjectTreeChange(ProjectExplorer::Project*)));
     connect(mRunTestsAction, SIGNAL(triggered()),
             this, SLOT(runTest()));
+
+#ifdef BUILD_TESTS
+    addTest<Test::QMakePlainTextQTestLibParserFactoryTest>();
+    addTest<Test::QMakeXMLQTestLibParserFactoryTest>();
+    addTest<Test::QMakeLightXMLQTestLibParserFactoryTest>();
+    addTest<Test::QMakeXUnitXMLQTestLibParserFactoryTest>();
+    addTest<Test::ForcePlainTextQTestLibParserFactoryTest>();
+    addTest<Test::ForceXMLQTestLibParserFactoryTest>();
+    addTest<Test::ForceLightXMLQTestLibParserFactoryTest>();
+    addTest<Test::ForceXUnitXMLQTestLibParserFactoryTest>();
+    addTest<Test::TestModelFactoryTest>();
+    addTest<Test::TestSuiteModelTest>();
+    addTest<Test::TestActionsTest>();
+    addTest<Test::TestRunConfigurationFactoryTest>();
+#endif
 
     return true;
 }
@@ -190,7 +208,7 @@ ExtensionSystem::IPlugin::ShutdownFlag TestLibPlugin::aboutToShutdown(void)
     // Hide UI (if you add UI that is not in the main window directly)
 
     // Save plugin settings
-    QSettings *settings = Core::ICore::settings(QSettings::UserScope);
+    Utils::QtcSettings *settings = Core::ICore::settings(QSettings::UserScope);
     settings->beginGroup(QTestLibPlugin::Constants::PluginName);
     mOutputPane->saveSettings(settings);
     settings->endGroup();
@@ -268,14 +286,14 @@ void TestLibPlugin::handleActiveTargetChange(ProjectExplorer::Target* target, bo
 
     ProjectExplorer::Project* project = qobject_cast<ProjectExplorer::Project*>(sender());
     if (clean && (project != NULL)) {
-        foreach (ProjectExplorer::Target* t, project->targets()) {
+        for (ProjectExplorer::Target* t: project->targets()) {
             disconnect(t, SIGNAL(parsingFinished(bool)),
                        this, SLOT(handleProjectParsingFinished()));
             disconnect(t, SIGNAL(addedRunConfiguration(ProjectExplorer::RunConfiguration*)),
                        this, SLOT(handleNewRunConfiguration(ProjectExplorer::RunConfiguration*)));
             disconnect(t, SIGNAL(removedRunConfiguration(ProjectExplorer::RunConfiguration*)),
                        this, SLOT(handleNewRunConfiguration(ProjectExplorer::RunConfiguration*)));
-            foreach (ProjectExplorer::RunConfiguration* runConfig, t->runConfigurations())
+            for (ProjectExplorer::RunConfiguration* runConfig: t->runConfigurations())
                 handleDeleteRunConfiguration(runConfig);
         }
     }
@@ -286,7 +304,7 @@ void TestLibPlugin::handleActiveTargetChange(ProjectExplorer::Target* target, bo
             this, SLOT(handleNewRunConfiguration(ProjectExplorer::RunConfiguration*)));
     connect(target, SIGNAL(removedRunConfiguration(ProjectExplorer::RunConfiguration*)),
             this, SLOT(handleDeleteRunConfiguration(ProjectExplorer::RunConfiguration*)));
-    foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations())
+    for (ProjectExplorer::RunConfiguration* runConfig: target->runConfigurations())
         handleNewRunConfiguration(runConfig);
 }
 
@@ -295,9 +313,10 @@ void TestLibPlugin::handleProjectParsingFinished(void)
     ProjectExplorer::Target* target = qobject_cast<ProjectExplorer::Target*>(sender());
     QTC_ASSERT(target != NULL, return);
 
-    foreach (ProjectExplorer::RunConfiguration* runConfig, target->runConfigurations()) {
+    qDebug() << "Target::parsingFinished()";
+    for (ProjectExplorer::RunConfiguration* runConfig: target->runConfigurations()) {
         if ((runConfig->aspect<TestExtraAspect>() == NULL) && TestExtraAspect::isUseful(runConfig))
-            runConfig->addAspect<TestExtraAspect>();
+            runConfig->registerAspect<TestExtraAspect>();
     }
 }
 
@@ -405,7 +424,7 @@ void TestLibPlugin::runTest(void)
     QTC_ASSERT(mTreeCurrentProject->activeTarget() != NULL, return);
 
     ProjectExplorer::RunConfiguration* runConfig = NULL;
-    foreach (ProjectExplorer::RunConfiguration* rc, mTreeCurrentProject->activeTarget()->runConfigurations()) {
+    for (ProjectExplorer::RunConfiguration* rc: mTreeCurrentProject->activeTarget()->runConfigurations()) {
         if (rc->id() == Utils::Id(Constants::TestRunConfigurationId))
             runConfig = rc;
     }
@@ -416,25 +435,3 @@ void TestLibPlugin::runTest(void)
 
     ProjectExplorer::ProjectExplorerPlugin::runRunConfiguration(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE, true);
 }
-
-#ifdef BUILD_TESTS
-QVector<QObject *> TestLibPlugin::createTestObjects(void) const
-{
-    QVector<QObject *> testObjects;
-
-    testObjects << new Test::QMakePlainTextQTestLibParserFactoryTest;
-    testObjects << new Test::QMakeXMLQTestLibParserFactoryTest;
-    testObjects << new Test::QMakeLightXMLQTestLibParserFactoryTest;
-    testObjects << new Test::QMakeXUnitXMLQTestLibParserFactoryTest;
-    testObjects << new Test::ForcePlainTextQTestLibParserFactoryTest;
-    testObjects << new Test::ForceXMLQTestLibParserFactoryTest;
-    testObjects << new Test::ForceLightXMLQTestLibParserFactoryTest;
-    testObjects << new Test::ForceXUnitXMLQTestLibParserFactoryTest;
-    testObjects << new Test::TestModelFactoryTest;
-    testObjects << new Test::TestSuiteModelTest;
-    testObjects << new Test::TestActionsTest;
-    testObjects << new Test::TestRunConfigurationFactoryTest;
-
-    return testObjects;
-}
-#endif

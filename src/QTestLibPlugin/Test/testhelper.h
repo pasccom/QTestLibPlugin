@@ -19,17 +19,19 @@
 #ifndef TESTHELPER_H
 #define TESTHELPER_H
 
-#include <QString>
-
 namespace ProjectExplorer {
     class Project;
+}
+
+namespace Utils {
+    class FilePath;
 }
 
 namespace QTestLibPlugin {
 namespace Test {
 
-bool removeProjectUserFiles(const QString& projectPath);
-bool openQMakeProject(const QString& projectFilePath, ProjectExplorer::Project** project);
+bool removeProjectUserFiles(const Utils::FilePath& projectPath);
+bool openQMakeProject(const Utils::FilePath& projectFilePath, ProjectExplorer::Project** project);
 bool closeProject(ProjectExplorer::Project* project);
 
 } // Test

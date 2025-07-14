@@ -239,13 +239,30 @@ void QTestLibModelTester::isOutputQt(const QDomElement& element, bool* ret)
     QString minQt = element.attribute("qtmin");
     QString maxQt = element.attribute("qtmax");
 
-    *ret = (minQt.isNull() || isOutputMinQt(minQt)) &&
-           (maxQt.isNull() || isOutputMaxQt(maxQt));
+    *ret = (minQt.isNull() || isOutputMinQt(qtVersionStrToInt(minQt))) &&
+           (maxQt.isNull() || isOutputMaxQt(qtVersionStrToInt(maxQt)));
 
     END_SUB_TEST_FUNCTION
 }
 
-bool QTestLibModelTester::isOutputMinQt(const QtVersion& qt)
+unsigned int QTestLibModelTester::qtVersionStrToInt(const QString& qtVersionStr)
+{
+    QStringList parts = qtVersionStr.split('.');
+    if (parts.size() != 3)
+        return 0;
+
+    bool ok;
+    unsigned int major = parts[0].toInt(&ok, 10);
+    Q_ASSERT(ok);
+    unsigned int minor = parts[1].toInt(&ok, 10);
+    Q_ASSERT(ok);
+    unsigned int patch = parts[2].toInt(&ok, 10);
+    Q_ASSERT(ok);
+
+    return QT_VERSION_CHECK(major, minor, patch);
+}
+
+bool QTestLibModelTester::isOutputMinQt(const int qt)
 {
     qDebug() << "Min Qt:" << qt;
 
@@ -253,7 +270,7 @@ bool QTestLibModelTester::isOutputMinQt(const QtVersion& qt)
     return ((unsigned int) qt == 0) || (QT_VERSION >= (unsigned int) qt);
 }
 
-bool QTestLibModelTester::isOutputMaxQt(const QtVersion& qt)
+bool QTestLibModelTester::isOutputMaxQt(const int qt)
 {
     qDebug() << "Max Qt:" << qt;
 

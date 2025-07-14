@@ -20,8 +20,9 @@
 #define TESTSUITEMODELTEST_H
 
 #include <QObject>
-#include <common/qttestsubfunction.h>
-#include <common/qtestlibmodeltester.h>
+#include <QRandomGenerator>
+#include <qttestsubfunction.h>
+#include <qtestlibmodeltester.h>
 
 namespace ProjectExplorer {
     class Project;
@@ -83,8 +84,8 @@ private:
 
     QStringList mTests;
     QStringList mParserFormats;
-
     QLinkedList<ProjectExplorer::Project*> mOpenProjects;
+    QRandomGenerator* mRandom;
 };
 
 } // Test

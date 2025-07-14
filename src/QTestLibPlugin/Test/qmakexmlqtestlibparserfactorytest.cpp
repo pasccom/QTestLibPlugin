@@ -19,13 +19,13 @@
 #include "qmakexmlqtestlibparserfactorytest.h"
 #include "testhelper.h"
 
-#include <xmlqtestlibparserfactory.h>
-#include <baseqmakeqtestlibparserfactory.h>
-#include <qtestlibpluginconstants.h>
-#include <testrunconfiguration.h>
-#include <testextraaspect.h>
+#include "../xmlqtestlibparserfactory.h"
+#include "../baseqmakeqtestlibparserfactory.h"
+#include "../qtestlibpluginconstants.h"
+#include "../testrunconfiguration.h"
+#include "../testextraaspect.h"
 
-#include <projectexplorer/session.h>
+#include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/runconfiguration.h>
@@ -35,6 +35,7 @@
 #include <extensionsystem/pluginmanager.h>
 
 #include <utils/hostosinfo.h>
+#include <utils/processinterface.h>
 
 #include <QtTest>
 
@@ -43,21 +44,28 @@ namespace Test {
 
 void QMakeXMLQTestLibParserFactoryTest::initTestCase(void)
 {
-    QStringList projectPathes;
+    Utils::FilePaths projectPathes;
 
     // NOTE _data() function is not available for initTestCase()
-    projectPathes << QLatin1String(TESTS_DIR "/OneClassTest");
-    projectPathes << QLatin1String(TESTS_DIR "/AllMessagesTest");
-    projectPathes << QLatin1String(TESTS_DIR "/MultipleClassesTest");
-    projectPathes << QLatin1String(TESTS_DIR "/SignalsTest");
-    projectPathes << QLatin1String(TESTS_DIR "/LimitsTest");
-    projectPathes << QLatin1String(TESTS_DIR "/OneSubTest");
-    projectPathes << QLatin1String(TESTS_DIR "/TwoSubTests");
-    projectPathes << QLatin1String(TESTS_DIR "/NoSubTestOne");
-    projectPathes << QLatin1String(TESTS_DIR "/NoSubTestTwo");
+    projectPathes << Utils::FilePath(TESTS_DIR "/OneClassTest");
+    projectPathes << Utils::FilePath(TESTS_DIR "/AllMessagesTest");
+    projectPathes << Utils::FilePath(TESTS_DIR "/MultipleClassesTest");
+    projectPathes << Utils::FilePath(TESTS_DIR "/SignalsTest");
+    projectPathes << Utils::FilePath(TESTS_DIR "/LimitsTest");
+    projectPathes << Utils::FilePath(TESTS_DIR "/OneSubTest");
+    projectPathes << Utils::FilePath(TESTS_DIR "/TwoSubTests");
+    projectPathes << Utils::FilePath(TESTS_DIR "/NoSubTestOne");
+    projectPathes << Utils::FilePath(TESTS_DIR "/NoSubTestTwo");
 
-    foreach (QString projectPath, projectPathes)
+    foreach (Utils::FilePath projectPath, projectPathes)
         QVERIFY(removeProjectUserFiles(projectPath));
+
+    // NOTE First time ProjectExplorer::ProjectExplorerPlugin::openProject()
+    // immediately calls ProjectExplorer::Target::ParsingFinished() and
+    // consequently, openQMakeProject() does not work
+    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/OneClassTest/OneClassTest.pro"), &mProject);
+    QVERIFY(closeProject(mProject));
+
 }
 
 void QMakeXMLQTestLibParserFactoryTest::init(void)
@@ -201,12 +209,12 @@ void QMakeXMLQTestLibParserFactoryTest::testTwoSubTests(void)
 
 void QMakeXMLQTestLibParserFactoryTest::runTest(const QString& testName, const QStringList& cmdArgs, bool result)
 {
-    QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
+    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/" + testName + "/" + testName + ".pro"), &mProject));
 
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
     foreach (ProjectExplorer::RunConfiguration* runConfig, mProject->activeTarget()->runConfigurations()) {
-        QFileInfo exeFileInfo = runConfig->runnable().executable.toFileInfo();
+        QFileInfo exeFileInfo = runConfig->runnable().command.executable().toFileInfo();
         qDebug() << exeFileInfo.absoluteFilePath();
         QVERIFY(exeFileInfo.exists());
         if (QString::compare(exeFileInfo.baseName(), testName, Qt::CaseSensitive) != 0)
@@ -221,12 +229,16 @@ void QMakeXMLQTestLibParserFactoryTest::runTest(const QString& testName, const Q
     ProjectExplorer::ArgumentsAspect* argsAspect = testRunConfig->aspect<ProjectExplorer::ArgumentsAspect>();
     QVERIFY(argsAspect != nullptr);
     argsAspect->setArguments(cmdArgs.join(QLatin1Char(' ')));
-    testFactory(testRunConfig, result);
+
+    // Check the output parser factory:
+    ProjectExplorer::RunControl testRunControl(ProjectExplorer::Constants::NORMAL_RUN_MODE);
+    testRunControl.copyDataFromRunConfiguration(testRunConfig);
+    testFactory(&testRunControl, result);
 }
 
 void QMakeXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result)
 {
-    QVERIFY(openQMakeProject(TESTS_DIR "/" + testName + "/" + testName + ".pro", &mProject));
+    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/" + testName + "/" + testName + ".pro"), &mProject));
 
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
@@ -245,19 +257,22 @@ void QMakeXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, In
     testAspect->setVerbosity(verbosity);
 
     // Compare arguments to expected value:
-    ProjectExplorer::Runnable modifiedRunnable = testRunConfig->runnable();
+    Utils::ProcessRunData modifiedRunnable = testRunConfig->runnable();
     Internal::QTestLibArgsParser testArgsParser;
     testArgsParser.setOutputFormat(format);
     testArgsParser.setVerbosity(verbosity);
-    QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR "/") + testName + QLatin1String("/Makefile check"));
+    QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR) + testName + QLatin1String("/Makefile check"));
     if (!testArgsParser.toString().isEmpty())
         expectedCmdArgs.append(QString(QLatin1String(" TESTARGS=\"%1\"")).arg(testArgsParser.toString()));
-    QCOMPARE(modifiedRunnable.commandLineArguments, expectedCmdArgs);
+    QCOMPARE(modifiedRunnable.command.arguments(), expectedCmdArgs);
 
-    testFactory(testRunConfig, result);
+    // Check the output parser factory:
+    ProjectExplorer::RunControl testRunControl(ProjectExplorer::Constants::NORMAL_RUN_MODE);
+    testRunControl.copyDataFromRunConfiguration(testRunConfig);
+    testFactory(&testRunControl, result);
 }
 
-void QMakeXMLQTestLibParserFactoryTest::testFactory(ProjectExplorer::RunConfiguration* testRunConfig, bool result)
+void QMakeXMLQTestLibParserFactoryTest::testFactory(ProjectExplorer::RunControl* testRunControl, bool result)
 {
     // Retrieve factory:
     QLinkedList<QTestLibPlugin::Internal::AbstractTestParserFactory*> parserFactories = QTestLibPlugin::Internal::TestModelFactory::parserFactories(Utils::Id(QTestLibPlugin::Constants::XmlQTestLibParserFactoryId).withSuffix(QTestLibPlugin::Constants::BaseQMakeQTestLibParserFactoryId));
@@ -265,8 +280,8 @@ void QMakeXMLQTestLibParserFactoryTest::testFactory(ProjectExplorer::RunConfigur
     QTestLibPlugin::Internal::AbstractTestParserFactory* parserFactory = parserFactories.first();
     QVERIFY(parserFactory != nullptr);
 
-    QCOMPARE(parserFactory->canParse(testRunConfig), result);
-    QTestLibPlugin::Internal::AbstractTestParser* parser = parserFactory->getParserInstance(testRunConfig);
+    QCOMPARE(parserFactory->canParse(testRunControl), result);
+    QTestLibPlugin::Internal::AbstractTestParser* parser = parserFactory->getParserInstance(testRunControl);
     QCOMPARE(parser != NULL, result);
     delete parser;
 }

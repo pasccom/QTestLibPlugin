@@ -19,10 +19,10 @@
 #ifndef PLAINTEXTQTESTLIBPARSERFACTORYFAKE_H
 #define PLAINTEXTQTESTLIBPARSERFACTORYFAKE_H
 
-#include "testmodelfactory.h"
+#include <testmodelfactory.h>
 #include <plaintextqtestlibparser.h>
 
-#include <projectexplorer/runconfiguration.h>
+#include <projectexplorer/runcontrol.h>
 
 class Fake {};
 
@@ -35,8 +35,8 @@ class PlainTextQTestLibParserFactory : public AbstractTestParserFactory
 public:
     inline PlainTextQTestLibParserFactory(void):
         AbstractTestParserFactory() {}
-    inline bool canParse(ProjectExplorer::RunConfiguration *runConfiguration) const {Q_UNUSED(runConfiguration); return true;}
-    inline AbstractTestParser* getParserInstance(ProjectExplorer::RunConfiguration *runConfiguration) const {return new PlainTextQTestLibParser(runConfiguration);}
+    inline bool canParse(ProjectExplorer::RunControl* runControl) const {Q_UNUSED(runControl); return true;}
+    inline AbstractTestParser* getParserInstance(ProjectExplorer::RunControl* runControl) const {return new PlainTextQTestLibParser(runControl);}
 };
 
 } // namespace Internal

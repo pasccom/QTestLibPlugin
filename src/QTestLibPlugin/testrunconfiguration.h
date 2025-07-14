@@ -19,16 +19,13 @@
 #ifndef TESTRUNCONFIGURATION_H
 #define TESTRUNCONFIGURATION_H
 
+#include "pathaspect.h"
 #include "qtestlibargsparser.h"
 #include "qtestlibpluginconstants.h"
+#include "testextraaspect.h"
 
+#include <projectexplorer/environmentaspect.h>
 #include <projectexplorer/runconfiguration.h>
-#include <projectexplorer/applicationlauncher.h>
-
-namespace ProjectExplorer {
-    class Kit;
-    class ToolChain;
-}
 
 namespace QTestLibPlugin {
 namespace Internal {
@@ -73,9 +70,15 @@ public:
      * Returns command-line arguments to be passed to \c make.
      * \return The command-line arguments to be passed to \c make
      */
-    virtual QString commandLineArguments(void) const;
+    virtual QStringList commandLineArguments(void) const;
 
-    virtual ProjectExplorer::Runnable runnable(void) const override;
+    /*!
+     * \brief Process run information
+     *
+     * Returns the information needed to run the process.
+     * \return The information needed to run the process.
+     */
+    virtual Utils::ProcessRunData runnable(void) const override;
 
     /*!
      * \brief Set the \c Makefile path
@@ -127,7 +130,15 @@ private:
      */
     inline unsigned char targetToolChain(void) const {return mTargetToolChain;}
 
-    unsigned char mTargetToolChain;     /*!< The internal ID of the current toolchain. */
+    PathAspect mWorkingDirectoryAspect{this};                       /*!< Working directory path aspect */
+    PathAspect mMakefileAspect{this};                               /*!< Makefile path aspect */
+    PathAspect mMakeExeAspect{this};                                /*!< `make` executable path aspect */
+    PathAspect mTestRunnerAspect{this};                             /*!< Test runner path aspect */
+    Utils::IntegerAspect mMakeJobNumberAspect{this};                /*!< Aspect for the number of jobs for `make` */
+    TestExtraAspect mTestAspect{this};                              /*!< Aspect for configuring the test arguments */
+    ProjectExplorer::EnvironmentAspect mEnvironmentAspect{this};    /*!< Test environment aspect */
+
+    unsigned char mTargetToolChain;                                 /*!< The internal ID of the current toolchain. */
 
     friend class QMakeTestRunConfigurationFactory;
 };

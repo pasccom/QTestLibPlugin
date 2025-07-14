@@ -23,6 +23,7 @@
 #include "testproxymodel.h"
 
 #include "utils/qtcassert.h"
+#include "utils/qtcsettings.h"
 
 #include <QtCore>
 #include <QtWidgets>
@@ -34,6 +35,9 @@ namespace Internal {
 TestOutputPane::TestOutputPane(TestSuiteModel* model) :
     Core::IOutputPane(model), mModel(model), mOutputWidget(NULL)
 {
+    setDisplayName(tr("Test output"));
+    setPriorityInStatusBar(10);
+
     mColumnWidths.resize(3);
 
     mProxy = new TestProxyModel(this);
@@ -114,14 +118,14 @@ void TestOutputPane::clearContents(void)
     // TODO add something more visible for the user (MessageBox?)
 }
 
-void TestOutputPane::loadColumnWidth(QSettings* settings, int column, const QString& key)
+void TestOutputPane::loadColumnWidth(Utils::QtcSettings* settings, int column, const Utils::Key& key)
 {
     QVariant width = settings->value(key, QVariant(-1));
     if (width.canConvert<int>())
         mColumnWidths[column] = width.toInt();
 }
 
-void TestOutputPane::loadSettings(QSettings* settings)
+void TestOutputPane::loadSettings(Utils::QtcSettings* settings)
 {
     settings->beginGroup(QTestLibPlugin::Constants::ViewGroup);
     loadColumnWidth(settings, 0, QTestLibPlugin::Constants::DescWidthKey);
@@ -132,7 +136,8 @@ void TestOutputPane::loadSettings(QSettings* settings)
     settings->beginGroup(QTestLibPlugin::Constants::FilterProxyGroup);
     int t = QTestLibModel::FirstMessageType;
     while (++t < QTestLibModel::LastMessageType) {
-        QVariant boolean = settings->value(QTestLibModel::resultString((QTestLibModel::MessageType) t), QVariant(true));
+        QString key = QTestLibModel::resultString((QTestLibModel::MessageType) t);
+        QVariant boolean = settings->value(Utils::Key(key.toLocal8Bit()), QVariant(true));
         if (boolean.canConvert<bool>()) {
             if (boolean.toBool())
                 mProxy->enableMessageType((QTestLibModel::MessageType) t);
@@ -143,7 +148,7 @@ void TestOutputPane::loadSettings(QSettings* settings)
     settings->endGroup();
 }
 
-void TestOutputPane::saveSettings(QSettings* settings)
+void TestOutputPane::saveSettings(Utils::QtcSettings* settings)
 {
     settings->beginGroup(QTestLibPlugin::Constants::ViewGroup);
     settings->setValue(QTestLibPlugin::Constants::DescWidthKey, QVariant(mOutputWidget->columnWidth(0)));
@@ -153,9 +158,10 @@ void TestOutputPane::saveSettings(QSettings* settings)
 
     settings->beginGroup(QTestLibPlugin::Constants::FilterProxyGroup);
     int t = QTestLibModel::FirstMessageType;
-    while (++t < QTestLibModel::LastMessageType)
-        settings->setValue(QTestLibModel::resultString((QTestLibModel::MessageType) t),
-                           QVariant(mProxy->isMessageTypeEnabled((QTestLibModel::MessageType) t)));
+    while (++t < QTestLibModel::LastMessageType) {
+        QString key = QTestLibModel::resultString((QTestLibModel::MessageType) t);
+        settings->setValue(Utils::Key(key.toLocal8Bit()), QVariant(mProxy->isMessageTypeEnabled((QTestLibModel::MessageType) t)));
+    }
     settings->endGroup();
 }
 

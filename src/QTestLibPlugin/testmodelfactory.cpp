@@ -23,6 +23,7 @@
 
 #include <extensionsystem/pluginmanager.h>
 
+#include <QRegExp>
 #include <QtDebug>
 
 namespace QTestLibPlugin {
@@ -41,10 +42,10 @@ TestModelFactory::TestModelFactory(ProjectExplorer::RunControl *runControl, QObj
     qDebug() << "Run control started:" << runControl->displayName();
 
     foreach (AbstractTestParserFactory* factory, mParserFactories) {
-        if (!factory->canParse(runControl->runConfiguration()))
+        if (!factory->canParse(runControl))
             continue;
 
-        mParsers.append(factory->getParserInstance(runControl->runConfiguration()));
+        mParsers.append(factory->getParserInstance(runControl));
         Q_ASSERT(mParsers.last() != NULL);
     }
 
@@ -77,7 +78,7 @@ QLinkedList<AbstractTestParserFactory*> TestModelFactory::parserFactories(Utils:
 
 void TestModelFactory::parseTestOutput(const QString& msg, Utils::OutputFormat format)
 {
-    foreach (QString line, msg.split(QRegExp(QLatin1String("[\n\r]")))) {
+    foreach (QString line, QRegExp(QLatin1String("[\n\r]")).splitString(msg)) {
         if (line.isEmpty())
             continue;
 
