@@ -154,10 +154,8 @@ void QTestLibModelTester::loadTestResult(QDomDocument& dom)
 
     QFile domFile(mResultFilePath);
     QVERIFY(domFile.open(QIODevice::ReadOnly));
-    QString error;
-    int line = 0;
-    int column = 0;
-    QVERIFY2(dom.setContent(&domFile, false, &error, &line, &column), qPrintable(QString("%1 at %2:%3").arg(error).arg(line).arg(column)));
+    QDomDocument::ParseResult result = dom.setContent(&domFile, QDomDocument::ParseOption::Default);
+    QVERIFY2(result, qPrintable(QString("Xml parsing error: %1 at %2:%3").arg(result.errorMessage).arg(result.errorLine).arg(result.errorColumn)));
     QVERIFY(QString::compare(dom.documentElement().tagName(), "qtestliboutput", Qt::CaseSensitive) == 0);
 
     END_SUB_TEST_FUNCTION

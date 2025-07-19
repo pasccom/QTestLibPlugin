@@ -346,10 +346,8 @@ void TestSuiteModelSignalTest::loadTest(QDomDocument& dom, const QString& testNa
 
     QFile domFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + "test.xml");
     QVERIFY(domFile.open(QIODevice::ReadOnly));
-    QString error;
-    int line = 0;
-    int column = 0;
-    QVERIFY2(dom.setContent(&domFile, false, &error, &line, &column), qPrintable(QString("%1 at %2:%3").arg(error).arg(line).arg(column)));
+    QDomDocument::ParseResult result = dom.setContent(&domFile, QDomDocument::ParseOption::Default);
+    QVERIFY2(result, qPrintable(QString("Xml parsing error: %1 at %2:%3").arg(result.errorMessage).arg(result.errorLine).arg(result.errorColumn)));
     QVERIFY(QString::compare(dom.documentElement().tagName(), "qtestlibmodeltest", Qt::CaseSensitive) == 0);
 
     END_SUB_TEST_FUNCTION
@@ -361,10 +359,8 @@ void TestSuiteModelSignalTest::loadResult(QDomDocument& dom, const QString& test
 
     QFile domFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
     QVERIFY(domFile.open(QIODevice::ReadOnly));
-    QString error;
-    int line = 0;
-    int column = 0;
-    QVERIFY2(dom.setContent(&domFile, false, &error, &line, &column), qPrintable(QString("%1 at %2:%3").arg(error).arg(line).arg(column)));
+    QDomDocument::ParseResult result = dom.setContent(&domFile, QDomDocument::ParseOption::Default);
+    QVERIFY2(result, qPrintable(QString("Xml parsing error: %1 at %2:%3").arg(result.errorMessage).arg(result.errorLine).arg(result.errorColumn)));
     QVERIFY(QString::compare(dom.documentElement().tagName(), "qtestliboutput", Qt::CaseSensitive) == 0);
 
     END_SUB_TEST_FUNCTION
