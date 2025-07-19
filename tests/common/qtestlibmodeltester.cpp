@@ -347,7 +347,7 @@ void QTestLibModelTester::parseRoot(const QModelIndex& index, const QDomElement&
     BEGIN_SUB_TEST_FUNCTION
 
     qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole);
-    QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for root index should be a string");
+    QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).typeId() == QVariant::String, "Result string role for root index should be a string");
     QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type"), Qt::CaseInsensitive) == 0, "Result string for root do not match");
 
     QDomElement childElement = element.firstChildElement();
@@ -382,10 +382,10 @@ void QTestLibModelTester::parseClass(const QModelIndex& index, const QDomElement
     BEGIN_SUB_TEST_FUNCTION
 
     //qDebug() << mModel->data(index, Qt::DisplayRole) << element.attribute("name");
-    QVERIFY2(mModel->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for class index should be a string");
+    QVERIFY2(mModel->data(index, Qt::DisplayRole).typeId() == QVariant::String, "Display role for class index should be a string");
     QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.attribute("name") , Qt::CaseSensitive) == 0, "Class name do not match");
     //qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole) << element.attribute("type");
-    QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for class index should be a string");
+    QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).typeId() == QVariant::String, "Result string role for class index should be a string");
     QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type") , Qt::CaseInsensitive) == 0, "Result string for class do not match");
 
     int i = 0;
@@ -419,10 +419,10 @@ void QTestLibModelTester::parseFunction(const QModelIndex& index, const QDomElem
     BEGIN_SUB_TEST_FUNCTION
 
     //qDebug() << mModel->data(index, Qt::DisplayRole) << element.attribute("name");
-    QVERIFY2(mModel->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for function index should be a string");
+    QVERIFY2(mModel->data(index, Qt::DisplayRole).typeId() == QVariant::String, "Display role for function index should be a string");
     QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.attribute("name") , Qt::CaseSensitive) == 0, "Function name do not match");
     // qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole) << element.attribute("type", QString::null);
-    QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for function index should be a string");
+    QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).typeId() == QVariant::String, "Result string role for function index should be a string");
     QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type") , Qt::CaseInsensitive) == 0, "Result string for function do not match");
 
     int i = 0;
@@ -456,10 +456,10 @@ void QTestLibModelTester::parseRow(const QModelIndex& index, const QDomElement& 
     BEGIN_SUB_TEST_FUNCTION
 
     //qDebug() << mModel->data(index, Qt::DisplayRole) << element.attribute("title");
-    QVERIFY2(mModel->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for row index should be a string");
+    QVERIFY2(mModel->data(index, Qt::DisplayRole).typeId() == QVariant::String, "Display role for row index should be a string");
     QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), element.attribute("title") , Qt::CaseSensitive) == 0, "Row title do not match");
     //qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole) << element.attribute("type");
-    QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for row index should be a string");
+    QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).typeId() == QVariant::String, "Result string role for row index should be a string");
     QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type") , Qt::CaseInsensitive) == 0, "Result string for row do not match");
 
     QDomElement messageElement = element.firstChildElement("message");
@@ -485,7 +485,7 @@ void QTestLibModelTester::parseMessage(const QModelIndex& index, const QDomEleme
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    QVERIFY2(mModel->data(index, Qt::DisplayRole).type() == QVariant::String, "Display role for message index should be a string");
+    QVERIFY2(mModel->data(index, Qt::DisplayRole).typeId() == QVariant::String, "Display role for message index should be a string");
     QVERIFY2(!element.firstChildElement("text").isNull(), "Message element should have a children text element");
     QVERIFY2(element.firstChildElement("text").nextSiblingElement("text").isNull(), "Message element should have a children text element");
 
@@ -498,7 +498,7 @@ void QTestLibModelTester::parseMessage(const QModelIndex& index, const QDomEleme
              << textElement.firstChild().toText().data().trimmed();
     if (QString::compare(textElement.attribute("strict", "false"), "true", Qt::CaseInsensitive) == 0)
         QVERIFY2(QString::compare(mModel->data(index, Qt::DisplayRole).toString(), textElement.firstChild().toText().data().trimmed() , Qt::CaseSensitive) == 0, "Message text do not match");
-    QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).type() == QVariant::String, "Result string role for message index should be a string");
+    QVERIFY2(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).typeId() == QVariant::String, "Result string role for message index should be a string");
     qDebug() << mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString()
              << element.attribute("type");
     QVERIFY2(QString::compare(mModel->data(index, QTestLibPlugin::Internal::QTestLibModel::ResultStringRole).toString(), element.attribute("type") , Qt::CaseInsensitive) == 0, "Result string for message do not match");
@@ -527,18 +527,18 @@ void QTestLibModelTester::checkLocation(const QModelIndex& index, const QDomElem
 
         QVERIFY2(ok, qPrintable(QString("Bad line number %1").arg(element.attribute("line", "0"))));
         QVERIFY2(mModel->sibling(index.row(), 1, index).isValid(), "There should be an item in column 2");
-        QVERIFY2(mModel->sibling(index.row(), 1, index).data(Qt::DisplayRole).type() == QVariant::String, "Item in column 2 should be a string (DisplayRole)");
+        QVERIFY2(mModel->sibling(index.row(), 1, index).data(Qt::DisplayRole).typeId() == QVariant::String, "Item in column 2 should be a string (DisplayRole)");
         /*qDebug() << mModel->sibling(index.row(), 1, index).data(Qt::DisplayRole).toString() << file;*/
         QVERIFY2(QString::compare(mModel->sibling(index.row(), 1, index).data(Qt::DisplayRole).toString(), file, Qt::CaseSensitive) ==0, "File does not match (DisplayRole)");
-        QVERIFY2(mModel->sibling(index.row(), 1, index).data(Qt::ToolTipRole).type() == QVariant::String, "Item in column 2 should be a string (ToolTipRole)");
+        QVERIFY2(mModel->sibling(index.row(), 1, index).data(Qt::ToolTipRole).typeId() == QVariant::String, "Item in column 2 should be a string (ToolTipRole)");
         /*qDebug() << mModel->sibling(index.row(), 1, index).data(Qt::ToolTipRole).toString() << file;*/
         QVERIFY2(QString::compare(mModel->sibling(index.row(), 1, index).data(Qt::ToolTipRole).toString(), file, Qt::CaseSensitive) ==0, "File does not match (ToolTipRole)");
 
         QVERIFY2(mModel->sibling(index.row(), 2, index).isValid(), "There should be an item in column 3");
-        QVERIFY2(mModel->sibling(index.row(), 2, index).data(Qt::DisplayRole).type() == QVariant::UInt, "Item in column 3 should be an unsigned integer (DisplayRole)");
+        QVERIFY2(mModel->sibling(index.row(), 2, index).data(Qt::DisplayRole).typeId() == QVariant::UInt, "Item in column 3 should be an unsigned integer (DisplayRole)");
         /*qDebug() << mModel->sibling(index.row(), 2, index).data(Qt::DisplayRole).toUInt() << line;*/
         QVERIFY2(mModel->sibling(index.row(), 2, index).data(Qt::DisplayRole).toUInt() == line, "Line does not match (DisplayRole)");
-        QVERIFY2(mModel->sibling(index.row(), 2, index).data(Qt::ToolTipRole).type() == QVariant::UInt, "Item in column 2 should be an unsigned integer (ToolTipRole)");
+        QVERIFY2(mModel->sibling(index.row(), 2, index).data(Qt::ToolTipRole).typeId() == QVariant::UInt, "Item in column 2 should be an unsigned integer (ToolTipRole)");
         /*qDebug() << mModel->sibling(index.row(), 2, index).data(Qt::ToolTipRole).toUInt() << line;*/
         QVERIFY2(mModel->sibling(index.row(), 2, index).data(Qt::ToolTipRole).toUInt() == line, "Line does not match (ToolTipRole)");
     } else {

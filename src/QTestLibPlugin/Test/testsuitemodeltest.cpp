@@ -636,15 +636,15 @@ void TestSuiteModelTest::checkSignalArguments(const QString& signal, const QList
 {
     BEGIN_SUB_TEST_FUNCTION
 
-    QVERIFY2(args.at(0).type() == QVariant::ModelIndex,
+    QVERIFY2(args.at(0).typeId() == QVariant::ModelIndex,
              qPrintable(QString("The first argument of signal %1 should be a QModelIndex").arg(signal)));
     QVERIFY2(!args.at(0).toModelIndex().isValid(),
              qPrintable(QString("The first argument of signal %1 should be an invalid QModelIndex").arg(signal)));
-    QVERIFY2(args.at(1).type() == QVariant::Int,
+    QVERIFY2(args.at(1).typeId() == QVariant::Int,
              qPrintable(QString("The second argument of signal %1 should be an integer").arg(signal)));
     QVERIFY2(args.at(1).toInt() == first,
              qPrintable(QString("The second argument of signal %1 should be %2").arg(signal).arg(first)));
-    QVERIFY2(args.at(2).type() == QVariant::Int,
+    QVERIFY2(args.at(2).typeId() == QVariant::Int,
              qPrintable(QString("The third argument of signal %1 should be an integer").arg(signal)));
     QVERIFY2(args.at(2).toInt() == last,
              qPrintable(QString("The third argument of signal %1 should be %2").arg(signal).arg(last)));

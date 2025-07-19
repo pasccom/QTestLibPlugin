@@ -261,8 +261,8 @@ void TestSuiteModelSignalTest::appendTestItemMessage(void)
         dataChangedSpy.clear();
         model->appendTestItemMessage(NULL, "Appended message");
         QVERIFY2(dataChangedSpy.count() == 1, "dataChanged() signal should be emitted once.");
-        QVERIFY2(dataChangedSpy.first().at(0).type() == QVariant::ModelIndex, "Invalid type for signal argument 1");
-        QVERIFY2(dataChangedSpy.first().at(1).type() == QVariant::ModelIndex, "Invalid type for signal argument 2");
+        QVERIFY2(dataChangedSpy.first().at(0).typeId() == QVariant::ModelIndex, "Invalid type for signal argument 1");
+        QVERIFY2(dataChangedSpy.first().at(1).typeId() == QVariant::ModelIndex, "Invalid type for signal argument 2");
         qDebug() << dataChangedSpy.first().at(0).toModelIndex();
         qDebug() << dataChangedSpy.first().at(1).toModelIndex();
         QVERIFY2(dataChangedSpy.first().at(0).toModelIndex() == currentIndex, "Bad value for signal argument 1");
@@ -329,8 +329,8 @@ void TestSuiteModelSignalTest::appendTestLocation(void)
         dataChangedSpy.clear();
         model->appendTestLocation(NULL, "Unknown file", 0);
         QVERIFY2(dataChangedSpy.count() == 1, "dataChanged() signal should be emitted once.");
-        QVERIFY2(dataChangedSpy.first().at(0).type() == QVariant::ModelIndex, "Invalid type for signal argument 1");
-        QVERIFY2(dataChangedSpy.first().at(1).type() == QVariant::ModelIndex, "Invalid type for signal argument 2");
+        QVERIFY2(dataChangedSpy.first().at(0).typeId() == QVariant::ModelIndex, "Invalid type for signal argument 1");
+        QVERIFY2(dataChangedSpy.first().at(1).typeId() == QVariant::ModelIndex, "Invalid type for signal argument 2");
         qDebug() << dataChangedSpy.first().at(0).toModelIndex();
         qDebug() << dataChangedSpy.first().at(1).toModelIndex();
         QVERIFY2(dataChangedSpy.first().at(0).toModelIndex() == firstIndex, "Bad value for signal argument 1");
@@ -454,12 +454,12 @@ void TestSuiteModelSignalTest::checkSignal(const QAbstractItemModel* model, cons
             int value = signalArg.attribute("value").toInt(&ok, 10);
             //qDebug() << value << (*it).toInt();
             QVERIFY2(ok, qPrintable(QString("Conversion of %1 to int failed").arg(signalArg.attribute("value"))));
-            QVERIFY2((*it).type() == QVariant::Int, "Signal argument value should be an integer");
+            QVERIFY2((*it).typeId() == QVariant::Int, "Signal argument value should be an integer");
             QVERIFY2((*it).toInt() == value, "Signal argument value mismatch");
         } else if(QString::compare(signalArg.attribute("type"), "QModelIndex", Qt::CaseSensitive) == 0) {
             QModelIndex value = index(signalArg.attribute("value"), testResult, model, subModelIndex);
             qDebug() << signalArg.attribute("value") << value << (*it).toModelIndex();
-            QVERIFY2((*it).type() == QVariant::ModelIndex, "Signal argument value should be a model index");
+            QVERIFY2((*it).typeId() == QVariant::ModelIndex, "Signal argument value should be a model index");
             QVERIFY2((*it).toModelIndex().internalPointer() == value.internalPointer(), "Signal argument value mismatch");
         } else {
             QVERIFY2(false, "Unknown argument type");
