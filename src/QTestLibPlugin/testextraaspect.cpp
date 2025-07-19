@@ -353,13 +353,13 @@ void TestRunConfigWidget::updateOutFile(void)
     if (mOutFileEdit->isValid())
         mAspect->mTestArgsParser->setOutFileName(Utils::FilePath::fromString(mOutFileEdit->text()));
     else
-        mOutFileEdit->setText(mAspect->mTestArgsParser->outFileName().toString());
+        mOutFileEdit->setText(mAspect->mTestArgsParser->outFileName().toFSPathString());
     updateSummary();
 }
 
 void TestRunConfigWidget::browseOutFile(void)
 {
-    QString outFile = QFileDialog::getSaveFileName(this, tr("Choose test output file"), mAspect->mTestArgsParser->outFileName().toString());
+    QString outFile = QFileDialog::getSaveFileName(this, tr("Choose test output file"), mAspect->mTestArgsParser->outFileName().toFSPathString());
     if (!outFile.isNull())
         mAspect->mTestArgsParser->setOutFileName(Utils::FilePath::fromString(outFile));
     updateOutFile();
@@ -494,12 +494,12 @@ bool TestExtraAspect::isUseful(ProjectExplorer::RunConfiguration* runConfigurati
             continue;
 
         // Check the executable matches the target:
-        QDir destDir(pro->targetInformation().destDir.toString());
-        if (!destDir.isAbsolute())
-            destDir.setPath(pro->targetInformation().buildDir.pathAppended(pro->targetInformation().destDir.toString()).toString());
-        qDebug() << "TARGET:" << destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target));
+        Utils::FilePath destDir = pro->targetInformation().destDir;
+        if (!destDir.isAbsolutePath())
+            destDir = pro->targetInformation().buildDir.pathAppended(pro->targetInformation().destDir.toFSPathString()).cleanPath();
+        qDebug() << "TARGET:" << destDir.pathAppended(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target));
         qDebug() << "Executable:" << runnable.command.executable();
-        if (QDir(destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target))) != QDir(runnable.command.executable().toString()))
+        if (destDir.pathAppended(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target)) != runnable.command.executable())
             continue;
         // Check the testlib is included:
         qDebug() << "QT variable:" << pro->variableValue(QmakeProjectManager::Variable::Qt);

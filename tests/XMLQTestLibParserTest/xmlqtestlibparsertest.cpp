@@ -214,7 +214,7 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> XMLQTestLib
     QProcess testProc(this);
     testProc.setWorkingDirectory(runnable.workingDirectory.toFSPathString());
     testProc.setProcessEnvironment(env);
-    testProc.start(runnable.command.executable().toString(), runnable.command.splitArguments(), QIODevice::ReadOnly);
+    testProc.start(runnable.command.executable().toFSPathString(), runnable.command.splitArguments(), QIODevice::ReadOnly);
     qDebug() << "Command line:" << runnable.command.executable() << runnable.command.splitArguments();
 
     if (!testProc.waitForFinished(30000)) {

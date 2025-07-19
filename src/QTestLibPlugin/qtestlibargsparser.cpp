@@ -142,7 +142,7 @@ void QTestLibArgsParser::toMap(Utils::Store& map) const
     if (mVerbosity != NormalVerbosity)
         map.insert(Constants::VerbosityKey, (int) mVerbosity);
     if (!mOutFileName.isEmpty())
-        map.insert(Constants::OutputFileKey, mOutFileName.toString());
+        map.insert(Constants::OutputFileKey, mOutFileName.toFSPathString());
     if (mMaxWarnings != 2000)
         map.insert(Constants::MaxWarningKey, mMaxWarnings);
     if (mEventDelay > 0)
@@ -178,7 +178,7 @@ QStringList QTestLibArgsParser::toStringList(uint version) const
     QStringList formats;
     QStringList verbosities;
     QStringList outputs;
-    QString outFile(mOutFileName.toString());
+    QString outFile(mOutFileName.toFSPathString());
     if (!QRegExp(QLatin1String("[A-Za-z0-9_.-]+")).exactMatch(outFile) || (outFile == "-")) {
         outFile.replace(QLatin1Char('\"'), QLatin1String("\\\""));
         outFile.prepend(QLatin1Char('\"')).append(QLatin1Char('\"'));

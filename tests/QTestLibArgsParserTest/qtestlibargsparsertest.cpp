@@ -1174,9 +1174,9 @@ void QTestLibArgsParserTest::checkOutput(const QTestLibArgsParser& parser, QTest
     QVERIFY(parser.verbosity() == verb);
     QVERIFY(parser.outputFormat() == format);
     if (filename.isNull())
-        QVERIFY(parser.outFileName().toString().isEmpty());
+        QVERIFY(parser.outFileName().isEmpty());
     else
-        QVERIFY(QString::compare(parser.outFileName().toString(), filename, Qt::CaseSensitive) == 0);
+        QVERIFY(QString::compare(parser.outFileName().toFSPathString(), filename, Qt::CaseSensitive) == 0);
 
     END_SUB_TEST_FUNCTION
 }

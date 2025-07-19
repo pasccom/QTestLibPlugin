@@ -222,7 +222,7 @@ QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> LightXMLQTe
     QProcess testProc(this);
     testProc.setWorkingDirectory(runnable.workingDirectory.toFSPathString());
     testProc.setProcessEnvironment(env);
-    testProc.start(runnable.command.executable().toString(), runnable.command.splitArguments(), QIODevice::ReadOnly);
+    testProc.start(runnable.command.executable().toFSPathString(), runnable.command.splitArguments(), QIODevice::ReadOnly);
 
     if (!testProc.waitForFinished(30000)) {
         qCritical() << "Test timed out";

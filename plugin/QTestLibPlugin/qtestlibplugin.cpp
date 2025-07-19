@@ -249,14 +249,14 @@ void TestLibPlugin::handleProjectClose(ProjectExplorer::Project* project)
         }
     }*/
 
-    Core::Command* cmd = Core::ActionManager::command(Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+    Core::Command* cmd = Core::ActionManager::command(Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toFSPathString()));
     if (cmd != NULL) {
         QAction* action = cmd->action();
         if (qobject_cast<Utils::ProxyAction*>(action) != NULL)
             action = qobject_cast<Utils::ProxyAction*>(action)->action();
 
         mRunTestsMenu->menu()->removeAction(cmd->action());
-        Core::ActionManager::unregisterAction(action, Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+        Core::ActionManager::unregisterAction(action, Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toFSPathString()));
         delete action;
     }
 
@@ -331,7 +331,7 @@ void TestLibPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfiguration*
     ProjectExplorer::Project* project = target->project();
     Q_ASSERT(project != NULL);
 
-    Core::Command* cmd = Core::ActionManager::command(Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+    Core::Command* cmd = Core::ActionManager::command(Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toFSPathString()));
     if (cmd == NULL) {
         QAction *action = new QAction(tr("Run tests for \"%1\"").arg(project->displayName()), cmd);
         connect(action, &QAction::triggered,
@@ -339,7 +339,7 @@ void TestLibPlugin::handleNewRunConfiguration(ProjectExplorer::RunConfiguration*
             ProjectExplorer::ProjectExplorerPlugin::runRunConfiguration(runConfig, ProjectExplorer::Constants::NORMAL_RUN_MODE, true);
         });
 
-        cmd = Core::ActionManager::registerAction(action, Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+        cmd = Core::ActionManager::registerAction(action, Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toFSPathString()));
         cmd->setAttribute(Core::Command::CA_UpdateText);
         cmd->setAttribute(Core::Command::CA_Hide);
         cmd->setAttribute(Core::Command::CA_NonConfigurable);
@@ -367,14 +367,14 @@ void TestLibPlugin::handleDeleteRunConfiguration(ProjectExplorer::RunConfigurati
     ProjectExplorer::Project* project = target->project();
     Q_ASSERT(project != NULL);
 
-    Core::Command* cmd = Core::ActionManager::command(Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+    Core::Command* cmd = Core::ActionManager::command(Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toFSPathString()));
     if (cmd != NULL) {
         QAction* action = cmd->action();
         if (qobject_cast<Utils::ProxyAction*>(action) != NULL)
             action = qobject_cast<Utils::ProxyAction*>(action)->action();
 
         mRunTestsMenu->menu()->removeAction(cmd->action());
-        Core::ActionManager::unregisterAction(action, Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toString()));
+        Core::ActionManager::unregisterAction(action, Utils::Id(Constants::TestRunActionId).withSuffix(project->projectFilePath().toFSPathString()));
         delete action;
     }
 

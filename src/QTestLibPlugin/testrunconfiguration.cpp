@@ -170,7 +170,7 @@ Utils::FilePath TestRunConfiguration::makefile(void) const
 {
     Utils::FilePath makefilePath = mMakefileAspect.value();
     if (macroExpander() != NULL)
-        makefilePath = Utils::FilePath::fromString(macroExpander()->expand(makefilePath.toString()));
+        makefilePath = Utils::FilePath::fromString(macroExpander()->expand(makefilePath.toFSPathString()));
     if (makefilePath.isEmpty())
         makefilePath = mMakefileAspect.defaultValue();
     return makefilePath;
@@ -201,7 +201,7 @@ Utils::ProcessRunData TestRunConfiguration::runnable(void) const
 
     Utils::FilePath makeExe = mMakeExeAspect.value();
     if (macroExpander() != nullptr)
-        makeExe = Utils::FilePath::fromString(macroExpander()->expand(makeExe.toString()));
+        makeExe = Utils::FilePath::fromString(macroExpander()->expand(makeExe.toFSPathString()));
     if (makeExe.isEmpty())
         makeExe = mMakeExeAspect.defaultValue();
 
@@ -225,7 +225,7 @@ Utils::FilePath TestRunConfiguration::workingDirectory(void) const
 
     Utils::FilePath wd = static_cast<PathAspect*>(aspect(Utils::Id(Constants::WorkingDirectoryId)))->value();
     if (macroExpander() != NULL)
-        wd = Utils::FilePath::fromString(macroExpander()->expand(wd.toString()));
+        wd = Utils::FilePath::fromString(macroExpander()->expand(wd.toFSPathString()));
 
     return wd;
 }
@@ -235,7 +235,7 @@ QStringList TestRunConfiguration::commandLineArguments(void) const
     QStringList cmdArgs;
 
     // Makefile path for make, nmake and jom
-    QString makefilePath = makefile().toString();
+    QString makefilePath = makefile().toFSPathString();
     makefilePath.replace(QLatin1Char('\"'), QLatin1String("\\\""));
     if (makefilePath.contains(QLatin1Char(' ')))
         makefilePath = QLatin1Char('\"') + makefilePath + QLatin1Char('\"');
@@ -258,7 +258,7 @@ QStringList TestRunConfiguration::commandLineArguments(void) const
     cmdArgs << QLatin1String("check");
 
     // Test runner:
-    QString testRunner = static_cast<PathAspect*>(aspect(Utils::Id(Constants::TestRunnerId)))->value().toString();
+    QString testRunner = static_cast<PathAspect*>(aspect(Utils::Id(Constants::TestRunnerId)))->value().toFSPathString();
     if (macroExpander() != NULL)
         testRunner = macroExpander()->expand(testRunner);
     if (!testRunner.isEmpty()) {

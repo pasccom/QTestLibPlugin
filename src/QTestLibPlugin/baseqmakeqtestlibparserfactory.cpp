@@ -77,12 +77,12 @@ bool BaseQMakeQTestLibParserFactory::canParseModule(ProjectExplorer::RunControl*
     foreach(QmakeProjectManager::QmakeProFile *pro, qMakeRootNode->proFileNode()->proFile()->allProFiles()) {
         qDebug() << "Project name:" << pro->displayName();
         // Check the executable matches the target:
-        QDir destDir(pro->targetInformation().destDir.toString());
-        if (!destDir.isAbsolute())
-            destDir.setPath(pro->targetInformation().buildDir.pathAppended(pro->targetInformation().destDir.toString()).toString());
-        qDebug() << "TARGET:" << destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target));
+        Utils::FilePath destDir = pro->targetInformation().destDir;
+        if (!destDir.isAbsolutePath())
+            destDir = pro->targetInformation().buildDir.pathAppended(pro->targetInformation().destDir.toFSPathString()).cleanPath();
+        qDebug() << "TARGET:" << destDir.pathAppended(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target));
         qDebug() << "Executable:" << runnable.command.executable();
-        if (QDir(destDir.absoluteFilePath(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target))) != QDir(runnable.command.executable().toString()))
+        if (destDir.pathAppended(Utils::HostOsInfo::withExecutableSuffix(pro->targetInformation().target)) != runnable.command.executable())
             continue;
         // Check the testlib is included:
         qDebug() << "QT variable:" << pro->variableValue(QmakeProjectManager::Variable::Qt);
@@ -99,10 +99,10 @@ bool BaseQMakeQTestLibParserFactory::canParseArguments(const QString& cmdArgs) c
 
     qDebug() << "Command line args:" << cmdArgs;
     QTestLibArgsParser parser(cmdArgs);
-    qDebug() << parser.error() << parser.outputFormat() << parser.outFileName().toString();
+    qDebug() << parser.error() << parser.outputFormat() << parser.outFileName();
     return ((parser.error() == QTestLibArgsParser::NoError)
          && (parser.outputFormat() == mFormat)
-          && parser.outFileName().toString().isEmpty());
+          && parser.outFileName().isEmpty());
 }
 
 } // namespace Internal

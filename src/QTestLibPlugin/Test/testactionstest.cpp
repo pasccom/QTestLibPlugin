@@ -387,7 +387,7 @@ void TestActionsTest::checkSubMenuAction(ProjectExplorer::Project* project, bool
     BEGIN_SUB_TEST_FUNCTION
 
     Utils::Id runProjectTestsCommandId(Constants::TestRunActionId);
-    runProjectTestsCommandId = runProjectTestsCommandId.withSuffix(project->projectFilePath().toString());
+    runProjectTestsCommandId = runProjectTestsCommandId.withSuffix(project->projectFilePath().toFSPathString());
 
     Core::Command* runProjectTestsCommand = Core::ActionManager::command(runProjectTestsCommandId);
     QCOMPARE(runProjectTestsCommand != NULL, present);
