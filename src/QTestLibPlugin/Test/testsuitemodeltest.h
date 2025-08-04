@@ -65,23 +65,25 @@ private Q_SLOTS:
     void testAppendOneClearAppendOne(void);
 private:
     struct TestRunData {
+        QString qtVersion;
         QString testName;
         QString parserFormat;
         QTestLibModelTester::Verbosity testVerbosity;
 
-        inline TestRunData(const QString& name, const QString& format, QTestLibModelTester::Verbosity verbosity) :
-            testName(name), parserFormat(format), testVerbosity(verbosity) {}
+        inline TestRunData(const QString& version, const QString& name, const QString& format, QTestLibModelTester::Verbosity verbosity) :
+            qtVersion(version), testName(name), parserFormat(format), testVerbosity(verbosity) {}
     };
 
     void parseSuiteRoot(const QAbstractItemModel* model, const QList< TestRunData* >& tests);
 
     void checkSignalArguments(const QString& signal, const QList<QVariant>& args, int first, int last);
-    void appendTest(QTestLibPlugin::Internal::TestSuiteModel *model, const QString& test, const QString& format, QTestLibModelTester::Verbosity verbosity);
+    void appendTest(QTestLibPlugin::Internal::TestSuiteModel *model, const TestRunData& data);
     void removeTestAt(QTestLibPlugin::Internal::TestSuiteModel *model, int i);
     void clearTests(QTestLibPlugin::Internal::TestSuiteModel *model);
 
     QStringList commandLineArguments(const QString& format, QTestLibModelTester::Verbosity verbosity);
 
+    QStringList mQtVersions;
     QStringList mTests;
     QStringList mParserFormats;
     QLinkedList<ProjectExplorer::Project*> mOpenProjects;

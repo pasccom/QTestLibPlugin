@@ -54,9 +54,9 @@ private Q_SLOTS:
 private:
     void data(void);
     QStringList commandLineArguments(QTestLibModelTester::Verbosity verbosity);
-    void runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
-    void runMakeCheck(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
-    void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, QTestLibModelTester::Verbosity verbosity);
+    void runTest(const QString& qtVersion, const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
+    void runMakeCheck(const QString& qtVersion, const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
+    void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& qtVersion, const QString& testName, QTestLibModelTester::Verbosity verbosity);
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser* parser, const Utils::ProcessRunData& runnable, const QLinkedList<EnvironmentVariable>& addToEnv = QLinkedList<EnvironmentVariable>());
 
     QRandomGenerator* mRandom;
@@ -64,62 +64,70 @@ private:
 
 void LightXMLQTestLibParserTest::data(void)
 {
+    QTest::addColumn<QString>("qtVersion");
     QTest::addColumn<QTestLibModelTester::Verbosity>("verbosity");
 
-    QTest::newRow("Normal") << QTestLibModelTester::Normal;
-    QTest::newRow("Silent") << QTestLibModelTester::Silent;
-    QTest::newRow("Verbose1") << QTestLibModelTester::Verbose1;
-    QTest::newRow("Verbose2") << QTestLibModelTester::Verbose2;
-    QTest::newRow("VerboseS") << QTestLibModelTester::VerboseSignal;
+    QTest::newRow("Qt5 Normal") << "qt5" << QTestLibModelTester::Normal;
+    QTest::newRow("Qt5 Silent") << "qt5" << QTestLibModelTester::Silent;
+    QTest::newRow("Qt5 Verbose1") << "qt5" << QTestLibModelTester::Verbose1;
+    QTest::newRow("Qt5 Verbose2") << "qt5" << QTestLibModelTester::Verbose2;
+    QTest::newRow("Qt5 VerboseS") << "qt5" << QTestLibModelTester::VerboseSignal;
 }
 
 void LightXMLQTestLibParserTest::oneClass(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runTest("OneClassTest", verbosity);
+    runTest(qtVersion, "OneClassTest", verbosity);
 }
 
 void LightXMLQTestLibParserTest::allMessages(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runTest("AllMessagesTest", verbosity);
+    runTest(qtVersion, "AllMessagesTest", verbosity);
 }
 
 void LightXMLQTestLibParserTest::multipleClasses(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runTest("MultipleClassesTest", verbosity);
+    runTest(qtVersion, "MultipleClassesTest", verbosity);
 }
 
 void LightXMLQTestLibParserTest::signalsTest(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runTest("SignalsTest", verbosity);
+    runTest(qtVersion, "SignalsTest", verbosity);
 }
 
 void LightXMLQTestLibParserTest::limits(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runTest("LimitsTest", verbosity);
+    runTest(qtVersion, "LimitsTest", verbosity);
 }
 
 void LightXMLQTestLibParserTest::oneSubTest(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runMakeCheck("OneSubTest", verbosity);
+    runMakeCheck(qtVersion, "OneSubTest", verbosity);
 }
 
 void LightXMLQTestLibParserTest::twoSubTests(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runMakeCheck("TwoSubTests", verbosity);
+    runMakeCheck(qtVersion, "TwoSubTests", verbosity);
 }
 
 QStringList LightXMLQTestLibParserTest::commandLineArguments(QTestLibModelTester::Verbosity verbosity)
@@ -152,12 +160,12 @@ QStringList LightXMLQTestLibParserTest::commandLineArguments(QTestLibModelTester
     return cmdArgs;
 }
 
-void LightXMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity)
+void LightXMLQTestLibParserTest::runTest(const QString& qtVersion, const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
     // Creation of Runnable
     Utils::ProcessRunData runnable;
-    runnable.workingDirectory = Utils::FilePath::fromString(TESTS_DIR "/" + testName + "/");
-    runnable.command = Utils::CommandLine(Utils::FilePath::fromString(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName)));
+    runnable.workingDirectory = Utils::FilePath::fromString(TESTS_DIR "/" + qtVersion + "/" + testName + "/");
+    runnable.command = Utils::CommandLine(Utils::FilePath::fromString(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + qtVersion + "/" + testName + "/debug/" + testName)));
     runnable.command.addArgs(commandLineArguments(verbosity).join(' '), Utils::CommandLine::Raw);
     qDebug() << runnable.command.arguments();
 
@@ -172,17 +180,17 @@ void LightXMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelT
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, runnable);
     QAbstractItemModel *model = parser->getModel();
 
-    checkTest(model, results, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in LightXML silent is equal to normal
+    checkTest(model, results, qtVersion, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in LightXML silent is equal to normal
 
     delete model;
     delete parser;
 }
 
-void LightXMLQTestLibParserTest::runMakeCheck(const QString& testName, QTestLibModelTester::Verbosity verbosity)
+void LightXMLQTestLibParserTest::runMakeCheck(const QString& qtVersion, const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
     // Creation of Runnable
     Utils::ProcessRunData runnable;
-    runnable.workingDirectory = Utils::FilePath::fromString(TESTS_DIR "/" + testName + "/");
+    runnable.workingDirectory = Utils::FilePath::fromString(TESTS_DIR "/" + qtVersion + "/" + testName + "/");
     runnable.command = Utils::CommandLine(Utils::FilePath::fromString(MAKE_EXECUATBLE), QStringList() << "-s" << "check");
     QLinkedList<EnvironmentVariable> addToEnv;
     addToEnv << EnvironmentVariable("TESTARGS", commandLineArguments(verbosity).join(' '));
@@ -198,16 +206,16 @@ void LightXMLQTestLibParserTest::runMakeCheck(const QString& testName, QTestLibM
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, runnable, addToEnv);
     QAbstractItemModel *model = parser->getModel();
 
-    checkTest(model, results, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in LightXML silent is equal to normal
+    checkTest(model, results, qtVersion, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in LightXML silent is equal to normal
 
     delete model;
     delete parser;
 }
 
-void LightXMLQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName,  QTestLibModelTester::Verbosity verbosity)
+void LightXMLQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& qtVersion, const QString& testName,  QTestLibModelTester::Verbosity verbosity)
 {
     QTestLibModelTester tester(model, verbosity, "lightxml");
-    tester.setResultsFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
+    tester.setResultsFile(TESTS_DIR "/" + qtVersion + "/" + testName + "/" + testName.toLower() + ".xml");
     QVERIFY2(tester.checkResults(results), qPrintable(tester.error()));
     QVERIFY2(tester.checkIndex(QModelIndex()), qPrintable(tester.error()));
 }

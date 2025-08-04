@@ -48,15 +48,15 @@ void ForcePlainTextQTestLibParserFactoryTest::initTestCase(void)
     Utils::FilePaths projectPathes;
 
     // NOTE _data() function is not available for initTestCase()
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/OneClassTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/AllMessagesTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/MultipleClassesTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/SignalsTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/LimitsTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/OneSubTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/TwoSubTests");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/NoSubTestOne");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/NoSubTestTwo");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/OneClassTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/AllMessagesTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/MultipleClassesTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/SignalsTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/LimitsTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/OneSubTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/TwoSubTests");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/NoSubTestOne");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/NoSubTestTwo");
 
     for (Utils::FilePath projectPath : projectPathes)
         QVERIFY(removeProjectUserFiles(projectPath));
@@ -64,7 +64,7 @@ void ForcePlainTextQTestLibParserFactoryTest::initTestCase(void)
     // NOTE First time ProjectExplorer::ProjectExplorerPlugin::openProject()
     // immediately calls ProjectExplorer::Target::ParsingFinished() and
     // consequently, openQMakeProject() does not work
-    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/OneClassTest/OneClassTest.pro"), &mProject);
+    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/qt5/OneClassTest/OneClassTest.pro"), &mProject);
     QVERIFY(closeProject(mProject));
 }
 
@@ -96,6 +96,7 @@ void ForcePlainTextQTestLibParserFactoryTest::dataTest(void)
     formats << QLatin1String("lightxml");
     formats << QLatin1String("xunitxml");
 
+    QTest::addColumn<QString>("qtVersion");
     QTest::addColumn<QStringList>("cmdArgs");
 
     foreach (QString format, formats) {
@@ -109,7 +110,7 @@ void ForcePlainTextQTestLibParserFactoryTest::dataTest(void)
             if (!verbosity.isNull())
                 cmdArgs << verbosity;
 
-            QTest::newRow(qPrintable(cmdArgs.join(' '))) << cmdArgs;
+            QTest::newRow(qPrintable("qt5 " + cmdArgs.join(' '))) << "qt5" << cmdArgs;
         }
     }
 }
@@ -130,6 +131,7 @@ void ForcePlainTextQTestLibParserFactoryTest::dataMakeCheck(void)
     formats << Internal::QTestLibArgsParser::LightXmlFormat;
     formats << Internal::QTestLibArgsParser::XUnitXmlFormat;
 
+    QTest::addColumn<QString>("qtVersion");
     QTest::addColumn<Internal::QTestLibArgsParser::TestOutputFormat>("format");
     QTest::addColumn<Internal::QTestLibArgsParser::TestVerbosity>("verbosity");
 
@@ -138,65 +140,72 @@ void ForcePlainTextQTestLibParserFactoryTest::dataMakeCheck(void)
             Internal::QTestLibArgsParser args;
             args.setVerbosity(verbosity);
             args.setOutputFormat(format);
-            QTest::newRow(qPrintable(args.toString())) << format << verbosity;
+            QTest::newRow(qPrintable("qt5 " + args.toString())) << "qt5" << format << verbosity;
         }
     }
 }
 
 void ForcePlainTextQTestLibParserFactoryTest::testOneClass(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QStringList, cmdArgs);
 
-    runTest("OneClassTest", cmdArgs);
+    runTest(qtVersion, "OneClassTest", cmdArgs);
 }
 
 void ForcePlainTextQTestLibParserFactoryTest::testAllMessages(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QStringList, cmdArgs);
 
-    runTest("AllMessagesTest", cmdArgs);
+    runTest(qtVersion, "AllMessagesTest", cmdArgs);
 }
 
 void ForcePlainTextQTestLibParserFactoryTest::testMultipleClasses(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QStringList, cmdArgs);
 
-    runTest("MultipleClassesTest", cmdArgs);
+    runTest(qtVersion, "MultipleClassesTest", cmdArgs);
 }
 
 void ForcePlainTextQTestLibParserFactoryTest::testSignalsTest(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QStringList, cmdArgs);
 
-    runTest("SignalsTest", cmdArgs);
+    runTest(qtVersion, "SignalsTest", cmdArgs);
 }
 
 void ForcePlainTextQTestLibParserFactoryTest::testLimits(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QStringList, cmdArgs);
 
-    runTest("LimitsTest", cmdArgs);
+    runTest(qtVersion, "LimitsTest", cmdArgs);
 }
 
 void ForcePlainTextQTestLibParserFactoryTest::testOneSubTest(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
 
-    runMakeCheck("OneSubTest", format, verbosity);
+    runMakeCheck(qtVersion, "OneSubTest", format, verbosity);
 }
 
 void ForcePlainTextQTestLibParserFactoryTest::testTwoSubTests(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
 
-    runMakeCheck("TwoSubTests", format, verbosity);
+    runMakeCheck(qtVersion, "TwoSubTests", format, verbosity);
 }
 
-void ForcePlainTextQTestLibParserFactoryTest::runTest(const QString& testName, const QStringList& cmdArgs)
+void ForcePlainTextQTestLibParserFactoryTest::runTest(const QString& qtVersion, const QString& testName, const QStringList& cmdArgs)
 {
-    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/" + testName + "/" + testName + ".pro"), &mProject));
+    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/" + qtVersion + "/" + testName + "/" + testName + ".pro"), &mProject));
 
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
@@ -223,9 +232,9 @@ void ForcePlainTextQTestLibParserFactoryTest::runTest(const QString& testName, c
     testFactory(&testRunControl);
 }
 
-void ForcePlainTextQTestLibParserFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity)
+void ForcePlainTextQTestLibParserFactoryTest::runMakeCheck(const QString& qtVersion, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity)
 {
-    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/" + testName + "/" + testName + ".pro"), &mProject));
+    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/" + qtVersion + "/" + testName + "/" + testName + ".pro"), &mProject));
 
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
@@ -248,7 +257,7 @@ void ForcePlainTextQTestLibParserFactoryTest::runMakeCheck(const QString& testNa
     Internal::QTestLibArgsParser testArgsParser;
     testArgsParser.setOutputFormat(format);
     testArgsParser.setVerbosity(verbosity);
-    QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR) + testName + QLatin1String("/Makefile check"));
+    QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR) + qtVersion + "/" + testName + QLatin1String("/Makefile check"));
     if (!testArgsParser.toString().isEmpty())
         expectedCmdArgs.append(QString(QLatin1String(" TESTARGS=\"%1\"")).arg(testArgsParser.toString()));
     QCOMPARE(modifiedRunnable.command.arguments(), expectedCmdArgs);

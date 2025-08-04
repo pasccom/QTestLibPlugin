@@ -53,9 +53,9 @@ private Q_SLOTS:
 private:
     void data(void);
     QStringList commandLineArguments(QTestLibModelTester::Verbosity verbosity);
-    void runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
-    void runMakeCheck(const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
-    void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, QTestLibModelTester::Verbosity verbosity);
+    void runTest(const QString& qtVersion, const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
+    void runMakeCheck(const QString& qtVersion, const QString& testName, QTestLibModelTester::Verbosity verbosity = QTestLibModelTester::Normal);
+    void checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& qtVersion, const QString& testName, QTestLibModelTester::Verbosity verbosity);
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> executeTest(QTestLibPlugin::Internal::AbstractTestParser* parser, const Utils::ProcessRunData& runnable, const QLinkedList<EnvironmentVariable>& addToEnv = QLinkedList<EnvironmentVariable>());
 
     QRandomGenerator* mRandom;
@@ -63,62 +63,70 @@ private:
 
 void XUnitXMLQTestLibParserTest::data(void)
 {
+    QTest::addColumn<QString>("qtVersion");
     QTest::addColumn<QTestLibModelTester::Verbosity>("verbosity");
 
-    QTest::newRow("Normal") << QTestLibModelTester::Normal;
-    QTest::newRow("Silent") << QTestLibModelTester::Silent;
-    QTest::newRow("Verbose1") << QTestLibModelTester::Verbose1;
-    QTest::newRow("Verbose2") << QTestLibModelTester::Verbose2;
-    QTest::newRow("VerboseS") << QTestLibModelTester::VerboseSignal;
+    QTest::newRow("Qt5 Normal") << "qt5" << QTestLibModelTester::Normal;
+    QTest::newRow("Qt5 Silent") << "qt5" << QTestLibModelTester::Silent;
+    QTest::newRow("Qt5 Verbose1") << "qt5" << QTestLibModelTester::Verbose1;
+    QTest::newRow("Qt5 Verbose2") << "qt5" << QTestLibModelTester::Verbose2;
+    QTest::newRow("Qt5 VerboseS") << "qt5" << QTestLibModelTester::VerboseSignal;
 }
 
 void XUnitXMLQTestLibParserTest::oneClass(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runTest("OneClassTest", verbosity);
+    runTest(qtVersion, "OneClassTest", verbosity);
 }
 
 void XUnitXMLQTestLibParserTest::allMessages(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runTest("AllMessagesTest", verbosity);
+    runTest(qtVersion, "AllMessagesTest", verbosity);
 }
 
 void XUnitXMLQTestLibParserTest::multipleClasses(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runTest("MultipleClassesTest", verbosity);
+    runTest(qtVersion, "MultipleClassesTest", verbosity);
 }
 
 void XUnitXMLQTestLibParserTest::signalsTest(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runTest("SignalsTest", verbosity);
+    runTest(qtVersion, "SignalsTest", verbosity);
 }
 
 void XUnitXMLQTestLibParserTest::limits(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runTest("LimitsTest", verbosity);
+    runTest(qtVersion, "LimitsTest", verbosity);
 }
 
 void XUnitXMLQTestLibParserTest::oneSubTest(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runMakeCheck("OneSubTest", verbosity);
+    runMakeCheck(qtVersion, "OneSubTest", verbosity);
 }
 
 void XUnitXMLQTestLibParserTest::twoSubTests(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QTestLibModelTester::Verbosity, verbosity);
 
-    runMakeCheck("TwoSubTests", verbosity);
+    runMakeCheck(qtVersion, "TwoSubTests", verbosity);
 }
 
 QStringList XUnitXMLQTestLibParserTest::commandLineArguments(QTestLibModelTester::Verbosity verbosity)
@@ -151,12 +159,12 @@ QStringList XUnitXMLQTestLibParserTest::commandLineArguments(QTestLibModelTester
     return cmdArgs;
 }
 
-void XUnitXMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelTester::Verbosity verbosity)
+void XUnitXMLQTestLibParserTest::runTest(const QString& qtVersion, const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
     // Creation of Runnable
     Utils::ProcessRunData runnable;
-    runnable.workingDirectory = Utils::FilePath::fromString(TESTS_DIR "/" + testName + "/");
-    runnable.command = Utils::CommandLine(Utils::FilePath::fromString(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName)));
+    runnable.workingDirectory = Utils::FilePath::fromString(TESTS_DIR "/" + qtVersion + "/" + testName + "/");
+    runnable.command = Utils::CommandLine(Utils::FilePath::fromString(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + qtVersion + "/" + testName + "/debug/" + testName)));
     runnable.command.addArgs(commandLineArguments(verbosity).join(' '), Utils::CommandLine::Raw);
 
     // Creation of parser
@@ -167,17 +175,17 @@ void XUnitXMLQTestLibParserTest::runTest(const QString& testName, QTestLibModelT
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, runnable);
     QAbstractItemModel *model = parser->getModel();
 
-    checkTest(model, results, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in XUnitXML silent is equal to normal
+    checkTest(model, results, qtVersion, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in XUnitXML silent is equal to normal
 
     delete model;
     delete parser;
 }
 
-void XUnitXMLQTestLibParserTest::runMakeCheck(const QString& testName, QTestLibModelTester::Verbosity verbosity)
+void XUnitXMLQTestLibParserTest::runMakeCheck(const QString& qtVersion, const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
     // Creation of Runnable
     Utils::ProcessRunData runnable;
-    runnable.workingDirectory = Utils::FilePath::fromString(TESTS_DIR "/" + testName + "/");
+    runnable.workingDirectory = Utils::FilePath::fromString(TESTS_DIR "/" + qtVersion + "/" + testName + "/");
     runnable.command = Utils::CommandLine(Utils::FilePath::fromString(MAKE_EXECUATBLE), QStringList() << "-s" << "check");
     QLinkedList<EnvironmentVariable> addToEnv;
     addToEnv << EnvironmentVariable("TESTARGS", commandLineArguments(verbosity).join(' '));
@@ -190,16 +198,16 @@ void XUnitXMLQTestLibParserTest::runMakeCheck(const QString& testName, QTestLibM
     QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results = executeTest(parser, runnable, addToEnv);
     QAbstractItemModel *model = parser->getModel();
 
-    checkTest(model, results, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in XUnitXML silent is equal to normal
+    checkTest(model, results, qtVersion, testName, qMax(QTestLibModelTester::Normal, verbosity)); // NOTE When running in XUnitXML silent is equal to normal
 
     delete model;
     delete parser;
 }
 
-void XUnitXMLQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& testName, QTestLibModelTester::Verbosity verbosity)
+void XUnitXMLQTestLibParserTest::checkTest(const QAbstractItemModel *model, QLinkedList<QTestLibPlugin::Internal::TestModelFactory::ParseResult> results, const QString& qtVersion, const QString& testName, QTestLibModelTester::Verbosity verbosity)
 {
     QTestLibModelTester tester(model, verbosity, "xunitxml");
-    tester.setResultsFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
+    tester.setResultsFile(TESTS_DIR "/" + qtVersion + "/" + testName + "/" + testName.toLower() + ".xml");
     QVERIFY2(tester.checkResults(results), qPrintable(tester.error()));
     QVERIFY2(tester.checkIndex(QModelIndex()), qPrintable(tester.error()));
 }

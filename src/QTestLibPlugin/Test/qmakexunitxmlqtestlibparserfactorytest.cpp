@@ -47,15 +47,15 @@ void QMakeXUnitXMLQTestLibParserFactoryTest::initTestCase(void)
     Utils::FilePaths projectPathes;
 
     // NOTE _data() function is not available for initTestCase()
-    projectPathes << Utils::FilePath(TESTS_DIR "/OneClassTest");
-    projectPathes << Utils::FilePath(TESTS_DIR "/AllMessagesTest");
-    projectPathes << Utils::FilePath(TESTS_DIR "/MultipleClassesTest");
-    projectPathes << Utils::FilePath(TESTS_DIR "/SignalsTest");
-    projectPathes << Utils::FilePath(TESTS_DIR "/LimitsTest");
-    projectPathes << Utils::FilePath(TESTS_DIR "/OneSubTest");
-    projectPathes << Utils::FilePath(TESTS_DIR "/TwoSubTests");
-    projectPathes << Utils::FilePath(TESTS_DIR "/NoSubTestOne");
-    projectPathes << Utils::FilePath(TESTS_DIR "/NoSubTestTwo");
+    projectPathes << Utils::FilePath(TESTS_DIR "/qt5/OneClassTest");
+    projectPathes << Utils::FilePath(TESTS_DIR "/qt5/AllMessagesTest");
+    projectPathes << Utils::FilePath(TESTS_DIR "/qt5/MultipleClassesTest");
+    projectPathes << Utils::FilePath(TESTS_DIR "/qt5/SignalsTest");
+    projectPathes << Utils::FilePath(TESTS_DIR "/qt5/LimitsTest");
+    projectPathes << Utils::FilePath(TESTS_DIR "/qt5/OneSubTest");
+    projectPathes << Utils::FilePath(TESTS_DIR "/qt5/TwoSubTests");
+    projectPathes << Utils::FilePath(TESTS_DIR "/qt5/NoSubTestOne");
+    projectPathes << Utils::FilePath(TESTS_DIR "/qt5/NoSubTestTwo");
 
     foreach (Utils::FilePath projectPath, projectPathes)
         QVERIFY(removeProjectUserFiles(projectPath));
@@ -63,7 +63,7 @@ void QMakeXUnitXMLQTestLibParserFactoryTest::initTestCase(void)
     // NOTE First time ProjectExplorer::ProjectExplorerPlugin::openProject()
     // immediately calls ProjectExplorer::Target::ParsingFinished() and
     // consequently, openQMakeProject() does not work
-    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/OneClassTest/OneClassTest.pro"), &mProject);
+    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/qt5/OneClassTest/OneClassTest.pro"), &mProject);
     QVERIFY(closeProject(mProject));
 }
 
@@ -96,6 +96,7 @@ void QMakeXUnitXMLQTestLibParserFactoryTest::dataTest(void)
     formats << qMakePair(QLatin1String("lightxml"), false);
     formats << qMakePair(QLatin1String("xunitxml"), true);
 
+    QTest::addColumn<QString>("qtVersion");
     QTest::addColumn<QStringList>("cmdArgs");
     QTest::addColumn<bool>("result");
 
@@ -111,7 +112,7 @@ void QMakeXUnitXMLQTestLibParserFactoryTest::dataTest(void)
             if (!verbosityPair.first.isNull())
                 cmdArgs << verbosityPair.first;
 
-            QTest::newRow(qPrintable(cmdArgs.join(' '))) << cmdArgs << (formatPair.second && verbosityPair.second);
+            QTest::newRow(qPrintable("qt5 " + cmdArgs.join(' '))) << "qt5" << cmdArgs << (formatPair.second && verbosityPair.second);
         }
     }
 }
@@ -132,6 +133,7 @@ void QMakeXUnitXMLQTestLibParserFactoryTest::dataMakeCheck(void)
     formats << qMakePair(Internal::QTestLibArgsParser::LightXmlFormat, false);
     formats << qMakePair(Internal::QTestLibArgsParser::XUnitXmlFormat, true);
 
+    QTest::addColumn<QString>("qtVersion");
     QTest::addColumn<Internal::QTestLibArgsParser::TestOutputFormat>("format");
     QTest::addColumn<Internal::QTestLibArgsParser::TestVerbosity>("verbosity");
     QTest::addColumn<bool>("result");
@@ -143,72 +145,79 @@ void QMakeXUnitXMLQTestLibParserFactoryTest::dataMakeCheck(void)
             Internal::QTestLibArgsParser args;
             args.setVerbosity(verbosityPair.first);
             args.setOutputFormat(formatPair.first);
-            QTest::newRow(qPrintable(args.toString())) << formatPair.first << verbosityPair.first << (formatPair.second && verbosityPair.second);
+            QTest::newRow(qPrintable("qt5 " + args.toString())) << "qt5" << formatPair.first << verbosityPair.first << (formatPair.second && verbosityPair.second);
         }
     }
 }
 
 void QMakeXUnitXMLQTestLibParserFactoryTest::testOneClass(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
 
-    runTest("OneClassTest", cmdArgs, result);
+    runTest(qtVersion, "OneClassTest", cmdArgs, result);
 }
 
 void QMakeXUnitXMLQTestLibParserFactoryTest::testAllMessages(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
 
-    runTest("AllMessagesTest", cmdArgs, result);
+    runTest(qtVersion, "AllMessagesTest", cmdArgs, result);
 }
 
 void QMakeXUnitXMLQTestLibParserFactoryTest::testMultipleClasses(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
 
-    runTest("MultipleClassesTest", cmdArgs, result);
+    runTest(qtVersion, "MultipleClassesTest", cmdArgs, result);
 }
 
 void QMakeXUnitXMLQTestLibParserFactoryTest::testSignalsTest(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
 
-    runTest("SignalsTest", cmdArgs, result);
+    runTest(qtVersion, "SignalsTest", cmdArgs, result);
 }
 
 void QMakeXUnitXMLQTestLibParserFactoryTest::testLimits(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QStringList, cmdArgs);
     QFETCH(bool, result);
 
-    runTest("LimitsTest", cmdArgs, result);
+    runTest(qtVersion, "LimitsTest", cmdArgs, result);
 }
 
 void QMakeXUnitXMLQTestLibParserFactoryTest::testOneSubTest(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
     QFETCH(bool, result);
 
-    runMakeCheck("OneSubTest", format, verbosity, result);
+    runMakeCheck(qtVersion, "OneSubTest", format, verbosity, result);
 }
 
 void QMakeXUnitXMLQTestLibParserFactoryTest::testTwoSubTests(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
     QFETCH(bool, result);
 
-    runMakeCheck("TwoSubTests", format, verbosity, result);
+    runMakeCheck(qtVersion, "TwoSubTests", format, verbosity, result);
 }
 
-void QMakeXUnitXMLQTestLibParserFactoryTest::runTest(const QString& testName, const QStringList& cmdArgs, bool result)
+void QMakeXUnitXMLQTestLibParserFactoryTest::runTest(const QString& qtVersion, const QString& testName, const QStringList& cmdArgs, bool result)
 {
-    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/" + testName + "/" + testName + ".pro"), &mProject));
+    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/" + qtVersion + "/" + testName + "/" + testName + ".pro"), &mProject));
 
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
@@ -234,9 +243,9 @@ void QMakeXUnitXMLQTestLibParserFactoryTest::runTest(const QString& testName, co
     testFactory(&testRunControl, result);
 }
 
-void QMakeXUnitXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result)
+void QMakeXUnitXMLQTestLibParserFactoryTest::runMakeCheck(const QString& qtVersion, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result)
 {
-    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/" + testName + "/" + testName + ".pro"), &mProject));
+    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/" + qtVersion + "/" + testName + "/" + testName + ".pro"), &mProject));
 
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
@@ -259,7 +268,7 @@ void QMakeXUnitXMLQTestLibParserFactoryTest::runMakeCheck(const QString& testNam
     Internal::QTestLibArgsParser testArgsParser;
     testArgsParser.setOutputFormat(format);
     testArgsParser.setVerbosity(verbosity);
-    QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR) + testName + QLatin1String("/Makefile check"));
+    QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR) + qtVersion + "/" + testName + QLatin1String("/Makefile check"));
     if (!testArgsParser.toString().isEmpty())
         expectedCmdArgs.append(QString(QLatin1String(" TESTARGS=\"%1\"")).arg(testArgsParser.toString()));
     QCOMPARE(modifiedRunnable.command.arguments(), expectedCmdArgs);

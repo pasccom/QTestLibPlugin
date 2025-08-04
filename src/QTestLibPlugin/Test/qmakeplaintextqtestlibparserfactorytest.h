@@ -58,8 +58,8 @@ private Q_SLOTS:
 private:
     void dataTest(void);
     void dataMakeCheck(void);
-    void runTest(const QString& testName, const QStringList &cmdArgs, bool result);
-    void runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result);
+    void runTest(const QString& qtVersion, const QString& testName, const QStringList &cmdArgs, bool result);
+    void runMakeCheck(const QString& qtVersion, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, bool result);
     void testFactory(ProjectExplorer::RunControl* testRunControl, bool result);
 
     ProjectExplorer::Project* mProject;

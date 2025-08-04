@@ -54,8 +54,8 @@ private:
     void data(void);
     void addRow(const QString& row);
     QStringList commandLineArguments(void);
-    void createModel(const QString& testName);
-    void testProxy(const QString& testName, QVector<bool> filter);
+    void createModel(const QString& qtVersion, const QString& testName);
+    void testProxy(const QString& qtVersion, const QString& testName, QVector<bool> filter);
 
     QTestLibPlugin::Internal::TestProxyModel *mProxy;
     QMap<QString, QAbstractItemModel*> mModelMap;
@@ -85,11 +85,12 @@ void TestProxyModelTest::addRow(const QString& row)
     filter.resize(row.length());
     for (int i = 0; i < row.length(); i++)
         filter[i] = (row.at(i) == '1');
-    QTest::newRow(qPrintable(row)) << filter;
+    QTest::newRow(qPrintable("Qt5 " + row)) << "qt5" << filter;
 }
 
 void TestProxyModelTest::data(void)
 {
+    QTest::addColumn<QString>("qtVersion");
     QTest::addColumn< QVector<bool> >("filter");
 
     QString rowTrue = "11111111111111111";
@@ -126,9 +127,12 @@ void TestProxyModelTest::initTestCase(void)
     testNames << "SignalsTest";
     testNames << "LimitsTest";
 
-    foreach (QString testName, testNames) {
-        createModel(testName);
-    }
+    QStringList qtVersions;
+    qtVersions << "qt5";
+
+    for (QString qtVersion : qtVersions)
+        for (QString testName : testNames)
+            createModel(qtVersion, testName);
 }
 
 void TestProxyModelTest::enableDisableToogleMessageType(void)
@@ -160,37 +164,42 @@ void TestProxyModelTest::enableDisableToogleMessageType(void)
 
 void TestProxyModelTest::oneClass(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QVector<bool>, filter);
 
-    testProxy("OneClassTest", filter);
+    testProxy(qtVersion, "OneClassTest", filter);
 }
 
 void TestProxyModelTest::allMessages(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QVector<bool>, filter);
 
-    testProxy("AllMessagesTest", filter);
+    testProxy(qtVersion, "AllMessagesTest", filter);
 }
 
 void TestProxyModelTest::multipleclasses(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QVector<bool>, filter);
 
-    testProxy("MultipleClassesTest", filter);
+    testProxy(qtVersion, "MultipleClassesTest", filter);
 }
 
 void TestProxyModelTest::signalsTest(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QVector<bool>, filter);
 
-    testProxy("SignalsTest", filter);
+    testProxy(qtVersion, "SignalsTest", filter);
 }
 
 void TestProxyModelTest::limits(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(QVector<bool>, filter);
 
-    testProxy("LimitsTest", filter);
+    testProxy(qtVersion, "LimitsTest", filter);
 }
 
 QStringList TestProxyModelTest::commandLineArguments(void)
@@ -214,7 +223,7 @@ QStringList TestProxyModelTest::commandLineArguments(void)
     return {"-xml"};
 }
 
-void TestProxyModelTest::createModel(const QString& testName)
+void TestProxyModelTest::createModel(const QString& qtVersion, const QString& testName)
 {
     BEGIN_SUB_TEST_FUNCTION
 
@@ -225,8 +234,8 @@ void TestProxyModelTest::createModel(const QString& testName)
 
     // Execute test
     QProcess testProc(this);
-    testProc.setWorkingDirectory(TESTS_DIR "/" + testName + "/");
-    testProc.start(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + testName + "/debug/" + testName), commandLineArguments(), QIODevice::ReadOnly);
+    testProc.setWorkingDirectory(TESTS_DIR "/" + qtVersion + "/" + testName + "/");
+    testProc.start(Utils::HostOsInfo::withExecutableSuffix(TESTS_DIR "/" + qtVersion + "/" + testName + "/debug/" + testName), commandLineArguments(), QIODevice::ReadOnly);
     if (!testProc.waitForFinished(30000)) {
         testProc.terminate();
         QVERIFY(testProc.waitForFinished());
@@ -273,25 +282,25 @@ void TestProxyModelTest::createModel(const QString& testName)
     // Get and test model
     QAbstractItemModel *model = parser->getModel();
     QVERIFY(model != NULL);
-    QVERIFY(!mModelMap.contains(testName));
-    mModelMap.insert(testName, model);
+    QVERIFY(!mModelMap.contains(qtVersion + " " + testName));
+    mModelMap.insert(qtVersion + " " + testName, model);
     mProxy = new QTestLibPlugin::Internal::TestProxyModel(this);
     mProxy->setSourceModel(model);
 
     QTestLibModelTester tester(model, mVerbosity, "xml");
-    tester.setResultsFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
+    tester.setResultsFile(TESTS_DIR "/" + qtVersion + "/" + testName + "/" + testName.toLower() + ".xml");
     QVERIFY2(tester.checkIndex(QModelIndex()), qPrintable(tester.error()));
 
     END_SUB_TEST_FUNCTION
 }
 
-void TestProxyModelTest::testProxy(const QString& testName, QVector<bool> filter)
+void TestProxyModelTest::testProxy(const QString& qtVersion, const QString& testName, QVector<bool> filter)
 {
-    QAbstractItemModel* model = mModelMap.value(testName, NULL);
+    QAbstractItemModel* model = mModelMap.value(qtVersion + " " + testName, NULL);
     QVERIFY(model != NULL);
     mProxy->setSourceModel(model);
     QTestLibModelTester tester(mProxy, mVerbosity, "xml");
-    tester.setResultsFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
+    tester.setResultsFile(TESTS_DIR "/" + qtVersion + "/" + testName + "/" + testName.toLower() + ".xml");
 
     for (int i = 0; i < filter.length(); i++) {
         if (filter.at(i)) {

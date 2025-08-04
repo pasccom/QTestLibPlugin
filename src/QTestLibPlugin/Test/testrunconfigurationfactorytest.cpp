@@ -51,12 +51,12 @@ void TestRunConfigurationFactoryTest::initTestCase(void)
     Utils::FilePaths projectPathes;
 
     // NOTE _data() function is not available for initTestCase()
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/OneSubTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/TwoSubTests");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/MakefileTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/MakefileSpaceTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/NoSubTestOne");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/NoSubTestTwo");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/OneSubTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/TwoSubTests");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/MakefileTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/MakefileSpaceTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/NoSubTestOne");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/NoSubTestTwo");
 
     foreach (Utils::FilePath projectPath, projectPathes)
         QVERIFY(removeProjectUserFiles(projectPath));
@@ -64,7 +64,7 @@ void TestRunConfigurationFactoryTest::initTestCase(void)
     // NOTE First time ProjectExplorer::ProjectExplorerPlugin::openProject()
     // immediately calls ProjectExplorer::Target::ParsingFinished() and
     // consequently, openQMakeProject() does not work
-    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "OneClassTest/OneClassTest.pro"), &mProject);
+    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "qt5/OneClassTest/OneClassTest.pro"), &mProject);
     QVERIFY(closeProject(mProject));
 }
 
@@ -84,10 +84,10 @@ void TestRunConfigurationFactoryTest::testOpenProjectWithTests_data(void)
     QTest::addColumn<Utils::FilePath>("projectPath");
     QTest::addColumn<QString>("makefile");
 
-    QTest::newRow("OneSubTest") << Utils::FilePath::fromString(TESTS_DIR "OneSubTest/OneSubTest.pro") << TESTS_DIR "OneSubTest/Makefile";
-    QTest::newRow("TwoSubTests") << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests/TwoSubTests.pro") << TESTS_DIR "TwoSubTests/Makefile";
-    QTest::newRow("MakefileTest") << Utils::FilePath::fromString(TESTS_DIR "MakefileTest/MakefileTest.pro") << TESTS_DIR "MakefileTest/MyMakefile";
-    QTest::newRow("MakefileSpaceTest") << Utils::FilePath::fromString(TESTS_DIR "MakefileSpaceTest/MakefileSpaceTest.pro") << TESTS_DIR "MakefileSpaceTest/My Makefile";
+    QTest::newRow("OneSubTest Qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/OneSubTest/OneSubTest.pro") << TESTS_DIR "qt5/OneSubTest/Makefile";
+    QTest::newRow("TwoSubTests Qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/TwoSubTests/TwoSubTests.pro") << TESTS_DIR "qt5/TwoSubTests/Makefile";
+    QTest::newRow("MakefileTest Qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/MakefileTest/MakefileTest.pro") << TESTS_DIR "qt5/MakefileTest/MyMakefile";
+    QTest::newRow("MakefileSpaceTest Qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/MakefileSpaceTest/MakefileSpaceTest.pro") << TESTS_DIR "qt5/MakefileSpaceTest/My Makefile";
 }
 
 void TestRunConfigurationFactoryTest::testOpenProjectWithTests(void)
@@ -125,8 +125,8 @@ void TestRunConfigurationFactoryTest::testOpenProjectWithoutTests_data(void)
 {
     QTest::addColumn<Utils::FilePath>("projectPath");
 
-    QTest::newRow("NoSubTestOne") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne/NoSubTestOne.pro");
-    QTest::newRow("NoSubTestTwo") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo/NoSubTestTwo.pro");
+    QTest::newRow("NoSubTestOne") << Utils::FilePath::fromString(TESTS_DIR "qt5/NoSubTestOne/NoSubTestOne.pro");
+    QTest::newRow("NoSubTestTwo") << Utils::FilePath::fromString(TESTS_DIR "qt5/NoSubTestTwo/NoSubTestTwo.pro");
 }
 
 void TestRunConfigurationFactoryTest::testOpenProjectWithoutTests(void)

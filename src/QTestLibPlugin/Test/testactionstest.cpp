@@ -60,13 +60,19 @@ void TestActionsTest::initTestCase(void)
     Utils::FilePaths projectPathes;
 
     // NOTE _data() function is not available for initTestCase()
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "OneSubTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/OneSubTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/TwoSubTests");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/NoSubTestOne");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/NoSubTestTwo");
 
     foreach (Utils::FilePath projectPath, projectPathes)
         QVERIFY(removeProjectUserFiles(projectPath));
+
+    // NOTE First time ProjectExplorer::ProjectExplorerPlugin::openProject()
+    // immediately calls ProjectExplorer::Target::ParsingFinished() and
+    // consequently, openQMakeProject() does not work
+    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "/qt5/OneSubTest/OneSubTest.pro"), &mProject);
+    QVERIFY(closeProject(mProject));
 }
 
 void TestActionsTest::init(void)
@@ -93,8 +99,8 @@ void TestActionsTest::testOpenProjectWithTests_data(void)
 {
     QTest::addColumn<Utils::FilePath>("projectPath");
 
-    QTest::newRow("OneSubTest") << Utils::FilePath::fromString(TESTS_DIR "OneSubTest/OneSubTest.pro");
-    QTest::newRow("TwoSubTests") << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests/TwoSubTests.pro");
+    QTest::newRow("OneSubTest qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/OneSubTest/OneSubTest.pro");
+    QTest::newRow("TwoSubTests qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/TwoSubTests/TwoSubTests.pro");
 }
 
 void TestActionsTest::testOpenProjectWithTests(void)
@@ -119,8 +125,8 @@ void TestActionsTest::testOpenProjectWithoutTests_data(void)
 {
     QTest::addColumn<Utils::FilePath>("projectPath");
 
-    QTest::newRow("NoSubTestOne") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne/NoSubTestOne.pro");
-    QTest::newRow("NoSubTestTwo") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo/NoSubTestTwo.pro");
+    QTest::newRow("NoSubTestOne qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/NoSubTestOne/NoSubTestOne.pro");
+    QTest::newRow("NoSubTestTwo qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/NoSubTestTwo/NoSubTestTwo.pro");
 }
 
 void TestActionsTest::testOpenProjectWithoutTests(void)
@@ -175,8 +181,8 @@ void TestActionsTest::testTwoProjectsWithTests_data(void)
     QTest::addColumn<Utils::FilePath>("project1FilePath");
     QTest::addColumn<Utils::FilePath>("project2FilePath");
 
-    QTest::newRow("OneTwo") << Utils::FilePath::fromString(TESTS_DIR "OneSubTest/OneSubTest.pro") << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests/TwoSubTests.pro");
-    QTest::newRow("TwoOne") << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests/TwoSubTests.pro") << Utils::FilePath::fromString(TESTS_DIR "OneSubTest/OneSubTest.pro");
+    QTest::newRow("One qt5 Two qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/OneSubTest/OneSubTest.pro") << Utils::FilePath::fromString(TESTS_DIR "qt5/TwoSubTests/TwoSubTests.pro");
+    QTest::newRow("Two qt5 One qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/TwoSubTests/TwoSubTests.pro") << Utils::FilePath::fromString(TESTS_DIR "qt5/OneSubTest/OneSubTest.pro");
 }
 
 void TestActionsTest::testTwoProjectsWithTests(void)
@@ -219,8 +225,8 @@ void TestActionsTest::testTwoProjectsWithAndWithoutTests_data(void)
     QTest::addColumn<Utils::FilePath>("project1FilePath");
     QTest::addColumn<Utils::FilePath>("project2FilePath");
 
-    QTest::newRow("OneTwo") << Utils::FilePath::fromString(TESTS_DIR "OneSubTest/OneSubTest.pro") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo/NoSubTestTwo.pro");
-    QTest::newRow("TwoOne") << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests/TwoSubTests.pro") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne/NoSubTestOne.pro");
+    QTest::newRow("One qt5 Two qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/OneSubTest/OneSubTest.pro") << Utils::FilePath::fromString(TESTS_DIR "qt5/NoSubTestTwo/NoSubTestTwo.pro");
+    QTest::newRow("Two qt5 One qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/TwoSubTests/TwoSubTests.pro") << Utils::FilePath::fromString(TESTS_DIR "qt5/NoSubTestOne/NoSubTestOne.pro");
 }
 
 void TestActionsTest::testTwoProjectsWithAndWithoutTests(void)
@@ -263,8 +269,8 @@ void TestActionsTest::testTwoProjectsWithoutAndWithTests_data(void)
     QTest::addColumn<Utils::FilePath>("project1FilePath");
     QTest::addColumn<Utils::FilePath>("project2FilePath");
 
-    QTest::newRow("OneTwo") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne/NoSubTestOne.pro") << Utils::FilePath::fromString(TESTS_DIR "TwoSubTests/TwoSubTests.pro");
-    QTest::newRow("TwoOne") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo/NoSubTestTwo.pro") << Utils::FilePath::fromString(TESTS_DIR "OneSubTest/OneSubTest.pro");
+    QTest::newRow("One qt5 Two qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/NoSubTestOne/NoSubTestOne.pro") << Utils::FilePath::fromString(TESTS_DIR "qt5/TwoSubTests/TwoSubTests.pro");
+    QTest::newRow("Two qt5 One qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/NoSubTestTwo/NoSubTestTwo.pro") << Utils::FilePath::fromString(TESTS_DIR "qt5/OneSubTest/OneSubTest.pro");
 }
 
 void TestActionsTest::testTwoProjectsWithoutAndWithTests(void)
@@ -306,8 +312,8 @@ void TestActionsTest::testTwoProjectsWithoutTests_data(void)
     QTest::addColumn<Utils::FilePath>("project1FilePath");
     QTest::addColumn<Utils::FilePath>("project2FilePath");
 
-    QTest::newRow("OneTwo") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne/NoSubTestOne.pro") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo/NoSubTestTwo.pro");
-    QTest::newRow("TwoOne") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestTwo/NoSubTestTwo.pro") << Utils::FilePath::fromString(TESTS_DIR "NoSubTestOne/NoSubTestOne.pro");
+    QTest::newRow("One qt5 Two qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/NoSubTestOne/NoSubTestOne.pro") << Utils::FilePath::fromString(TESTS_DIR "qt5/NoSubTestTwo/NoSubTestTwo.pro");
+    QTest::newRow("Two qt5 One qt5") << Utils::FilePath::fromString(TESTS_DIR "qt5/NoSubTestTwo/NoSubTestTwo.pro") << Utils::FilePath::fromString(TESTS_DIR "qt5/NoSubTestOne/NoSubTestOne.pro");
 }
 
 void TestActionsTest::testTwoProjectsWithoutTests(void)

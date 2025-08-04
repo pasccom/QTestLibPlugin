@@ -49,15 +49,15 @@ void TestModelFactoryTest::initTestCase(void)
     Utils::FilePaths projectPathes;
 
     // NOTE _data() function is not available for initTestCase()
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/OneClassTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/AllMessagesTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/MultipleClassesTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/SignalsTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/LimitsTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/OneSubTest");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/TwoSubTests");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/NoSubTestOne");
-    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/NoSubTestTwo");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/OneClassTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/AllMessagesTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/MultipleClassesTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/SignalsTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/LimitsTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/OneSubTest");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/TwoSubTests");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/NoSubTestOne");
+    projectPathes << Utils::FilePath::fromString(TESTS_DIR "/qt5/NoSubTestTwo");
 
     foreach (Utils::FilePath projectPath, projectPathes)
         QVERIFY(removeProjectUserFiles(projectPath));
@@ -65,7 +65,7 @@ void TestModelFactoryTest::initTestCase(void)
     // NOTE First time ProjectExplorer::ProjectExplorerPlugin::openProject()
     // immediately calls ProjectExplorer::Target::ParsingFinished() and
     // consequently, openQMakeProject() does not work
-    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "OneClassTest/OneClassTest.pro"), &mProject);
+    openQMakeProject(Utils::FilePath::fromString(TESTS_DIR "qt5/OneClassTest/OneClassTest.pro"), &mProject);
     QVERIFY(closeProject(mProject));
 }
 
@@ -104,6 +104,7 @@ void TestModelFactoryTest::data(void)
     formats << Internal::QTestLibArgsParser::LightXmlFormat;
     formats << Internal::QTestLibArgsParser::XUnitXmlFormat;
 
+    QTest::addColumn<QString>("qtVersion");
     QTest::addColumn<Internal::QTestLibArgsParser::TestOutputFormat>("format");
     QTest::addColumn<Internal::QTestLibArgsParser::TestVerbosity>("verbosity");
     QTest::addColumn<Utils::Id>("runMode");
@@ -113,83 +114,90 @@ void TestModelFactoryTest::data(void)
             Internal::QTestLibArgsParser args;
             args.setVerbosity(verbosity);
             args.setOutputFormat(format);
-            QTest::newRow(qPrintable(QString("Normal %1").arg(args.toString()))) << format << verbosity << Utils::Id(ProjectExplorer::Constants::NORMAL_RUN_MODE);
-            QTest::newRow(qPrintable(QString("Debug %1").arg(args.toString()))) << format << verbosity << Utils::Id(ProjectExplorer::Constants::DEBUG_RUN_MODE);
+            QTest::newRow(qPrintable(QString("Qt5 Normal %1").arg(args.toString()))) << "qt5" << format << verbosity << Utils::Id(ProjectExplorer::Constants::NORMAL_RUN_MODE);
+            QTest::newRow(qPrintable(QString("Qt5 Debug %1").arg(args.toString()))) << "qt5" << format << verbosity << Utils::Id(ProjectExplorer::Constants::DEBUG_RUN_MODE);
         }
     }
 }
 
 void TestModelFactoryTest::testOneClass(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
     QFETCH(Utils::Id, runMode);
 
     if ((runMode == ProjectExplorer::Constants::DEBUG_RUN_MODE) && (verbosity == Internal::QTestLibArgsParser::VerboseSignal))
         QSKIP("Debugging with signals changes test output");
-    runTest("OneClassTest", format, verbosity, runMode);
+    runTest(qtVersion, "OneClassTest", format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::testAllMessages(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
     QFETCH(Utils::Id, runMode);
 
     if (runMode == ProjectExplorer::Constants::DEBUG_RUN_MODE)
         QSKIP("Debugging AllMessagesTest is not supported due to OS error signal");
-    runTest("AllMessagesTest", format, verbosity, runMode);
+    runTest(qtVersion, "AllMessagesTest", format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::testMultipleClasses(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
     QFETCH(Utils::Id, runMode);
 
     if ((runMode == ProjectExplorer::Constants::DEBUG_RUN_MODE) && (verbosity == Internal::QTestLibArgsParser::VerboseSignal))
         QSKIP("Debugging with signals changes test output");
-    runTest("MultipleClassesTest", format, verbosity, runMode);
+    runTest(qtVersion, "MultipleClassesTest", format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::testSignalsTest(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
     QFETCH(Utils::Id, runMode);
 
     if ((runMode == ProjectExplorer::Constants::DEBUG_RUN_MODE) && (verbosity == Internal::QTestLibArgsParser::VerboseSignal))
         QSKIP("Debugging with signals changes test output");
-    runTest("SignalsTest", format, verbosity, runMode);
+    runTest(qtVersion, "SignalsTest", format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::testLimits(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
     QFETCH(Utils::Id, runMode);
 
     if ((runMode == ProjectExplorer::Constants::DEBUG_RUN_MODE) && (verbosity == Internal::QTestLibArgsParser::VerboseSignal))
         QSKIP("Debugging with signals changes test output");
-    runTest("LimitsTest", format, verbosity, runMode);
+    runTest(qtVersion, "LimitsTest", format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::testOneSubTest(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
     QFETCH(Utils::Id, runMode);
 
-    runMakeCheck("OneSubTest", format, verbosity, runMode);
+    runMakeCheck(qtVersion, "OneSubTest", format, verbosity, runMode);
 }
 
 void TestModelFactoryTest::testTwoSubTests(void)
 {
+    QFETCH(QString, qtVersion);
     QFETCH(Internal::QTestLibArgsParser::TestOutputFormat, format);
     QFETCH(Internal::QTestLibArgsParser::TestVerbosity, verbosity);
     QFETCH(Utils::Id, runMode);
 
-    runMakeCheck("TwoSubTests", format, verbosity, runMode);
+    runMakeCheck(qtVersion, "TwoSubTests", format, verbosity, runMode);
 }
 
 QStringList TestModelFactoryTest::commandLineArguments(Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity)
@@ -287,9 +295,9 @@ QString TestModelFactoryTest::formatToString(Internal::QTestLibArgsParser::TestO
 }
 
 
-void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Utils::Id runMode)
+void TestModelFactoryTest::runTest(const QString& qtVersion, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Utils::Id runMode)
 {
-    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR + testName + "/" + testName + ".pro"), &mProject));
+    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR + qtVersion + "/" + testName + "/" + testName + ".pro"), &mProject));
 
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
@@ -314,19 +322,19 @@ void TestModelFactoryTest::runTest(const QString& testName, Internal::QTestLibAr
     // Change the working directory aspect
     ProjectExplorer::WorkingDirectoryAspect* workingDirectoryAspect = testRunConfig->aspect<ProjectExplorer::WorkingDirectoryAspect>();
     QVERIFY(workingDirectoryAspect != nullptr);
-    workingDirectoryAspect->setDefaultWorkingDirectory(Utils::FilePath::fromString(TESTS_DIR).pathAppended(testName));
+    workingDirectoryAspect->setDefaultWorkingDirectory(Utils::FilePath::fromString(TESTS_DIR).pathAppended(qtVersion).pathAppended(testName));
 
     // Check the modifications were applied:
     Utils::ProcessRunData modifiedRunnable = testRunConfig->runnable();
     QCOMPARE(modifiedRunnable.command.arguments(), cmdArgs.join(QLatin1Char(' ')));
-    QCOMPARE(modifiedRunnable.workingDirectory, Utils::FilePath::fromString(TESTS_DIR + testName));
+    QCOMPARE(modifiedRunnable.workingDirectory, Utils::FilePath::fromString(TESTS_DIR).pathAppended(qtVersion).pathAppended(testName));
 
-    runRunConfiguration(testRunConfig, testName, format, verbosity, runMode);
+    runRunConfiguration(testRunConfig, TESTS_DIR + qtVersion + "/" + testName + "/" + testName.toLower() + ".xml", format, verbosity, runMode);
 }
 
-void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Utils::Id runMode)
+void TestModelFactoryTest::runMakeCheck(const QString& qtVersion, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Utils::Id runMode)
 {
-    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR + testName + "/" + testName + ".pro"), &mProject));
+    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR + qtVersion + "/" + testName + "/" + testName + ".pro"), &mProject));
 
     // Retrieve RunConfiguration:
     ProjectExplorer::RunConfiguration* testRunConfig = NULL;
@@ -350,16 +358,16 @@ void TestModelFactoryTest::runMakeCheck(const QString& testName, Internal::QTest
     Internal::QTestLibArgsParser testArgsParser;
     testArgsParser.setOutputFormat(format);
     testArgsParser.setVerbosity(verbosity);
-    QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR) + testName + QLatin1String("/Makefile check"));
+    QString expectedCmdArgs(QLatin1String("-f " TESTS_DIR) + qtVersion + "/" + testName + QLatin1String("/Makefile check"));
     if (!testArgsParser.toString().isEmpty())
         expectedCmdArgs.append(QString(QLatin1String(" TESTARGS=\"%1\"")).arg(testArgsParser.toString()));
     QCOMPARE(modifiedRunnable.command.arguments(), expectedCmdArgs);
 
     testRunConfig->setDisplayName(testName);
-    runRunConfiguration(testRunConfig, testName, format, verbosity, runMode);
+    runRunConfiguration(testRunConfig, TESTS_DIR + qtVersion + "/" + testName + "/" + testName.toLower() + ".xml", format, verbosity, runMode);
 }
 
-void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration *runConfig, const QString& testName, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Utils::Id runMode)
+void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration *runConfig, const QString& resultsFilePath, Internal::QTestLibArgsParser::TestOutputFormat format, Internal::QTestLibArgsParser::TestVerbosity verbosity, Utils::Id runMode)
 {
     // Create a run control and a run worker:
     ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(runMode);
@@ -406,7 +414,7 @@ void TestModelFactoryTest::runRunConfiguration(ProjectExplorer::RunConfiguration
     if (format != Internal::QTestLibArgsParser::TxtFormat)
         verbosity = qMax(verbosity, Internal::QTestLibArgsParser::NormalVerbosity);
     QTestLibModelTester tester(mPopulatedModel, (QTestLibModelTester::Verbosity) verbosity, formatString);
-    tester.setResultsFile(TESTS_DIR "/" + testName + "/" + testName.toLower() + ".xml");
+    tester.setResultsFile(resultsFilePath);
     QVERIFY2(tester.checkIndex(QModelIndex()), qPrintable(tester.error()));
 }
 

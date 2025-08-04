@@ -42,6 +42,9 @@ TestSuiteModelTest::TestSuiteModelTest(void)
 {
     mRandom = QRandomGenerator::global();
 
+    mQtVersions.clear();
+    mQtVersions << "qt5";
+
     mTests.clear();
     mTests << "OneClassTest";
     mTests << "AllMessagesTest";
@@ -105,11 +108,12 @@ void TestSuiteModelTest::testAppendOne(void)
 
     // Append one test
     TestRunData testData(
+        mQtVersions.at(mRandom->bounded(mQtVersions.size())),
         mTests.at(mRandom->bounded(mTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
@@ -121,11 +125,12 @@ void TestSuiteModelTest::testAppendOneRemoveOne()
 
     // Append one test
     TestRunData testData(
+        mQtVersions.at(mRandom->bounded(mQtVersions.size())),
         mTests.at(mRandom->bounded(mTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -147,11 +152,12 @@ void TestSuiteModelTest::testRemoveBadAppendOne(void)
 
     // Append one test
     TestRunData testData(
+        mQtVersions.at(mRandom->bounded(mQtVersions.size())),
         mTests.at(mRandom->bounded(mTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
@@ -163,11 +169,12 @@ void TestSuiteModelTest::testAppendOneRemoveBad()
 
     // Append one test
     TestRunData testData(
+        mQtVersions.at(mRandom->bounded(mQtVersions.size())),
         mTests.at(mRandom->bounded(mTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -184,11 +191,12 @@ void TestSuiteModelTest::testAppendOneClear()
 
     // Append one test
     TestRunData testData(
+        mQtVersions.at(mRandom->bounded(mQtVersions.size())),
         mTests.at(mRandom->bounded(mTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData.testName, testData.parserFormat, testData.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData));
     testRuns.append(&testData);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -202,26 +210,29 @@ void TestSuiteModelTest::testAppendTwo(void)
 {
     QTestLibPlugin::Internal::TestSuiteModel model(this);
     QList< TestRunData* > testRuns;
+    QString qtVersion = mQtVersions.at(mRandom->bounded(mQtVersions.size()));
     QStringList localTests = mTests;
 
     // Append one test
     TestRunData testData1(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData1));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
     TestRunData testData2(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
 
-    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData2));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
@@ -230,25 +241,28 @@ void TestSuiteModelTest::testAppendTwoRemoveFirst(void)
 {
     QTestLibPlugin::Internal::TestSuiteModel model(this);
     QList< TestRunData* > testRuns;
+    QString qtVersion = mQtVersions.at(mRandom->bounded(mQtVersions.size()));
     QStringList localTests = mTests;
 
     // Append one test
     TestRunData testData1(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData1));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
     TestRunData testData2(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData2));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -262,26 +276,29 @@ void TestSuiteModelTest::testAppendTwoRemoveSecond(void)
 {
     QTestLibPlugin::Internal::TestSuiteModel model(this);
     QList< TestRunData* > testRuns;
+    QString qtVersion = mQtVersions.at(mRandom->bounded(mQtVersions.size()));
     QStringList localTests = mTests;
 
     // Append one test
     TestRunData testData1(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
 
-    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData1));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
     TestRunData testData2(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData2));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -295,27 +312,30 @@ void TestSuiteModelTest::testAppendTwoRemoveBad(void)
 {
     QTestLibPlugin::Internal::TestSuiteModel model(this);
     QList< TestRunData*> testRuns;
+    QString qtVersion = mQtVersions.at(mRandom->bounded(mQtVersions.size()));
     QStringList localTests = mTests;
 
     // Append one test
     TestRunData testData1(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
 
-    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData1));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
     TestRunData testData2(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
 
-    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData2));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -329,15 +349,17 @@ void TestSuiteModelTest::testAppendOneRemoveAppendOne(void)
 {
     QTestLibPlugin::Internal::TestSuiteModel model(this);
     QList< TestRunData* > testRuns;
+    QString qtVersion = mQtVersions.at(mRandom->bounded(mQtVersions.size()));
     QStringList localTests = mTests;
 
     // Append one test
     TestRunData testData1(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData1));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -348,12 +370,13 @@ void TestSuiteModelTest::testAppendOneRemoveAppendOne(void)
 
     // Append one test
     TestRunData testData2(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
 
-    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData2));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -363,15 +386,17 @@ void TestSuiteModelTest::testAppendOneRemoveBadAppendOne(void)
 {
     QTestLibPlugin::Internal::TestSuiteModel model(this);
     QList< TestRunData* > testRuns;
+    QString qtVersion = mQtVersions.at(mRandom->bounded(mQtVersions.size()));
     QStringList localTests = mTests;
 
     // Append one test
     TestRunData testData1(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData1));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -382,11 +407,12 @@ void TestSuiteModelTest::testAppendOneRemoveBadAppendOne(void)
 
     // Append one test
     TestRunData testData2(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData2));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
@@ -395,25 +421,28 @@ void TestSuiteModelTest::testAppendTwoClear(void)
 {
     QTestLibPlugin::Internal::TestSuiteModel model(this);
     QList< TestRunData* > testRuns;
+    QString qtVersion = mQtVersions.at(mRandom->bounded(mQtVersions.size()));
     QStringList localTests = mTests;
 
     // Append one test
     TestRunData testData1(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData1));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
     // Append one test
     TestRunData testData2(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData2));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -427,15 +456,17 @@ void TestSuiteModelTest::testAppendOneClearAppendOne(void)
 {
     QTestLibPlugin::Internal::TestSuiteModel model(this);
     QList< TestRunData* > testRuns;
+    QString qtVersion = mQtVersions.at(mRandom->bounded(mQtVersions.size()));
     QStringList localTests = mTests;
 
     // Append one test
     TestRunData testData1(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData1.testName, testData1.parserFormat, testData1.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData1));
     testRuns.append(&testData1);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 
@@ -446,11 +477,12 @@ void TestSuiteModelTest::testAppendOneClearAppendOne(void)
 
     // Append one test
     TestRunData testData2(
+        qtVersion,
         localTests.takeAt(mRandom->bounded(localTests.size())),
         mParserFormats.at(mRandom->bounded(mParserFormats.size())),
         (QTestLibModelTester::Verbosity) (mRandom->bounded((int) QTestLibModelTester::VerbosityCountMinusOne + 1) - 1)
     );
-    SUB_TEST_FUNCTION(appendTest(&model, testData2.testName, testData2.parserFormat, testData2.testVerbosity));
+    SUB_TEST_FUNCTION(appendTest(&model, testData2));
     testRuns.append(&testData2);
     SUB_TEST_FUNCTION(parseSuiteRoot(&model, testRuns));
 }
@@ -481,7 +513,7 @@ void TestSuiteModelTest::parseSuiteRoot(const QAbstractItemModel* model, const Q
         else
             QVERIFY2(false, qPrintable(QString("Unknown parser format %1").arg((*it)->parserFormat)));
 
-        tester.setResultsFile(TESTS_DIR "/" + (*it)->testName + "/" + (*it)->testName.toLower() + ".xml");
+        tester.setResultsFile(TESTS_DIR + (*it)->qtVersion + "/" + (*it)->testName + "/" + (*it)->testName.toLower() + ".xml");
         QVERIFY2(tester.checkIndex(model->index(i, 0, QModelIndex())), qPrintable(tester.error()));
     }
 
@@ -538,12 +570,12 @@ QStringList TestSuiteModelTest::commandLineArguments(const QString& format, QTes
     return cmdArgs;
 }
 
-void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *model, const QString& test, const QString& format, QTestLibModelTester::Verbosity verbosity)
+void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *model, const TestRunData &data)
 {
     BEGIN_SUB_TEST_FUNCTION
 
     ProjectExplorer::Project* project;
-    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR + test + "/" + test + ".pro"), &project));
+    QVERIFY(openQMakeProject(Utils::FilePath::fromString(TESTS_DIR + data.qtVersion + "/" + data.testName + "/" + data.testName + ".pro"), &project));
     mOpenProjects << project;
 
     // Retrieve RunConfiguration:
@@ -552,7 +584,7 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
         QFileInfo exeFileInfo = runConfig->runnable().command.executable().toFileInfo();
         qDebug() << exeFileInfo.absoluteFilePath();
         QVERIFY(exeFileInfo.exists());
-        if (QString::compare(exeFileInfo.baseName(), test, Qt::CaseSensitive) != 0)
+        if (QString::compare(exeFileInfo.baseName(), data.testName, Qt::CaseSensitive) != 0)
             continue;
 
         testRunConfig = runConfig;
@@ -561,7 +593,7 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     QVERIFY(testRunConfig != NULL);
 
     // Change the argument aspect:
-    QStringList cmdArgs = commandLineArguments(format, verbosity);
+    QStringList cmdArgs = commandLineArguments(data.parserFormat, data.testVerbosity);
     ProjectExplorer::ArgumentsAspect* argsAspect = testRunConfig->aspect<ProjectExplorer::ArgumentsAspect>();
     QVERIFY(argsAspect != nullptr);
     argsAspect->setArguments(cmdArgs.join(QLatin1Char(' ')));
@@ -569,12 +601,12 @@ void TestSuiteModelTest::appendTest(QTestLibPlugin::Internal::TestSuiteModel *mo
     // Change the working directory aspect
     ProjectExplorer::WorkingDirectoryAspect* workingDirectoryAspect = testRunConfig->aspect<ProjectExplorer::WorkingDirectoryAspect>();
     QVERIFY(workingDirectoryAspect != nullptr);
-    workingDirectoryAspect->setDefaultWorkingDirectory(Utils::FilePath::fromString(TESTS_DIR).pathAppended(test));
+    workingDirectoryAspect->setDefaultWorkingDirectory(Utils::FilePath::fromString(TESTS_DIR).pathAppended(data.qtVersion).pathAppended(data.testName));
 
     // Check the modifications were applied:
     Utils::ProcessRunData modifiedRunnable = testRunConfig->runnable();
     QCOMPARE(modifiedRunnable.command.arguments(), cmdArgs.join(QLatin1Char(' ')));
-    QCOMPARE(modifiedRunnable.workingDirectory, Utils::FilePath::fromString(TESTS_DIR + test));
+    QCOMPARE(modifiedRunnable.workingDirectory, Utils::FilePath::fromString(TESTS_DIR).pathAppended(data.qtVersion).pathAppended(data.testName));
 
     // Create a run control and a run worker:
     ProjectExplorer::RunControl* runControl = new ProjectExplorer::RunControl(ProjectExplorer::Constants::NORMAL_RUN_MODE);
